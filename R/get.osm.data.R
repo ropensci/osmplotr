@@ -1,15 +1,15 @@
 #' get.osm.data
 #'
-#' Downloads OSM data for selected object type from the MapQuest api.
+#' Downloads OSM data for selected object key and value from the MapQuest api.
 #'
 #' @param key: OSM key to search for. (Useful keys include "building",
 #' "waterway", "natural", "grass", "park", "amenity", "shop", "boundary", and
-#' "highway". Others will be simply passed to "way[type=*]", which may or may
+#' "highway". Others will be passed directly to the overpass API and may or may
 #' not work.)
 #' @param bbox = the bounding box within which all objects of the given type
 #' should be downloaded. Default is a tiny bit of central London
 #' (-0.15,51.5,-0.1,51.52).  
-#' @return The contents of the overpass api query as an XML string
+#' @return The contents of the overpass api query as an OSM XML string
 
 get.osm.data <- function (key="building", value=NULL, bbox=c(-0.15,51.5,-0.1,51.52))
 {

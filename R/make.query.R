@@ -1,14 +1,12 @@
 #' make.query
 #'
-#' Formats a string to be passed to an overpass API query. Query is presumed to
-#' apply to nodes and ways by default.
+#' Formats a string to be passed to an overpass API query. 
 #'
 #' @param bbox = a numeric vector (length=4) of (min lon, min lat, max lon, max
 #' lat)
 #' @param key = an OSM key to extract (NULL returns all data)
 #' @param value = an OSM value matched to the given key (NULL returns all keys
 #' regardless of value)
-#' @param rel (binary) match OSM relations as well
 #' @return formatted text string that can be simply passed to RCurl::getURL
 
 make.query <- function (bbox, key=NULL, value=NULL)
