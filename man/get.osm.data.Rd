@@ -4,15 +4,17 @@
 \alias{get.osm.data}
 \title{get.osm.data}
 \usage{
-get.osm.data(type = "building", bbox = c(-0.15, 51.5, -0.1, 51.52))
+get.osm.data(key = "building", value = NULL, bbox = c(-0.15, 51.5, -0.1,
+  51.52))
 }
 \arguments{
 \item{bbox}{= the bounding box within which all objects of the given type
 should be downloaded. Default is central London (-0.15,51.5,-0.1,51.52).}
 
-\item{type:}{currently recognises "building", "waterway", "natural", "grass",
-"park", "amenity", "shop", "boundary", and "highway". Others will be simply
-passed to "way[type=*]", which may or may not work.}
+\item{key:}{OSM key to search for. (Useful keys include "building",
+"waterway", "natural", "grass", "park", "amenity", "shop", "boundary", and
+"highway". Others will be simply passed to "way[type=*]", which may or may
+not work.)}
 }
 \value{
 The contents of
