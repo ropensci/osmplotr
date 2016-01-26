@@ -9,17 +9,18 @@ extract.osm.polygons(dat = NULL, key = "building", value = NULL,
 }
 \arguments{
 \item{dat}{= raw XML data returned from get.osm.data () for the given object
-type (if NULL, raw data are downloaded here, for which bbox must be provided).}
+key (if NULL, raw data are downloaded here, for which bbox must be provided).}
 
-\item{type:}{currently recognises "building", "waterway", "natural", "grass",
+\item{key:}{currently recognises "building", "waterway", "natural", "grass",
 "park", "amenity", "shop", "boundary", and "highway". Others will be simply
-passed to "way[type=*]", which may or may not work.}
+passed to "way[key=value]", which may or may not work.}
 }
 \value{
-sp object containing all polygons within bbox of given type.
+sp object containing all polygons within bbox of given key.
 }
 \description{
-For the given vector of structure types returns a list of unambiguous
-prefixes to be appended to the objects returned by get.osm.data ()
+Extracts "sp" polygons from an OSM XML object. Requires conversion to osmar
+object which can be quite slow, as can final conversion to sp object for
+large numbers of polygons.
 }
 

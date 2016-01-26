@@ -4,8 +4,8 @@
 \alias{plot.osm.basemap}
 \title{plot.osm.basemap}
 \usage{
-\method{plot}{osm.basemap}(xylims = xylims, filename = NULL,
-  bg = "gray20", graphic.device = "png", ...)
+plot.osm.basemap(xylims = xylims, filename = NULL, bg = "gray20",
+  graphic.device = "png", ...)
 }
 \arguments{
 \item{xylims}{= range to be plotted as returned from get.xylims ()}

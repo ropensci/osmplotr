@@ -9,7 +9,8 @@ get.osm.data(key = "building", value = NULL, bbox = c(-0.15, 51.5, -0.1,
 }
 \arguments{
 \item{bbox}{= the bounding box within which all objects of the given type
-should be downloaded. Default is central London (-0.15,51.5,-0.1,51.52).}
+should be downloaded. Default is a tiny bit of central London
+(-0.15,51.5,-0.1,51.52).}
 
 \item{key:}{OSM key to search for. (Useful keys include "building",
 "waterway", "natural", "grass", "park", "amenity", "shop", "boundary", and
@@ -17,7 +18,7 @@ should be downloaded. Default is central London (-0.15,51.5,-0.1,51.52).}
 not work.)}
 }
 \value{
-The contents of
+The contents of the overpass api query as an XML string
 }
 \description{
 Downloads OSM data for selected object type from the MapQuest api.

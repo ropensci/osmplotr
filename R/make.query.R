@@ -11,7 +11,7 @@
 #' @param rel (binary) match OSM relations as well
 #' @return formatted text string that can be simply passed to RCurl::getURL
 
-make.query <- function (bbox, key=NULL, value=NULL, rel=FALSE)
+make.query <- function (bbox, key=NULL, value=NULL)
 {
     require (RCurl)
     stopifnot (is.numeric (bbox))
@@ -26,8 +26,7 @@ make.query <- function (bbox, key=NULL, value=NULL, rel=FALSE)
                    bbox[4], ",", bbox [3], ")", sep="")
 
     query <- paste ("(way['", key, value, "']", bbox, 
-                    ";node['", key, value, "']", bbox, ";", sep="")
-    if (rel)
-        query <- paste (query, "rel['", key, value, "']", bbox, ";", sep="")
+                    ";node['", key, value, "']", bbox, 
+                    ";rel['", key, value, "']", bbox, ";", sep="")
     paste (url.base, query, ");(._;>;);out;", sep="")
 }

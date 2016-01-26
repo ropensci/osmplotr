@@ -15,7 +15,7 @@
 plot.osm.basemap <- function (xylims=xylims, filename=NULL, bg="gray20",
                                graphic.device="png", ...)
 {
-    if (!is.null (filname))
+    if (!is.null (filename))
         png (filename=filename, type="cairo-png", bg="white", ...)
     else
         x11 ()
