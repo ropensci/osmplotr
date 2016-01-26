@@ -4,7 +4,8 @@
 \alias{extract.osm.polygons}
 \title{extract.osm.polygons}
 \usage{
-extract.osm.polygons(dat = NULL, type = "building", bbox = NULL)
+extract.osm.polygons(dat = NULL, key = "building", value = NULL,
+  bbox = NULL)
 }
 \arguments{
 \item{dat}{= raw XML data returned from get.osm.data () for the given object

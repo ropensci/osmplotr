@@ -33,9 +33,8 @@ get.osm.data <- function (key="building", value=NULL, bbox=c(-0.15,51.5,-0.1,51.
         value <- "park"
     }
     
-    url.base <- 'http://overpass-api.de/api/interpreter?data='
     dat <- RCurl::getURL (make.query (bbox, key=key, value=value))
-    dat <- XML::xmlParseString (dat)
+    dat <- XML::xmlParse (dat)
 
     if (is.null (dat))
         warning ("No data downloaded.")
