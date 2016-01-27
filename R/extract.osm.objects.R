@@ -1,20 +1,26 @@
-#' extract.osm.polygons
+#' extract.osm.objects
 #'
-#' Extracts "sp" polygons from an OSM XML object. Requires conversion to osmar
-#' object which can be quite slow, as can final conversion to sp object for
-#' large numbers of polygons.
+#' Extracts "sp" polygons or lines from an OSM XML object. Requires conversion
+#' to osmar object which can be quite slow, as can final conversion to sp object
+#' for large numbers of objects
 #'
 #' @param dat = raw XML data returned from get.osm.data () for the given object
 #' key (if NULL, raw data are downloaded here, for which bbox must be provided).
 #' @param key: OSM key to search for (see ?get.osm.data for details).
-#' @return List of spatial polygons
+#' @return Data frame of either spatial polygons or spatial lines
 
-extract.osm.polygons <- function (dat=NULL, key="building", value=NULL, bbox=NULL)
+extract.osm.objects <- function (dat=NULL, key="building", value=NULL, bbox=NULL)
 {
     if (is.null (dat) & is.null (bbox))
         stop ("bbox must be provided to download data")
     else if (is.null (dat))
+    {
         dat <- get.osm.data (key=key, value=value, bbox=bbox)
+        # get.osm.data remap some key-value pairs
+        key <- dat$key
+        value <- dat$value
+        dat <- dat$dat
+    }
 
     dato <- osmar::as_osmar (dat)
     if (key=="grass") 

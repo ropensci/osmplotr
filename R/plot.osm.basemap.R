@@ -1,24 +1,32 @@
 #' plot.osm.basemap
 #'
 #' Generates a base OSM plot ready for polygon and line objects to be overlain
-#' with add.osm.polygons () and add.osm.lines ()
+#' with add.osm.polygons () and add.osm.lines (). NOTE: Graphics files must be
+#' closed after finishing map with dev.off() or graphics.off(). Files size may
+#' be adjusted by width only: height is automatically calculated from the aspect
+#' ratio of the bounding box.
 #'
 #' @param xylims = range to be plotted as returned from get.xylims ()
 #' @param filename = name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
+#' @param width = width of graphics file (in px; default 480).
 #' @param bg = background colour of map (default = "gray20")
 #' @param graphic.device = "png" (default), "jpeg", "png", or "tiff"
 #' @param ... other parameters to be passed to graphic device (such as width and
 #' height; see ?png, for example, for details)
 #' @return nothing (generates file of specified type).
 
-plot.osm.basemap <- function (xylims=xylims, filename=NULL, bg="gray20",
-                               graphic.device="png", ...)
+plot.osm.basemap <- function (xylims=xylims, filename=NULL, width=480,
+                              bg="gray20", graphic.device="png", ...)
 {
+    if (is.null (filename) & width == 480)
+        width <- 7
+    height <- width * diff (xylims$y) / diff (xylims$x)
     if (!is.null (filename))
-        png (filename=filename, type="cairo-png", bg="white", ...)
-    else
-        x11 ()
+        png (filename=filename, width=width, height=height,
+             type="cairo-png", bg="white", ...)
+    else 
+        x11 (width=width, height=height)
 
     par (mar=c(0,0,0,0))
     plot (NULL, NULL, xlim=xylims$x, ylim=xylims$y, xaxs="i", yaxs="i",

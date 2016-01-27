@@ -14,13 +14,13 @@ should be downloaded. Default is a tiny bit of central London
 
 \item{key:}{OSM key to search for. (Useful keys include "building",
 "waterway", "natural", "grass", "park", "amenity", "shop", "boundary", and
-"highway". Others will be simply passed to "way[type=*]", which may or may
+"highway". Others will be passed directly to the overpass API and may or may
 not work.)}
 }
 \value{
-The contents of the overpass api query as an XML string
+The contents of the overpass api query as an OSM XML string
 }
 \description{
-Downloads OSM data for selected object type from the MapQuest api.
+Downloads OSM data for selected object key and value from the MapQuest api.
 }
 

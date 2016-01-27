@@ -18,7 +18,7 @@ make.query <- function (bbox, key=NULL, value=NULL)
     url.base <- 'http://overpass-api.de/api/interpreter?data='
 
     if (!is.null (value))
-        value <- paste ("=", value)
+        value <- paste ("'='", value, sep="")
 
     bbox <- paste ("(", bbox [2], ",", bbox [1], ",",
                    bbox[4], ",", bbox [3], ")", sep="")

@@ -1,27 +1,34 @@
 #' get.colours
 #'
-#' Returns a list of sample colours for all object types listed in
-#' get.osm.structures () which may be used to plot an OSM map. These are the
-#' default values used in "make.osm.map".
+#' Returns a list of sample colours for all object types listed in get.suffixes
+#' which may be used to plot an OSM map. These are the default values used in
+#' "make.osm.map".
 #'
 #' @return list of colours
 
-get.colours <- function ()
+get.colours <- function (structs=get.suffixes ())
 {
-    structs <- get.suffixes ()
+    # TODO: Expand this to offer more colour schemes
+    structs <- cbind (structs, NA)
+    names (structs)[3] <- "col"
+
+    # ---------- Set the colours ----------
     col.bg <- "gray20"
-    # All colours are repeats of these three:
-    colBU <- "gray40"
     col.grass <- rgb (100, 120, 100, maxColorValue=255)
-    col.grass <- "gray30"
+    #col.grass <- "gray30"
     col.water <- rgb (77, 77, 92, maxColorValue=255)
+    colBU <- "gray40" # buildings and water
+    # -------------------------------------
 
-    colA <- colBU
-    colW <- col.water
-    colG <- colN <- colP <- col.grass
-    colH <- "black"
-    colBO <- "white"
+    # Then just apply them
+    structs$col [structs$dat.types == "building"] <- colBU
+    structs$col [structs$dat.types == "amenity"] <- colBU
+    structs$col [structs$dat.types == "waterway"] <- col.water
+    structs$col [structs$dat.types == "grass"] <- col.grass
+    structs$col [structs$dat.types == "natural"] <- col.grass
+    structs$col [structs$dat.types == "park"] <- col.grass
+    structs$col [structs$dat.types == "highway"] <- "black"
+    structs$col [structs$dat.types == "boundary"] <- "white"
 
-    return (list (colBU=colBU, colA=colA, colW=colW, colG=colG, colN=colN,
-                  colP=colP, colH=colH, colBO=colBO))
+    return (structs$col)
 }

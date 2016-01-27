@@ -4,14 +4,14 @@
 \alias{get.colours}
 \title{get.colours}
 \usage{
-get.colours()
+get.colours(structs = get.suffixes())
 }
 \value{
 list of colours
 }
 \description{
-Returns a list of sample colours for all object types listed in
-get.osm.structures () which may be used to plot an OSM map. These are the
-default values used in "make.osm.map".
+Returns a list of sample colours for all object types listed in get.suffixes
+which may be used to plot an OSM map. These are the default values used in
+"make.osm.map".
 }
 

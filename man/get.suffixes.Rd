@@ -16,6 +16,8 @@ List of structures and corresponding prefixes.
 }
 \description{
 For the given vector of structure types returns a list of unambiguous
-suffices to be appended to the objects returned by get.osm.data ()
+suffices to be appended to the objects returned by get.osm.data (). This
+function is useful only for automating map production, as illustrated in
+make.osm.map().
 }
 

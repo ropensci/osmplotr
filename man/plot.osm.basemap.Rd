@@ -4,14 +4,16 @@
 \alias{plot.osm.basemap}
 \title{plot.osm.basemap}
 \usage{
-plot.osm.basemap(xylims = xylims, filename = NULL, bg = "gray20",
-  graphic.device = "png", ...)
+\method{plot}{osm.basemap}(xylims = xylims, filename = NULL, width = 480,
+  bg = "gray20", graphic.device = "png", ...)
 }
 \arguments{
 \item{xylims}{= range to be plotted as returned from get.xylims ()}
 
 \item{filename}{= name of plot file; default=NULL plots to screen device (low
 quality and likely slow)}
+
+\item{width}{= width of graphics file (in px; default 480).}
 
 \item{bg}{= background colour of map (default = "gray20")}
 
@@ -25,6 +27,9 @@ nothing (generates file of specified type).
 }
 \description{
 Generates a base OSM plot ready for polygon and line objects to be overlain
-with add.osm.polygons () and add.osm.lines ()
+with add.osm.polygons () and add.osm.lines (). NOTE: Graphics files must be
+closed after finishing map with dev.off() or graphics.off(). Files size may
+be adjusted by width only: height is automatically calculated from the aspect
+ratio of the bounding box.
 }
 

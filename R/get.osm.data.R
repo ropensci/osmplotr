@@ -37,6 +37,6 @@ get.osm.data <- function (key="building", value=NULL, bbox=c(-0.15,51.5,-0.1,51.
     dat <- RCurl::getURL (make.query (bbox=bbox, key=key, value=value))
     dat <- XML::xmlParse (dat)
 
-    return (dat)
+    return (list (key=key, value=value, dat=dat))
 }
 
