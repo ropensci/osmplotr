@@ -21,7 +21,7 @@
 
 make.osm.map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TRUE,
                           save.raw.data=FALSE, cols=get.colours (),
-                          remove.data=FALSE)
+                          remove.data=TRUE)
 {
     # Extend any submitted colours to required length of 8 types returned from
     # get.suffixes ():
@@ -63,66 +63,32 @@ make.osm.map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TR
         stop ("don't know what structure to use to calculate xylims.")
 
     plot.osm.basemap (xylims=xylims, filename=filename)
-    # Streets are plotted at base, so all other obbjects overlay them
+    # The plot order is determined by the following indx, starting with
+    # highways, although boundaries are removed here from the struct.list
+    struct.list <- struct.list [struct.list != "datBO"]
+    indx <- NULL
     if (roads)
+        indx <- c (indx, which (struct.list %in% c ("datH", "datBO")))
+    # Then anemities, grass, and parks:
+    indx <- c (indx, which (struct.list %in% c ("datA", "datG", "datP")))
+    #  buildings
+    indx <- c (indx, which (struct.list == "datBU"))
+    # and finally water
+    indx <- c (indx, which (struct.list %in% c ("datW", "datN")))
+    suffix <- osm.structs$letters [indx]
+    types <- paste (osm.structs$dat.types [indx])
+    for (i in seq (suffix))
     {
-        if (file.exists ("datH"))
-        {
-            load ("datH")
-            add.osm.objects (datH, col=cols [osm.structs$dat.types == "highway"]) 
-            rm ("datH")
-        }
-        if (file.exists ("datBO"))
-        {
-            load ("datBO")
-            add.osm.objects (datBO, col=cols [osm.structs$dat.types == "boundary"]) 
-            rm ("datBO")
-        }
+        fname <- paste ("dat", suffix [i], sep="")
+        load (fname)
+        add.osm.objects (get (fname), col=cols [osm.structs$dat.types == types [i]]) 
+        rm (list=c(fname))
     }
-    # Then amenities, grass and parks:
-    if (file.exists ("datA"))
-    {
-        load ("datA")
-        add.osm.objects (datA, col=cols [osm.structs$dat.types == "amenity"]) 
-        rm ("datA")
-    }
-    if (file.exists ("datG"))
-    {
-        load ("datG")
-        add.osm.objects (datG, col=cols [osm.structs$dat.types == "grass"]) 
-        rm ("datG")
-    }
-    if (file.exists ("datP"))
-    {
-        load ("datP")
-        add.osm.objects (datP, col=cols [osm.structs$dat.types == "park"]) 
-        rm ("datP")
-    }
-    # Then buildings:
-    if (file.exists ("datBU"))
-    {
-        load ("datBU")
-        add.osm.objects (datBU, col=cols [osm.structs$dat.types == "building"]) 
-        rm ("datBU")
-    }
-    # Water has to be plotted last to go over the top of grass and parks   
-    if (file.exists ("datW"))
-    {
-        load ("datW")
-        add.osm.objects (datW, col=cols [osm.structs$day.types == "water"]) 
-        rm ("datW")
-    }
-    if (file.exists ("datN"))
-    {
-        load ("datN")
-        add.osm.objects (datN, col=cols [osm.structs$day.types == "natural"]) 
-        rm ("datN")
-    }
-    if (!is.null (filename)) 
-        junk <- dev.off (which=dev.cur())
 
     if (remove.data)
-    {
-        # TODO: Remove data
-    }
+        for (i in struct.list)
+            file.remove (i)
+
+    if (!is.null (filename)) 
+        junk <- dev.off (which=dev.cur())
 }

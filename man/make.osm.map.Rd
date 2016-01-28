@@ -4,11 +4,14 @@
 \alias{make.osm.map}
 \title{make.osm.map}
 \usage{
-make.osm.map(filedump = NULL, bbox = c(-0.15, 51.5, -0.1, 51.52),
+make.osm.map(filename = NULL, bbox = c(-0.15, 51.5, -0.1, 51.52),
   roads = TRUE, save.raw.data = FALSE, cols = get.colours(),
   remove.data = FALSE)
 }
 \arguments{
+\item{filename}{= name of plot file; default=NULL plots to screen device (low
+quality and likely slow)}
+
 \item{bbox}{= the bounding box for the map. Default is central London
 (-0.15,51.5,-0.1,51.52).}
 
@@ -20,9 +23,6 @@ get.suffixes (); defaults to values returned by get.colours ()}
 \item{remove.data}{= TRUE. To save working memory, data for each type of
 structure are temporarily saved to disk and removed from memory. If
 remove.data = FALSE, saved objects are *NOT* removed at end.}
-
-\item{filename}{= name of plot file; default=NULL plots to screen device (low
-quality and likely slow)}
 }
 \value{
 nothing (generates graphics device of specified type; progress is
@@ -30,9 +30,9 @@ dumped to screen, including time taken).
 }
 \description{
 Makes an entire OSM map for the given bbox by downloading all data.  This
-function can take quite some time to execute the two primary steps of
-downloading and processing the raw OSM data.  For this reason, this function
-is not intended to be actually run; rather it serves to demonstrate how all
-functions may be combined to generate a map.
+function can take quite some time (tens of minutes) to execute the two
+primary steps of downloading and processing the raw OSM data.  For this
+reason, this function is not intended to be actually run; rather it serves to
+demonstrate how all functions may be combined to generate a map.
 }
 

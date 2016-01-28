@@ -4,7 +4,7 @@
 \alias{get.xylims}
 \title{get.xylims}
 \usage{
-get.xylims(poly)
+get.xylims(obj)
 }
 \arguments{
 \item{poly}{a polygon object returned by get.osm.polygons ()}
