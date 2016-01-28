@@ -7,12 +7,13 @@
 get.xylims(obj)
 }
 \arguments{
-\item{poly}{a polygon object returned by get.osm.polygons ()}
+\item{obj}{a spatial polygon or line data.frame returned by get.osm.objects ()}
 }
 \value{
 list of lat-lon ranges
 }
 \description{
-Extracts lat-lon limits from a set of polygons returned by get.osm.polygons()
+Extracts lat-lon limits from data frames of spatial polygons or lines
+returned by get.osm.polygons()
 }
 

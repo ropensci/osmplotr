@@ -1,25 +1,19 @@
 #' get.xylims
 #'
-#' Extracts lat-lon limits from a set of polygons returned by get.osm.polygons()
+#' Extracts lat-lon limits from data frames of spatial polygons or lines
+#' returned by get.osm.polygons()
 #'
-#' @param poly a polygon object returned by get.osm.polygons ()
+#' @param obj a spatial polygon or line data.frame returned by get.osm.objects ()
 #' @return list of lat-lon ranges
 
 get.xylims <- function (obj)
 {
     if (class (obj) == "SpatialPolygonsDataFrame")
-    {
-        xrange <- range (sapply (slot (obj, "polygons"),  
-                                 function (x) min (slot (x, "labpt") [1])))
-        yrange <- range (sapply (slot (obj, "polygons"),  
-                                 function (x) min (slot (x, "labpt") [2])))
-    } else if (class (obj) == "SpatialLinesDataFrame")
-    {
-        # TODO: This does not work
-        xrange <- range (sapply (slot (obj, "lines"),  
-                                 function (x) min (slot (x, "labpt") [1])))
-        yrange <- range (sapply (slot (obj, "lines"),  
-                                 function (x) min (slot (x, "labpt") [2])))
-    }
-    return (list (x=xrange, y=yrange))
+        slNames <- c ("polygons", "Polygons")
+    else if (class (obj) == "SpatialLinesDataFrame")
+        slNames <- c ("lines", "Lines")
+
+    ranges <- sapply (slot (obj, slNames [1]),  function (x)
+                  range (slot (slot (x, slNames [2]) [[1]], "coords")))
+    list (xrange=range (ranges [1,]), yrange=range (ranges [2,]))
 }

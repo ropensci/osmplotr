@@ -16,10 +16,10 @@
 #' height; see ?png, for example, for details)
 #' @return nothing (generates file of specified type).
 
-plot.osm.basemap <- function (xylims=xylims, filename=NULL, width=480,
+plot.osm.basemap <- function (xylims=xylims, filename=NULL, width=640,
                               bg="gray20", graphic.device="png", ...)
 {
-    if (is.null (filename) & width == 480)
+    if (is.null (filename) & width == 640)
         width <- 7
     height <- width * diff (xylims$y) / diff (xylims$x)
     if (!is.null (filename))

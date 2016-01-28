@@ -6,7 +6,7 @@
 \usage{
 make.osm.map(filename = NULL, bbox = c(-0.15, 51.5, -0.1, 51.52),
   roads = TRUE, save.raw.data = FALSE, cols = get.colours(),
-  remove.data = FALSE)
+  remove.data = TRUE)
 }
 \arguments{
 \item{filename}{= name of plot file; default=NULL plots to screen device (low

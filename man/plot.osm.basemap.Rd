@@ -4,7 +4,7 @@
 \alias{plot.osm.basemap}
 \title{plot.osm.basemap}
 \usage{
-\method{plot}{osm.basemap}(xylims = xylims, filename = NULL, width = 480,
+\method{plot}{osm.basemap}(xylims = xylims, filename = NULL, width = 640,
   bg = "gray20", graphic.device = "png", ...)
 }
 \arguments{
