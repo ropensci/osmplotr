@@ -5,7 +5,7 @@
 \title{group.osm.objects}
 \usage{
 group.osm.objects(obj = obj, groups = NULL, cols = NULL,
-  col.extra = NULL)
+  col.extra = NULL, colmat = TRUE)
 }
 \arguments{
 \item{obj}{= an sp SPDF or SLDF (list of polygons or lines) returned by
@@ -14,8 +14,10 @@ get.osm.polygons}
 \item{groups}{= a list of spatial points objects, each of which contains the
 coordinates of points defining one group}
 
-\item{cols}{= Vector of >= 4 colours passed to colour.mat to arrange as a 2-D
-map of visually distinct colours (default uses rainbow colours).}
+\item{cols}{= 1. Either a vector of >= 4 colours passed to colour.mat (is
+colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default
+uses rainbow colours), or 2. If !colmat, a vector of the same length as
+groups specifying individual colours for each.}
 
 \item{col.extra}{if NULL, then any polygons *NOT* within the convex hulls are
 assigned to nearest group and coloured accordingly; if NOT NULL, then any

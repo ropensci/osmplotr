@@ -4,7 +4,7 @@
 \alias{colour.mat}
 \title{color.mat}
 \usage{
-colour.mat(n = c(10, 10), cols = NULL, plot = FALSE)
+colour.mat(n = c(10, 10), cols = NULL, rotate = NULL, plot = FALSE)
 }
 \arguments{
 \item{n}{= number of rows and columns (default = 10; if length 2, then

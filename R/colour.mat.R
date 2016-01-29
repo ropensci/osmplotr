@@ -11,7 +11,7 @@
 #' @param plot = FALSE (default) plots the colour matrix
 #' @return matrix of colours
 
-colour.mat <- function (n=c(10, 10), cols=NULL, plot=FALSE)
+colour.mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
 {
     if (is.null (cols))
         cols <- rainbow (4)
@@ -21,6 +21,25 @@ colour.mat <- function (n=c(10, 10), cols=NULL, plot=FALSE)
     cols <- cols [round (1:4 * length (cols) / 4)]
     if (class (cols [1]) != "matrix")
         cols <- col2rgb (cols)
+
+    if (!is.null (rotate))
+    {
+        # rotation generally lowers RGB values, so they are increased following
+        # rotation according to the following value:
+        max.int <- max (cols)
+        stopifnot (is.numeric (rotate))
+        while (rotate < 0)
+            rotate <- rotate + 360
+        while (rotate > 360)
+            rotate <- rotate - 360
+        i <- ceiling ((rotate + 1) / 90)
+        cols <- cbind (cols, cols)
+        i1 <- i:(i+3)
+        i2 <- i1 + 1
+        x <- (rotate %% 90) / 360
+        cols <- (1 - x) * cols [,i1] + x * cols [,i2]
+        cols <- apply (cols, 2, function (x) x * max.int / max (x))
+    }
 
     if (length (n) == 1)
         n <- rep (n, 2)
