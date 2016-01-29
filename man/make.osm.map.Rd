@@ -36,9 +36,18 @@ demonstrate how all functions may be combined to generate a map.
 }
 \examples{
 # These illustrate the key steps of the function:
-bbox <- c (-0.15, 51.51, -0.14, 51.52)
-datA <- extract.osm.objects (bbox=bbox, key="amenity")
-plot.osm.basemap (xylims=get.xylims (datA))
-add.osm.objects (datA, col="red")
+\dontrun{
+ bbox <- c (-0.15, 51.51, -0.14, 51.52)
+ datBU <- extract.osm.objects (bbox=bbox, key="building")
+ datH <- extract.osm.objects (bbox=bbox, key="highway")
+ datG <- extract.osm.objects (bbox=bbox, key="grass")
+ datP <- extract.osm.objects (bbox=bbox, key="park")
+ datW <- extract.osm.objects (bbox=bbox, key="water")
+}
+plot.osm.basemap (xylims=get.xylims (datBU))
+add.osm.objects (datH, col="white")
+add.osm.objects (datBU, col="orange")
+add.osm.objects (datG, col="lawngreen")
+add.osm.objects (datP, col="lawngreen")
 }
 
