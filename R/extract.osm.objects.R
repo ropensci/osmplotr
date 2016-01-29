@@ -44,26 +44,20 @@ extract.osm.objects <- function (key="building", value=NULL,
         value <- "park"
     }
     
-    # make.query returns an overpass API request
-    make.query <- function (bbox, key=NULL, value=NULL)
-    {
-        stopifnot (is.numeric (bbox))
-        stopifnot (length (bbox) == 4)
+    # Then construct the actual overpass query
+    if (!is.null (value))
+        value <- paste ("'='", value, sep="")
 
-        url.base <- 'http://overpass-api.de/api/interpreter?data='
+    bbox <- paste ("(", bbox [2], ",", bbox [1], ",",
+                   bbox[4], ",", bbox [3], ")", sep="")
 
-        if (!is.null (value))
-            value <- paste ("'='", value, sep="")
+    query <- paste ("(way['", key, value, "']", bbox, 
+                    ";node['", key, value, "']", bbox, 
+                    ";rel['", key, value, "']", bbox, ";", sep="")
+    url.base <- 'http://overpass-api.de/api/interpreter?data='
+    query <- paste (url.base, query, ");(._;>;);out;", sep="")
 
-        bbox <- paste ("(", bbox [2], ",", bbox [1], ",",
-                       bbox[4], ",", bbox [3], ")", sep="")
-
-        query <- paste ("(way['", key, value, "']", bbox, 
-                        ";node['", key, value, "']", bbox, 
-                        ";rel['", key, value, "']", bbox, ";", sep="")
-        paste (url.base, query, ");(._;>;);out;", sep="")
-    }
-    dat <- RCurl::getURL (make.query (bbox=bbox, key=key, value=value))
+    dat <- RCurl::getURL (query)
     dat <- XML::xmlParse (dat)
 
     dato <- osmar::as_osmar (dat)
