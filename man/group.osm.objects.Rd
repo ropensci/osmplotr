@@ -22,6 +22,9 @@ groups specifying individual colours for each.}
 \item{col.extra}{if NULL, then any polygons *NOT* within the convex hulls are
 assigned to nearest group and coloured accordingly; if NOT NULL, then any
 polygons not within groups are coloured this colour.}
+
+\item{colmat}{= TRUE generates colours according to get.colours, otherwise
+the colours of groups are specified directly by the vector of cols.}
 }
 \value{
 nothing (adds to graphics.device opened with plot.osm.basemap)

@@ -20,14 +20,13 @@
 #' dumped to screen, including time taken).
 #' @examples
 #' # These illustrate the key steps of the function:
-#' bbox <- c (-0.15, 51.5, -0.1, 51.52)
-#' datBU <- extract.osm.objects (bbox=bbox, key="building")
-#' plot.osm.basemap (xylims=get.xylims (datBU))
-#' add.osm.object (datBU, col="red")
+#' bbox <- c (-0.15, 51.51, -0.14, 51.52)
+#' datA <- extract.osm.objects (bbox=bbox, key="amenity")
+#' plot.osm.basemap (xylims=get.xylims (datA))
+#' add.osm.objects (datA, col="red")
 
 make.osm.map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TRUE,
-                          save.raw.data=FALSE, cols=get.colours (),
-                          remove.data=TRUE)
+                          cols=get.colours (), remove.data=TRUE)
 {
     # Extend any submitted colours to required length of 8 types returned from
     # get.suffixes ():

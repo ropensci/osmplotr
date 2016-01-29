@@ -12,8 +12,10 @@ dimensions of rectangle).}
 
 \item{cols}{= vector of length >= 4 of colors (example, default = rainbow
 (4), or from RColorBrewer, brewer.pal (4, "Set1")). cols are wrapped
-clockwise around the corners from top left to bottom left, so matrix may be
-rotated by altering the sequence of cols.}
+clockwise around the corners from top left to bottom left.}
+
+\item{rotate}{rotates the entire colour matrix by the specified angle (in
+degrees).}
 
 \item{plot}{= FALSE (default) plots the colour matrix}
 }

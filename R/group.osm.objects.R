@@ -15,6 +15,8 @@
 #' @param col.extra if NULL, then any polygons *NOT* within the convex hulls are
 #' assigned to nearest group and coloured accordingly; if NOT NULL, then any
 #' polygons not within groups are coloured this colour.
+#' @param colmat = TRUE generates colours according to get.colours, otherwise
+#' the colours of groups are specified directly by the vector of cols.
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
 
 group.osm.objects <- function (obj=obj, groups=NULL, cols=NULL,

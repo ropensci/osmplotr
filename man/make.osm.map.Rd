@@ -5,8 +5,7 @@
 \title{make.osm.map}
 \usage{
 make.osm.map(filename = NULL, bbox = c(-0.15, 51.5, -0.1, 51.52),
-  roads = TRUE, save.raw.data = FALSE, cols = get.colours(),
-  remove.data = TRUE)
+  roads = TRUE, cols = get.colours(), remove.data = TRUE)
 }
 \arguments{
 \item{filename}{= name of plot file; default=NULL plots to screen device (low
@@ -37,9 +36,9 @@ demonstrate how all functions may be combined to generate a map.
 }
 \examples{
 # These illustrate the key steps of the function:
-bbox <- c (-0.15, 51.5, -0.1, 51.52)
-datBU <- extract.osm.objects (bbox=bbox, key="building")
-plot.osm.basemap (xylims=get.xylims (datBU))
-add.osm.object (datBU, col="red")
+bbox <- c (-0.15, 51.51, -0.14, 51.52)
+datA <- extract.osm.objects (bbox=bbox, key="amenity")
+plot.osm.basemap (xylims=get.xylims (datA))
+add.osm.objects (datA, col="red")
 }
 

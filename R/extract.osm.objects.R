@@ -12,14 +12,10 @@
 #' @param bbox = the bounding box within which all key-value objects should be
 #' downloaded. Default is a small part of central London.
 #' @return Data frame of either spatial polygons or spatial lines
-#' bbox <- c (-0.15, 51.5, -0.1, 51.52)
-#' datB <- extract.osm.objects (key="building", bbox=bbox)
 
 extract.osm.objects <- function (key="building", value=NULL,
                                  bbox=c(-0.15,51.5,-0.1,51.52))
 {
-    require (RCurl)
-
     if (is.null (bbox))
         stop ("bbox must be provided")
 

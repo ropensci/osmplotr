@@ -6,8 +6,9 @@
 #' dimensions of rectangle). 
 #' @param cols = vector of length >= 4 of colors (example, default = rainbow
 #' (4), or from RColorBrewer, brewer.pal (4, "Set1")). cols are wrapped
-#' clockwise around the corners from top left to bottom left, so matrix may be
-#' rotated by altering the sequence of cols.
+#' clockwise around the corners from top left to bottom left. 
+#' @param rotate rotates the entire colour matrix by the specified angle (in
+#' degrees).
 #' @param plot = FALSE (default) plots the colour matrix
 #' @return matrix of colours
 #' @examples
@@ -77,7 +78,7 @@ colour.mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
     carr <- array (rgb (indx.r, indx.g, indx.b, maxColorValue=255), dim=n)
 
     if (plot) {
-        x11 ()
+        plot.new ()
         par (mar=rep (0, 4))
         plot (NULL, NULL, xlim=c(0, n[1]), ylim=c (0, n[2]))
         for (i in 1:n [1]) {

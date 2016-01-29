@@ -1,4 +1,11 @@
 exportPattern("^[^\\.]")
 
+import (RCurl)
+import (sp)
+import (spatstat)
+import (spatialkernel)
+import (osmar)
+import (XML)
+
 export (
 )

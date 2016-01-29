@@ -26,7 +26,7 @@ plot.osm.basemap <- function (xylims=xylims, filename=NULL, width=640,
         png (filename=filename, width=width, height=height,
              type="cairo-png", bg="white", ...)
     else 
-        x11 (width=width, height=height)
+        dev.new (width=width, height=height)
 
     par (mar=c(0,0,0,0))
     plot (NULL, NULL, xlim=xylims$x, ylim=xylims$y, xaxs="i", yaxs="i",
