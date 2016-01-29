@@ -27,7 +27,7 @@ polygons not within groups are coloured this colour.}
 nothing (adds to graphics.device opened with plot.osm.basemap)
 }
 \description{
-Plots spatially distinct groups of osm objects is different colours. OSM
+Plots spatially distinct groups of osm objects in different colours. OSM
 objects are attributed to groups based on mean coordinates, so this routine
 work best for SpatialPolygons, while may give odd results for SpatialLines.
 }

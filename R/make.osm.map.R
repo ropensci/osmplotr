@@ -18,6 +18,12 @@
 #' remove.data = FALSE, saved objects are *NOT* removed at end.
 #' @return nothing (generates graphics device of specified type; progress is
 #' dumped to screen, including time taken).
+#' @examples
+#' # These illustrate the key steps of the function:
+#' bbox <- c (-0.15, 51.5, -0.1, 51.52)
+#' datBU <- extract.osm.objects (bbox=bbox, key="building")
+#' plot.osm.basemap (xylims=get.xylims (datBU))
+#' add.osm.object (datBU, col="red")
 
 make.osm.map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TRUE,
                           save.raw.data=FALSE, cols=get.colours (),

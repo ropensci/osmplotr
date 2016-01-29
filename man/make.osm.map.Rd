@@ -35,4 +35,12 @@ primary steps of downloading and processing the raw OSM data.  For this
 reason, this function is not intended to be actually run; rather it serves to
 demonstrate how all functions may be combined to generate a map.
 }
+\examples{
+osm.structs <- get.suffixes ()
+ns <- dim (osm.structs) [1]
+struct.list <- NULL
+for (i in seq (osm.structs) [1])
+  struct.list <- c (struct.list,
+    paste ("dat", toString (osm.structs$letters [i]), sep="")
+}
 
