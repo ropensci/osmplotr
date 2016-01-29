@@ -32,11 +32,11 @@ group.osm.objects <- function (obj=obj, groups=NULL, cols=NULL,
     if (class (obj) == "SpatialPolygonsDataFrame")
     {
         objtxt <- c ("polygons", "Polygons")
-        plotfn <- "plot.poly"
+        plotfun <- "plot.poly"
     } else if (class (obj) == "SpatialLinesDataFrame")
     {
         objtxt <- c ("lines", "Lines")
-        plotfn <- "plot.line"
+        plotfun <- "plot.line"
     } else
         stop ("obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame")
 
@@ -54,7 +54,7 @@ group.osm.objects <- function (obj=obj, groups=NULL, cols=NULL,
 
     usr <- par ("usr")
 
-    for (i in 1:length (groups))
+    for (i in seq (groups))
     {
         x <- slot (groups [[i]], "coords") [,1]
         y <- slot (groups [[i]], "coords") [,2]
