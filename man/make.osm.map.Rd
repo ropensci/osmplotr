@@ -36,11 +36,10 @@ reason, this function is not intended to be actually run; rather it serves to
 demonstrate how all functions may be combined to generate a map.
 }
 \examples{
-osm.structs <- get.suffixes ()
-ns <- dim (osm.structs) [1]
-struct.list <- NULL
-for (i in seq (osm.structs) [1])
-  struct.list <- c (struct.list,
-    paste ("dat", toString (osm.structs$letters [i]), sep="")
+# These illustrate the key steps of the function:
+bbox <- c (-0.15, 51.5, -0.1, 51.52)
+datBU <- extract.osm.objects (bbox=bbox, key="building")
+plot.osm.basemap (xylims=get.xylims (datBU))
+add.osm.object (datBU, col="red")
 }
 

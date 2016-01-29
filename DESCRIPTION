@@ -1,8 +1,9 @@
 Package: urbanplotr
-Title: What the Package Does (one line, title case)
+Title: Produces visually impressive customisable images of urban areas from OpenStreetMap data.
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Mark", "Padgham", email = "mark.padghm@email.com", role = c("aut", "cre"))
+Description: Extracts OpenStreetMap data for specified key-value pairs (e.g. key="building") using the overpass API. Different OSM objects can be plotted in different colours using the add.osm.object function.
 Depends: R (>= 3.2.3)
-License: What license is it under?
+License: GPL >= 2
+URL: https://github.com/mpadge/urbanplor
 LazyData: true

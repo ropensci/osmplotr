@@ -20,10 +20,6 @@
 group.osm.objects <- function (obj=obj, groups=NULL, cols=NULL,
                                col.extra=NULL, colmat=TRUE)
 {
-    require (sp)
-    require (spatstat) # for ppp and convex hulls 
-    require (spatialkernel) 
-
     plot.poly <- function (i, col=col) 
     {
         xy <- slot (slot (i, "Polygons") [[1]], "coords")
@@ -76,11 +72,11 @@ group.osm.objects <- function (obj=obj, groups=NULL, cols=NULL,
     {
         x <- slot (groups [[i]], "coords") [,1]
         y <- slot (groups [[i]], "coords") [,2]
-        xy <- ppp (x, y, xrange=range (x), yrange=range (y))
-        ch <- convexhull (xy)
+        xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+        ch <- spatstat::convexhull (xy)
         bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
         bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
-        indx <- sapply (xy.mn, function (x) pinpoly (bdry, x))
+        indx <- sapply (xy.mn, function (x) spatialkernel::pinpoly (bdry, x))
         indx <- which (indx == 2) # pinpoly returns 2 for points within hull
         group.indx [indx] <- i
         xy.list [[i]] <- cbind (xmn [indx], ymn [indx])
