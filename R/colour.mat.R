@@ -11,7 +11,7 @@
 #' @param plot = FALSE (default) plots the colour matrix
 #' @return matrix of colours
 
-colour.mat <- function (n=c(10, 10), cols=NULL, plot=TRUE)
+colour.mat <- function (n=c(10, 10), cols=NULL, plot=FALSE)
 {
     if (is.null (cols))
         cols <- rainbow (4)
