@@ -38,9 +38,15 @@ extract.osm.objects <- function (key="building", value=NULL,
     {
         key <- "leisure"
         value <- "park"
+    } else if (key == "tree")
+    {
+        key <- "natural"
+        value <- "tree"
     }
+
     
     # Then construct the actual overpass query
+    valold <- value
     if (!is.null (value))
         value <- paste ("'='", value, sep="")
 
@@ -52,26 +58,33 @@ extract.osm.objects <- function (key="building", value=NULL,
                     ";rel['", key, value, "']", bbox, ";", sep="")
     url.base <- 'http://overpass-api.de/api/interpreter?data='
     query <- paste (url.base, query, ");(._;>;);out;", sep="")
+    value <- valold
 
     dat <- RCurl::getURL (query)
     dat <- XML::xmlParse (dat)
 
     dato <- osmar::as_osmar (dat)
-    if (key=="grass") 
+    if (value=="grass") 
         pids <- osmar::find (dato, osmar::way (osmar::tags(
                                                 k == "landuse" & v == key)))
-    else if (key == "park") 
+    else if (value == "park") 
         pids <- osmar::find (dato, osmar::way (osmar::tags(v == key)))
     else 
         pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     
-    pids <- osmar::find_down (dato, osmar::way (pids))
-    sp <- subset (dato, ids = pids)
+    if (value == "tree") # no pids needed
+        sp <- osmar::as_sp (dato, "points")
+    else
+    {
+        pids <- osmar::find_down (dato, osmar::way (pids))
+        sp <- subset (dato, ids = pids)
+        # TODO: Extract names of objects (at least for streets, buildings)
 
-    if (key=="boundary" | key == "highway") 
-        sp <- osmar::as_sp (sp, "lines")
-    else 
-        sp <- osmar::as_sp (sp, "polygons")
+        if (key=="boundary" | key == "highway") 
+            sp <- osmar::as_sp (sp, "lines")
+        else 
+            sp <- osmar::as_sp (sp, "polygons")
+    }
 
     return (sp)
 }
