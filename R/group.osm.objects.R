@@ -51,9 +51,15 @@ group.osm.objects <- function (obj=obj, groups=NULL, cols=NULL,
     {
         stopifnot (class (groups) == "SpatialPoints")
         groups <- list (groups)
-    } else
-        stopifnot (all ((lapply (groups, class)) == "SpatialPoints"))
-
+    } else if (!all ((lapply (groups, class)) == "SpatialPoints"))
+    {
+        e <- simpleError ("Cannot coerce groups to SpatialPoints")
+        tryCatch (
+            groups <- lapply (groups, function (x) 
+                              as (x, "SpatialPoints")),
+            finally = stop (e))
+    }
+                
     # first extract mean coordinates for every polygon or line in obj:
     xy.mn <- lapply (slot (obj, objtxt [1]),  function (x)
                   colMeans  (slot (slot (x, objtxt [2]) [[1]], "coords")))
