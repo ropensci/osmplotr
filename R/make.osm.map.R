@@ -39,9 +39,8 @@ make.osm.map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TR
 {
     # Extend any submitted colours to required length of 8 types returned from
     # get.suffixes ():
-    while (length (cols) < dim (get.suffixes ()) [1])
-        cols <- rep (cols, 2)
-    cols <- cols [1:dim (get.suffixes ()) [1]]
+    if (length (cols) < dim (get.suffixes ()) [1])
+        cols <- rep (cols, dim (get.suffixes ()) [1])
 
     osm.structs <- get.suffixes ()
     ns <- dim (osm.structs) [1]

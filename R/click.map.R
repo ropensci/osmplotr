@@ -1,0 +1,32 @@
+#' click.map
+#'
+#' Translates clicks on a map into a convex hull object which can be passed to
+#' group.osm.objects.
+#'
+#' @return A data frame containing coordinates of convex hull boundary.
+
+click.map <- function ()
+{
+    if (is.null (dev.list ()))
+        stop ("group.osm.objects can only be called after plot.osm.basemap")
+
+    cat ("click on same location twice to finish\n")
+
+    xy <- NULL
+    loc.old <- 0
+    loc <- 1
+    while (!all (unlist (loc) == unlist (loc.old)))
+    {
+        loc.old <- loc
+        loc <- locator (n = 1)
+        xy <- rbind (xy, loc)
+    }
+
+    # Then get hull
+    x <- as.numeric (xy [1:(nrow (xy) - 1),1])
+    y <- as.numeric (xy [1:(nrow (xy) - 1),2])
+    xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+    ch <- spatstat::convexhull (xy)
+    bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+    SpatialPoints (bdry)
+}

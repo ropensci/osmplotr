@@ -47,7 +47,12 @@ group.osm.objects <- function (obj=obj, groups=NULL, cols=NULL,
     if (is.null (dev.list ()))
         stop ("group.osm.objects can only be called after plot.osm.basemap")
 
-    stopifnot (all ((lapply (groups, class)) == "SpatialPoints"))
+    if (class (groups) != "list")
+    {
+        stopifnot (class (groups) == "SpatialPoints")
+        groups <- list (groups)
+    } else
+        stopifnot (all ((lapply (groups, class)) == "SpatialPoints"))
 
     # first extract mean coordinates for every polygon or line in obj:
     xy.mn <- lapply (slot (obj, objtxt [1]),  function (x)
@@ -55,6 +60,27 @@ group.osm.objects <- function (obj=obj, groups=NULL, cols=NULL,
     xmn <- sapply (xy.mn, function (x) x [1])
     ymn <- sapply (xy.mn, function (x) x [2])
 
+    if (length (cols) < 4)
+    {
+        warnings ("There are < 4 colors; passing directly to group colours")
+        if (is.null (cols))
+            cols <- rainbow (length (groups))
+        else if (length (cols) < length (groups))
+            cols <- rep (cols, length.out=length (groups))
+        colmat <- FALSE
+        if (length (groups) == 1 & is.null (col.extra))
+        {
+            warning ("There is only one group; using default col.extra")
+            if (is.null (cols))
+            {
+                cols <- "red"
+                col.extra <- "gray40"
+            } else if (cols [1] != "gray40")
+                col.extra <- "gray40"
+            else
+                col.extra <- "white"
+        }
+    }
     if (colmat)
     {
         ncols <- 20
