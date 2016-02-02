@@ -6,11 +6,12 @@
 #' @param obj = an sp SPDF or SLDF (list of polygons or lines) returned by
 #' get.osm.polygons 
 #' @param col = colour of polygons (default = "gray40")
-#' @param ptsize point size for SpatialPointsDataFrame
+#' @param ... other parameters to be passed to lines (such as lwd, lty) or
+#' points (such as pch, cex)
 #' @param pch plot character code for SpatialPointsDataFrame
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
 
-add.osm.objects <- function (obj=obj, col="gray40", ptsize=1, pch=1)
+add.osm.objects <- function (obj=obj, col="gray40", ...)
 {
     if (is.null (dev.list ()))
         stop ("group.osm.objects can only be called after plot.osm.basemap")
@@ -25,16 +26,17 @@ add.osm.objects <- function (obj=obj, col="gray40", ptsize=1, pch=1)
         junk <- lapply (slot (obj, "polygons"), plotfun)
     } else if (class (obj) == "SpatialLinesDataFrame")
     {
-        plotfun <- function (i) 
+        plotfun <- function (i, ...) 
         {
             xy <- slot (slot (i, "Lines") [[1]], "coords")
-            lines (xy, col=col)
+            lines (xy, col=col, ...)
         }
-        junk <- lapply (slot (obj, "lines"), plotfun)
+        junk <- lapply (slot (obj, "lines"), function (i)
+                        plotfun (i, ...))
     } else if (class (obj) == "SpatialPointsDataFrame")
     {
         xy <- slot (obj, "coords")
-        points (xy[,1], xy[,2], pch=pch, cex=ptsize, col=col)
+        points (xy[,1], xy[,2], col=col, ...)
     }
 }
 

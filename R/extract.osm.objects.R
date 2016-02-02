@@ -80,7 +80,7 @@ extract.osm.objects <- function (key="building", value=NULL,
         sp <- subset (dato, ids = pids)
         # TODO: Extract names of objects (at least for streets, buildings)
 
-        if (key=="boundary" | key == "highway") 
+        if (key=="boundary" | key == "highway" | key == "waterway") 
             sp <- osmar::as_sp (sp, "lines")
         else 
             sp <- osmar::as_sp (sp, "polygons")
