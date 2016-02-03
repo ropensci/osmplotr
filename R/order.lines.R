@@ -14,6 +14,9 @@ order.lines <- function (spLines)
                   slot (slot (x, "Lines") [[1]], "coords"))
     # Start the ordered data.frame with the first SpatialLines element 
     xy.ord <- xy [[1]]
+    # If a way contains discrete segments, these are stored in xy.ord.list, and
+    # xy.ord itself is reset
+    xy.ord.list <- NULL
     xy [[1]] <- NULL
     while (length (xy) > 0)
     {
@@ -27,9 +30,7 @@ order.lines <- function (spLines)
             if (length (which (n)) > 0)
                 head <- FALSE
         }
-        if (length (which (n)) == 0)
-            warning ("xy.ord[[", length (xy.ord), "]] does not connect.")
-        else if (length (which (n)) > 1)
+        if (length (which (n)) > 1)
         {
             # check one step ahead:
             nn <- which (n)
@@ -44,16 +45,38 @@ order.lines <- function (spLines)
         }
 
         if (is.null (head))
-            warning ("head is null at len (xy) = ", length (xy))
-        stopifnot (!is.null (head))
-
-        n <- which (n) [1] 
-        # [1] because the above clause may still return multiple values
-        if (head)
-            xy.ord <- rbind (xy [[n]], xy.ord)
-        else
-            xy.ord <- rbind (xy.ord, xy [[n]])
-        xy [[n]] <- NULL
+        {
+            xy.ord.list [[length (xy.ord.list) + 1]] <- unique (xy.ord)
+            xy.ord <- xy [[1]]
+            xy [[1]] <- NULL
+        } else
+        {
+            n <- which (n) [1] 
+            # [1] because the above clause may still return multiple values
+            if (head)
+            {
+                # Check whether xy [[n]] should be flipped before rbind:
+                temp <- rbind (head (xy.ord, 1), xy [[n]])
+                dup <- which (duplicated (temp))
+                if (dup == 2) # then flip
+                    xy [[n]] <- apply (t (xy [[n]]), 1, rev)
+                xy.ord <- rbind (xy [[n]], xy.ord)
+            } else
+            {
+                # Check whether xy [[n]] should be flipped before rbind:
+                temp <- rbind (tail (xy.ord, 1), xy [[n]])
+                dup <- which (duplicated (temp))
+                if (dup == nrow (temp)) # then flip
+                    xy [[n]] <- apply (t (xy [[n]]), 1, rev)
+                xy.ord <- rbind (xy.ord, xy [[n]])
+            }
+            xy [[n]] <- NULL
+        }
+    }
+    if (!is.null (xy.ord.list))
+    {
+        xy.ord.list [[length (xy.ord.list) + 1]] <- unique (xy.ord)
+        xy.ord <- xy.ord.list
     }
     unique (xy.ord)
 }
