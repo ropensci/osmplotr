@@ -2,8 +2,10 @@
 #'
 #' Accepts a SpatialLinesDataFrame representing an OpenStreetMap line object
 #' such as a highway. The list items of these objects are arbitrarily organised
-#' within OpenStreetMap. This function orders the components, returning a single
-#' data frame with coordinates ordered sequentially along the line.
+#' within OpenStreetMap. This function orders the components, returning a list
+#' of components each of which is ordered sequentially along the line.
+#' Points of intersection between components are also inserted where these are
+#' not explicitly present in OpenStreetMap.,
 #'
 #' @param spLines A SpatialLinesDataFrame returned from extract.osm.objects
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
@@ -80,5 +82,50 @@ order.lines <- function (spLines)
         xy.ord <- xy.ord.list
     } else
         xy.ord <- list (unique (xy.ord))
+
+    # Then insert intersections where these do not explicitly exist:
+    for (i in 1:length (xy.ord))
+    {
+        ref <- xy.ord
+        ref [[i]] <- NULL
+        li <- sp::Line (xy.ord [[i]])
+        li <- sp::SpatialLines (list (Lines (list (li), ID="a"))) # ID is filler
+        intersections <- sapply (ref, function (x) {
+                    lj <- sp::Line (x)
+                    lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+                    !is.null (rgeos::gIntersection (li, lj))
+                    })
+        inref <- sapply (ref, function (x) {
+                         n <- array (xy.ord [[i]] %in% x,
+                                          dim=dim (xy.ord [[i]]))
+                         # If both x and y are in xy.ord [[i]], then both
+                         # elements of a row with be TRUE, so:
+                         any (rowSums (n) == 2)
+                    })
+        inum <- (1:length (xy.ord))[!1:length (xy.ord) %in% i]
+        inum <- inum [which (intersections & !inref)]
+        # inum the indexes elements of xy.ord which cross xy.ord [[i]] yet do
+        # not have actual junction points. These points are now inserted:
+        stopifnot (length (inum) < 2) # TODO: Check!
+        if (length (inum) == 1)
+        {
+            lj <- sp::Line (xy.ord [[inum]])
+            lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+            xy <- coordinates (rgeos::gIntersection (li, lj))
+            # Then distances to from xy to xy.ord [[i]], to enable the junction
+            # point to be inserted in the appropriate sequence:
+            d <- sqrt ((xy [1] - xy.ord [[i]] [,1])^2 +
+                       (xy [2] - xy.ord [[i]] [,2])^2)
+            di <- which.min (d)
+            n <- nrow (xy.ord [[i]])
+            if (d [di-1] < d [di+1])
+                xy.ord [[i]] <- rbind (xy.ord [[i]] [1:(di-1),], int, 
+                                     xy.ord [[i]] [di:n,])
+            else
+                xy.ord [[i]] <- rbind (xy.ord [[i]] [1:di,], int, 
+                                     xy.ord [[i]] [(di+1):n,])
+            }
+        }
+    }
     return (xy.ord)
 }
