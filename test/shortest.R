@@ -219,17 +219,17 @@ if (length (n) > 2)
     # Then reduce to the *longest* of the shortest paths
     maxlen <- 0
     ij <- NULL
-    for (i in 1:(length (n) - 1))
-        for (j in (i+1):length (n))
+    nc <- combn (n, 2)
+    for (i in seq (n))
+    {
+        sp <- suppressWarnings (igraph::shortest_paths 
+                                 (g, nc [1,i], nc [2,i])$vpath [[1]])
+        if (length (sp) > maxlen)
         {
-            sp <- suppressWarnings (igraph::shortest_paths 
-                                     (g, n [i], n [j])$vpath [[1]])
-            if (length (sp3) > maxlen)
-            {
-                maxlen <- length (sp3)
-                ij <- c (i, j)
-            }
+            maxlen <- length (sp)
+            ij <- c (i, j)
         }
+    }
     n <- n [ij]
 }
 sp <- suppressWarnings (igraph::shortest_paths (g, n [1], n [2])$vpath [[1]])
