@@ -4,10 +4,13 @@
 \alias{order.lines}
 \title{order.lines}
 \usage{
-order.lines(spLines)
+order.lines(spLines, i0 = 0)
 }
 \arguments{
 \item{spLines}{A SpatialLinesDataFrame returned from extract.osm.objects}
+
+\item{i0:}{The first node is numbered (i0+1), with other nodes (except
+junction nodes) numbered sequentially .}
 }
 \value{
 nothing (adds to graphics.device opened with plot.osm.basemap)
@@ -18,6 +21,7 @@ such as a highway. The list items of these objects are arbitrarily organised
 within OpenStreetMap. This function orders the components, returning a list
 of components each of which is ordered sequentially along the line.
 Points of intersection between components are also inserted where these are
-not explicitly present in OpenStreetMap.,
+not explicitly present in OpenStreetMap. Nodes are also sequentially
+renumbered, starting at (i0+1)
 }
 
