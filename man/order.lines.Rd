@@ -15,7 +15,9 @@ nothing (adds to graphics.device opened with plot.osm.basemap)
 \description{
 Accepts a SpatialLinesDataFrame representing an OpenStreetMap line object
 such as a highway. The list items of these objects are arbitrarily organised
-within OpenStreetMap. This function orders the components, returning a single
-data frame with coordinates ordered sequentially along the line.
+within OpenStreetMap. This function orders the components, returning a list
+of components each of which is ordered sequentially along the line.
+Points of intersection between components are also inserted where these are
+not explicitly present in OpenStreetMap.,
 }
 
