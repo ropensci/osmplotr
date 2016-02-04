@@ -10,9 +10,11 @@
 
 order.lines <- function (spLines)
 {
+    stopifnot (class (spLines) == "SpatialLinesDataFrame")
+    # Extract all coords from the SLDF and store as simple list:
     xy <- lapply (slot (spLines,"lines"), function (x)
                   slot (slot (x, "Lines") [[1]], "coords"))
-    # Start the ordered data.frame with the first SpatialLines element 
+    # Start the ordered data.frame with the first item of xy
     xy.ord <- xy [[1]]
     # If a way contains discrete segments, these are stored in xy.ord.list, and
     # xy.ord itself is reset
@@ -32,7 +34,7 @@ order.lines <- function (spLines)
         }
         if (length (which (n)) > 1)
         {
-            # check one step ahead:
+            # check one step ahead: (TODO: improve this)
             nn <- which (n)
             for (i in 1:length (nn))
             {
@@ -63,7 +65,6 @@ order.lines <- function (spLines)
                 xy.ord <- rbind (xy [[n]], xy.ord)
             } else
             {
-                # Check whether xy [[n]] should be flipped before rbind:
                 temp <- rbind (tail (xy.ord, 1), xy [[n]])
                 dup <- which (duplicated (temp))
                 if (dup == nrow (temp)) # then flip
@@ -77,6 +78,7 @@ order.lines <- function (spLines)
     {
         xy.ord.list [[length (xy.ord.list) + 1]] <- unique (xy.ord)
         xy.ord <- xy.ord.list
-    }
-    unique (xy.ord)
+    } else
+        xy.ord <- list (unique (xy.ord))
+    return (xy.ord)
 }
