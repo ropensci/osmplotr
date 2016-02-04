@@ -2,7 +2,7 @@ bbox <- c(-0.15,51.5,-0.1,51.52)
 
 require (devtools)
 require (roxygen2)
-setwd ("..")
+setwd ("../..")
 document ("urbanplotr")
 load_all ("urbanplotr")
 #check ("urbanplotr") 
@@ -192,27 +192,55 @@ cycles <- ggm::fundCycles (conmat)
 ci <- which.max (sapply (cycles, nrow))
 cyc <- cycles [[ci]]
 
-# Then calculate shortest paths along each step of the cycle. Start 
-
-# Store sto as an igraph:
-obj <- sto
-from <- unlist (lapply (obj, function (x) 
+# Then calculate shortest paths along each step of the cycle.  
+path <- NULL
+i <- cyc [1,2]
+fi <- cyc [1,1]
+ti <- cyc [2,2]
+# Store objs [[i]] as an igraph
+from <- unlist (lapply (objs [[i]], function (x) 
                                    rownames (x)[1:(nrow(x)-1)]))
-to <- unlist (lapply (obj, function (x) 
+to <- unlist (lapply (objs [[i]], function (x) 
                                    rownames (x)[2:nrow(x)]))
 g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
-istart <- rownames (obj [[7]])[1]
-iend <- rownames (obj [[4]])[1]
-sp <- suppressWarnings (igraph::shortest_paths (g, istart, iend)$vpath [[1]])
-sp <- names (sp)
+
+# Then find nodes in i which join to fi and ti
+street <- do.call (rbind, objs [[i]])
+ends <- c (objs [[fi]], objs [[ti]])
+ends <- do.call (rbind, ends)
+n <- which (rowSums (array (street %in% ends, dim=dim (street))) == 2)
+xy <- street [n,]
+n <- rownames (street) [n]
+stopifnot (length (n) > 1)
+
+# Then find shortest path between n
+if (length (n) > 2)
+{
+    # Then reduce to the *longest* of the shortest paths
+    maxlen <- 0
+    ij <- NULL
+    for (i in 1:(length (n) - 1))
+        for (j in (i+1):length (n))
+        {
+            sp <- suppressWarnings (igraph::shortest_paths 
+                                     (g, n [i], n [j])$vpath [[1]])
+            if (length (sp3) > maxlen)
+            {
+                maxlen <- length (sp3)
+                ij <- c (i, j)
+            }
+        }
+    n <- n [ij]
+}
+sp <- suppressWarnings (igraph::shortest_paths (g, n [1], n [2])$vpath [[1]])
+
 # Then get xy of sp from obj:
 path <- NULL
 for (i in 1:length (sp))
 {
-    xy <- unlist (lapply (obj, function (x) x[rownames (x) == sp[i],]))
-    # xy will have more than 2 elements at junction nodes
+    indx <- which (rownames (street) == names (sp)[i]) [1]
+    # [1] because xy will have more than 2 elements at junction nodes
+    xy <- street [indx,]
     path <- rbind (path, xy [1:2])
 }
-lines (path[,1], path[,2], col="black", lwd=5)
-
-
+lines (path[,1], path[,2], col="red", lwd=3)
