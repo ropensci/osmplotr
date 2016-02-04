@@ -43,8 +43,10 @@ order.lines <- function (spLines, i0=0)
             nn <- which (n)
             for (i in 1:length (nn))
             {
-                nt <- sapply (xy, function (x) all (tail (xy [[nn [i] ]], 1) %in% x))
-                nh <- sapply (xy, function (x) all (head (xy [[nn [i] ]], 1) %in% x))
+                nt <- sapply (xy, function (x) 
+                              all (tail (xy [[nn [i] ]], 1) %in% x))
+                nh <- sapply (xy, function (x) 
+                              all (head (xy [[nn [i] ]], 1) %in% x))
                 # And set to FALSE any that don't connect further
                 if (length (which (nt)) < 2 & length (which (nh)) < 2)
                     n [nn [i]] <- FALSE
