@@ -194,8 +194,13 @@ streets2polygon <- function (highways=NULL, bbox=NULL,
         indx2 <- indx [which (!is.na (ni))]
         conmat [i, indx2] <- conmat [indx2, i] <- TRUE
     }
+    if (sum (rowSums (conmat)) < 3)
+        stop ("Only ", length (which (rowSums (conmat) > 0)), " / ", 
+              nrow (conmat), " streets actually connect; no cycle is possible")
     # Extract longest cycle:
     cycles <- ggm::fundCycles (conmat)
+    if (is.null (cycles))
+        stop ("Streets do not form a cycle")
     ci <- which.max (sapply (cycles, nrow))
     cyc <- cycles [[ci]]
 
