@@ -240,14 +240,14 @@ for (i in seq (cyc.len))
         maxlen <- 0
         ij <- NULL
         nc <- combn (n, 2)
-        for (i in seq (n))
+        for (j in seq (n))
         {
             sp <- suppressWarnings (igraph::shortest_paths 
-                                     (g, nc [1,i], nc [2,i])$vpath [[1]])
+                                     (g, nc [1,j], nc [2,j])$vpath [[1]])
             if (length (sp) > maxlen)
             {
                 maxlen <- length (sp)
-                ij <- c (i, j)
+                ij <- combn (1:3, 2) [,j]
             }
         }
         n <- n [ij]
@@ -262,6 +262,21 @@ for (i in seq (cyc.len))
     stopifnot (all (!is.na (indx)))
     path <- street [indx,]
 
-    lines (path[,1], path[,2], lwd=3, col=rainbow (cyc.len) [i])
+    lines (path [,1], path [,2], lwd=3, col=rainbow (cyc.len) [i])
     paths [[i]] <- path
 }
+
+# Finally connect all paths together to make a single path, which involves first
+# checking whether any of the paths need to be flipped 
+for (i in 1:(length (paths) - 1))
+{
+    n <- which (rowSums (array (paths [[i]] %in% paths [[i+1]], 
+                                dim=dim (paths [[i]]))) == 2)
+    # n is the index into paths [[i]] of nodes occuring in paths [[i+1]]. This
+    # obviously should be nrow (paths [[i]]), so:
+    if (n == 1)
+        paths [[i]] <- apply (t (paths [[i]]), 1, rev) # flip
+}
+
+paths <- do.call (rbind, paths)
+lines (paths [,1], paths [,2], lwd=5, col="orange", lty=2)

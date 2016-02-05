@@ -10,7 +10,9 @@ Imports:
     spatstat, 
     spatialkernel, 
     osmar, 
-    XML
+    XML,
+    igraph,
+    ggm
 License: GPL (>= 2)
 URL: https://github.com/mpadge/urbanplor
 LazyData: true
