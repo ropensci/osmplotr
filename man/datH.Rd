@@ -3,7 +3,7 @@
 \docType{data}
 \name{datH}
 \alias{datH}
-\title{datH Lines for OSM highways in central London}
+\title{datH}
 \format{A SpatialLinesDataFrame with 4,517 lines}
 \usage{
 data(datH)

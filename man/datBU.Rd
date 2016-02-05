@@ -3,7 +3,7 @@
 \docType{data}
 \name{datBU}
 \alias{datBU}
-\title{datBU OSM polygons for buildings in central London}
+\title{datBU}
 \format{A SpatialPolygonsDataFrame with 6,209 polygons}
 \usage{
 data(datBU)

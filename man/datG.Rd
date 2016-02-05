@@ -3,7 +3,7 @@
 \docType{data}
 \name{datG}
 \alias{datG}
-\title{datG OSM polygons for grassed areas in central London}
+\title{datG}
 \format{A SpatialPolygonsDataFrame with 50 polygons}
 \usage{
 data(datG)

@@ -3,7 +3,7 @@
 \docType{data}
 \name{datA}
 \alias{datA}
-\title{datA OSM polygons for amenities in central London}
+\title{datA}
 \format{A SpatialPolygonsDataFrame with 1,157 polygons}
 \usage{
 data(datA)
