@@ -3,9 +3,7 @@
 \docType{data}
 \name{datP}
 \alias{datP}
-\title{A SpatialPolygonsDataFrame containing OpenStreetMap polygons for parks
-(key=leisure, value=park) in a small part of central London, U.K.
-(bbox = -0.15, 51.5, -0.1, 51.52).}
+\title{datP OSM polygons for parks in central London}
 \format{A SpatialPolygonsDataFrame with 49 polygons}
 \usage{
 data(datP)

@@ -3,9 +3,7 @@
 \docType{data}
 \name{datH}
 \alias{datH}
-\title{A SpatialLinesDataFrame containing OpenStreetMap lines for all highways
-(key=highway) in a small part of central London, U.K.
-(bbox = -0.15, 51.5, -0.1, 51.52).}
+\title{datH Lines for OSM highways in central London}
 \format{A SpatialLinesDataFrame with 4,517 lines}
 \usage{
 data(datH)

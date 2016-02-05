@@ -3,9 +3,7 @@
 \docType{data}
 \name{datA}
 \alias{datA}
-\title{A SpatialPolygonsDataFrame containing OpenStreetMap polygons for amenities
-(key=amenity) in a small part of central London, U.K.
-(bbox = -0.15, 51.5, -0.1, 51.52).}
+\title{datA OSM polygons for amenities in central London}
 \format{A SpatialPolygonsDataFrame with 1,157 polygons}
 \usage{
 data(datA)

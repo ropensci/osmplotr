@@ -3,9 +3,7 @@
 \docType{data}
 \name{datG}
 \alias{datG}
-\title{A SpatialPolygonsDataFrame containing OpenStreetMap polygons for grassed
-areas (key=landuse, value=grass) in a small part of central London, U.K.
-(bbox = -0.15, 51.5, -0.1, 51.52).}
+\title{datG OSM polygons for grassed areas in central London}
 \format{A SpatialPolygonsDataFrame with 50 polygons}
 \usage{
 data(datG)

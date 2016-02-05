@@ -3,9 +3,7 @@
 \docType{data}
 \name{datN}
 \alias{datN}
-\title{A SpatialPolygonsDataFrame containing OpenStreetMap polygons for natural
-areas (key=natural) in a small part of central London, U.K.
-(bbox = -0.15, 51.5, -0.1, 51.52).}
+\title{datN OSM polygons for natural areas in central London}
 \format{A SpatialPolygonsDataFrame with 36 polygons}
 \usage{
 data(datN)
