@@ -1,7 +1,7 @@
-#' plot.osm.basemap
+#' plot_osm_basemap
 #'
 #' Generates a base OSM plot ready for polygon and line objects to be overlain
-#' with add.osm.polygons () and add.osm.lines (). NOTE: Graphics files must be
+#' with add_osm_polygons () and add_osm_lines (). NOTE: Graphics files must be
 #' closed after finishing map with dev.off() or graphics.off(). Files size may
 #' be adjusted by width only: height is automatically calculated from the aspect
 #' ratio of the bounding box.
@@ -18,7 +18,7 @@
 #' height; see ?png, for example, for details)
 #' @return nothing (generates file of specified type).
 
-plot.osm.basemap <- function (xylims=xylims, filename=NULL, width=640,
+plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
                               bg="gray20", graphic.device="png", ...)
 {
     if (is.null (filename) & width == 640)

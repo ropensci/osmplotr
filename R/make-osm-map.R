@@ -1,4 +1,4 @@
-#' make.osm.map
+#' make_osm_map
 #'
 #' Makes an entire OSM map for the given bbox by downloading all data.  This
 #' function can take quite some time (tens of minutes) to execute the two
@@ -15,93 +15,93 @@
 #' @param roads = TRUE (default) plot lines for roads (ways)
 #' @param cols = a list of colours matching all object types listed in
 #' get.suffixes (); defaults to values returned by get.colours ()
-#' @param remove.data = TRUE. To save working memory, data for each type of
+#' @param remove_data = TRUE. To save working memory, data for each type of
 #' structure are temporarily saved to disk and removed from memory. If
-#' remove.data = FALSE, saved objects are *NOT* removed at end.
+#' remove_data = FALSE, saved objects are *NOT* removed at end.
 #' @return nothing (generates graphics device of specified type; progress is
 #' dumped to screen, including time taken).
 #' @examples
 #' # These illustrate the key steps of the function:
 #' \dontrun{
 #'  bbox <- c (-0.15, 51.51, -0.14, 51.52)
-#'  datBU <- extract.osm.objects (bbox=bbox, key="building")
-#'  datH <- extract.osm.objects (bbox=bbox, key="highway")
-#'  datG <- extract.osm.objects (bbox=bbox, key="grass")
-#'  datP <- extract.osm.objects (bbox=bbox, key="park")
-#'  datW <- extract.osm.objects (bbox=bbox, key="water")
+#'  datBU <- extract_osm_objects (bbox=bbox, key="building")
+#'  datH <- extract_osm_objects (bbox=bbox, key="highway")
+#'  datG <- extract_osm_objects (bbox=bbox, key="grass")
+#'  datP <- extract_osm_objects (bbox=bbox, key="park")
+#'  datW <- extract_osm_objects (bbox=bbox, key="water")
 #' }
-#' plot.osm.basemap (xylims=get.xylims (datBU))
-#' add.osm.objects (datH, col="white")
-#' add.osm.objects (datBU, col="orange")
-#' add.osm.objects (datG, col="lawngreen")
-#' add.osm.objects (datP, col="lawngreen")
+#' plot_osm_basemap (xylims=get_xylims (datBU))
+#' add_osm_objects (datH, col="white")
+#' add_osm_objects (datBU, col="orange")
+#' add_osm_objects (datG, col="lawngreen")
+#' add_osm_objects (datP, col="lawngreen")
 
-make.osm.map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TRUE,
-                          cols=get.colours (), remove.data=TRUE)
+make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TRUE,
+                          cols=get_colours (), remove_data=TRUE)
 {
     # Extend any submitted colours to required length of 8 types returned from
-    # get.suffixes ():
-    if (length (cols) < dim (get.suffixes ()) [1])
-        cols <- rep (cols, dim (get.suffixes ()) [1])
+    # get_suffixes ():
+    if (length (cols) < dim (get_suffixes ()) [1])
+        cols <- rep (cols, dim (get_suffixes ()) [1])
 
-    osm.structs <- get.suffixes ()
-    ns <- dim (osm.structs) [1]
-    struct.list <- NULL
+    osm_structs <- get_suffixes ()
+    ns <- dim (osm_structs) [1]
+    struct_list <- NULL
 
     cat ("Downloading and extracting OSM data for ", ns, " structures ...\n")
     pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
     t0 <- proc.time ()
     for (i in 1:ns) {
-        dat <- extract.osm.objects (key=toString (osm.structs$dat.types [i]),
+        dat <- extract_osm_objects (key=toString (osm_structs$dat.types [i]),
                                    bbox=bbox)
-        fname <- paste ("dat", toString (osm.structs$letters [i]), sep="")
+        fname <- paste ("dat", toString (osm_structs$letters [i]), sep="")
         assign (fname, dat)
         save (list=c(fname), file=fname)
-        struct.list <- c (struct.list, fname)
+        struct_list <- c (struct_list, fname)
         rm (list=c(fname))
         setTxtProgressBar(pb, i / ns)
     }
     close (pb)
     cat ("That took ", (proc.time () - t0)[3], "s\n", sep="")
 
-    if ("datBU" %in% struct.list & file.exists ("datBU")) 
+    if ("datBU" %in% struct_list & file.exists ("datBU")) 
     {
         load ("datBU")
-        xylims <- get.xylims (datBU)
+        xylims <- get_xylims (datBU)
         rm ("datBU")
-    } else if ("datH" %in% struct.list & file.exists ("datH"))
+    } else if ("datH" %in% struct_list & file.exists ("datH"))
     {
         load ("datH")
-        xylims <- get.xylims (datH)
+        xylims <- get_xylims (datH)
         rm ("datH")
     } else 
         stop ("don't know what structure to use to calculate xylims.")
 
-    plot.osm.basemap (xylims=xylims, filename=filename)
+    plot_osm_basemap (xylims=xylims, filename=filename)
     # The plot order is determined by the following indx, starting with
-    # highways, although boundaries are removed here from the struct.list
-    struct.list <- struct.list [struct.list != "datBO"]
+    # highways, although boundaries are removed here from the struct_list
+    struct_list <- struct_list [struct_list != "datBO"]
     indx <- NULL
     if (roads)
-        indx <- c (indx, which (struct.list %in% c ("datH", "datBO")))
+        indx <- c (indx, which (struct_list %in% c ("datH", "datBO")))
     # Then anemities, grass, and parks:
-    indx <- c (indx, which (struct.list %in% c ("datA", "datG", "datP")))
+    indx <- c (indx, which (struct_list %in% c ("datA", "datG", "datP")))
     #  buildings
-    indx <- c (indx, which (struct.list == "datBU"))
+    indx <- c (indx, which (struct_list == "datBU"))
     # and finally water
-    indx <- c (indx, which (struct.list %in% c ("datW", "datN")))
-    suffix <- osm.structs$letters [indx]
-    types <- paste (osm.structs$dat.types [indx])
+    indx <- c (indx, which (struct_list %in% c ("datW", "datN")))
+    suffix <- osm_structs$letters [indx]
+    types <- paste (osm_structs$dat.types [indx])
     for (i in seq (suffix))
     {
         fname <- paste ("dat", suffix [i], sep="")
         load (fname)
-        add.osm.objects (get (fname), col=cols [osm.structs$dat.types == types [i]]) 
+        add_osm_objects (get (fname), col=cols [osm_structs$dat.types == types [i]]) 
         rm (list=c(fname))
     }
 
-    if (remove.data)
-        for (i in struct.list)
+    if (remove_data)
+        for (i in struct_list)
             file.remove (i)
 
     if (!is.null (filename)) 

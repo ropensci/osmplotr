@@ -6,8 +6,8 @@ import (spatstat)
 import (spatialkernel)
 import (osmar)
 import (XML)
-import (igraph)
-import (ggm)
+importFrom (igraph)
+importFrom (ggm)
 
 export (
 )

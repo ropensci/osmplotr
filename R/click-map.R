@@ -1,4 +1,4 @@
-#' click.map
+#' click_map
 #'
 #' Translates clicks on a map into a convex hull object which can be passed to
 #' group.osm.objects. Clicking is stopped when same point on map is clicked
@@ -6,7 +6,7 @@
 #'
 #' @return A data frame containing coordinates of convex hull boundary.
 
-click.map <- function ()
+click_map <- function ()
 {
     if (is.null (dev.list ()))
         stop ("group.osm.objects can only be called after plot.osm.basemap")
@@ -14,11 +14,11 @@ click.map <- function ()
     cat ("click on same location twice to finish\n")
 
     xy <- NULL
-    loc.old <- 0
+    loc_old <- 0
     loc <- 1
-    while (!all (unlist (loc) == unlist (loc.old)))
+    while (!all (unlist (loc) == unlist (loc_old)))
     {
-        loc.old <- loc
+        loc_old <- loc
         loc <- locator (n = 1)
         xy <- rbind (xy, loc)
     }

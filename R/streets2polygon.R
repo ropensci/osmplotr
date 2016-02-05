@@ -16,9 +16,14 @@
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic
 #' line connecting all given streets.
 
-streets2polygon <- function (highways=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
+streets2polygon <- function (highways=NULL, bbox=NULL,
                              plot=FALSE, lwds=c(1,3), cols=c("black","red"))
 {
+    if (is.null (highways))
+        stop ("A vector of highway names must be given")
+    if (is.null (bbox))
+        stop ("A bounding box must be given")
+
     # Proceeds through five stages:
     # (1) Download OSM data for highways 
     # (2) Order the individual OSM objects into a minimal number of discrete
@@ -31,12 +36,8 @@ streets2polygon <- function (highways=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
     # (6) Connect paths together to form desired cyclic boundary
 
     # **** (1) Download OSM data for highways 
-    # TODO: Delete next lines!
-    if (is.null (highways))
-        highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
-                       "Fleet.St", "Aldwych")
-
-    # Then get 2-letter abbreviations for each
+    #
+    # Start by getting 2-letter abbreviations for each highway
     nletters <- 2
     waynames <- sapply (highways, function (x) 
                       tolower (substring (x, 1, nletters)))
@@ -51,7 +52,7 @@ streets2polygon <- function (highways=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
     pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
     for (i in seq (highways))
     {
-        dat <- extract.highway (name = highways [i])
+        dat <- extract_highway (name = highways [i], bbox=bbox)
         assign (waynames [i], dat)
         setTxtProgressBar(pb, i / length (highways))
     }
@@ -64,7 +65,7 @@ streets2polygon <- function (highways=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
     i0 <- 0 # Nodes in ordered lines are numbered sequentially from (i0+1)
     for (i in seq (highways))
     {
-        dat <- order.lines (get (waynames [i]), i0=i0)
+        dat <- order_lines (get (waynames [i]), i0=i0)
         assign (paste (waynames [i], "o", sep=""), dat)
         i0 <- max (unlist (lapply (dat, function (x) as.numeric (rownames (x)))))
     }
@@ -92,8 +93,8 @@ streets2polygon <- function (highways=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
         obji <- objs [[i]]
         test <- objs
         test [[i]] <- NULL
-        test.flat <- do.call (c, test)
-        # Check whether any of obji cross any of test.flat *and* don't already
+        test_flat <- do.call (c, test)
+        # Check whether any of obji cross any of test_flat *and* don't already
         # exist as vertices
         for (j in seq (obji))
         {
@@ -102,7 +103,7 @@ streets2polygon <- function (highways=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
             # The following function returns default of -1 for no geometric
             # intersection; 0 where intersection exists but is *NOT* a vertex of
             # li, and 2 where intersection is a vertex of li.
-            intersections <- sapply (test.flat, function (x) {
+            intersections <- sapply (test_flat, function (x) {
                         lj <- sp::Line (x)
                         lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
                         int <- rgeos::gIntersection (li, lj)
@@ -115,7 +116,7 @@ streets2polygon <- function (highways=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
             {
                 # Then they have to be added to objs [[i]] [[j]]. 
                 stopifnot (length (which (intersections == 0)) == 1)
-                x <- test.flat [which (intersections == 0)] [[1]]
+                x <- test_flat [which (intersections == 0)] [[1]]
                 lj <- sp::Line (x)
                 lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
                 xy <- coordinates (rgeos::gIntersection (li, lj))
@@ -293,5 +294,5 @@ streets2polygon <- function (highways=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
         lines (path [,1], path [,2], lwd=lwds [2], col=cols [2])
     }
 
-    return (path)
+    return (unique (path))
 }

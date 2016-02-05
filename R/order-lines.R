@@ -13,27 +13,29 @@
 #' junction nodes) numbered sequentially .
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
 
-order.lines <- function (spLines, i0=0)
+order_lines <- function (spLines, i0=0)
 {
     stopifnot (class (spLines) == "SpatialLinesDataFrame")
     # Extract all coords from the SLDF and store as simple list:
-    xy <- lapply (slot (spLines,"lines"), function (x)
-                  slot (slot (x, "Lines") [[1]], "coords"))
+    #xy <- lapply (slot (spLines,"lines"), function (x)
+    #              slot (slot (x, "Lines") [[1]], "coords"))
+    xy <- coordinates (spLines)
+    xy <- lapply (xy, function (x) array (unlist (x), dim=dim(x[[1]]) ))
     # Start the ordered data.frame with the first item of xy
-    xy.ord <- xy [[1]]
-    # If a way contains discrete segments, these are stored in xy.ord.list, and
-    # xy.ord itself is reset
-    xy.ord.list <- NULL
+    xy_ord <- xy [[1]]
+    # If a way contains discrete segments, these are stored in xy_ord_list, and
+    # xy_ord itself is reset
+    xy_ord_list <- NULL
     xy [[1]] <- NULL
     while (length (xy) > 0)
     {
         head <- NULL
-        n <- sapply (xy, function (x) all (head (xy.ord, 1) %in% x))
+        n <- sapply (xy, function (x) all (head (xy_ord, 1) %in% x))
         if (length (which (n)) > 0)
             head <- TRUE
         else if (length (which (n)) == 0)
         {
-            n <- sapply (xy, function (x) all (tail (xy.ord, 1) %in% x))
+            n <- sapply (xy, function (x) all (tail (xy_ord, 1) %in% x))
             if (length (which (n)) > 0)
                 head <- FALSE
         }
@@ -55,8 +57,8 @@ order.lines <- function (spLines, i0=0)
 
         if (is.null (head))
         {
-            xy.ord.list [[length (xy.ord.list) + 1]] <- unique (xy.ord)
-            xy.ord <- xy [[1]]
+            xy_ord_list [[length (xy_ord_list) + 1]] <- unique (xy_ord)
+            xy_ord <- xy [[1]]
             xy [[1]] <- NULL
         } else
         {
@@ -65,36 +67,36 @@ order.lines <- function (spLines, i0=0)
             if (head)
             {
                 # Check whether xy [[n]] should be flipped before rbind:
-                temp <- rbind (head (xy.ord, 1), xy [[n]])
+                temp <- rbind (head (xy_ord, 1), xy [[n]])
                 dup <- which (duplicated (temp))
                 if (dup == 2) # then flip
                     xy [[n]] <- apply (t (xy [[n]]), 1, rev)
-                xy.ord <- rbind (xy [[n]], xy.ord)
+                xy_ord <- rbind (xy [[n]], xy_ord)
             } else
             {
-                temp <- rbind (tail (xy.ord, 1), xy [[n]])
+                temp <- rbind (tail (xy_ord, 1), xy [[n]])
                 dup <- which (duplicated (temp))
                 if (dup == nrow (temp)) # then flip
                     xy [[n]] <- apply (t (xy [[n]]), 1, rev)
-                xy.ord <- rbind (xy.ord, xy [[n]])
+                xy_ord <- rbind (xy_ord, xy [[n]])
             }
             xy [[n]] <- NULL
         }
     }
-    if (!is.null (xy.ord.list))
+    if (!is.null (xy_ord_list))
     {
-        xy.ord.list [[length (xy.ord.list) + 1]] <- unique (xy.ord)
-        xy.ord <- xy.ord.list
+        xy_ord_list [[length (xy_ord_list) + 1]] <- unique (xy_ord)
+        xy_ord <- xy_ord_list
     } else
-        xy.ord <- list (unique (xy.ord))
+        xy_ord <- list (unique (xy_ord))
 
     # Then insert intersections where these do not explicitly exist:
-    if (length (xy.ord) > 1)
-        for (i in 1:length (xy.ord))
+    if (length (xy_ord) > 1)
+        for (i in 1:length (xy_ord))
         {
-            ref <- xy.ord
+            ref <- xy_ord
             ref [[i]] <- NULL
-            li <- sp::Line (xy.ord [[i]])
+            li <- sp::Line (xy_ord [[i]])
             li <- sp::SpatialLines (list (Lines (list (li), ID="a"))) 
             # ID is filler
             intersections <- sapply (ref, function (x) {
@@ -103,50 +105,50 @@ order.lines <- function (spLines, i0=0)
                         !is.null (rgeos::gIntersection (li, lj))
                         })
             inref <- sapply (ref, function (x) {
-                             n <- array (xy.ord [[i]] %in% x,
-                                              dim=dim (xy.ord [[i]]))
-                             # If both x and y are in xy.ord [[i]], then both
+                             n <- array (xy_ord [[i]] %in% x,
+                                              dim=dim (xy_ord [[i]]))
+                             # If both x and y are in xy_ord [[i]], then both
                              # elements of a row with be TRUE, so:
                              any (rowSums (n) == 2)
                         })
-            inum <- (1:length (xy.ord))[!1:length (xy.ord) %in% i]
+            inum <- (1:length (xy_ord))[!1:length (xy_ord) %in% i]
             inum <- inum [which (intersections & !inref)]
-            # inum the indexes elements of xy.ord which cross xy.ord [[i]] yet
+            # inum the indexes elements of xy_ord which cross xy_ord [[i]] yet
             # do not have actual junction points. These points are now inserted:
             stopifnot (length (inum) < 2) # TODO: Check!
             if (length (inum) == 1)
             {
-                lj <- sp::Line (xy.ord [[inum]])
+                lj <- sp::Line (xy_ord [[inum]])
                 lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
                 xy <- coordinates (rgeos::gIntersection (li, lj))
-                # Then distances to from xy to xy.ord [[i]], to enable the
+                # Then distances to from xy to xy_ord [[i]], to enable the
                 # junction point to be inserted in the appropriate sequence:
-                d <- sqrt ((xy [1] - xy.ord [[i]] [,1])^2 +
-                           (xy [2] - xy.ord [[i]] [,2])^2)
+                d <- sqrt ((xy [1] - xy_ord [[i]] [,1])^2 +
+                           (xy [2] - xy_ord [[i]] [,2])^2)
                 di <- which.min (d)
-                n <- nrow (xy.ord [[i]])
+                n <- nrow (xy_ord [[i]])
                 if (d [di-1] < d [di+1])
-                    xy.ord [[i]] <- rbind (xy.ord [[i]] [1:(di-1),], xy, 
-                                         xy.ord [[i]] [di:n,])
+                    xy_ord [[i]] <- rbind (xy_ord [[i]] [1:(di-1),], xy, 
+                                         xy_ord [[i]] [di:n,])
                 else
-                    xy.ord [[i]] <- rbind (xy.ord [[i]] [1:di,], xy, 
-                                         xy.ord [[i]] [(di+1):n,])
+                    xy_ord [[i]] <- rbind (xy_ord [[i]] [1:di,], xy, 
+                                         xy_ord [[i]] [(di+1):n,])
             }
         }
     
     # Then re-number all nodes. They have numbers generated by osmar::as_sp, but
     # these are not unique, and so must be replaced by unique codes. First just
     # number all sequentially:
-    for (i in 1:length (xy.ord))
+    for (i in 1:length (xy_ord))
     {
-        rownames (xy.ord [[i]]) <- i0 + 1:nrow (xy.ord [[i]])
-        i0 <- i0 + nrow (xy.ord [[i]])
+        rownames (xy_ord [[i]]) <- i0 + 1:nrow (xy_ord [[i]])
+        i0 <- i0 + nrow (xy_ord [[i]])
     }
     # Then renumber all shared nodes from [[2]] onwards to correspond to
     # any prior node names.
     # TODO: This is not going to work where there are multiple matches: FIX!
-    xtop <- list (xy.ord [[1]])
-    xbot <- xy.ord
+    xtop <- list (xy_ord [[1]])
+    xbot <- xy_ord
     xbot [[1]] <- NULL
     while (length (xbot) > 0)
     {

@@ -1,4 +1,4 @@
-#' extract.osm.objects
+#' extract_osm_objects
 #'
 #' Downloads OSM XML objects and extracts "sp" polygons or lines.  Requires
 #' conversion to osmar object which can be quite slow, as can final conversion
@@ -15,7 +15,7 @@
 #' Default is a small part of central London.
 #' @return Data frame of either spatial polygons or spatial lines
 
-extract.osm.objects <- function (key="building", value=NULL,
+extract_osm_objects <- function (key="building", value=NULL,
                                  bbox=c(-0.15,51.5,-0.1,51.52))
 {
     if (is.null (bbox))
@@ -58,8 +58,8 @@ extract.osm.objects <- function (key="building", value=NULL,
     query <- paste ("(way['", key, value, "']", bbox, 
                     ";node['", key, value, "']", bbox, 
                     ";rel['", key, value, "']", bbox, ";", sep="")
-    url.base <- 'http://overpass-api.de/api/interpreter?data='
-    query <- paste (url.base, query, ");(._;>;);out;", sep="")
+    url_base <- 'http://overpass-api.de/api/interpreter?data='
+    query <- paste (url_base, query, ");(._;>;);out;", sep="")
     value <- valold
 
     dat <- RCurl::getURL (query)
@@ -79,13 +79,21 @@ extract.osm.objects <- function (key="building", value=NULL,
     else
     {
         pids <- osmar::find_down (dato, osmar::way (pids))
-        sp <- subset (dato, ids = pids)
-        # TODO: Extract names of objects (at least for streets, buildings)
+        nvalid <- sum (sapply (pids, length))
+        if (nvalid <= 3) # (nodes, ways, relations)
+        {
+            warning ("No valid data for (", key, ", ", value, ")")
+            sp <- NULL
+        } else
+        {
+            sp <- subset (dato, ids = pids)
+            # TODO: Extract names of objects (at least for streets, buildings)
 
-        if (key=="boundary" | key == "highway" | key == "waterway") 
-            sp <- osmar::as_sp (sp, "lines")
-        else 
-            sp <- osmar::as_sp (sp, "polygons")
+            if (key=="boundary" | key == "highway" | key == "waterway") 
+                sp <- osmar::as_sp (sp, "lines")
+            else 
+                sp <- osmar::as_sp (sp, "polygons")
+        }
     }
 
     return (sp)

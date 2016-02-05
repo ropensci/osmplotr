@@ -1,4 +1,4 @@
-#' extract.highway
+#' extract_highway
 #'
 #' Extracts an OpenStreetMap highway by name, within the give bounding box.
 #'
@@ -9,7 +9,7 @@
 #' downloaded. Default is a small part of central London.
 #' @return SpatialLinesDataFrame containing the highway
 
-extract.highway <- function (name="", bbox=c(-0.15,51.5,-0.1,51.52))
+extract_highway <- function (name="", bbox=NULL)
 {
     stopifnot (nchar (name) > 0)
 
@@ -26,14 +26,22 @@ extract.highway <- function (name="", bbox=c(-0.15,51.5,-0.1,51.52))
 
     query <- paste ("(way['name'~'", name, "']", bbox, sep="")
     query <- paste (query, ";>;);out;", sep="")
-    url.base <- 'http://overpass-api.de/api/interpreter?data='
-    query <- paste (url.base, query, sep="")
+    url_base <- 'http://overpass-api.de/api/interpreter?data='
+    query <- paste (url_base, query, sep="")
     dat <- RCurl::getURL (query)
     dat <- XML::xmlParse (dat)
     dato <- osmar::as_osmar (dat)
     key <- "highway"
     pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     pids <- osmar::find_down (dato, osmar::way (pids))
-    sp <- subset (dato, ids = pids)
-    osmar::as_sp (sp, "lines")
+    nvalid <- sum (sapply (pids, length))
+    if (nvalid <= 3) # (nodes, ways, relations)
+    {
+        warning ("No valid data for name=(", name, ")")
+        return (NULL)
+    } else
+    {
+        sp <- subset (dato, ids = pids)
+        return (osmar::as_sp (sp, "lines"))
+    }
 }

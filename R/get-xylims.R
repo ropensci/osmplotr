@@ -1,12 +1,12 @@
-#' get.xylims
+#' get_xylims
 #'
 #' Extracts lat-lon limits from data frames of spatial polygons or lines
-#' returned by get.osm.polygons()
+#' returned by get_osm_polygons()
 #'
 #' @param obj a spatial polygon or line data.frame returned by get.osm.objects ()
 #' @return list of lat-lon ranges
 
-get.xylims <- function (obj)
+get_xylims <- function (obj)
 {
     if (class (obj) == "SpatialPolygonsDataFrame")
         slNames <- c ("polygons", "Polygons")
