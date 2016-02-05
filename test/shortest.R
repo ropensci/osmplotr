@@ -28,38 +28,50 @@ add.osm.objects (datBU)
 add.osm.objects (datT, col="green", ptsize=0.2, pch=1)
 
 # ***** (1) Get SpatialLines for Kingsway, High Holborn, and Farringdon St
-kw <- extract.highway (name="Kingsway")
-ho <- extract.highway (name="Holborn") # includes high holborn
-fa <- extract.highway (name="Farringdon.St")
-st <- extract.highway (name="Strand")
-fl <- extract.highway (name="Fleet.St")
-al <- extract.highway (name="Aldwych")
+highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand", "Fleet.St",
+               "Aldwych")
+# Then get 2-letter abbreviations for each
+nletters <- 2
+waynames <- sapply (highways, function (x) 
+                  tolower (substring (x, 1, nletters)))
+while (any (duplicated (waynames)))
+{
+    nletters <- nletters + 1
+    waynames <- sapply (highways, function (x) 
+                      tolower (substring (x, 1, nletters)))
+}
 
-streets <- c ("kw", "ho", "fa", "st", "fl", "al")
-xlims <- range (lapply (streets, function (i)
+cat ("Downloading OSM data ...\n")
+pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
+for (i in seq (highways))
+{
+    dat <- extract.highway (name = highways [i])
+    assign (waynames [i], dat)
+    setTxtProgressBar(pb, i / length (highways))
+}
+rm (dat)
+close (pb)
+
+xlims <- range (lapply (waynames, function (i)
                  do.call (get.xylims, list (get (i)))$xrange))
-ylims <- range (lapply (streets, function (i)
+ylims <- range (lapply (waynames, function (i)
                  do.call (get.xylims, list (get (i)))$yrange))
 
 
 # ***** (2) Order the lines 
-kwo <- order.lines (kw, i0=0) 
-n <- max (unlist (lapply (kwo, function (x) as.numeric (rownames (x)))))
-hoo <- order.lines (ho, i0=n)
-n <- max (unlist (lapply (hoo, function (x) as.numeric (rownames (x)))))
-fao <- order.lines (fa, i0=n)
-n <- max (unlist (lapply (fao, function (x) as.numeric (rownames (x)))))
-sto <- order.lines (st, i0=n)
-n <- max (unlist (lapply (sto, function (x) as.numeric (rownames (x)))))
-flo <- order.lines (fl, i0=n)
-n <- max (unlist (lapply (flo, function (x) as.numeric (rownames (x)))))
-alo <- order.lines (al, i0=n)
+i0 <- 0 # Nodes in ordered lines are numbered sequentially from (i0+1)
+for (i in seq (highways))
+{
+    dat <- order.lines (get (waynames [i]), i0=i0)
+    assign (paste (waynames [i], "o", sep=""), dat)
+    i0 <- max (unlist (lapply (dat, function (x) as.numeric (rownames (x)))))
+}
 
 plot.new ()
 par (mar=c(0,0,0,0))
 plot (NULL, NULL, xlim=xlims, ylim=ylims, xaxt="n", yaxt="n",
       xlab="", ylab="", frame=FALSE)
-for (i in streets)
+for (i in waynames)
 {
     ni <- paste (i, "o", sep="")
     for (j in get (ni))
@@ -73,7 +85,7 @@ for (i in streets)
 # so new junction vertices can be numbered above that.
 objs <- NULL
 maxvert <- 0
-for (i in streets)
+for (i in waynames)
 {
     objs [[i]] <- get (paste (i, "o", sep=""))
     maxvert <- max (maxvert, unlist (lapply (objs [[i]], function (x)
@@ -165,10 +177,9 @@ for (i in seq (objs))
 } # end for i over all objs
 
 
+# ***** (4) Fill a connectivity matrix between all highways
 
-
-# Then fill a connectivity matrix between all streets:
-conmat <- array (FALSE, dim=rep (length (streets), 2))
+conmat <- array (FALSE, dim=rep (length (waynames), 2))
 for (i in seq (objs))
 {
     test <- do.call (rbind, objs [[i]])
@@ -187,60 +198,70 @@ for (i in seq (objs))
     indx2 <- indx [which (!is.na (ni))]
     conmat [i, indx2] <- conmat [indx2, i] <- TRUE
 }
-# And use that to extrac the largest cycle:
+# And use that to extract the longest cycle:
 cycles <- ggm::fundCycles (conmat)
 ci <- which.max (sapply (cycles, nrow))
 cyc <- cycles [[ci]]
 
-# Then calculate shortest paths along each step of the cycle.  
-path <- NULL
-i <- cyc [1,2]
-fi <- cyc [1,1]
-ti <- cyc [2,2]
-# Store objs [[i]] as an igraph
-from <- unlist (lapply (objs [[i]], function (x) 
-                                   rownames (x)[1:(nrow(x)-1)]))
-to <- unlist (lapply (objs [[i]], function (x) 
-                                   rownames (x)[2:nrow(x)]))
-g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
 
-# Then find nodes in i which join to fi and ti
-street <- do.call (rbind, objs [[i]])
-ends <- c (objs [[fi]], objs [[ti]])
-ends <- do.call (rbind, ends)
-n <- which (rowSums (array (street %in% ends, dim=dim (street))) == 2)
-xy <- street [n,]
-n <- rownames (street) [n]
-stopifnot (length (n) > 1)
+# ***** (5) Finally calculate the shortest paths along each step of the cycle
 
-# Then find shortest path between n
-if (length (n) > 2)
+cyc.len <- nrow (cyc)
+cyc <- rbind (cyc, cyc [1,])
+paths <- list ()
+for (i in seq (cyc.len))
 {
-    # Then reduce to the *longest* of the shortest paths
-    maxlen <- 0
-    ij <- NULL
-    nc <- combn (n, 2)
-    for (i in seq (n))
+    w0 <- cyc [i,2] # the current way
+    wf <- cyc [i,1] # the "from" way
+    wt <- cyc [i+1,2] # the "to" way
+
+    # Store objs [[w0]] as an igraph
+    from <- unlist (lapply (objs [[w0]], function (x) 
+                                       rownames (x)[1:(nrow(x)-1)]))
+    to <- unlist (lapply (objs [[w0]], function (x) 
+                                       rownames (x)[2:nrow(x)]))
+    g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
+
+    # Then find nodes in w0 which join to wf and wt
+    street <- do.call (rbind, objs [[w0]])
+    ends <- c (objs [[wf]], objs [[wt]])
+    ends <- do.call (rbind, ends)
+    n <- which (rowSums (array (street %in% ends, dim=dim (street))) == 2)
+    # n is index into street of lat-lon pairs duplicated in ends
+    xy <- street [n,] # coordinates of nn
+    n <- rownames (street) [n] # names of nn within the igraph
+    stopifnot (length (n) > 1)
+
+    # If there are more than 2 nodes present in the ends, then extract the
+    # *longest* of these shortest paths:
+    if (length (n) > 2)
     {
-        sp <- suppressWarnings (igraph::shortest_paths 
-                                 (g, nc [1,i], nc [2,i])$vpath [[1]])
-        if (length (sp) > maxlen)
+        # Then reduce to the *longest* of the shortest paths
+        maxlen <- 0
+        ij <- NULL
+        nc <- combn (n, 2)
+        for (i in seq (n))
         {
-            maxlen <- length (sp)
-            ij <- c (i, j)
+            sp <- suppressWarnings (igraph::shortest_paths 
+                                     (g, nc [1,i], nc [2,i])$vpath [[1]])
+            if (length (sp) > maxlen)
+            {
+                maxlen <- length (sp)
+                ij <- c (i, j)
+            }
         }
+        n <- n [ij]
     }
-    n <- n [ij]
-}
-sp <- suppressWarnings (igraph::shortest_paths (g, n [1], n [2])$vpath [[1]])
+    # Then length (n) == 2, and so the shortest path can be extracted:
+    sp <- suppressWarnings (igraph::shortest_paths (g, n [1], n [2])$vpath [[1]])
 
-# Then get xy of sp from obj:
-path <- NULL
-for (i in 1:length (sp))
-{
-    indx <- which (rownames (street) == names (sp)[i]) [1]
-    # [1] because xy will have more than 2 elements at junction nodes
-    xy <- street [indx,]
-    path <- rbind (path, xy [1:2])
+    # Then get xy of sp from "street", which is the flat version of objs [[w0]].
+    # Note that junctions will have duplicates of same node, but match only
+    # returns the first match, so that's okay.
+    indx <- match (names (sp), rownames (street))
+    stopifnot (all (!is.na (indx)))
+    path <- street [indx,]
+
+    lines (path[,1], path[,2], lwd=3, col=rainbow (cyc.len) [i])
+    paths [[i]] <- path
 }
-lines (path[,1], path[,2], col="red", lwd=3)
