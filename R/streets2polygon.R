@@ -1,8 +1,8 @@
 #' streets2polygon
 #'
 #' takes a list of street names which must enclose an internal area, and returns
-#' a SpatialLines object cyclically connecting all streets. Will fail if the
-#' streets do not form a cycle.
+#' a SpatialLines object containing a sequence of OSM nodes which cyclically
+#' connect all streets. Will fail if the streets do not form a cycle.
 #'
 #' @param highways = A vector of highway names passed directly to the Overpass
 #' API. Wildcards and whitespaces are '.'; for other options see overpass help.

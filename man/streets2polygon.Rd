@@ -4,8 +4,8 @@
 \alias{streets2polygon}
 \title{streets2polygon}
 \usage{
-streets2polygon(highways = NULL, bbox = c(-0.15, 51.5, -0.1, 51.52),
-  plot = FALSE, lwds = c(1, 3), cols = c("black", "red"))
+streets2polygon(highways = NULL, bbox = NULL, plot = FALSE, lwds = c(1,
+  3), cols = c("black", "red"))
 }
 \arguments{
 \item{highways}{= A vector of highway names passed directly to the Overpass
@@ -28,7 +28,7 @@ line connecting all given streets.
 }
 \description{
 takes a list of street names which must enclose an internal area, and returns
-a SpatialLines object cyclically connecting all streets. Will fail if the
-streets do not form a cycle.
+a SpatialLines object containing a sequence of OSM nodes which cyclically
+connect all streets. Will fail if the streets do not form a cycle.
 }
 

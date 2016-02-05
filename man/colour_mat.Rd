@@ -26,6 +26,6 @@ matrix of colours
 Generates a 2D matrix of graduated colours.
 }
 \examples{
-cm <- colour.mat (n=20, cols=rainbow(4), rotate=90, plot=TRUE)
+cm <- colour_mat (n=20, cols=rainbow(4), rotate=90, plot=TRUE)
 }
 
