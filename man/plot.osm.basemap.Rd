@@ -8,9 +8,11 @@ plot.osm.basemap(xylims = xylims, filename = NULL, width = 640,
   bg = "gray20", graphic.device = "png", ...)
 }
 \arguments{
-\item{xylims}{= range to be plotted as returned from get.xylims ()}
+\item{xylims}{= Latitude-longitude range to be plotted as returned from
+get.xylims ()}
 
-\item{filename}{= name of plot file; default=NULL plots to screen device (low
+\item{filename}{= name of plot file; default=NULL plots to
+screen device (low
 quality and likely slow)}
 
 \item{width}{= width of graphics file (in px; default 480).}

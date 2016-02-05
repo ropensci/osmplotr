@@ -10,6 +10,8 @@
 #' quality and likely slow)
 #' @param bbox = the bounding box for the map. Default is central London
 #' (-0.15,51.5,-0.1,51.52).  
+#' @param bbox = the bounding box for the map.  Must be a vector of 4 elements
+#' (xmin, ymin, xmax, ymax).  Default is a small part of central London.
 #' @param roads = TRUE (default) plot lines for roads (ways)
 #' @param cols = a list of colours matching all object types listed in
 #' get.suffixes (); defaults to values returned by get.colours ()

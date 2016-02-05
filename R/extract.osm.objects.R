@@ -10,7 +10,9 @@
 #' necessarily return results.
 #' @param value: OSM value to match to key. If NULL, all keys will be returned.
 #' @param bbox = the bounding box within which all key-value objects should be
-#' downloaded. Default is a small part of central London.
+#' downloaded. 
+#' Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
+#' Default is a small part of central London.
 #' @return Data frame of either spatial polygons or spatial lines
 
 extract.osm.objects <- function (key="building", value=NULL,

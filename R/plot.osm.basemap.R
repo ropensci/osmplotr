@@ -6,8 +6,10 @@
 #' be adjusted by width only: height is automatically calculated from the aspect
 #' ratio of the bounding box.
 #'
-#' @param xylims = range to be plotted as returned from get.xylims ()
-#' @param filename = name of plot file; default=NULL plots to screen device (low
+#' @param xylims = Latitude-longitude range to be plotted as returned from
+#' get.xylims () 
+#' @param filename = name of plot file; default=NULL plots to
+#' screen device (low
 #' quality and likely slow)
 #' @param width = width of graphics file (in px; default 480).
 #' @param bg = background colour of map (default = "gray20")

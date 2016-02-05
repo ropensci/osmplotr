@@ -22,6 +22,9 @@ get.suffixes (); defaults to values returned by get.colours ()}
 \item{remove.data}{= TRUE. To save working memory, data for each type of
 structure are temporarily saved to disk and removed from memory. If
 remove.data = FALSE, saved objects are *NOT* removed at end.}
+
+\item{bbox}{= the bounding box for the map.  Must be a vector of 4 elements
+(xmin, ymin, xmax, ymax).  Default is a small part of central London.}
 }
 \value{
 nothing (generates graphics device of specified type; progress is
