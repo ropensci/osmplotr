@@ -130,12 +130,27 @@ order_lines <- function (spLines, i0=0)
                                (xy [k,2] - xy_ord [[i]] [,2])^2)
                     di <- which.min (d)
                     n <- nrow (xy_ord [[i]])
-                    # TODO: di ==1 could be 1,xy,2:n
+                    # xy can be closest to d1, but still either
+                    # A. -------d1---xy--------------d2, or
+                    # B. xy-----d1-------------------d2
+                    # A. implies that |xy,d2|<|d1,d2|, and B vice-versa
                     if (di == 1)
-                        indx <- list (NULL, 1:n)
-                    else if (di == n)
-                        indx <- list (1:n, NULL)
-                    else if (d [di - 1] < d [di + 1])
+                    {
+                        d12 <- sqrt (diff (xy_ord [[i]] [1:2,1]) ^ 2 +
+                                     diff (xy_ord [[i]] [1:2,2]) ^ 2)
+                        if (d12 < d [2])
+                            indx <- list (NULL, 1:n)
+                        else
+                            indx <- list (1, 2:n)
+                    } else if (di == n)
+                    {
+                        d12 <- sqrt (diff (xy_ord [[i]] [(n-1:n),1]) ^ 2 +
+                                     diff (xy_ord [[i]] [(n-1:n),2]) ^ 2)
+                        if (d12 < d [n-1])
+                            indx <- list (1:n, NULL)
+                        else
+                            indx <- list (1:(n-1), n)
+                    } else if (d [di - 1] < d [di + 1])
                         indx <- list (1:(di-1), di:n)
                     else
                         indx <- list (1:di, (di+1):n)

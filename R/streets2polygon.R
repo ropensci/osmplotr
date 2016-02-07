@@ -88,6 +88,7 @@ streets2polygon <- function (highways=NULL, bbox=NULL,
     # Each obj contains a list of all OSM objects corresponding to the given
     # street. These OSM objects then need to be modified through the addition of
     # junction points, requiring a double loop.
+    # i=3, j=2
     for (i in seq (objs))
     {
         obji <- objs [[i]]
@@ -101,8 +102,8 @@ streets2polygon <- function (highways=NULL, bbox=NULL,
             li <- sp::Line (obji [[j]])
             li <- sp::SpatialLines (list (Lines (list (li), ID="a"))) 
             # The following function returns default of -1 for no geometric
-            # intersection; 0 where intersection exists but is *NOT* a vertex of
-            # li, and 2 where intersection is a vertex of li.
+            # intersection; 0 where intersections exists but area *NOT* vertices
+            # of li, and 2 where intersections are vertices of li.
             intersections <- sapply (test_flat, function (x) {
                         lj <- sp::Line (x)
                         lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
@@ -113,61 +114,94 @@ streets2polygon <- function (highways=NULL, bbox=NULL,
                             -1
                         })
             if (any (intersections == 0))
-            {
-                # Then they have to be added to objs [[i]] [[j]]. 
-                stopifnot (length (which (intersections == 0)) == 1)
-                x <- test_flat [which (intersections == 0)] [[1]]
-                lj <- sp::Line (x)
-                lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
-                xy <- coordinates (rgeos::gIntersection (li, lj))
-                d <- sqrt ((xy [1] - obji [[j]] [,1]) ^ 2 + 
-                           (xy [2] - obji [[j]] [,2]) ^ 2)
-                di <- which.min (d)
-                n <- nrow (obji [[j]])
-                rnames <- rownames (obji [[j]])
-                # TODO: di ==1 could be 1,xy,2:n
-                if (di == 1)
-                    indx <- list (NULL, 1:n)
-                else if (di == n)
-                    indx <- list (1:n, NULL)
-                else if (d [di - 1] < d [di + 1])
-                    indx <- list (1:(di-1), di:n)
-                else
-                    indx <- list (1:di, (di+1):n)
-                objs [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ], xy,
-                                           obji [[j]] [indx [[2]], ])
-                rownames (objs [[i]] [[j]]) <- c (rname [indx [[1]]],
-                                                  maxvert,
-                                                  rnames [indx [[2]]])
-
-                # Then add same vertex into the other element, which requires
-                # first making an index into the list of lists that is objs
-                n <- which (intersections == 0)
-                lens <- cumsum (sapply (test, length))
-                ni <- max (which (lens < n)) + 1
-                nj <- n - lens [ni - 1]
-                # Then ni needs to point into the full objs instead of test
-                ni <- seq (objs) [!seq (objs) %in% i] [ni]
-                temp <- objs [[ni]] [[nj]] 
-                # Then insert xy into temp
-                d <- sqrt ((xy [1] - temp [,1]) ^ 2 + (xy [2] - temp [,2]) ^ 2)
-                di <- which.min (d)
-                n <- nrow (temp)
-                rnames <- rownames (temp)
-
-                if (d [di-1] < d [di+1])
+                for (k in which (intersections == 0))
                 {
-                    temp <- rbind (temp [1:(di-1),], xy, temp [di:n,])
-                    rownames (temp) <- c (rnames [1:(di-1)], maxvert,
-                                                rnames [di:n])
-                } else
-                {
-                    temp <- rbind (temp [1:di,], xy, temp [(di+1):n,])
-                    rownames (temp) <- c (rnames [1:di], maxvert,
-                                                rnames [(di+1):n])
-                }
-                objs [[ni]] [[nj]] <- temp
-            } # end if any (intersections) == 0
+                    # Then they have to be added to objs [[i]] [[j]]. 
+                    x <- test_flat [k] [[1]]
+                    lj <- sp::Line (x)
+                    lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+                    xy <- coordinates (rgeos::gIntersection (li, lj))
+                    d <- sqrt ((xy [1] - obji [[j]] [,1]) ^ 2 + 
+                               (xy [2] - obji [[j]] [,2]) ^ 2)
+                    di <- which.min (d)
+                    n <- nrow (obji [[j]])
+                    rnames <- rownames (obji [[j]])
+                    # xy can be closest to d1, but still either
+                    # A. -------d1---xy--------------d2, or
+                    # B. xy-----d1-------------------d2
+                    # A. implies that |xy,d2|<|d1,d2|, and B vice-versa
+                    if (di == 1)
+                    {
+                        d12 <- sqrt (diff (obji [[j]] [1:2,1]) ^ 2 +
+                                     diff (obji [[j]] [1:2,2]) ^ 2)
+                        if (d12 < d [2])
+                            indx <- list (NULL, 1:n)
+                        else
+                            indx <- list (1, 2:n)
+                    } else if (di == n)
+                    {
+                        d12 <- sqrt (diff (obji [[j]] [(n-1:n),1]) ^ 2 +
+                                     diff (obji [[j]] [(n-1:n),2]) ^ 2)
+                        if (d12 < d [n-1])
+                            indx <- list (1:n, NULL)
+                        else
+                            indx <- list (1:(n-1), n)
+                    } else if (d [di - 1] < d [di + 1])
+                        indx <- list (1:(di-1), di:n)
+                    else
+                        indx <- list (1:di, (di+1):n)
+                    objs [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ], xy,
+                                               obji [[j]] [indx [[2]], ])
+                    rownames (objs [[i]] [[j]]) <- c (rnames [indx [[1]]],
+                                                      maxvert,
+                                                      rnames [indx [[2]]])
+
+                    # Then add same vertex into the other elements, which requires
+                    # first making an index into the list of lists that is objs
+                    lens <- cumsum (sapply (test, length))
+                    if (k < lens [1])
+                    {
+                        ni <- 1
+                        nj <- k
+                    } else
+                    {
+                        ni <- max (which (lens < k)) + 1
+                        nj <- k - lens [ni - 1]
+                    }
+                    # Then ni needs to point into the full objs instead of test
+                    ni <- seq (objs) [!seq (objs) %in% i] [ni]
+                    temp <- objs [[ni]] [[nj]] 
+                    # Then insert xy into temp
+                    d <- sqrt ((xy [1] - temp [,1]) ^ 2 + (xy [2] - temp [,2]) ^ 2)
+                    di <- which.min (d)
+                    n <- nrow (temp)
+                    rnames <- rownames (temp)
+
+                    if (di == 1)
+                    {
+                        d12 <- sqrt (diff (obji [[j]] [1:2,1]) ^ 2 +
+                                     diff (obji [[j]] [1:2,2]) ^ 2)
+                        if (d12 < d [2])
+                            indx <- list (NULL, 1:n)
+                        else
+                            indx <- list (1, 2:n)
+                    } else if (di == n)
+                    {
+                        d12 <- sqrt (diff (obji [[j]] [(n-1:n),1]) ^ 2 +
+                                     diff (obji [[j]] [(n-1:n),2]) ^ 2)
+                        if (d12 < d [n-1])
+                            indx <- list (1:n, NULL)
+                        else
+                            indx <- list (1:(n-1), n)
+                    } else if (d [di - 1] < d [di + 1])
+                        indx <- list (1:(di-1), di:n)
+                    else
+                        indx <- list (1:di, (di+1):n)
+                    temp <- rbind (temp [indx [[1]],], xy, temp [indx [[2]],])
+                    rownames (temp) <- c (rnames [indx [[1]]], maxvert,
+                                                rnames [indx [[2]]])
+                    objs [[ni]] [[nj]] <- temp
+                } # end for k over which (intersections == 0)
         } # end for j over obj [[i]]
     } # end for i over all objs
 
