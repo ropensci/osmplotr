@@ -125,20 +125,20 @@ streets2polygon <- function (highways=NULL, bbox=NULL,
                 di <- which.min (d)
                 n <- nrow (obji [[j]])
                 rnames <- rownames (obji [[j]])
-
-                if (d [di-1] < d [di+1])
-                {
-                    objs [[i]] [[j]] <- rbind (obji [[j]] [1:(di-1),], xy, 
-                                         obji [[j]] [di:n,])
-                    rownames (objs [[i]] [[j]]) <- c (rnames [1:(di-1)], maxvert,
-                                                rnames [di:n])
-                } else
-                {
-                    objs [[i]] [[j]] <- rbind (obji [[j]] [1:di,], xy, 
-                                         obji [[j]] [(di+1):n,])
-                    rownames (objs [[i]] [[j]]) <- c (rnames [1:di], maxvert,
-                                                rnames [(di+1):n])
-                }
+                # TODO: di ==1 could be 1,xy,2:n
+                if (di == 1)
+                    indx <- list (NULL, 1:n)
+                else if (di == n)
+                    indx <- list (1:n, NULL)
+                else if (d [di - 1] < d [di + 1])
+                    indx <- list (1:(di-1), di:n)
+                else
+                    indx <- list (1:di, (di+1):n)
+                objs [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ], xy,
+                                           obji [[j]] [indx [[2]], ])
+                rownames (objs [[i]] [[j]]) <- c (rname [indx [[1]]],
+                                                  maxvert,
+                                                  rnames [indx [[2]]])
 
                 # Then add same vertex into the other element, which requires
                 # first making an index into the list of lists that is objs

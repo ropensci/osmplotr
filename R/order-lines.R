@@ -130,6 +130,7 @@ order_lines <- function (spLines, i0=0)
                                (xy [k,2] - xy_ord [[i]] [,2])^2)
                     di <- which.min (d)
                     n <- nrow (xy_ord [[i]])
+                    # TODO: di ==1 could be 1,xy,2:n
                     if (di == 1)
                         indx <- list (NULL, 1:n)
                     else if (di == n)
