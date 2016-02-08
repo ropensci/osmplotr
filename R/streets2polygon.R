@@ -9,6 +9,8 @@
 #' @param bbox = the bounding box within which to look for highways. 
 #' Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
 #' Default is a small part of central London.
+#' @param force_join forces streets to form a cycle by sucessively joining
+#' closest segments of adjacent streets
 #' @param plot if TRUE, then all OSM data for each highway is plotted (with
 #' lwds[1], cols[1]), with the final cycle overlaid (with lwds[2], cols[2]).
 #' @param lwds = line widths for (all highways, final cycle)
@@ -16,7 +18,7 @@
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic
 #' line connecting all given streets.
 
-streets2polygon <- function (highways=NULL, bbox=NULL,
+streets2polygon <- function (highways=NULL, bbox=NULL, force_join=TRUE,
                              plot=FALSE, lwds=c(1,3), cols=c("black","red"))
 {
     if (is.null (highways))
@@ -35,187 +37,20 @@ streets2polygon <- function (highways=NULL, bbox=NULL,
     # (5) Calculate shortest paths along each part of the cycle
     # (6) Connect paths together to form desired cyclic boundary
 
-    # **** (1) Download OSM data for highways 
-    #
-    # Start by getting 2-letter abbreviations for each highway
-    nletters <- 2
-    waynames <- sapply (highways, function (x) 
-                      tolower (substring (x, 1, nletters)))
-    while (any (duplicated (waynames)))
-    {
-        nletters <- nletters + 1
-        waynames <- sapply (highways, function (x) 
-                          tolower (substring (x, 1, nletters)))
-    }
-
-    cat ("Downloading OSM data ...\n")
-    pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
-    for (i in seq (highways))
-    {
-        dat <- extract_highway (name = highways [i], bbox=bbox)
-        assign (waynames [i], dat)
-        setTxtProgressBar(pb, i / length (highways))
-    }
-    rm (dat)
-    close (pb)
+    # **** (1) Get sequentially ordered list of highways
+    ways <- extract_highways (highway_names=highways, bbox=bbox)
 
 
-    # ***** (2) Order the individual OSM objects into a minimal number of
-    # *****     discrete sequences
-    i0 <- 0 # Nodes in ordered lines are numbered sequentially from (i0+1)
-    for (i in seq (highways))
-    {
-        dat <- order_lines (get (waynames [i]), i0=i0)
-        assign (paste (waynames [i], "o", sep=""), dat)
-        i0 <- max (unlist (lapply (dat, function (x) as.numeric (rownames (x)))))
-    }
-
-    # ***** (3) If they don't exist, add juction points to lines which
-    # *****     geographically cross. 
-    #
-    # Start by constructing list of all street objects, and also get the maximum
-    # vertex number, so new junction vertices can be numbered above that.
-    objs <- NULL
-    maxvert <- 0
-    for (i in waynames)
-    {
-        objs [[i]] <- get (paste (i, "o", sep=""))
-        maxvert <- max (maxvert, unlist (lapply (objs [[i]], function (x)
-                                    max (as.numeric (rownames (x))))))
-    }
-    maxvert <- maxvert + 1
-
-    # Each obj contains a list of all OSM objects corresponding to the given
-    # street. These OSM objects then need to be modified through the addition of
-    # junction points, requiring a double loop.
-    # i=3, j=2
-    for (i in seq (objs))
-    {
-        obji <- objs [[i]]
-        test <- objs
-        test [[i]] <- NULL
-        test_flat <- do.call (c, test)
-        # Check whether any of obji cross any of test_flat *and* don't already
-        # exist as vertices
-        for (j in seq (obji))
-        {
-            li <- sp::Line (obji [[j]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID="a"))) 
-            # The following function returns default of -1 for no geometric
-            # intersection; 0 where intersections exists but area *NOT* vertices
-            # of li, and 2 where intersections are vertices of li.
-            intersections <- sapply (test_flat, function (x) {
-                        lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
-                        int <- rgeos::gIntersection (li, lj)
-                        if (!is.null (int))
-                            sum (coordinates (int) %in% x)
-                        else
-                            -1
-                        })
-            if (any (intersections == 0))
-                for (k in which (intersections == 0))
-                {
-                    # Then they have to be added to objs [[i]] [[j]]. 
-                    x <- test_flat [k] [[1]]
-                    lj <- sp::Line (x)
-                    lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
-                    xy <- coordinates (rgeos::gIntersection (li, lj))
-                    d <- sqrt ((xy [1] - obji [[j]] [,1]) ^ 2 + 
-                               (xy [2] - obji [[j]] [,2]) ^ 2)
-                    di <- which.min (d)
-                    n <- nrow (obji [[j]])
-                    rnames <- rownames (obji [[j]])
-                    # xy can be closest to d1, but still either
-                    # A. -------d1---xy--------------d2, or
-                    # B. xy-----d1-------------------d2
-                    # A. implies that |xy,d2|<|d1,d2|, and B vice-versa
-                    if (di == 1)
-                    {
-                        d12 <- sqrt (diff (obji [[j]] [1:2,1]) ^ 2 +
-                                     diff (obji [[j]] [1:2,2]) ^ 2)
-                        if (d12 < d [2])
-                            indx <- list (NULL, 1:n)
-                        else
-                            indx <- list (1, 2:n)
-                    } else if (di == n)
-                    {
-                        d12 <- sqrt (diff (obji [[j]] [(n-1:n),1]) ^ 2 +
-                                     diff (obji [[j]] [(n-1:n),2]) ^ 2)
-                        if (d12 < d [n-1])
-                            indx <- list (1:n, NULL)
-                        else
-                            indx <- list (1:(n-1), n)
-                    } else if (d [di - 1] < d [di + 1])
-                        indx <- list (1:(di-1), di:n)
-                    else
-                        indx <- list (1:di, (di+1):n)
-                    objs [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ], xy,
-                                               obji [[j]] [indx [[2]], ])
-                    rownames (objs [[i]] [[j]]) <- c (rnames [indx [[1]]],
-                                                      maxvert,
-                                                      rnames [indx [[2]]])
-
-                    # Then add same vertex into the other elements, which requires
-                    # first making an index into the list of lists that is objs
-                    lens <- cumsum (sapply (test, length))
-                    if (k < lens [1])
-                    {
-                        ni <- 1
-                        nj <- k
-                    } else
-                    {
-                        ni <- max (which (lens < k)) + 1
-                        nj <- k - lens [ni - 1]
-                    }
-                    # Then ni needs to point into the full objs instead of test
-                    ni <- seq (objs) [!seq (objs) %in% i] [ni]
-                    temp <- objs [[ni]] [[nj]] 
-                    # Then insert xy into temp
-                    d <- sqrt ((xy [1] - temp [,1]) ^ 2 + (xy [2] - temp [,2]) ^ 2)
-                    di <- which.min (d)
-                    n <- nrow (temp)
-                    rnames <- rownames (temp)
-
-                    if (di == 1)
-                    {
-                        d12 <- sqrt (diff (obji [[j]] [1:2,1]) ^ 2 +
-                                     diff (obji [[j]] [1:2,2]) ^ 2)
-                        if (d12 < d [2])
-                            indx <- list (NULL, 1:n)
-                        else
-                            indx <- list (1, 2:n)
-                    } else if (di == n)
-                    {
-                        d12 <- sqrt (diff (obji [[j]] [(n-1:n),1]) ^ 2 +
-                                     diff (obji [[j]] [(n-1:n),2]) ^ 2)
-                        if (d12 < d [n-1])
-                            indx <- list (1:n, NULL)
-                        else
-                            indx <- list (1:(n-1), n)
-                    } else if (d [di - 1] < d [di + 1])
-                        indx <- list (1:(di-1), di:n)
-                    else
-                        indx <- list (1:di, (di+1):n)
-                    temp <- rbind (temp [indx [[1]],], xy, temp [indx [[2]],])
-                    rownames (temp) <- c (rnames [indx [[1]]], maxvert,
-                                                rnames [indx [[2]]])
-                    objs [[ni]] [[nj]] <- temp
-                } # end for k over which (intersections == 0)
-        } # end for j over obj [[i]]
-    } # end for i over all objs
-
-
-    # ***** (4) Fill a connectivity matrix between all highways and extract the
+    # ***** (2) Fill a connectivity matrix between all highways and extract the
     # *****     *longest* cycle connecting them all
 
-    conmat <- array (FALSE, dim=rep (length (waynames), 2))
-    for (i in seq (objs))
+    conmat <- array (FALSE, dim=rep (length (ways), 2))
+    for (i in seq (ways))
     {
-        test <- do.call (rbind, objs [[i]])
-        ref <- objs
+        test <- do.call (rbind, ways [[i]])
+        ref <- ways
         ref [[i]] <- NULL
-        indx <- (1:length (objs)) [!(1:length (objs)) %in% i]
+        indx <- (1:length (ways)) [!(1:length (ways)) %in% i]
         # Then find which lines from ref intersect with test:
         ni <- unlist (lapply (ref, function (x) {
                       xflat <- do.call (rbind, x)
@@ -228,6 +63,7 @@ streets2polygon <- function (highways=NULL, bbox=NULL,
         indx2 <- indx [which (!is.na (ni))]
         conmat [i, indx2] <- conmat [indx2, i] <- TRUE
     }
+    # The following condition will be fulfilled when <= 2 street connect
     if (sum (rowSums (conmat)) < 3)
         stop ("Only ", length (which (rowSums (conmat) > 0)), " / ", 
               nrow (conmat), " streets actually connect; no cycle is possible")

@@ -4,8 +4,8 @@
 \alias{streets2polygon}
 \title{streets2polygon}
 \usage{
-streets2polygon(highways = NULL, bbox = NULL, plot = FALSE, lwds = c(1,
-  3), cols = c("black", "red"))
+streets2polygon(highways = NULL, bbox = NULL, force_join = TRUE,
+  plot = FALSE, lwds = c(1, 3), cols = c("black", "red"))
 }
 \arguments{
 \item{highways}{= A vector of highway names passed directly to the Overpass
@@ -14,6 +14,9 @@ API. Wildcards and whitespaces are '.'; for other options see overpass help.}
 \item{bbox}{= the bounding box within which to look for highways.
 Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
 Default is a small part of central London.}
+
+\item{force_join}{forces streets to form a cycle by sucessively joining
+closest segments of adjacent streets}
 
 \item{plot}{if TRUE, then all OSM data for each highway is plotted (with
 lwds[1], cols[1]), with the final cycle overlaid (with lwds[2], cols[2]).}
