@@ -49,9 +49,11 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
         par (mar=rep (0, 4))
         plot (NULL, NULL, xlim=xlims, ylim=ylims, xaxt="n", yaxt="n",
               xlab="", ylab="", frame=FALSE)
+        cols <- rainbow (length (ways))
         for (i in seq (ways))
             for (j in ways [[i]])
-                lines (j [,1], j [,2], col=cols [1], lwd=lwds [1])
+                lines (j [,1], j [,2], col=cols [i], lwd=2)
+                #lines (j [,1], j [,2], col=cols [1], lwd=lwds [1])
     }
 
     # Extract the cycle as established in connect_highways
@@ -116,6 +118,9 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
         # w0t_names. Start by storing ways [[w0]] [[w0t]] & [[w0]]
         # [[w0f]]---that is, the bits of [[w0]] which connect with [[wt]] and
         # [[wf]]---as an igraph
+        #
+        # ***UP TO HERE*** This is not right, because there may be additional
+        # intermediate segments ----> FIX!
         indx <- c (w0f, w0t)
         from <- unlist (lapply (indx, function (x) rownames (ways [[w0]] [[x]])
                                     [1:(nrow (ways [[w0]] [[x]]) - 1)]))
@@ -177,8 +182,30 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
             nrows <- sapply (ifrom, function (x) nrow (ways [[w0]] [[x]]))
             # And only keep cases where name_from is a terminal node
             indx <- which (nodefrom == 1 | nodefrom == nrows)
-            nodefrom <- nodefrom [indx]
-            ifrom <- ifrom [indx]
+            if (length (indx) != 0)
+            {
+                nodefrom <- nodefrom [indx]
+                ifrom <- ifrom [indx]
+            } else
+            {
+                # Only intersection is *not* a terminal node, so chop way at
+                # joint. Keep the bit that extends farthest away from join
+                # point; that is, the bit with maximal d. New point is joined on
+                # below, not here.
+                for (j in 1:length (ifrom))
+                {
+                    the.way <- ways [[w0]] [[ifrom [j] ]]
+                    d <- sqrt ((xy_to [1] - the.way [,1]) ^ 2 +
+                               (xy_to [2] - the.way [,2]) ^ 2)
+                    if (d [1] > d [length (d)])
+                        the.way <- the.way [1:nodefrom,]
+                    else
+                        the.way <- the.way [nodefrom:nrow (the.way),]
+                    ways [[w0]] [[ifrom [j] ]] <- the.way
+                }
+                # nodefrom will still be either 1 or >1, so the if clauses
+                # immediately below will stay the same
+            }
 
             for (j in 1:length (nodefrom))
             {
@@ -204,8 +231,27 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
             nrows <- sapply (ito, function (x) nrow (ways [[w0]] [[x]]))
             # And only keep cases where name_from is a terminal node
             indx <- which (nodeto == 1 | nodeto == nrows)
-            nodeto <- nodeto [indx]
-            ito <- ito [indx]
+            if (length (indx) != 0)
+            {
+                nodeto <- nodeto [indx]
+                ito <- ito [indx]
+            } else
+            {
+                for (j in 1:length (ito))
+                {
+                    the.way <- ways [[w0]] [[ito [j] ]]
+                    d <- sqrt ((xy_from [1] - the.way [,1]) ^ 2 +
+                               (xy_from [2] - the.way [,2]) ^ 2)
+                    if (d [1] > d [length (d)])
+                        the.way <- the.way [1:nodeto,]
+                    else
+                        the.way <- the.way [nodeto:nrow (the.way),]
+                    ways [[w0]] [[ito [j] ]] <- the.way
+                }
+                ito <- unlist (sapply (ways [[w0]], function (x) 
+                                max (c (-1, which (rownames (x) == name_to)))))
+                nodeto <- ito [which (ito > 0)]
+            }
 
             for (j in 1:length (nodeto))
             {

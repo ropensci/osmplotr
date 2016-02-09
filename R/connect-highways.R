@@ -94,9 +94,9 @@ connect_highways <- function (highways=NULL)
                                                       maxvert,
                                                       rnames [indx [[2]]])
 
-                    # Then add same vertex into the other elements, which requires
-                    # first making an index into the list of lists that is
-                    # highways
+                    # Then add same vertex into the other elements, which
+                    # requires first making an index into the list of lists that
+                    # is highways
                     lens <- cumsum (sapply (test, length))
                     if (k < lens [1])
                     {
@@ -107,7 +107,8 @@ connect_highways <- function (highways=NULL)
                         ni <- max (which (lens < k)) + 1
                         nj <- k - lens [ni - 1]
                     }
-                    # Then ni needs to point into the full highways instead of test
+                    # Then ni needs to point into the full highways instead of
+                    # test
                     ni <- seq (highways) [!seq (highways) %in% i] [ni]
                     temp <- highways [[ni]] [[nj]] 
                     # Then insert xy into temp
@@ -209,6 +210,10 @@ connect_highways <- function (highways=NULL)
         if (all (is.na (cyc_len_i)))
         {
             warning ("No cycles can be found or made")
+            break
+        } else if (max (cyc_len_i < cyc_len))
+        {
+            warning ("Cycle unable to be extended through all ways")
             break
         } else
             cyc_len <- max (cyc_len_i)
