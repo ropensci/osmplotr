@@ -148,6 +148,7 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
                     rownames (objs [[i]] [[j]]) <- c (rnames [indx [[1]]],
                                                       maxvert,
                                                       rnames [indx [[2]]])
+                    objs [[i]] [[j]] <- unique (objs [[i]] [[j]])
 
                     # Then add same vertex into the other elements, which requires
                     # first making an index into the list of lists that is objs

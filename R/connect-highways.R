@@ -10,14 +10,21 @@
 
 connect_highways <- function (highways=NULL)
 {
+    # Proceeds through the following 3 steps:
+    # ***** (1) Add intersection nodes to junctions of ways where these don't
+    # *****     already exist
+    # ***** (2) Fill a connectivity matrix between all highways and extract the
+    # *****     *longest* cycle connecting them all
+    # ***** (3) Insert extra connections between highways until the longest
+    # *****     cycle == length (highways). 
     if (is.null (highways))
         stop ("highways must be given")
     if (class (highways) != "list")
         stop ("highways must be a list")
     # TODO: Make class so that can be properly checked
 
-    # First add intersection nodes to junctions of ways where these don't
-    # already exist
+    # ***** (1) Add intersection nodes to junctions of ways where these don't
+    # *****     already exist
     for (i in seq (highways))
     {
         obji <- highways [[i]]
@@ -142,7 +149,8 @@ connect_highways <- function (highways=NULL)
                                     max (as.numeric (rownames (x))))))
     maxvert <- maxvert + 1
 
-    # Same conmat routine from streets2polygon
+    # ***** (2) Fill a connectivity matrix between all highways and extract the
+    # *****     *longest* cycle connecting them all
     conmat <- array (FALSE, dim=rep (length (highways), 2))
     for (i in seq (highways))
     {
@@ -164,7 +172,8 @@ connect_highways <- function (highways=NULL)
     }
     cycles <- ggm::fundCycles (conmat)
 
-    # If the largest cycle is < length (highways), then extend it
+    # ***** (3) Insert extra connections between highways until the longest
+    # *****     cycle == length (highways). 
     conmat_adj <- conmat
     cyc_len <- 0
     if (!is.null (cycles))
@@ -218,43 +227,43 @@ connect_highways <- function (highways=NULL)
         xy1 <- h1 [di1,]
         node2 <- rownames (h2) [di2]
         xy2 <- h2 [di2,]
-        # Then insert these nodes in the respective highways. This requires
-        # chopping the highways, with the tricky part being determining whether
-        # to chop before or after the minimal-distance point.
+        # Then insert these nodes in the respective highways, but only in cases
+        # where the joining node is terminal.  Joining nodes can't be
+        # non-terminal in both ways, because then they would cross and already
+        # have had a crossing-node inserted above. This insertion thus add to
+        # the terminal node of one way an additional node that will generally
+        # lie in the middle of some other way, thereby connecting the two. 
         ni1 <- sapply (highways [[i1]], function (x)
-                           max (-1, which (rownames (x) == node1)))
+                       max (c (-1, which (rownames (x) == node1))))
         # ni1 = -1 where node1 not found, otherwise it's the position of
         # node1 in highways [[i1]] 
         ni2 <- which.max (ni1)
         if (max (ni1) == 1)
-            highways [[i1]] [[ni2]] <- rbind (xy2, highways [[i1]] [[ni2]])
-        else if (max (ni1) == nrow (highways [[i1]] [[ni2]]))
-            highways [[i1]] [[ni2]] <- rbind (highways [[i1]] [[ni2]], xy2)
-        else
         {
-            # highways have to be joined in the middle
-            htemp <- apply (rbind, highways [[i1]] [[ni2]])
-            hrest <- highways
-            hrest [[i1]] [[ni2]] <- NULL
+            hnames <- c (node2, rownames (highways [[i1]] [[ni2]]))
+            highways [[i1]] [[ni2]] <- rbind (xy2, highways [[i1]] [[ni2]])
+            rownames (highways [[i1]] [[ni2]]) <- hnames
+        } else if (max (ni1) == nrow (highways [[i1]] [[ni2]]))
+        {
+            hnames <- c (rownames (highways [[i1]] [[ni2]]), node2)
+            highways [[i1]] [[ni2]] <- rbind (highways [[i1]] [[ni2]], xy2)
+            rownames (highways [[i1]] [[ni2]]) <- hnames
         }
 
         # Then join node1 onto highways [[i2]]:
         ni1 <- sapply (highways [[i2]], function (x)
-                           max (-1, which (rownames (x) == node2)))
+                       max (c (-1, which (rownames (x) == node2))))
         ni2 <- which.max (ni1)
         if (max (ni1) == 1)
-            highways [[i2]] [[ni2]] <- rbind (xy1, highways [[i2]] [[ni2]])
-        else if (max (ni1) == nrow (highways [[i2]] [[ni2]]))
-            highways [[i2]] [[ni2]] <- rbind (highways [[i2]] [[ni2]], xy1)
-        else
         {
-            # highways have to be joined in the middle
-            htemp <- highways [[i2]] [[ni2]]
-            hrest <- highways
-            hrest [[i2]] <- NULL
-            hrest <- do.call (rbind, do.call (c, hrest))
-            ni <- array (htemp %in% hrest, dim=dim (htemp))
-            ni <- which (rowSums (ni) == 2)
+            hnames <- rbind (node1, names (highways [[i2]] [[ni2]]))
+            highways [[i2]] [[ni2]] <- rbind (xy1, highways [[i2]] [[ni2]])
+            names (highways [[i2]] [[ni2]]) <- hnames
+        } else if (max (ni1) == nrow (highways [[i2]] [[ni2]]))
+        {
+            hnames <- rbind (names (highways [[i2]] [[ni2]]), node1)
+            highways [[i2]] [[ni2]] <- rbind (highways [[i2]] [[ni2]], xy1)
+            names (highways [[i2]] [[ni2]]) <- hnames
         }
     } # end while cyc_len < length (highways)
 
