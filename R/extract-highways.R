@@ -2,7 +2,9 @@
 #'
 #' Extracts a list of named OpenStreetMap highways. OSM data are neither
 #' structured nor ordered; this routine reduces data for each given highway to a
-#' minimal number of discrete and sequentially ordered segments.
+#' minimal number of discrete and sequentially ordered segments. These segments
+#' may or may not connect, yet may be connected at their nearest points with
+#' urbanplotr::connect_highways.
 #'
 #' @param highway_names = A vector of highway names passed directly to the
 #' Overpass API. Wildcards and whitespaces are '.'; for other options see
@@ -10,8 +12,8 @@
 #' @param bbox = the bounding box within which to look for highways. 
 #' Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
 #' Default is a small part of central London.
-#' @return A single data.frame containing the lat-lon coordinates of the cyclic
-#' line connecting all given streets.
+#' @return A list of highways matching highway_names, each element of which is a
+#' list of distinct components for the given highway.
 
 extract_highways <- function (highway_names=NULL, bbox=NULL)
 {
