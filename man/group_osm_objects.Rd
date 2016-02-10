@@ -4,8 +4,8 @@
 \alias{group_osm_objects}
 \title{group_osm_objects}
 \usage{
-group_osm_objects(obj = obj, groups = NULL, cols = NULL,
-  col_extra = NULL, colmat = TRUE)
+group_osm_objects(obj = obj, groups = NULL, boundary = FALSE,
+  cols = NULL, col_extra = NULL, colmat = TRUE)
 }
 \arguments{
 \item{obj}{= an sp SPDF or SLDF (list of polygons or lines) returned by
@@ -13,6 +13,10 @@ get.osm.polygons}
 
 \item{groups}{= a list of spatial points objects, each of which contains the
 coordinates of points defining one group}
+
+\item{boundary}{Either a single boolean value or a vector of same length as
+groups specifying whether groups already define a boundary (TRUE), or whether
+a convex hull boundary should be constructed from groups (FALSE).}
 
 \item{cols}{= 1. Either a vector of >= 4 colours passed to colour_mat (is
 colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default

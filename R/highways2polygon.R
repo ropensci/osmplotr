@@ -269,5 +269,5 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
     if (plot)
         lines (path [,1], path [,2], lwd=lwds [2], col=cols [2])
 
-    return (unique (path))
+    return (sp::SpatialPoints (unique (path)))
 }

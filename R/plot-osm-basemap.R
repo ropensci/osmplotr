@@ -7,7 +7,7 @@
 #' ratio of the bounding box.
 #'
 #' @param xylims = Latitude-longitude range to be plotted as returned from
-#' get.xylims () 
+#' get_xylims () 
 #' @param filename = name of plot file; default=NULL plots to
 #' screen device (low
 #' quality and likely slow)
