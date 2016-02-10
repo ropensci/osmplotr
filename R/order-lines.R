@@ -1,4 +1,4 @@
-#' order.lines
+#' order_lines
 #'
 #' Accepts a SpatialLinesDataFrame representing an OpenStreetMap line object
 #' such as a highway. The list items of these objects are arbitrarily organised

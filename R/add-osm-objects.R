@@ -18,21 +18,22 @@ add_osm_objects <- function (obj=obj, col="gray40", ...)
 
     if (class (obj) == "SpatialPolygonsDataFrame")
     {
-        plotfun <- function (i) 
+        plotfun <- function (i, col=col, ...) 
         {
             xy <- slot (slot (i, "Polygons") [[1]], "coords")
             polypath (xy, border=NA, col=col)
         }
-        junk <- lapply (slot (obj, "polygons"), plotfun)
+        junk <- lapply (slot (obj, "polygons"), function (i)
+                        plotfun (i, col=col, ...))
     } else if (class (obj) == "SpatialLinesDataFrame")
     {
-        plotfun <- function (i, ...) 
+        plotfun <- function (i, col=col, ...) 
         {
             xy <- slot (slot (i, "Lines") [[1]], "coords")
             lines (xy, col=col, ...)
         }
         junk <- lapply (slot (obj, "lines"), function (i)
-                        plotfun (i, ...))
+                        plotfun (i, col=col, ...))
     } else if (class (obj) == "SpatialPointsDataFrame")
     {
         xy <- slot (obj, "coords")

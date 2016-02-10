@@ -9,7 +9,7 @@ plot_osm_basemap(xylims = xylims, filename = NULL, width = 640,
 }
 \arguments{
 \item{xylims}{= Latitude-longitude range to be plotted as returned from
-get.xylims ()}
+get_xylims ()}
 
 \item{filename}{= name of plot file; default=NULL plots to
 screen device (low

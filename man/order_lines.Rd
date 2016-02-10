@@ -2,7 +2,7 @@
 % Please edit documentation in R/order-lines.R
 \name{order_lines}
 \alias{order_lines}
-\title{order.lines}
+\title{order_lines}
 \usage{
 order_lines(spLines, i0 = 0)
 }

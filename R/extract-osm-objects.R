@@ -10,17 +10,11 @@
 #' necessarily return results.
 #' @param value: OSM value to match to key. If NULL, all keys will be returned.
 #' @param bbox = the bounding box within which all key-value objects should be
-#' downloaded. 
-#' Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
-#' Default is a small part of central London.
+#' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
 #' @return Data frame of either spatial polygons or spatial lines
 
-extract_osm_objects <- function (key="building", value=NULL,
-                                 bbox=c(-0.15,51.5,-0.1,51.52))
+extract_osm_objects <- function (key="building", value=NULL, bbox=NULL)
 {
-    if (is.null (bbox))
-        stop ("bbox must be provided")
-
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
     if (bbox [3] < bbox [1])
@@ -28,26 +22,12 @@ extract_osm_objects <- function (key="building", value=NULL,
     if (bbox [4] < bbox [2])
         bbox <- bbox [c (1, 4, 3, 2)]
 
-    if (key == "water")
-    {
-        key <- "natural"
-        value <- "water"
-    } else if (key == "grass")
-    {
-        key <- "landuse"
-        value <- "grass"
-    } else if (key == "park")
-    {
-        key <- "leisure"
-        value <- "park"
-    } else if (key == "tree")
-    {
-        key <- "natural"
-        value <- "tree"
-    }
+    # make_osm_map passes empty values as "" rather than NULL:
+    if (!is.null (value))
+        if (nchar (value) == 0)
+            value <- NULL
 
-    
-    # Then construct the actual overpass query
+    # Construct the overpass query
     valold <- value
     if (!is.null (value))
         value <- paste ("'='", value, sep="")
@@ -66,15 +46,24 @@ extract_osm_objects <- function (key="building", value=NULL,
     dat <- XML::xmlParse (dat)
 
     dato <- osmar::as_osmar (dat)
-    if (value=="grass") 
+    if (!is.null (value) & !is.null (key))
         pids <- osmar::find (dato, osmar::way (osmar::tags(
-                                                k == "landuse" & v == key)))
-    else if (value == "park") 
-        pids <- osmar::find (dato, osmar::way (osmar::tags(v == key)))
-    else 
+                                                k == key & v == value)))
+    else if (!is.null (key))
         pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
+    else if (!is.null (value))
+        pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
+    else 
+        stop ("key-value missing")
     
-    if (value == "tree") # no pids needed
+    # spts converts to SpatialPoints, currently only for trees but easily
+    # extended
+    spts <- FALSE
+    if (!is.null (value))
+        if (value == "tree") # no pids needed
+            spts <- TRUE
+
+    if (spts)
         sp <- osmar::as_sp (dato, "points")
     else
     {
@@ -98,4 +87,3 @@ extract_osm_objects <- function (key="building", value=NULL,
 
     return (sp)
 }
-

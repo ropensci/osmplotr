@@ -8,16 +8,16 @@
 #'
 #' @param filename = name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
-#' @param bbox = the bounding box for the map. Default is central London
-#' (-0.15,51.5,-0.1,51.52).  
 #' @param bbox = the bounding box for the map.  Must be a vector of 4 elements
-#' (xmin, ymin, xmax, ymax).  Default is a small part of central London.
-#' @param roads = TRUE (default) plot lines for roads (ways)
-#' @param cols = a list of colours matching all object types listed in
-#' get.suffixes (); defaults to values returned by get.colours ()
+#' (xmin, ymin, xmax, ymax).  Default is a small part of central London
+#' (-0.15,51.5,-0.1,51.52).  
+#' @param structs a data.frame specifying types of OSM structures as returned
+#' from osm_structures, and potentially modified to alter lists of structures to
+#' be plotted, and their associated colours. The order of structs determines the
+#' plot order of objects.
 #' @param remove_data = TRUE. To save working memory, data for each type of
 #' structure are temporarily saved to disk and removed from memory. If
-#' remove_data = FALSE, saved objects are *NOT* removed at end.
+#' remove_data = FALSE, saved objects are *NOT* removed from disk at end.
 #' @return nothing (generates graphics device of specified type; progress is
 #' dumped to screen, including time taken).
 #' @examples
@@ -36,25 +36,20 @@
 #' add_osm_objects (datG, col="lawngreen")
 #' add_osm_objects (datP, col="lawngreen")
 
-make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TRUE,
-                          cols=get_colours (), remove_data=TRUE)
+make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), 
+                          structs=osm_structures (), remove_data=TRUE)
 {
-    # Extend any submitted colours to required length of 8 types returned from
-    # get_suffixes ():
-    if (length (cols) < dim (get_suffixes ()) [1])
-        cols <- rep (cols, dim (get_suffixes ()) [1])
-
-    osm_structs <- get_suffixes ()
-    ns <- dim (osm_structs) [1]
+    ns <- nrow (structs)
     struct_list <- NULL
 
-    cat ("Downloading and extracting OSM data for ", ns, " structures ...\n")
+    cat ("Downloading and extracting OSM data for", ns, "structures ...\n")
     pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
     t0 <- proc.time ()
     for (i in 1:ns) {
-        dat <- extract_osm_objects (key=toString (osm_structs$dat.types [i]),
+        dat <- extract_osm_objects (key=toString (structs$key [i]),
+                                    value=toString (structs$value [i]),
                                    bbox=bbox)
-        fname <- paste ("dat", toString (osm_structs$letters [i]), sep="")
+        fname <- paste ("dat_", toString (structs$letters [i]), sep="")
         assign (fname, dat)
         save (list=c(fname), file=fname)
         struct_list <- c (struct_list, fname)
@@ -64,39 +59,25 @@ make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), roads=TR
     close (pb)
     cat ("That took ", (proc.time () - t0)[3], "s\n", sep="")
 
-    if ("datBU" %in% struct_list & file.exists ("datBU")) 
+    if ("dat_BU" %in% struct_list & file.exists ("datBU")) 
     {
-        load ("datBU")
+        load ("dat_BU")
         xylims <- get_xylims (datBU)
-        rm ("datBU")
-    } else if ("datH" %in% struct_list & file.exists ("datH"))
+        rm ("dat_BU")
+    } else if ("dat_H" %in% struct_list & file.exists ("datH"))
     {
-        load ("datH")
+        load ("dat_H")
         xylims <- get_xylims (datH)
-        rm ("datH")
+        rm ("dat_H")
     } else 
         stop ("don't know what structure to use to calculate xylims.")
 
     plot_osm_basemap (xylims=xylims, filename=filename)
-    # The plot order is determined by the following indx, starting with
-    # highways, although boundaries are removed here from the struct_list
-    struct_list <- struct_list [struct_list != "datBO"]
-    indx <- NULL
-    if (roads)
-        indx <- c (indx, which (struct_list %in% c ("datH", "datBO")))
-    # Then anemities, grass, and parks:
-    indx <- c (indx, which (struct_list %in% c ("datA", "datG", "datP")))
-    #  buildings
-    indx <- c (indx, which (struct_list == "datBU"))
-    # and finally water
-    indx <- c (indx, which (struct_list %in% c ("datW", "datN")))
-    suffix <- osm_structs$letters [indx]
-    types <- paste (osm_structs$dat.types [indx])
-    for (i in seq (suffix))
+    for (i in seq (nrow (structs)))
     {
-        fname <- paste ("dat", suffix [i], sep="")
+        fname <- paste ("dat_", structs$letters [i], sep="")
         load (fname)
-        add_osm_objects (get (fname), col=cols [osm_structs$dat.types == types [i]]) 
+        add_osm_objects (get (fname), col=as.character (structs$cols [i]))
         rm (list=c(fname))
     }
 

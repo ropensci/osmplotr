@@ -21,6 +21,10 @@
 plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
                               bg="gray20", graphic.device="png", ...)
 {
+    if (!is.null (filename))
+        if (nchar (filename) == 0)
+            filename <- NULL
+
     if (is.null (filename) & width == 640)
         width <- 7
     height <- width * diff (xylims$y) / diff (xylims$x)
