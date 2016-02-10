@@ -5,80 +5,24 @@
 #' @import RCurl sp spatstat spatialkernel osmar XML igraph ggm
 NULL
 
-#' datA 
+#' london 
 #'
-#' A SpatialPolygonsDataFrame containing OpenStreetMap polygons for amenities
-#' (key=amenity) in a small part of central London, U.K.
-#' (bbox = -0.15, 51.5, -0.1, 51.52).
-#'
-#' @docType data
-#' @keywords datasets
-#' @name datA
-#' @usage data(datA)
-#' @format A SpatialPolygonsDataFrame with 1,157 polygons
-NULL
-
-#' datBU 
-#'
-#' A SpatialPolygonsDataFrame containing OpenStreetMap polygons for buildings
-#' (key=building) in a small part of central London, U.K.
-#' (bbox = -0.15, 51.5, -0.1, 51.52).
+#' A list of SpatialPolygonsDataFrames (SPDF) and SpatialLinesDataFrames (SLDF)
+#' containing OpenStreetMap polygons and lines for various OpenStreetMap
+#' structures in a small part of central London, U.K.  (bbox = -0.15, 51.5,
+#' -0.1, 51.52). The list includes:
+#' \enumerate{
+#'  \item dat_A an SPDF of amenities with 1,157 polygons 
+#'  \item dat_B an SPDF of buildings with 6,208 polygons 
+#'  \item dat_G an SPDF of grassed areas with 50 polygons 
+#'  \item dat_H an SLDF of highways with 4,524 polygons 
+#'  \item dat_N an SPDF of natural areas with 36 polygons 
+#'  \item dat_P an SPDF of parks with 49 polygons 
+#' }
 #'
 #' @docType data
 #' @keywords datasets
-#' @name datBU
-#' @usage data(datBU)
-#' @format A SpatialPolygonsDataFrame with 6,209 polygons
-NULL
-
-#' datG 
-#'
-#' A SpatialPolygonsDataFrame containing OpenStreetMap polygons for grassed
-#' areas (key=landuse, value=grass) in a small part of central London, U.K.
-#' (bbox = -0.15, 51.5, -0.1, 51.52).
-#'
-#' @docType data
-#' @keywords datasets
-#' @name datG
-#' @usage data(datG)
-#' @format A SpatialPolygonsDataFrame with 50 polygons
-NULL
-
-#' datH 
-#'
-#' A SpatialLinesDataFrame containing OpenStreetMap lines for all highways
-#' (key=highway) in a small part of central London, U.K.
-#' (bbox = -0.15, 51.5, -0.1, 51.52).
-#'
-#' @docType data
-#' @keywords datasets
-#' @name datH
-#' @usage data(datH)
-#' @format A SpatialLinesDataFrame with 4,517 lines 
-NULL
-
-#' datN 
-#'
-#' A SpatialPolygonsDataFrame containing OpenStreetMap polygons for natural
-#' areas (key=natural) in a small part of central London, U.K.
-#' (bbox = -0.15, 51.5, -0.1, 51.52).
-#'
-#' @docType data
-#' @keywords datasets
-#' @name datN
-#' @usage data(datN)
-#' @format A SpatialPolygonsDataFrame with 36 polygons
-NULL
-
-#' datP 
-#'
-#' A SpatialPolygonsDataFrame containing OpenStreetMap polygons for parks
-#' (key=leisure, value=park) in a small part of central London, U.K.
-#' (bbox = -0.15, 51.5, -0.1, 51.52).
-#'
-#' @docType data
-#' @keywords datasets
-#' @name datP
-#' @usage data(datP)
-#' @format A SpatialPolygonsDataFrame with 49 polygons
+#' @name london
+#' @usage data(london)
+#' @format A list of spatial objects
 NULL

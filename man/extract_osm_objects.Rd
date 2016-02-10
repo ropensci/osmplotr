@@ -4,14 +4,11 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(key = "building", value = NULL, bbox = c(-0.15, 51.5,
-  -0.1, 51.52))
+extract_osm_objects(key = "building", value = NULL, bbox = NULL)
 }
 \arguments{
 \item{bbox}{= the bounding box within which all key-value objects should be
-downloaded.
-Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
-Default is a small part of central London.}
+downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).}
 
 \item{key:}{OSM key to search for. Useful keys include "building",
 "waterway", "natural", "grass", "park", "amenity", "shop", "boundary", and

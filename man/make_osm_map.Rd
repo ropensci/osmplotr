@@ -17,7 +17,8 @@ quality and likely slow)}
 
 \item{structs}{a data.frame specifying types of OSM structures as returned
 from osm_structures, and potentially modified to alter lists of structures to
-be plotted, and their associated colours.}
+be plotted, and their associated colours. The order of structs determines the
+plot order of objects.}
 
 \item{remove_data}{= TRUE. To save working memory, data for each type of
 structure are temporarily saved to disk and removed from memory. If
