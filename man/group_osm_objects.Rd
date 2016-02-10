@@ -18,7 +18,7 @@ coordinates of points defining one group}
 groups specifying whether groups already define a boundary (TRUE), or whether
 a convex hull boundary should be constructed from groups (FALSE).}
 
-\item{cols}{= 1. Either a vector of >= 4 colours passed to colour_mat (is
+\item{cols}{either a vector of >= 4 colours passed to colour_mat (is
 colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default
 uses rainbow colours), or 2. If !colmat, a vector of the same length as
 groups specifying individual colours for each.}
