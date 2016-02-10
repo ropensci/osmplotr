@@ -1,6 +1,6 @@
 #' extract_osm_objects
 #'
-#' Downloads OSM XML objects and extracts "sp" polygons or lines.  Requires
+#' Downloads OSM XML objects and extracts \code{sp} polygons or lines.  Requires
 #' conversion to osmar object which can be quite slow, as can final conversion
 #' to sp object for large numbers of objects
 #'
@@ -45,6 +45,7 @@ extract_osm_objects <- function (key="building", value=NULL, bbox=NULL)
     dat <- RCurl::getURL (query)
     dat <- XML::xmlParse (dat)
 
+    k <- v <- NULL # supress "no visible binding" note from R CMD check
     dato <- osmar::as_osmar (dat)
     if (!is.null (value) & !is.null (key))
         pids <- osmar::find (dato, osmar::way (osmar::tags(

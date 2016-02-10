@@ -7,10 +7,10 @@
 #' @param highways A vector of highway names passed directly to the Overpass
 #' API. Wildcards and whitespaces are '.'; for other options see overpass help.
 #' @param bbox The bounding box within which to look for highways.  Must be a
-#' vector of 4 elements (xmin, ymin, xmax, ymax).  Default is a small part of
-#' central London.
+#' vector of 4 elements (xmin, ymin, xmax, ymax).  
 #' @param plot If TRUE, then all OSM data for each highway is plotted (with
-#' lwds[1], cols[1]), with the final cycle overlaid (with lwds[2], cols[2]).
+#' \code{lwds[1]}, \code{cols[1]}), with the final cycle overlaid (with
+#' \code{lwds[2]}, \code{cols[2]}).
 #' @param lwds Line widths for (all highways, final cycle)
 #' @param cols Line colours for (all highways, final cycle)
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic

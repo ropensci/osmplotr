@@ -11,7 +11,7 @@ A data frame containing coordinates of convex hull boundary.
 }
 \description{
 Translates clicks on a map into a convex hull object which can be passed to
-group.osm.objects. Clicking is stopped when same point on map is clicked
-twice.
+\code{group.osm.objects}. Clicking is stopped when same point on map is
+clicked twice.
 }
 

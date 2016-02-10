@@ -21,7 +21,7 @@ downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).}
 Data frame of either spatial polygons or spatial lines
 }
 \description{
-Downloads OSM XML objects and extracts "sp" polygons or lines.  Requires
+Downloads OSM XML objects and extracts \code{sp} polygons or lines.  Requires
 conversion to osmar object which can be quite slow, as can final conversion
 to sp object for large numbers of objects
 }

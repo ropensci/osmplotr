@@ -7,12 +7,12 @@
 extract_highway(name = "", bbox = NULL)
 }
 \arguments{
-\item{name}{= Name of highway. Lines components are return for *any* OSM way
+\item{name}{Name of highway. Lines components are return for *any* OSM way
 with a partially-matched. Both wildcards and whitespace should be represented
 by ".".}
 
-\item{bbox}{= the bounding box within which all key-value objects should be
-downloaded. Default is a small part of central London.}
+\item{bbox}{the bounding box within which to look for highways.  Must be a
+vector of 4 elements (xmin, ymin, xmax, ymax).}
 }
 \value{
 SpatialLinesDataFrame containing the highway

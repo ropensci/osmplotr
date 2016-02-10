@@ -23,7 +23,6 @@
 #' @examples
 #' # An example of the resultant map can be reproduced using the "london" data:
 #' \dontrun{
-#'  data (london)
 #'  structs <- osm_structures (col_scheme="dark")
 #'  xylims <- get_xylims (london$dat_B)
 #'  plot_osm_basemap (xylims=xylims, structures=structs)
@@ -63,15 +62,16 @@ make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
     close (pb)
     cat ("That took ", (proc.time () - t0)[3], "s\n", sep="")
 
-    if ("dat_BU" %in% struct_list & file.exists ("datBU")) 
+    dat_H <- dat_BU <- NULL # supress "no visible binding" note from R CMD check
+    if ("dat_BU" %in% struct_list & file.exists ("dat_BU")) 
     {
         load ("dat_BU")
-        xylims <- get_xylims (datBU)
+        xylims <- get_xylims (dat_BU)
         rm ("dat_BU")
-    } else if ("dat_H" %in% struct_list & file.exists ("datH"))
+    } else if ("dat_H" %in% struct_list & file.exists ("dat_H"))
     {
         load ("dat_H")
-        xylims <- get_xylims (datH)
+        xylims <- get_xylims (dat_H)
         rm ("dat_H")
     } else 
         stop ("don't know what structure to use to calculate xylims.")
@@ -80,7 +80,7 @@ make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
     for (i in seq (nrow (structs)))
     {
         fname <- paste ("dat_", structs$letters [i], sep="")
-        data (get (fname))
+        load (get (fname))
         add_osm_objects (get (fname), col=as.character (structs$cols [i]))
         rm (list=c(fname))
     }

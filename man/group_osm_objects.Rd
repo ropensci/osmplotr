@@ -9,7 +9,7 @@ group_osm_objects(obj = obj, groups = NULL, boundary = FALSE,
 }
 \arguments{
 \item{obj}{An sp SPDF or SLDF (list of polygons or lines) returned by
-get.osm.polygons}
+\code{get.osm.polygons}}
 
 \item{groups}{A list of spatial points objects, each of which contains the
 coordinates of points defining one group}
@@ -27,8 +27,8 @@ groups specifying individual colours for each.}
 assigned to nearest group and coloured accordingly; if NOT NULL, then any
 polygons not within groups are coloured this colour.}
 
-\item{colmat}{If TRUE generates colours according to get.colours, otherwise
-the colours of groups are specified directly by the vector of cols.}
+\item{colmat}{If TRUE generates colours according to \code{get.colours},
+otherwise the colours of groups are specified directly by the vector of cols.}
 }
 \value{
 nothing (adds to graphics.device opened with plot.osm.basemap)

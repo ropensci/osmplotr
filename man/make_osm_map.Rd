@@ -38,7 +38,6 @@ demonstrate how all functions may be combined to generate a map.
 \examples{
 # An example of the resultant map can be reproduced using the "london" data:
 \dontrun{
- data (london)
  structs <- osm_structures (col_scheme="dark")
  xylims <- get_xylims (london$dat_B)
  plot_osm_basemap (xylims=xylims, structures=structs)

@@ -2,7 +2,7 @@
 #'
 #' @name urbanplotr
 #' @docType package
-#' @import RCurl sp spatstat spatialkernel osmar XML igraph ggm
+#' @import RCurl sp spatstat spatialkernel osmar XML igraph ggm rgeos
 NULL
 
 #' london 

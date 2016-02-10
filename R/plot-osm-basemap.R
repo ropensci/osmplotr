@@ -1,18 +1,19 @@
 #' plot_osm_basemap
 #'
 #' Generates a base OSM plot ready for polygon and line objects to be overlain
-#' with add_osm_polygons () and add_osm_lines (). NOTE: Graphics files must be
-#' closed after finishing map with dev.off() or graphics.off(). Files size may
-#' be adjusted by width only: height is automatically calculated from the aspect
-#' ratio of the bounding box.
+#' with \code{add_osm_polygons} and \code{add_osm_lines}. NOTE: Graphics files
+#' must be closed after finishing map with \code{dev.off} or
+#' \code{graphics.off}. Files size may be adjusted by width only: height is
+#' automatically calculated from the aspect ratio of the bounding box.
 #'
 #' @param xylims Latitude-longitude range to be plotted as returned from
-#' get_xylims () 
+#' \code{get_xylims}
 #' @param filename Name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
 #' @param width Width of graphics file (in px; default 480).
-#' @param structures Data frame returned by osm_structures used here to specify
-#' background colour of plot; if structs=NULL, the colour is specified by "bg"
+#' @param structures Data frame returned by \code{osm_structures} used here to
+#' specify background colour of plot; if structs=NULL, the colour is specified
+#' by "bg"
 #' @param bg Background colour of map (default = "gray20" only if structs not
 #' given)
 #' @param graphic.device Type of graphic device to print to. For example, "png"
