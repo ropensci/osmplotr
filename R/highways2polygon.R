@@ -24,6 +24,65 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
     if (is.null (bbox))
         stop ("A bounding box must be given")
 
+    haversand <- function (way1, way2)
+    {
+        # Returns the minimal Haversand distance between 2 ways, along with the
+        # element numbers in each way corresponding to that minimal distance
+        x1 <- array (way1 [,1], dim=c(nrow (way1), nrow (way2)))
+        y1 <- array (way1 [,2], dim=c(nrow (way1), nrow (way2)))
+        x2 <- t (array (way2 [,1], dim=c(nrow (way2), nrow (way1))))
+        y2 <- t (array (way2 [,2], dim=c(nrow (way2), nrow (way1))))
+        # Haversand distances:
+        xd <- (x2 - x1) * pi / 180
+        yd <- (y2 - y1) * pi / 180
+        d <- sin (yd / 2) * sin (yd / 2) + cos (y2 * pi / 180) *
+            cos (y1 * pi / 180) * sin (xd / 2) * sin (xd / 2)
+        d <- 2.0 * atan2 (sqrt (d), sqrt (1.0 - d))
+        d <- 6371 * d
+        i1 <- which.min (apply (d, 1, min))
+        i2 <- which.min (apply (d, 2, min))
+        c (i1, i2, min (d))
+    }
+
+    shortest_way <- function (way, node_from, node_to)
+    {
+        # way is a single highway (as a list of OSM components). shortest_way
+        # returns the shortest path between node_from and node_to (both as names
+        # of nodes), or NULL if node_from and node_to are not connected.
+        nf <- which (sapply (way, function (x) node_from %in% rownames (x)))
+        nt <- which (sapply (way, function (x) node_to %in% rownames (x)))
+        # make igraph of entire way
+        from <- unlist (lapply (way, function (x) 
+                                rownames (x) [1:(nrow (x) - 1)]))
+        to <- unlist (lapply (way, function (x) rownames (x) [2:nrow (x)]))
+        g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
+
+        from_node_list <- rep (node_from, length (node_to))
+        to_node_list <- rep (node_to, each=length (node_from))
+        maxlen <- 0
+        fromi <- toi <- NA
+        the_path <- NULL
+        for (j in seq (from_node_list))
+        {
+            sp <- suppressWarnings (igraph::shortest_paths (g,
+                                    from_node_list [j], to_node_list [j]))
+            sp <- sp$vpath [[1]]
+            if (length (sp) > maxlen)
+            {
+                maxlen <- length (sp)
+                the_path <- names (sp)
+            }
+        }
+        if (!is.null (the_path))
+        {
+            way_flat <- do.call (rbind, way)
+            indx <- match (the_path, rownames (way_flat))
+            stopifnot (all (!is.na (indx)))
+            the_path <- way_flat [indx,]
+        }
+        return (the_path)
+    }
+
     # Uses extract_highways to generate a list of highways, each component of
     # which is a spatially ordered list of distinct segments. Then uses
     # connect_highways to generate a fundamental cycle connecting all listed
@@ -49,11 +108,9 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
         par (mar=rep (0, 4))
         plot (NULL, NULL, xlim=xlims, ylim=ylims, xaxt="n", yaxt="n",
               xlab="", ylab="", frame=FALSE)
-        cols <- rainbow (length (ways))
         for (i in seq (ways))
             for (j in ways [[i]])
-                lines (j [,1], j [,2], col=cols [i], lwd=2)
-                #lines (j [,1], j [,2], col=cols [1], lwd=lwds [1])
+                lines (j [,1], j [,2], col=cols [1], lwd=lwds [1])
     }
 
     # Extract the cycle as established in connect_highways
@@ -101,9 +158,13 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
             stop ("Error: way [[", w0, "]] does not join any others")
         w0f_names <- sapply (ways [[w0]], function (x) rownames (x)
                 [which (rowSums (array (x %in% wf_flat, dim=dim (x))) == 2)])
-        w0f_names <- unique (unlist (w0f_names)) # names of nodes which join [[wf]]
-        w0f <- which (w0f == 2) # bit(s) of [[w0]] which connect to [[wf]]
-        # w0f == 2 for parts of [[w0]] that are in wf
+        w0f_names <- unique (unlist (w0f_names)) 
+        w0f <- which (w0f == 2) 
+        # w0f_names holds names of nodes which join [[wf]], while w0f indexes
+        # bit(s) of [[w0]] which connect to [[wf]], with w0f == 2 for parts of
+        # [[w0]] that are in wf.
+        # TODO: Deal with multiple w0f / w0f_names
+
         wt_flat <- do.call (rbind, ways [[wt]])
         w0t <- sapply (ways [[w0]], function (x) 
                        max (rowSums (array (x %in% wt_flat, dim=dim(x)))))
@@ -114,201 +175,82 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
         w0t_names <- unique (unlist (w0t_names))
         w0t <- which (w0t == 2)
 
-        # Then find *longest* shortest path in [[w0]] between w0f_names and
-        # w0t_names. Start by storing ways [[w0]] [[w0t]] & [[w0]]
-        # [[w0f]]---that is, the bits of [[w0]] which connect with [[wt]] and
-        # [[wf]]---as an igraph
-        #
-        # ***UP TO HERE*** This is not right, because there may be additional
-        # intermediate segments ----> FIX!
-        indx <- c (w0f, w0t)
-        from <- unlist (lapply (indx, function (x) rownames (ways [[w0]] [[x]])
-                                    [1:(nrow (ways [[w0]] [[x]]) - 1)]))
-        to <- unlist (lapply (indx, function (x) rownames (ways [[w0]] [[x]])
-                                    [2:nrow (ways [[w0]] [[x]])]))
-        g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
-        
-        from_node_list <- rep (w0f_names, length (w0t_names))
-        to_node_list <- rep (w0t_names, each=length (w0f_names))
-        maxlen <- 0
-        fromi <- toi <- NA
-        for (j in seq (from_node_list))
+        sp <- shortest_way (ways [[w0]], w0f_names, w0t_names)
+        # If there is no connection between the components containing w0f_names
+        # and w0t_names, then sp=0. Components are then sequentially connected
+        # by joining the two at the shortest distance and re-calculating until a
+        # shortest path is possible.
+        if (is.null (sp))
         {
-            sp <- suppressWarnings (igraph::shortest_paths (g,
-                                    from_node_list [j], to_node_list [j]))
-            sp <- sp$vpath [[1]]
-            if (length (sp) > maxlen)
+            # Start by making a connection matrix between the components of w0,
+            # in this case holding distances between components, with default of
+            # Inf so shortest non-zero distances can be found. nodes holds
+            # indices (from, to) subsequently connected segments.
+            conmat_way <- nodes <- array (Inf, dim=rep (length (ways [[w0]]), 2))
+            combs <- combn (length (ways [[w0]]), 2)
+            for (j in seq (ncol (combs)))
             {
-                maxlen <- length (sp)
-                fromi <- from_node_list [j]
-                toi <- to_node_list [j]
-            }
+                way1 <- ways [[w0]] [[combs [1, j] ]]
+                way2 <- ways [[w0]] [[combs [2, j] ]]
+                shared_nodes <- array (way1 %in% way2, dim=dim (way1))
+                shared_nodes <- which (rowSums (shared_nodes) == 2)
+                if (length (shared_nodes) == 0)
+                {
+                    hs <- haversand (way1, way2)
+                    conmat_way [combs [1, j], combs [2, j]] <- 
+                        conmat_way [combs [2, j], combs [1, j]] <- hs [3]
+                    nodes [combs [1, j], combs [2, j]] <- hs [1]
+                    nodes [combs [2, j], combs [1, j]] <- hs [2]
+                }
+            } # end for j over combs
         }
-        # If the two segments of [[w0]] do not join, then force a join. Do this
-        # by finding the shortest *geographic* distance between [from] and [to]
-        # segments
-        if (maxlen == 0)
+        # Having established conmat_way, the successively connect the closest
+        # segments until a shortest path is found. 
+        while (is.null (sp))
         {
-            xfrom <- sapply (w0f, function (x) ways [[w0]] [x])
-            xfrom <- do.call (rbind, xfrom)
-            xto <- sapply (w0t, function (x) ways [[w0]] [x])
-            xto <- do.call (rbind, xto)
-            x1 <- array (xfrom [,1], dim=c(nrow (xfrom), nrow (xto)))
-            y1 <- array (xfrom [,2], dim=c(nrow (xfrom), nrow (xto)))
-            x2 <- t (array (xto [,1], dim=c(nrow (xto), nrow (xfrom))))
-            y2 <- t (array (xto [,2], dim=c(nrow (xto), nrow (xfrom))))
-            # Haversand distances:
-            xd <- (x2 - x1) * pi / 180;
-            yd <- (y2 - y1) * pi / 180;
-            d <- sin (yd / 2) * sin (yd / 2) + cos (y2 * pi / 180) *
-                cos (y1 * pi / 180) * sin (xd / 2) * sin (xd / 2);
-            d <- 2.0 * atan2 (sqrt (d), sqrt (1.0 - d));
-            d <- d * 6371
-            # Find names and (lat,lon) of closest points:
-            ifrom <- which.min (apply (d, 1, min))
-            ito <- which.min (apply (d, 2, min))
-            name_from <- rownames (xfrom) [ifrom]
-            xy_from <- xfrom [ifrom,]
-            name_to <- rownames (xto) [ito]
-            xy_to <- xto [ito,]
-
-            # Extract the elements of ways [[w0]] that start or end in name_from
-            # (which may have length>1), and plug name_to on to ends or starts:
-            ifrom <- unlist (sapply (ways [[w0]], function (x) 
-                            max (c (-1, which (rownames (x) == name_from)))))
-            # Check that ifrom match end points, rather than intermediate points
-            nodefrom <- ifrom [which (ifrom > 0)]
-            ifrom <- which (ifrom > 0)
-            nrows <- sapply (ifrom, function (x) nrow (ways [[w0]] [[x]]))
-            # And only keep cases where name_from is a terminal node
-            indx <- which (nodefrom == 1 | nodefrom == nrows)
-            if (length (indx) != 0)
+            i1 <- which.min (apply (conmat_way, 1, min))
+            i2 <- which.min (conmat_way [i1, ])
+            way1 <- ways [[w0]] [[i1]]
+            way2 <- ways [[w0]] [[i2]]
+            hs <- haversand (way1, way2)
+            xy1 <- way1 [hs [1],]
+            xy2 <- way2 [hs [2],]
+            # Only connect components at terminal nodes:
+            if (hs [1] == 1)
             {
-                nodefrom <- nodefrom [indx]
-                ifrom <- ifrom [indx]
-            } else
+                rnames <- c (rownames (way2) [hs [2]], rownames (way1))
+                way1 <- rbind (xy2, way1)
+                rownames (way1) <- rnames
+            } else if (hs [1] == nrow (way1))
             {
-                # Only intersection is *not* a terminal node, so chop way at
-                # joint. Keep the bit that extends farthest away from join
-                # point; that is, the bit with maximal d. New point is joined on
-                # below, not here.
-                for (j in 1:length (ifrom))
-                {
-                    the.way <- ways [[w0]] [[ifrom [j] ]]
-                    d <- sqrt ((xy_to [1] - the.way [,1]) ^ 2 +
-                               (xy_to [2] - the.way [,2]) ^ 2)
-                    if (d [1] > d [length (d)])
-                        the.way <- the.way [1:nodefrom,]
-                    else
-                        the.way <- the.way [nodefrom:nrow (the.way),]
-                    ways [[w0]] [[ifrom [j] ]] <- the.way
-                }
-                # nodefrom will still be either 1 or >1, so the if clauses
-                # immediately below will stay the same
+                rnames <- c (rownames (way1), rownames (way2) [hs [2]])
+                way1 <- rbind (way1, xy2)
+                rownames (way1) <- rnames
+            } else if (hs [2] == 1)
+            {
+                rnames <- c (rownames (way1) [hs [1]], rownames (way2))
+                way2 <- rbind (xy1, way2)
+                rownames (way2) <- rnames
+            } else if (hs [2] == nrow (way2))
+            {
+                rnames <- c (rownames (way2), rownames (way1) [hs [1]])
+                way2 <- rbind (way2, xy1)
+                rownames (way2) <- rnames
             }
-
-            for (j in 1:length (nodefrom))
-            {
-                if (nodefrom [j] == 1)
-                {
-                    rnames <- c (name_to, rownames (ways [[w0]] [[ifrom [j] ]]))
-                    ways [[w0]] [[ifrom [j] ]] <- 
-                        rbind (xy_to, ways [[w0]] [[ifrom [j] ]])
-                    rownames (ways [[w0]] [[ifrom [j] ]]) <- rnames
-                } else
-                {
-                    rnames <- c (rownames (ways [[w0]] [[ifrom [j] ]]), name_to)
-                    ways [[w0]] [[ifrom [j] ]] <- 
-                        rbind (ways [[w0]] [[ifrom [j] ]], xy_to)
-                    rownames (ways [[w0]] [[ifrom [j] ]]) <- rnames
-                }
-            } # end for j over nodefrom
-
-            ito <- unlist (sapply (ways [[w0]], function (x) 
-                            max (c (-1, which (rownames (x) == name_to)))))
-            nodeto <- ito [which (ito > 0)]
-            ito <- which (ito > 0)
-            nrows <- sapply (ito, function (x) nrow (ways [[w0]] [[x]]))
-            # And only keep cases where name_from is a terminal node
-            indx <- which (nodeto == 1 | nodeto == nrows)
-            if (length (indx) != 0)
-            {
-                nodeto <- nodeto [indx]
-                ito <- ito [indx]
-            } else
-            {
-                for (j in 1:length (ito))
-                {
-                    the.way <- ways [[w0]] [[ito [j] ]]
-                    d <- sqrt ((xy_from [1] - the.way [,1]) ^ 2 +
-                               (xy_from [2] - the.way [,2]) ^ 2)
-                    if (d [1] > d [length (d)])
-                        the.way <- the.way [1:nodeto,]
-                    else
-                        the.way <- the.way [nodeto:nrow (the.way),]
-                    ways [[w0]] [[ito [j] ]] <- the.way
-                }
-                ito <- unlist (sapply (ways [[w0]], function (x) 
-                                max (c (-1, which (rownames (x) == name_to)))))
-                nodeto <- ito [which (ito > 0)]
-            }
-
-            for (j in 1:length (nodeto))
-            {
-                if (nodeto [j] == 1)
-                {
-                    rnames <- c (name_from, rownames (ways [[w0]] [[ito [j] ]]))
-                    ways [[w0]] [[ito [j] ]] <- 
-                        rbind (xy_to, ways [[w0]] [[ito [j] ]])
-                    rowname (ways [[w0]] [[ito [j] ]]) <- rnames
-                } else
-                {
-                    rnames <- c (rownames (ways [[w0]] [[ito [j] ]]), name_from)
-                    ways [[w0]] [[ito [j] ]] <- 
-                        rbind (ways [[w0]] [[ito [j] ]], xy_to)
-                    rownames (ways [[w0]] [[ito [j] ]]) <- rnames
-                }
-                # It is possible adding _from duplicates _to from above, so
-                ways [[w0]] [[ito [j] ]] <- unique (ways [[w0]] [[ito [j] ]])
-            } # end for j over nodeto
+            ways [[w0]] [[i1]] <- way1
+            ways [[w0]] [[i2]] <- way2
+            # conmat_way for that pair of components is set to Inf whether or
+            # not connecting nodes were terminal. (Non-terminal cases will arise
+            # for example for parallel lanes which do not cross, yet have very
+            # low distances between them.)
+            conmat_way [i1, i2] <- conmat_way [i2, i1] <- Inf
+            # This stop should never happen:
+            if (all (!is.finite (conmat_way)))
+                stop (paste ("Segments of way#", i, 
+                             " cannot be joined", sep=""))
+            sp <- shortest_way (ways [[w0]], w0f_names, w0t_names)
         } # end if (maxlen == 0)
-
-        # Store objs [[w0]] as an igraph
-        from <- unlist (lapply (ways [[w0]], function (x) 
-                                           rownames (x)[1:(nrow(x)-1)]))
-        to <- unlist (lapply (ways [[w0]], function (x) 
-                                           rownames (x)[2:nrow(x)]))
-        g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
-        if (is.na (fromi) | is.na (toi))
-        {
-            # This will happen if there was no path possible above,
-            # necessitating the (maxlen == 0) clause.
-            for (j in seq (from_node_list))
-            {
-                sp <- suppressWarnings (igraph::shortest_paths (g,
-                                        from_node_list [j], to_node_list [j]))
-                sp <- sp$vpath [[1]]
-                if (length (sp) > maxlen)
-                {
-                    maxlen <- length (sp)
-                    fromi <- from_node_list [j]
-                    toi <- to_node_list [j]
-                }
-            }
-        }
-
-        # Then finally the desired shortest path extraction
-        sp <- suppressWarnings (igraph::shortest_paths (g, fromi, toi))
-        sp <- sp$vpath [[1]]
-        # Then get coordinates of the shortest-longest path.
-        # Note that junctions may have duplicates of same node, but match only
-        # returns the first match, so that's okay.
-        street <- do.call (rbind, ways [[w0]])
-        indx <- match (names (sp), rownames (street))
-        stopifnot (all (!is.na (indx)))
-        path <- street [indx,]
-
-        paths [[i]] <- path
+        paths [[i]] <- sp
     } # end for i over cyc_len
 
     # Finally, connect paths together to form desired cyclic boundary.  This
