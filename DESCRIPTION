@@ -17,3 +17,6 @@ Imports:
 License: GPL-3
 URL: https://github.com/mpadge/urbanplotr
 LazyData: true
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
