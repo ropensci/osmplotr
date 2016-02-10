@@ -67,9 +67,10 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
         cols [structures == "building"] <- col_gray1
         cols [structures == "amenity"] <- col_gray2
         cols [structures == "waterway"] <- col_blue
-        cols [structures == "grass"] <- col_green
         cols [structures == "natural"] <- col_green
         cols [structures == "park"] <- col_green
+        cols [structures == "tree"] <- col_green_bright
+        cols [structures == "grass"] <- col_green_bright
         cols [structures == "highway"] <- col_black
         cols [structures == "boundary"] <- col_white
     } else if (col_scheme == "light")
@@ -81,17 +82,25 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
         col_gray1 <- rgb (200, 200, 200, 255, maxColorValue=255)
         col_gray2 <- rgb (220, 220, 220, 255, maxColorValue=255)
         col_white <- rgb (255, 255, 255, 255, maxColorValue=255)
-        col_black <- rgb (0, 0, 0, 255, maxColorValue=255)
+        col_black <- rgb (150, 150, 150, 255, maxColorValue=255)
         cols <- rep (col_bg, length (structures))
         cols [structures == "building"] <- col_gray1
         cols [structures == "amenity"] <- col_gray2
         cols [structures == "waterway"] <- col_blue
-        cols [structures == "grass"] <- col_green
         cols [structures == "natural"] <- col_green
         cols [structures == "park"] <- col_green
+        cols [structures == "tree"] <- col_green_bright
+        cols [structures == "grass"] <- col_green_bright
         cols [structures == "highway"] <- col_black
         cols [structures == "boundary"] <- col_white
     }
+    # Then add row to designate background colour (this has to be done prior to
+    # data.frame construction, because cols are converted there to factors):
+    structures <- c (structures, "background")
+    keys <- c (keys, "")
+    values <- c (values, "")
+    lettrs <- c (lettrs, "")
+    cols <- c (cols, col_bg)
     
     dat <- data.frame (cbind (structures, keys, values, lettrs, cols))
     row.names (dat) <- NULL

@@ -21,20 +21,24 @@
 #' @return nothing (generates graphics device of specified type; progress is
 #' dumped to screen, including time taken).
 #' @examples
-#' # These illustrate the key steps of the function:
+#' # An example of the resultant map can be reproduced using the "london" data:
 #' \dontrun{
-#'  bbox <- c (-0.15, 51.51, -0.14, 51.52)
-#'  datBU <- extract_osm_objects (bbox=bbox, key="building")
-#'  datH <- extract_osm_objects (bbox=bbox, key="highway")
-#'  datG <- extract_osm_objects (bbox=bbox, key="grass")
-#'  datP <- extract_osm_objects (bbox=bbox, key="park")
-#'  datW <- extract_osm_objects (bbox=bbox, key="water")
+#'  data (london)
+#'  structs <- osm_structures (col_scheme="dark")
+#'  xylims <- get_xylims (london$dat_B)
+#'  plot_osm_basemap (xylims=xylims, structures=structs)
+#'  col <- as.character (structs$cols [which (structs$structures == "highway")])
+#'  add_osm_objects (london$dat_H, col=col)
+#'  col <- as.character (structs$cols [which (structs$structures == "building")])
+#'  add_osm_objects (london$dat_B, col=col)
+#'  col <- as.character (structs$cols [which (structs$structures == "amenity")])
+#'  add_osm_objects (london$dat_A, col=col)
+#'  col <- as.character (structs$cols [which (structs$structures == "park")])
+#'  add_osm_objects (london$dat_P, col=col)
+#'  add_osm_objects (london$dat_N, col=col)
+#'  col <- as.character (structs$cols [which (structs$structures == "grass")])
+#'  add_osm_objects (london$dat_G, col=col)
 #' }
-#' plot_osm_basemap (xylims=get_xylims (datBU))
-#' add_osm_objects (datH, col="white")
-#' add_osm_objects (datBU, col="orange")
-#' add_osm_objects (datG, col="lawngreen")
-#' add_osm_objects (datP, col="lawngreen")
 
 make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), 
                           structs=osm_structures (), remove_data=TRUE)
@@ -76,7 +80,7 @@ make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
     for (i in seq (nrow (structs)))
     {
         fname <- paste ("dat_", structs$letters [i], sep="")
-        load (fname)
+        data (get (fname))
         add_osm_objects (get (fname), col=as.character (structs$cols [i]))
         rm (list=c(fname))
     }

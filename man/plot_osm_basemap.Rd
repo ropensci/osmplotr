@@ -5,7 +5,7 @@
 \title{plot_osm_basemap}
 \usage{
 plot_osm_basemap(xylims = xylims, filename = NULL, width = 640,
-  bg = "gray20", graphic.device = "png", ...)
+  structures = NULL, bg = "gray20", graphic.device = "png", ...)
 }
 \arguments{
 \item{xylims}{= Latitude-longitude range to be plotted as returned from
@@ -17,7 +17,11 @@ quality and likely slow)}
 
 \item{width}{= width of graphics file (in px; default 480).}
 
-\item{bg}{= background colour of map (default = "gray20")}
+\item{structures}{= data frame returned by osm_structures used here to specify
+background colour of plot; if structs=NULL, the colour is specified by "bg"}
+
+\item{bg}{= background colour of map (default = "gray20" only if structs not
+given)}
 
 \item{graphic.device}{= "png" (default), "jpeg", "png", or "tiff"}
 
