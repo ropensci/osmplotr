@@ -8,24 +8,24 @@ plot_osm_basemap(xylims = xylims, filename = NULL, width = 640,
   structures = NULL, bg = "gray20", graphic.device = "png", ...)
 }
 \arguments{
-\item{xylims}{= Latitude-longitude range to be plotted as returned from
+\item{xylims}{Latitude-longitude range to be plotted as returned from
 get_xylims ()}
 
-\item{filename}{= name of plot file; default=NULL plots to
-screen device (low
+\item{filename}{Name of plot file; default=NULL plots to screen device (low
 quality and likely slow)}
 
-\item{width}{= width of graphics file (in px; default 480).}
+\item{width}{Width of graphics file (in px; default 480).}
 
-\item{structures}{= data frame returned by osm_structures used here to specify
+\item{structures}{Data frame returned by osm_structures used here to specify
 background colour of plot; if structs=NULL, the colour is specified by "bg"}
 
-\item{bg}{= background colour of map (default = "gray20" only if structs not
+\item{bg}{Background colour of map (default = "gray20" only if structs not
 given)}
 
-\item{graphic.device}{= "png" (default), "jpeg", "png", or "tiff"}
+\item{graphic.device}{Type of graphic device to print to. For example, "png"
+(default), "jpeg", "png", or "tiff"}
 
-\item{...}{other parameters to be passed to graphic device (such as width and
+\item{...}{Other parameters to be passed to graphic device (such as width and
 height; see ?png, for example, for details)}
 }
 \value{

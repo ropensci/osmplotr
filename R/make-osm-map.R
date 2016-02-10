@@ -6,18 +6,18 @@
 #' reason, this function is not intended to be actually run; rather it serves to
 #' demonstrate how all functions may be combined to generate a map.
 #'
-#' @param filename = name of plot file; default=NULL plots to screen device (low
+#' @param filename Name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
-#' @param bbox = the bounding box for the map.  Must be a vector of 4 elements
+#' @param bbox The bounding box for the map.  Must be a vector of 4 elements
 #' (xmin, ymin, xmax, ymax).  Default is a small part of central London
 #' (-0.15,51.5,-0.1,51.52).  
-#' @param structs a data.frame specifying types of OSM structures as returned
+#' @param structs A data.frame specifying types of OSM structures as returned
 #' from osm_structures, and potentially modified to alter lists of structures to
 #' be plotted, and their associated colours. The order of structs determines the
 #' plot order of objects.
-#' @param remove_data = TRUE. To save working memory, data for each type of
-#' structure are temporarily saved to disk and removed from memory. If
-#' remove_data = FALSE, saved objects are *NOT* removed from disk at end.
+#' @param remove_data To save working memory, data for each type of structure
+#' are temporarily saved to disk and removed from memory. If remove_data =
+#' FALSE, saved objects are *NOT* removed from disk at end.
 #' @return nothing (generates graphics device of specified type; progress is
 #' dumped to screen, including time taken).
 #' @examples

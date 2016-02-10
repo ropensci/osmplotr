@@ -7,15 +7,13 @@
 add_osm_objects(obj = obj, col = "gray40", ...)
 }
 \arguments{
-\item{obj}{= an sp SPDF or SLDF (list of polygons or lines) returned by
+\item{obj}{an sp SPDF or SLDF (list of polygons or lines) returned by
 get.osm.polygons}
 
-\item{col}{= colour of polygons (default = "gray40")}
+\item{col}{colour of polygons (default = "gray40")}
 
 \item{...}{other parameters to be passed to lines (such as lwd, lty) or
 points (such as pch, cex)}
-
-\item{pch}{plot character code for SpatialPointsDataFrame}
 }
 \value{
 nothing (adds to graphics.device opened with plot.osm.basemap)

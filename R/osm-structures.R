@@ -7,8 +7,10 @@
 #' modified as desired, and ultimately passed to make_osm_map to automate map
 #' production.
 #'
-#' @param structures the vector of types of structures (defaults listed in
+#' @param structures The vector of types of structures (defaults listed in
 #' ?extract_osm_objects).
+#' @param col_scheme Colour scheme for the plot (current options include "dark"
+#' and "light")
 #' @return List of structures, corresponding prefixes, and colours.
 
 osm_structures <- function (structures = c ("building", "amenity", "waterway",

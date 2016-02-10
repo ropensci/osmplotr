@@ -4,15 +4,15 @@
 #' a SpatialLines object containing a sequence of OSM nodes which cyclically
 #' connect all highways. Will fail if the streets do not form a cycle.
 #'
-#' @param highways = A vector of highway names passed directly to the Overpass
+#' @param highways A vector of highway names passed directly to the Overpass
 #' API. Wildcards and whitespaces are '.'; for other options see overpass help.
-#' @param bbox = the bounding box within which to look for highways. 
-#' Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
-#' Default is a small part of central London.
-#' @param plot if TRUE, then all OSM data for each highway is plotted (with
+#' @param bbox The bounding box within which to look for highways.  Must be a
+#' vector of 4 elements (xmin, ymin, xmax, ymax).  Default is a small part of
+#' central London.
+#' @param plot If TRUE, then all OSM data for each highway is plotted (with
 #' lwds[1], cols[1]), with the final cycle overlaid (with lwds[2], cols[2]).
-#' @param lwds = line widths for (all highways, final cycle)
-#' @param cols = line colours for (all highways, final cycle)
+#' @param lwds Line widths for (all highways, final cycle)
+#' @param cols Line colours for (all highways, final cycle)
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic
 #' line connecting all given streets.
 

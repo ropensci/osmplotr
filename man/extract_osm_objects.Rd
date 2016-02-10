@@ -7,15 +7,15 @@
 extract_osm_objects(key = "building", value = NULL, bbox = NULL)
 }
 \arguments{
-\item{bbox}{= the bounding box within which all key-value objects should be
-downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).}
-
-\item{key:}{OSM key to search for. Useful keys include "building",
+\item{key}{OSM key to search for. Useful keys include "building",
 "waterway", "natural", "grass", "park", "amenity", "shop", "boundary", and
 "highway". Others will be passed directly to the overpass API and may not
 necessarily return results.}
 
-\item{value:}{OSM value to match to key. If NULL, all keys will be returned.}
+\item{value}{OSM value to match to key. If NULL, all keys will be returned.}
+
+\item{bbox}{the bounding box within which all key-value objects should be
+downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).}
 }
 \value{
 Data frame of either spatial polygons or spatial lines

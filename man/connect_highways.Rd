@@ -7,7 +7,7 @@
 connect_highways(highways = NULL)
 }
 \arguments{
-\item{highways}{= A list of highways as returned by
+\item{highways}{A list of highways as returned by
 urbanplotr::extract_highways, each element of which is a list of
 distinct segments for a particular OSM highway.}
 }

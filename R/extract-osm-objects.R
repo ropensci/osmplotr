@@ -4,12 +4,12 @@
 #' conversion to osmar object which can be quite slow, as can final conversion
 #' to sp object for large numbers of objects
 #'
-#' @param key: OSM key to search for. Useful keys include "building",
+#' @param key OSM key to search for. Useful keys include "building",
 #' "waterway", "natural", "grass", "park", "amenity", "shop", "boundary", and
 #' "highway". Others will be passed directly to the overpass API and may not
 #' necessarily return results.
-#' @param value: OSM value to match to key. If NULL, all keys will be returned.
-#' @param bbox = the bounding box within which all key-value objects should be
+#' @param value OSM value to match to key. If NULL, all keys will be returned.
+#' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
 #' @return Data frame of either spatial polygons or spatial lines
 

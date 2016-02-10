@@ -7,13 +7,13 @@
 extract_highways(highway_names = NULL, bbox = NULL)
 }
 \arguments{
-\item{highway_names}{= A vector of highway names passed directly to the
+\item{highway_names}{A vector of highway names passed directly to the
 Overpass API. Wildcards and whitespaces are '.'; for other options see
 overpass help.}
 
-\item{bbox}{= the bounding box within which to look for highways.
-Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
-Default is a small part of central London.}
+\item{bbox}{the bounding box within which to look for highways.  Must be a
+vector of 4 elements (xmin, ymin, xmax, ymax).  Default is a small part of
+central London.}
 }
 \value{
 A list of highways matching highway_names, each element of which is a

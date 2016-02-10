@@ -7,7 +7,7 @@
 get_xylims(obj)
 }
 \arguments{
-\item{obj}{a spatial polygon or line data.frame returned by get.osm.objects ()}
+\item{obj}{A spatial polygon or line data.frame returned by get.osm.objects ()}
 }
 \value{
 list of lat-lon ranges

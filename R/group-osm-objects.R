@@ -4,21 +4,21 @@
 #' objects are attributed to groups based on mean coordinates, so this routine
 #' work best for SpatialPolygons, while may give odd results for SpatialLines.
 #'
-#' @param obj = an sp SPDF or SLDF (list of polygons or lines) returned by
+#' @param obj An sp SPDF or SLDF (list of polygons or lines) returned by
 #' get.osm.polygons 
-#' @param groups = a list of spatial points objects, each of which contains the
+#' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group
 #' @param boundary Either a single boolean value or a vector of same length as
 #' groups specifying whether groups already define a boundary (TRUE), or whether
 #' a convex hull boundary should be constructed from groups (FALSE).
-#' @param cols either a vector of >= 4 colours passed to colour_mat (is
+#' @param cols Either a vector of >= 4 colours passed to colour_mat (is
 #' colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default
 #' uses rainbow colours), or 2. If !colmat, a vector of the same length as
 #' groups specifying individual colours for each.
-#' @param col_extra if NULL, then any polygons *NOT* within the convex hulls are
+#' @param col_extra If NULL, then any polygons *NOT* within the convex hulls are
 #' assigned to nearest group and coloured accordingly; if NOT NULL, then any
 #' polygons not within groups are coloured this colour.
-#' @param colmat = TRUE generates colours according to get.colours, otherwise
+#' @param colmat If TRUE generates colours according to get.colours, otherwise
 #' the colours of groups are specified directly by the vector of cols.
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
 

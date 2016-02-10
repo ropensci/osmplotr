@@ -2,7 +2,7 @@
 #'
 #' Extracts an OpenStreetMap highway by name, within the give bounding box.
 #'
-#' @param name: Name of highway. Lines components are return for *any* OSM way
+#' @param name = Name of highway. Lines components are return for *any* OSM way
 #' with a partially-matched. Both wildcards and whitespace should be represented
 #' by ".". 
 #' @param bbox = the bounding box within which all key-value objects should be

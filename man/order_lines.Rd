@@ -9,7 +9,7 @@ order_lines(spLines, i0 = 0)
 \arguments{
 \item{spLines}{A SpatialLinesDataFrame returned from extract.osm.objects}
 
-\item{i0:}{The first node is numbered (i0+1), with other nodes (except
+\item{i0}{The first node is numbered (i0+1), with other nodes (except
 junction nodes) numbered sequentially .}
 }
 \value{

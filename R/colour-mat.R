@@ -2,14 +2,14 @@
 #'
 #' Generates a 2D matrix of graduated colours.
 #'
-#' @param n = number of rows and columns (default = 10; if length 2, then
+#' @param n number of rows and columns (default = 10; if length 2, then
 #' dimensions of rectangle). 
-#' @param cols = vector of length >= 4 of colors (example, default = rainbow
+#' @param cols vector of length >= 4 of colors (example, default = rainbow
 #' (4), or from RColorBrewer, brewer.pal (4, "Set1")). cols are wrapped
 #' clockwise around the corners from top left to bottom left. 
 #' @param rotate rotates the entire colour matrix by the specified angle (in
 #' degrees).
-#' @param plot = FALSE (default) plots the colour matrix
+#' @param plot plots the colour matrix (default FALSE)
 #' @return matrix of colours
 #' @examples
 #' \dontrun{

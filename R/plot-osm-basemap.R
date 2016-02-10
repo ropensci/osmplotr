@@ -6,18 +6,18 @@
 #' be adjusted by width only: height is automatically calculated from the aspect
 #' ratio of the bounding box.
 #'
-#' @param xylims = Latitude-longitude range to be plotted as returned from
+#' @param xylims Latitude-longitude range to be plotted as returned from
 #' get_xylims () 
-#' @param filename = name of plot file; default=NULL plots to
-#' screen device (low
+#' @param filename Name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
-#' @param width = width of graphics file (in px; default 480).
-#' @param structures = data frame returned by osm_structures used here to specify
+#' @param width Width of graphics file (in px; default 480).
+#' @param structures Data frame returned by osm_structures used here to specify
 #' background colour of plot; if structs=NULL, the colour is specified by "bg"
-#' @param bg = background colour of map (default = "gray20" only if structs not
+#' @param bg Background colour of map (default = "gray20" only if structs not
 #' given)
-#' @param graphic.device = "png" (default), "jpeg", "png", or "tiff"
-#' @param ... other parameters to be passed to graphic device (such as width and
+#' @param graphic.device Type of graphic device to print to. For example, "png"
+#' (default), "jpeg", "png", or "tiff" 
+#' @param ... Other parameters to be passed to graphic device (such as width and
 #' height; see ?png, for example, for details)
 #' @return nothing (generates file of specified type).
 

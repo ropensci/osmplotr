@@ -3,7 +3,7 @@
 #' Extracts lat-lon limits from data frames of spatial polygons or lines
 #' returned by get_osm_polygons()
 #'
-#' @param obj a spatial polygon or line data.frame returned by get.osm.objects ()
+#' @param obj A spatial polygon or line data.frame returned by get.osm.objects ()
 #' @return list of lat-lon ranges
 
 get_xylims <- function (obj)

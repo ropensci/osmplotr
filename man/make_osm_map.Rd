@@ -8,21 +8,21 @@ make_osm_map(filename = NULL, bbox = c(-0.15, 51.5, -0.1, 51.52),
   structs = osm_structures(), remove_data = TRUE)
 }
 \arguments{
-\item{filename}{= name of plot file; default=NULL plots to screen device (low
+\item{filename}{Name of plot file; default=NULL plots to screen device (low
 quality and likely slow)}
 
-\item{bbox}{= the bounding box for the map.  Must be a vector of 4 elements
+\item{bbox}{The bounding box for the map.  Must be a vector of 4 elements
 (xmin, ymin, xmax, ymax).  Default is a small part of central London
 (-0.15,51.5,-0.1,51.52).}
 
-\item{structs}{a data.frame specifying types of OSM structures as returned
+\item{structs}{A data.frame specifying types of OSM structures as returned
 from osm_structures, and potentially modified to alter lists of structures to
 be plotted, and their associated colours. The order of structs determines the
 plot order of objects.}
 
-\item{remove_data}{= TRUE. To save working memory, data for each type of
-structure are temporarily saved to disk and removed from memory. If
-remove_data = FALSE, saved objects are *NOT* removed from disk at end.}
+\item{remove_data}{To save working memory, data for each type of structure
+are temporarily saved to disk and removed from memory. If remove_data =
+FALSE, saved objects are *NOT* removed from disk at end.}
 }
 \value{
 nothing (generates graphics device of specified type; progress is
