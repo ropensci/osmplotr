@@ -12,6 +12,8 @@
 #' @param col_scheme Colour scheme for the plot (current options include "dark"
 #' and "light") 
 #' @return List of structures, corresponding prefixes, and colours.
+#'
+#' @export
 
 osm_structures <- function (structures = c ("building", "amenity", "waterway",
                          "grass", "natural", "park", "highway", "boundary",
@@ -104,7 +106,8 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     lettrs <- c (lettrs, "")
     cols <- c (cols, col_bg)
     
-    dat <- data.frame (cbind (structures, keys, values, lettrs, cols))
+    dat <- data.frame (cbind (structures, keys, values, lettrs, cols),
+                       stringsAsFactors=FALSE)
     row.names (dat) <- NULL
     names (dat) <- c ("structures", "key", "value", "letters", "cols")
     return (dat)

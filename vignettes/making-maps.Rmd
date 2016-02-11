@@ -1,28 +1,23 @@
 ---
-title: "Making Maps"
-author: "Mark Padgham"
+title: "blah"
+author: "Vignette Author"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Making Maps}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::render}
   %\VignetteEncoding{UTF-8}
 ---
 
-# Making Maps
+Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
-This `R` package is designed to produce visually impressive graphical plots of
-OpenStreetMap (OSM) data.
+- Never uses retina figures
+- Has a smaller default figure size
+- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
 
-## Downloading OSM Objects
+## Vignette Info
 
-Generic objects of a particular type can be downloaded with the
-`extract_osm_objects` function:
-
-```{r, eval=FALSE}
-bbox <- c(-0.15,51.5,-0.1,51.52) # A small part of central London, U.K.
-dat_B <- extract_osm_objects (key="building", bbox=bbox)
-```
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
 
 ## Styles
 

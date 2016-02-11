@@ -9,11 +9,13 @@
 #' "highway". Others will be passed directly to the overpass API and may not
 #' necessarily return results.
 #' @param value OSM value to match to key. If NULL, all keys will be returned.
+#' Negation is specified by \code{!value}.
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
 #' @return Data frame of either spatial polygons or spatial lines
 
-extract_osm_objects <- function (key="building", value=NULL, bbox=NULL)
+extract_osm_objects <- function (key="building", value=NULL, bbox=NULL,
+                                 extra_pairs=NULL)
 {
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
@@ -26,31 +28,53 @@ extract_osm_objects <- function (key="building", value=NULL, bbox=NULL)
     if (!is.null (value))
         if (nchar (value) == 0)
             value <- NULL
-
-    # Construct the overpass query
+    
+    # Construct the overpass query, starting with main key-value pair and
+    # possible negation
     valold <- value
+    keyold <- key
+    negation <- FALSE
     if (!is.null (value))
-        value <- paste ("'='", value, sep="")
+    {
+        if (substring (value, 1, 1) == "!")
+        {
+            value <- paste ("['", key, "'!='", 
+                            substring (value, 2, nchar (value)), "']", sep="")
+            negation <- TRUE
+        } else
+            value <- paste ("['", key, "'='", value, "']", sep="")
+    }
+    key <- paste ("['", key, "']", sep="")
+
+    # Then any extra key-value pairs
+    if (!is.null (extra_pairs))
+    {
+        if (!is.list (extra_pairs))
+            extra_pairs <- list (extra_pairs)
+        ep <- NULL
+        for (i in extra_pairs)
+            ep <- paste (ep, "['", i [1], "'~'", i [2], "']", sep="")
+        extra_pairs <- ep
+    }
 
     bbox <- paste ("(", bbox [2], ",", bbox [1], ",",
                    bbox[4], ",", bbox [3], ")", sep="")
 
-    query <- paste ("(way['", key, value, "']", bbox, 
-                    ";node['", key, value, "']", bbox, 
-                    ";rel['", key, value, "']", bbox, ";", sep="")
+
+    query <- paste ("(node", key, value, extra_pairs, bbox,
+                    ";way", key, value, extra_pairs, bbox,
+                    ";rel", key, value, extra_pairs, bbox, ";", sep="")
     url_base <- 'http://overpass-api.de/api/interpreter?data='
     query <- paste (url_base, query, ");(._;>;);out;", sep="")
     value <- valold
+    key <- keyold
 
     dat <- RCurl::getURL (query)
     dat <- XML::xmlParse (dat)
 
     k <- v <- NULL # supress "no visible binding" note from R CMD check
     dato <- osmar::as_osmar (dat)
-    if (!is.null (value) & !is.null (key))
-        pids <- osmar::find (dato, osmar::way (osmar::tags(
-                                                k == key & v == value)))
-    else if (!is.null (key))
+    if (!is.null (key))
         pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     else if (!is.null (value))
         pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
