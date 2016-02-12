@@ -131,7 +131,7 @@ latter conversion stages can be quite time consuming.
 ```{r, eval=FALSE}
 dat_BC <- extract_osm_objects (key="building", value="commercial", bbox=bbox)
 ```
-as can additional `key-value` pairs using the `extra_pairs` argument.
+as can additional `key-value` pairs using the `extra_pairs` argument:
 ```{r, eval=FALSE}
 extra_pairs <- c ("name", "Royal.Festival.Hall")
 dat_RFH <- extract_osm_objects (key="building", extra_pairs=extra_pairs, bbox=bbox)
