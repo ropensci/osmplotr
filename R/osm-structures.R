@@ -43,18 +43,47 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
         values [structures == "water"] <- "water"
     }
 
-    # Get 2-letter prefixes for naming data objects
-    lettrs <- sapply (structures, function (x) toupper (substr (x, 1, 1)))
-    # matches returns a list of matches for each letter, with the subsequent
-    # indx marking any replications.
+    # Get suffixes for naming data objects, extending suffixes until
+    # sufficiently many letters are included for entries to become unique.
+    indx_in <- which (!duplicated (structures))
+    indx_out <- which (duplicated (structures))
+    lettrs <- sapply (structures [indx_in], function (x) 
+                      toupper (substr (x, 1, 1)))
     matches <- sapply (lettrs, function (x) which (lettrs %in% x))
-    indx <- which (sapply (matches, function (x) length (x) > 1))
-    if (length (indx) > 0) 
-        for (i in 1:length (indx)) 
+    # matches returns a list of matches for each letter
+    nletts <- rep (2, length (matches))
+    # This while loop will always stop because it is only applied to unique values
+    while (max (sapply (matches, length)) > 1)
+    {
+        # The list of matches is then reduced to unique values. This is done
+        # with a loop, because it enables the list of matches to be shortened to
+        # only those containing unique values.
+        matches_red <- list ()
+        for (i in seq (matches))
+            if (length (matches [[i]]) > 1 & 
+                !all (matches [[i]] %in% unlist (matches_red)))
+                matches_red [[length (matches_red) + 1]] <- matches [[i]]
+        for (i in seq (matches_red))
         {
-            indx_i <- matches [[indx [i]]] # Only need to extract first element
-            lettrs [indx_i] <- toupper (substr (structures [indx_i], 1, 2))
+            repls <- structures [indx_in] [matches_red [[i]] ]
+            lettrs [matches_red [[i]] ] <- toupper (substr (repls, 1, 
+                                                nletts [matches_red [[i]] ]))
+            nletts [matches_red [[i]] ] <- nletts [matches_red [[i]] ] + 1
         }
+        matches <- sapply (lettrs, function (x) which (lettrs %in% x))
+    }
+    # lettrs then has unique suffixes for all unique (structures). These values
+    # then have be extended to the full structures with duplicates. This is a
+    # bit tricky, and is done by first creating an index of all duplicates:
+    indx <- which (duplicated (structures) | 
+                   duplicated (structures, fromLast=TRUE))
+    # Then the values of that indx that are not in indx_out
+    indx <- indx [!indx %in% indx_out]
+    # And those two can be matched for the desired replacement
+    lettrs_full <- rep (NULL, length (structures))
+    lettrs_full [indx_in] <- lettrs
+    lettrs_full [indx_out] <- lettrs_full [indx]
+    lettrs <- lettrs_full
 
     # Color scheme:
     if (col_scheme == "dark")
