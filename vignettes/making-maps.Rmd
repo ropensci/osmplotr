@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Making Maps}
-  %\VignetteEngine{rmarkdown::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -23,6 +23,45 @@ This `R` package is designed to produce visually impressive graphical plots of
 OpenStreetMap (OSM) data. The above illustrates a small portion of central
 London, with selected areas highlighted. All data are downloaded from the
 [overpass API](https://overpass-api.de).  
+
+## A simple map
+
+OSM data for particular types of objects can be downloaded using
+`extract_osm_objects`.
+```{r}
+bbox <- c(-0.15,51.5,-0.1,51.52) # A small part of inner London, U.K.
+```
+```{r, eval=FALSE}
+dat_B <- extract_osm_objects (key="building", bbox=bbox)
+dat_H <- extract_osm_objects (key="highway", bbox=bbox)
+```
+```{r, echo=FALSE}
+dat_B <- london$dat_B
+dat_H <- london$dat_H
+```
+```{r}
+class (dat_B)
+class (dat_H)
+```
+```{r, fig.width=7}
+plot_osm_basemap (xylims=get_xylims (dat_B), bg="gray20")
+add_osm_objects (dat_B, col="gray40")
+add_osm_objects (dat_H, col="gray70")
+```
+
+## OSM Structures
+
+OSM structures are identified through `key-value` pairs. The preceding calls to
+`extract_osm_objects` did not specify any values, and so return all objects
+matching the `key`, regardless of value. Particular values can also be
+requested:
+```{r, fig.width=7}
+dat_BC <- extract_osm_objects (key="building", value="commercial", bbox=bbox)
+dat_HP <- extract_osm_objects (key="highway", value="primary", bbox=bbox)
+plot_osm_basemap (xylims=get_xylims (dat_B), bg="gray20")
+add_osm_objects (dat_BC, col="gray40")
+add_osm_objects (dat_HP, col="gray70")
+```
 
 ## The structure of a map
 
@@ -58,3 +97,52 @@ struct_types <- c ("amenity", "building", "grass", "highway", "natural", "park")
 structures <- osm_structures (struct_types, col_scheme="light")
 structures
 ```
+
+Automatic map generation is considered further below, but first the individual
+steps are considered separately.
+
+## Downloading generic OSM objects
+
+
+Generic objects of a particular type can be downloaded with the
+`extract_osm_objects` function:
+
+```{r, echo=FALSE}
+dat_B <- london$dat_B
+```
+
+```{r, eval=FALSE}
+bbox <- c(-0.15,51.5,-0.1,51.52) # A small part of central London, U.K.
+dat_B <- extract_osm_objects (key="building", bbox=bbox)
+```
+```{r}
+class (dat_B)
+length (dat_B)
+```
+
+The `SpatialPolygonsDataFrame` (`SPDF`) contains 6,208 spatial polygons
+describing building perimters within the defined bounding box. While 
+larger areas may still be downloaded relatively fast using the 
+[overpass API](https://overpass-api.de), the raw OSM XML data are converted to
+spatial polygons using `osmar::as_osmar` followed by `osmar::as_sp`, and these
+latter conversion stages can be quite time consuming.
+
+`value` fields can also be entered
+```{r, eval=FALSE}
+dat_BC <- extract_osm_objects (key="building", value="commercial", bbox=bbox)
+```
+as can additional `key-value` pairs using the `extra_pairs` argument.
+```{r, eval=FALSE}
+extra_pairs <- c ("name", "Royal.Festival.Hall")
+dat_RFH <- extract_osm_objects (key="building", extra_pairs=extra_pairs, bbox=bbox)
+```
+Coordinates from SPDFs can be extracted as follows:
+```{r, eval=FALSE}
+lapply (slot (dat_RFH, "polygons"), function (i) 
+        slot (slot (i, "Polygons") [[1]], "coords"))
+
+
+    extra_pairs <- list (c ("addr:housenumber", "26"),
+                         c ("addr:street", "Aquinas.Street"))
+```
+

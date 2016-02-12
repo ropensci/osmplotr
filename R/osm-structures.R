@@ -107,8 +107,7 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     cols <- c (cols, col_bg)
     
     dat <- data.frame (cbind (structures, keys, values, lettrs, cols),
-                       stringsAsFactors=FALSE)
-    row.names (dat) <- NULL
+                       stringsAsFactors=FALSE, row.names=seq (length (keys)))
     names (dat) <- c ("structures", "key", "value", "letters", "cols")
     return (dat)
 }

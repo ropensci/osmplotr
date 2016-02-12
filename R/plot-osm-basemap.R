@@ -27,8 +27,7 @@ plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
                               graphic.device="png", ...)
 {
     if (!is.null (structures))
-        bg = as.character (structures$cols [which (structures$structures ==
-                                                   "background")])
+        bg = structures$cols [which (structures$structures == "background")]
 
     if (!is.null (filename))
         if (nchar (filename) == 0)
@@ -41,7 +40,15 @@ plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
         png (filename=filename, width=width, height=height,
              type="cairo-png", bg="white", ...)
     else 
-        dev.new (width=width, height=height)
+    {
+        platform <- sessionInfo()$platform 
+        if (grepl("linux",platform)) 
+            x11(width=width, height=height)
+        else if (grepl("pc",platform)) 
+            windows(width=width, height=height)
+        else if (grepl("apple", platform)) 
+            quartz(width=width, height=height) 
+    }
 
     par (mar=c(0,0,0,0))
     plot (NULL, NULL, xlim=xylims$x, ylim=xylims$y, xaxs="i", yaxs="i",
