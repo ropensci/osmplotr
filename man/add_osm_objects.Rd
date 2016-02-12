@@ -4,16 +4,18 @@
 \alias{add_osm_objects}
 \title{add_osm_objects}
 \usage{
-add_osm_objects(obj = obj, col = "gray40", ...)
+add_osm_objects(obj = obj, col = "gray40", border = NA, ...)
 }
 \arguments{
 \item{obj}{an sp SPDF or SLDF (list of polygons or lines) returned by
 \code{get.osm.polygons}}
 
-\item{col}{colour of polygons (default = "gray40")}
+\item{col}{colour of polygons or lines (default = "gray40")}
 
-\item{...}{other parameters to be passed to lines (such as lwd, lty) or
-points (such as pch, cex)}
+\item{border}{border colour of polygons}
+
+\item{...}{other parameters to be passed to polygons (such as border),
+lines (such as lwd, lty), or points (such as pch, cex)}
 }
 \value{
 nothing (adds to graphics.device opened with \code{plot.osm.basemap})

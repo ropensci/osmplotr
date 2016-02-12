@@ -80,14 +80,13 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     # Then the values of that indx that are not in indx_out
     indx <- indx [!indx %in% indx_out]
     # And those two can be matched for the desired replacement
-    lettrs_full <- rep (NULL, length (structures))
-    lettrs_full [indx_in] <- lettrs
+    suffixes <- rep (NULL, length (structures))
+    suffixes [indx_in] <- lettrs
     for (i in indx)
     {
         ii <- which (structures == structures [i])
-        lettrs_full [ii] <- lettrs_full [i]
+        suffixes [ii] <- lettrs_full [i]
     }
-    lettrs <- lettrs_full
 
     # Color scheme:
     if (col_scheme == "dark")
@@ -136,12 +135,12 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     structures <- c (structures, "background")
     keys <- c (keys, "")
     values <- c (values, "")
-    lettrs <- c (lettrs, "")
+    suffixes <- c (suffixes, "")
     cols <- c (cols, col_bg)
     
-    dat <- data.frame (cbind (structures, keys, values, lettrs, cols),
+    dat <- data.frame (cbind (structures, keys, values, suffixes, cols),
                        stringsAsFactors=FALSE, row.names=seq (length (keys)))
-    names (dat) <- c ("structures", "key", "value", "letters", "cols")
+    names (dat) <- c ("structures", "key", "value", "suffixes", "cols")
     return (dat)
 }
 

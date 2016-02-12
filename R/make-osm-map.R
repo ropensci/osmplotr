@@ -6,75 +6,77 @@
 #' reason, this function is not intended to be actually run; rather it serves to
 #' demonstrate how all functions may be combined to generate a map.
 #'
+#' Progress is dumped to screen, including time taken.
+#' 
 #' @param filename Name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
 #' @param bbox The bounding box for the map.  Must be a vector of 4 elements
-#' (xmin, ymin, xmax, ymax).  Default is a small part of central London
-#' (-0.15,51.5,-0.1,51.52).  
-#' @param structs A data.frame specifying types of OSM structures as returned
+#' (xmin, ymin, xmax, ymax). If NULL, bbox is taken from the largest extent of
+#' OSM objects in osm_data.
+#' @param osm_data A list of OSM objects as returned from
+#' \code{extract_osm_objects}.  These objects may be included in the plot
+#' without downloading. These should all be named with the stated
+#' \code{dat_prefix} and have suffixes as given in \code{structures}.
+#' @param structures A data.frame specifying types of OSM structures as returned
 #' from osm_structures, and potentially modified to alter lists of structures to
 #' be plotted, and their associated colours. The order of structs determines the
 #' plot order of objects.
-#' @param remove_data To save working memory, data for each type of structure
-#' are temporarily saved to disk and removed from memory. If remove_data =
-#' FALSE, saved objects are *NOT* removed from disk at end.
-#' @return nothing (generates graphics device of specified type; progress is
-#' dumped to screen, including time taken).
-#' @examples
-#' # An example of the resultant map can be reproduced using the "london" data:
-#' \dontrun{
-#'  structs <- osm_structures (col_scheme="dark")
-#'  xylims <- get_xylims (london$dat_B)
-#'  plot_osm_basemap (xylims=xylims, structures=structs)
-#'  col <- as.character (structs$cols [which (structs$structures == "highway")])
-#'  add_osm_objects (london$dat_H, col=col)
-#'  col <- as.character (structs$cols [which (structs$structures == "building")])
-#'  add_osm_objects (london$dat_B, col=col)
-#'  col <- as.character (structs$cols [which (structs$structures == "amenity")])
-#'  add_osm_objects (london$dat_A, col=col)
-#'  col <- as.character (structs$cols [which (structs$structures == "park")])
-#'  add_osm_objects (london$dat_P, col=col)
-#'  add_osm_objects (london$dat_N, col=col)
-#'  col <- as.character (structs$cols [which (structs$structures == "grass")])
-#'  add_osm_objects (london$dat_G, col=col)
-#' }
+#' @param dat_prefix Prefix for data structures (default 'dat_'). Final data
+#' structures are created by appending the suffixes from \code{osm_structures}.
+#' @return list of OSM structures each as Spatial(Polygon/List)DataFrame, and
+#' appended to `osm_data` (which is NULL by default).
 
-make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52), 
-                          structs=osm_structures (), remove_data=TRUE)
+
+make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
+                          structures=osm_structures (), 
+                          dat_prefix="dat_")
 {
-    ns <- nrow (structs)
-    struct_list <- NULL
+    if (is.null (bbox) & is.null (osm_data))
+        stop ("Either bounding box or osm_data must be given")
+    if (!is.null (osm_data))
+        attach (osm_data)
+    if (is.null (bbox)) # get it from osm_data
+    {
+        xylims <- list (xrange=c (Inf, -Inf), yrange=c(Inf, -Inf))
+        for (i in osm_data)
+        {
+            lims <- get_xylims (i)
+            if (lims$xrange [1] < xylims$xrange [1])
+                xylims$xrange [1] <- lims$xrange [1]
+            if (lims$xrange [2] > xylims$xrange [2])
+                xylims$xrange [2] <- lims$xrange [2]
+            if (lims$yrange [1] < xylims$yrange [1])
+                xylims$yrange [1] <- lims$yrange [1]
+            if (lims$yrange [2] > xylims$yrange [2])
+                xylims$yrange [2] <- lims$yrange [2]
+        }
+        bbox <- c (lims$xrange [1], lims$yrange [1],
+                   lims$xrange [2], lims$yrange [2])
+    }
+
+    sfx <- structures$suffixes [1:(nrow (structures) - 1)]
+    structs_new <- which (!sapply (sfx, function (i) 
+                                     exists (paste0 (dat_prefix, i))))
+    if (length (structs_new) > 0)
+    {
+        structs_full <- structures
+        structures <- structures [structs_new,]
+    }
+    ns <- nrow (structures) - 1 # last row is background
 
     cat ("Downloading and extracting OSM data for", ns, "structures ...\n")
     pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
     t0 <- proc.time ()
     for (i in 1:ns) {
-        dat <- extract_osm_objects (key=toString (structs$key [i]),
-                                    value=toString (structs$value [i]),
-                                   bbox=bbox)
-        fname <- paste ("dat_", toString (structs$letters [i]), sep="")
+        dat <- extract_osm_objects (key=structures$key [i],
+                                    value=structures$value [i], bbox=bbox)
+        fname <- paste0 (dat_prefix, structures$suffixes [i])
         assign (fname, dat)
-        save (list=c(fname), file=fname)
-        struct_list <- c (struct_list, fname)
-        rm (list=c(fname))
+        osm_data <- c (osm_data, list (fname=get (fname)))
         setTxtProgressBar(pb, i / ns)
     }
     close (pb)
     cat ("That took ", (proc.time () - t0)[3], "s\n", sep="")
-
-    dat_H <- dat_BU <- NULL # supress "no visible binding" note from R CMD check
-    if ("dat_BU" %in% struct_list & file.exists ("dat_BU")) 
-    {
-        load ("dat_BU")
-        xylims <- get_xylims (dat_BU)
-        rm ("dat_BU")
-    } else if ("dat_H" %in% struct_list & file.exists ("dat_H"))
-    {
-        load ("dat_H")
-        xylims <- get_xylims (dat_H)
-        rm ("dat_H")
-    } else 
-        stop ("don't know what structure to use to calculate xylims.")
 
     plot_osm_basemap (xylims=xylims, filename=filename)
     for (i in seq (nrow (structs)))
@@ -84,10 +86,6 @@ make_osm_map <- function (filename=NULL, bbox=c(-0.15,51.5,-0.1,51.52),
         add_osm_objects (get (fname), col=as.character (structs$cols [i]))
         rm (list=c(fname))
     }
-
-    if (remove_data)
-        for (i in struct_list)
-            file.remove (i)
 
     if (!is.null (filename)) 
         junk <- dev.off (which=dev.cur())

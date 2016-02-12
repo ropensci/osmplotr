@@ -6,25 +6,26 @@
 #'
 #' @param obj an sp SPDF or SLDF (list of polygons or lines) returned by
 #' \code{get.osm.polygons}
-#' @param col colour of polygons (default = "gray40")
-#' @param ... other parameters to be passed to lines (such as lwd, lty) or
-#' points (such as pch, cex)
+#' @param col colour of polygons or lines (default = "gray40")
+#' @param border border colour of polygons
+#' @param ... other parameters to be passed to polygons (such as border),
+#' lines (such as lwd, lty), or points (such as pch, cex)
 #' @return nothing (adds to graphics.device opened with \code{plot.osm.basemap})
 
-add_osm_objects <- function (obj=obj, col="gray40", ...)
+add_osm_objects <- function (obj=obj, col="gray40", border=NA, ...)
 {
     if (is.null (dev.list ()))
         stop ("group.osm.objects can only be called after plot.osm.basemap")
 
     if (class (obj) == "SpatialPolygonsDataFrame")
     {
-        plotfun <- function (i, col=col, ...) 
+        plotfun <- function (i, col=col, border=border, ...) 
         {
             xy <- slot (slot (i, "Polygons") [[1]], "coords")
-            polypath (xy, border=NA, col=col)
+            polypath (xy, col=col, border=border, ...)
         }
         junk <- lapply (slot (obj, "polygons"), function (i)
-                        plotfun (i, col=col, ...))
+                        plotfun (i, col=col, border=border, ...))
     } else if (class (obj) == "SpatialLinesDataFrame")
     {
         plotfun <- function (i, col=col, ...) 

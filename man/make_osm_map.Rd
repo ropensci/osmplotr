@@ -4,29 +4,33 @@
 \alias{make_osm_map}
 \title{make_osm_map}
 \usage{
-make_osm_map(filename = NULL, bbox = c(-0.15, 51.5, -0.1, 51.52),
-  structs = osm_structures(), remove_data = TRUE)
+make_osm_map(filename = NULL, bbox = NULL, osm_data = NULL,
+  structures = osm_structures(), dat_prefix = "dat_")
 }
 \arguments{
 \item{filename}{Name of plot file; default=NULL plots to screen device (low
 quality and likely slow)}
 
 \item{bbox}{The bounding box for the map.  Must be a vector of 4 elements
-(xmin, ymin, xmax, ymax).  Default is a small part of central London
-(-0.15,51.5,-0.1,51.52).}
+(xmin, ymin, xmax, ymax). If NULL, bbox is taken from the largest extent of
+OSM objects in osm_data.}
 
-\item{structs}{A data.frame specifying types of OSM structures as returned
+\item{osm_data}{A list of OSM objects as returned from
+\code{extract_osm_objects}.  These objects may be included in the plot
+without downloading. These should all be named with the stated
+\code{dat_prefix} and have suffixes as given in \code{structures}.}
+
+\item{structures}{A data.frame specifying types of OSM structures as returned
 from osm_structures, and potentially modified to alter lists of structures to
 be plotted, and their associated colours. The order of structs determines the
 plot order of objects.}
 
-\item{remove_data}{To save working memory, data for each type of structure
-are temporarily saved to disk and removed from memory. If remove_data =
-FALSE, saved objects are *NOT* removed from disk at end.}
+\item{dat_prefix}{Prefix for data structures (default 'dat_'). Final data
+structures are created by appending the suffixes from \code{osm_structures}.}
 }
 \value{
-nothing (generates graphics device of specified type; progress is
-dumped to screen, including time taken).
+list of OSM structures each as Spatial(Polygon/List)DataFrame, and
+appended to `osm_data` (which is NULL by default).
 }
 \description{
 Makes an entire OSM map for the given bbox by downloading all data.  This
@@ -35,23 +39,7 @@ primary steps of downloading and processing the raw OSM data.  For this
 reason, this function is not intended to be actually run; rather it serves to
 demonstrate how all functions may be combined to generate a map.
 }
-\examples{
-# An example of the resultant map can be reproduced using the "london" data:
-\dontrun{
- structs <- osm_structures (col_scheme="dark")
- xylims <- get_xylims (london$dat_B)
- plot_osm_basemap (xylims=xylims, structures=structs)
- col <- as.character (structs$cols [which (structs$structures == "highway")])
- add_osm_objects (london$dat_H, col=col)
- col <- as.character (structs$cols [which (structs$structures == "building")])
- add_osm_objects (london$dat_B, col=col)
- col <- as.character (structs$cols [which (structs$structures == "amenity")])
- add_osm_objects (london$dat_A, col=col)
- col <- as.character (structs$cols [which (structs$structures == "park")])
- add_osm_objects (london$dat_P, col=col)
- add_osm_objects (london$dat_N, col=col)
- col <- as.character (structs$cols [which (structs$structures == "grass")])
- add_osm_objects (london$dat_G, col=col)
-}
+\details{
+Progress is dumped to screen, including time taken.
 }
 
