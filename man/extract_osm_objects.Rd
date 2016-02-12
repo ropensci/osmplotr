@@ -4,7 +4,8 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(key = "building", value = NULL, bbox = NULL)
+extract_osm_objects(key = "building", value = NULL, bbox = NULL,
+  extra_pairs = NULL)
 }
 \arguments{
 \item{key}{OSM key to search for. Useful keys include "building",
@@ -12,10 +13,14 @@ extract_osm_objects(key = "building", value = NULL, bbox = NULL)
 "highway". Others will be passed directly to the overpass API and may not
 necessarily return results.}
 
-\item{value}{OSM value to match to key. If NULL, all keys will be returned.}
+\item{value}{OSM value to match to key. If NULL, all keys will be returned.
+Negation is specified by \code{!value}.}
 
 \item{bbox}{the bounding box within which all key-value objects should be
 downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).}
+
+\item{extra_pairs}{A list of additional \code{key-value} pairs to be passed
+to the overpass API.}
 }
 \value{
 Data frame of either spatial polygons or spatial lines

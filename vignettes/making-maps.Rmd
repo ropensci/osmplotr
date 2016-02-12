@@ -36,15 +36,26 @@ dat_B <- extract_osm_objects (key="building", bbox=bbox)
 dat_H <- extract_osm_objects (key="highway", bbox=bbox)
 ```
 ```{r, echo=FALSE}
-dat_B <- london$dat_B
-dat_H <- london$dat_H
+# Combining (dat_B, dat_BC) and (dat_H, dat_HP) requires removing the repeated
+# objects
+indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
+dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
+indx <- which (!london$dat_H$id %in% london$dat_HP$id)
+dat_H <- maptools::spRbind (london$dat_H [indx,], london$dat_HP)
 ```
 ```{r}
 class (dat_B)
 class (dat_H)
 ```
+Plotting maps requires first making a basemap with a specified background
+colour. The basemap also defines the dimensions of the plot, which may be scaled
+in proportion to the latitudinal and longitudinal range of the objects to be
+plotted using `get_xylims`. (These limits will generally not be precisely equal
+to the bounding box.) Objects may then be overlaid on this basemap using
+`add_osm_objects`.
 ```{r, fig.width=7}
-plot_osm_basemap (xylims=get_xylims (dat_B), bg="gray20")
+xylims <- get_xylims (dat_B)
+plot_osm_basemap (xylims=xylims, bg="gray20")
 add_osm_objects (dat_B, col="gray40")
 add_osm_objects (dat_H, col="gray70")
 ```
@@ -52,16 +63,55 @@ add_osm_objects (dat_H, col="gray70")
 ## OSM Structures
 
 OSM structures are identified through `key-value` pairs. The preceding calls to
-`extract_osm_objects` did not specify any values, and so return all objects
+`extract_osm_objects` did not specify any values, and so returned all objects
 matching the `key`, regardless of value. Particular values can also be
 requested:
-```{r, fig.width=7}
-dat_BC <- extract_osm_objects (key="building", value="commercial", bbox=bbox)
+```{r, eval=FALSE}
+dat_BR <- extract_osm_objects (key="building", value="residential", bbox=bbox)
 dat_HP <- extract_osm_objects (key="highway", value="primary", bbox=bbox)
-plot_osm_basemap (xylims=get_xylims (dat_B), bg="gray20")
-add_osm_objects (dat_BC, col="gray40")
+```
+```{r, echo=FALSE}
+dat_BR <- london$dat_BR
+dat_HP <- london$dat_HP
+```
+```{r, fig.width=7}
+plot_osm_basemap (xylims=xylims, bg="gray20")
+add_osm_objects (dat_BR, col="gray40")
 add_osm_objects (dat_HP, col="gray70")
 ```
+(There are evidently very few buildings in this part of London marked as
+'residential'.)
+
+### Negation
+
+Values can also be negated through the prefix `!`. For example, non-primary
+highways can be extracted, and primary highways overlaid in a different colour.
+```{r, eval=FALSE}
+dat_H <- extract_osm_objects (key="highway", value="!primary", bbox=bbox)
+```
+```{r, echo=FALSE}
+dat_H <- london$dat_H
+```
+```{r, fig.width=7}
+plot_osm_basemap (xylims=xylims, bg="gray20")
+add_osm_objects (dat_H, col="gray50")
+add_osm_objects (dat_HP, col="gray80")
+```
+
+Or non-residential buildings can be extracted.
+```{r, eval=FALSE}
+dat_BNR <- extract_osm_objects (key="building", value="!residential", bbox=bbox)
+```
+```{r, echo=FALSE}
+dat_BNR <- london$dat_BNR
+```
+```{r, fig.width=7}
+plot_osm_basemap (xylims=xylims, bg="gray20")
+add_osm_objects (dat_BR, col="gray80")
+add_osm_objects (dat_BNR, col="gray40")
+```
+
+### Additional `key-value` pairs
 
 ## The structure of a map
 

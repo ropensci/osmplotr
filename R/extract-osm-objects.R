@@ -10,6 +10,8 @@
 #' necessarily return results.
 #' @param value OSM value to match to key. If NULL, all keys will be returned.
 #' Negation is specified by \code{!value}.
+#' @param extra_pairs A list of additional \code{key-value} pairs to be passed
+#' to the overpass API.
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
 #' @return Data frame of either spatial polygons or spatial lines

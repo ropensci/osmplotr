@@ -82,7 +82,11 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     # And those two can be matched for the desired replacement
     lettrs_full <- rep (NULL, length (structures))
     lettrs_full [indx_in] <- lettrs
-    lettrs_full [indx_out] <- lettrs_full [indx]
+    for (i in indx)
+    {
+        ii <- which (structures == structures [i])
+        lettrs_full [ii] <- lettrs_full [i]
+    }
     lettrs <- lettrs_full
 
     # Color scheme:
