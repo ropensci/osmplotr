@@ -283,7 +283,6 @@ pts <- sp::SpatialPoints (cbind (c (-0.110, -0.125, -0.125, -0.110),
                              c (51.510, 51.510, 51.516, 51.516)))
 xylims <- get_xylims (dat_B)
 plot_osm_basemap (xylims=xylims, bg="gray20")
-#group_osm_objects (london$dat_BNR, pts, col="orange", col_extra="gray40", colmat=FALSE)
 group_osm_objects (dat_B, pts, col="orange", col_extra="gray40", colmat=FALSE)
 graphics.off ()
 ```
