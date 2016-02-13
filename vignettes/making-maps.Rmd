@@ -17,8 +17,6 @@ setwd ("./urbanplotr/vignettes")
 
 # Making Maps
 
-![london-groups](london-groups.png)
-
 This `R` package is designed to produce visually impressive graphical plots of
 OpenStreetMap (OSM) data. The above illustrates a small portion of central
 London, with selected areas highlighted. All data are downloaded from the
@@ -276,11 +274,16 @@ to be clicked and returns a set of `SpatialPoints` corresponding to the clicks.
 or a set of points generated through any other means, can then be passed as the
 `groups` argument to `group_osm_objects`'
 
+```{r, echo=FALSE}
+indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
+dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
+```
 ```{r, fig.width=7}
 pts <- sp::SpatialPoints (cbind (c (-0.110, -0.125, -0.125, -0.110),
                              c (51.510, 51.510, 51.516, 51.516)))
 xylims <- get_xylims (dat_B)
 plot_osm_basemap (xylims=xylims, bg="gray20")
+#group_osm_objects (london$dat_BNR, pts, col="orange", col_extra="gray40", colmat=FALSE)
 group_osm_objects (dat_B, pts, col="orange", col_extra="gray40", colmat=FALSE)
 graphics.off ()
 ```
