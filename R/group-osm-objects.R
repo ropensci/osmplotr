@@ -8,9 +8,10 @@
 #' \code{get.osm.polygons}
 #' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group
-#' @param boundary Either a single boolean value or a vector of same length as
-#' groups specifying whether groups already define a boundary (TRUE), or whether
-#' a convex hull boundary should be constructed from groups (FALSE).
+#' @param make_hull Either a single boolean value or a vector of same length as
+#' groups specifying whether a convex hull should be constructed around the
+#' group (TRUE), or whether they group already defines a hull (convex or
+#' otherwise; FALSE).
 #' @param cols Either a vector of >= 4 colours passed to colour_mat (is
 #' colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default
 #' uses rainbow colours), or 2. If !colmat, a vector of the same length as
@@ -22,7 +23,7 @@
 #' otherwise the colours of groups are specified directly by the vector of cols.
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
 
-group_osm_objects <- function (obj=obj, groups=NULL, boundary=FALSE,
+group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                cols=NULL, col_extra=NULL, colmat=TRUE)
 {
     if (is.null (dev.list ()))
@@ -41,7 +42,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, boundary=FALSE,
             finally = stop (e))
     }
                 
-    stopifnot (length (boundary) == 1 | length (boundary) == length (groups))
+    stopifnot (length (make_hull) == 1 | length (make_hull) == length (groups))
 
     plot_poly <- function (i, col=col) 
     {
@@ -107,10 +108,11 @@ group_osm_objects <- function (obj=obj, groups=NULL, boundary=FALSE,
 
     usr <- par ("usr")
 
+    boundaries <- list ()
     for (i in seq (groups))
     {
-        if ((length (boundary) == 1 & !boundary) |
-            (length (boundary) > 1 & !boundary [i]))
+        if ((length (make_hull) == 1 & make_hull) |
+            (length (make_hull) > 1 & make_hull [i]))
             {
                 x <- slot (groups [[i]], "coords") [,1]
                 y <- slot (groups [[i]], "coords") [,2]
@@ -126,6 +128,8 @@ group_osm_objects <- function (obj=obj, groups=NULL, boundary=FALSE,
         group_indx [indx] <- i
         xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
 
+        boundaries [[i]] <- bdry
+
         if (colmat)
         {
             # Then get colour from colour.mat
@@ -136,6 +140,22 @@ group_osm_objects <- function (obj=obj, groups=NULL, boundary=FALSE,
             cols [i] <- cmat [xi, yi]
         }
     }
+
+    # Assign every segment of each line to a particular group
+    if (class (obj) == "SpatialLinesDataFrame")
+    {
+        coords <- lapply (slot (obj, objtxt [1]),  function (x)
+                          slot (slot (x, objtxt [2]) [[1]], "coords"))
+        pins <- list ()
+        for (i in seq (boundaries))
+        {
+            pins [[i]] <- lapply (coords, function (j)
+                           spatialkernel::pinpoly (boundaries [[i]], j))
+                           
+        }
+    }
+    # This works fast enough, but from this point requires the entire routine to
+    # be rewritten ...
 
     if (is.null (col_extra)) 
     {
