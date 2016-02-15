@@ -44,4 +44,10 @@ Plots spatially distinct groups of osm objects in different colours. OSM
 objects are attributed to groups based on mean coordinates, so this routine
 work best for SpatialPolygons, while may give odd results for SpatialLines.
 }
+\section{Warning}{
+
+Bisecting objects along group boundaries (\code{boundary=0}) can take
+considerably longer than simple allocation of objects either side of
+boundary.
+}
 

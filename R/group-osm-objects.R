@@ -26,6 +26,11 @@
 #' @param colmat If TRUE generates colours according to \code{get.colours},
 #' otherwise the colours of groups are specified directly by the vector of cols.
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
+#'
+#' @section Warning:
+#' Bisecting objects along group boundaries (\code{boundary=0}) can take
+#' considerably longer than simple allocation of objects either side of
+#' boundary.
 
 group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                boundary=-1, cols=NULL, col_extra=NULL,
@@ -197,35 +202,56 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         membs [membs == 0] <- length (groups) + 1
     } else
     {
-        # potentially split objects across boundaries, thereby extending coords
-        # and thus requiring an explicit loop. TODO: Rcpp this?
-        xy <- list () # new coords, including group membership
-        membs <- NULL
-        for (i in coords)
+        # Allocate objects within boundaries to groups, and all remaining
+        # objects to group#0
+        if (boundary != 0)
         {
-            temp <- i [,3:ncol (i)]
-            temp [temp == 2] <- 1
-            n <- colSums (temp)
-            if (max (n) < 3)
+            xy <- lapply (coords, function (i) i [,1:2])
+            membs <- lapply (coords, function (i)
+                             {
+                                 temp <- i [,3:ncol (i)]
+                                 temp [temp == 2] <- 1
+                                 n <- colSums (temp)
+                                 if (boundary < 0 & max (n) < nrow (temp))
+                                     n <- 0
+                                 else if (boundary > 0 & max (n) > 0)
+                                     n <- which.max (n)
+                                 else
+                                     n <- 0
+                                 return (n)
+                             })
+        } else
+        { 
+            # potentially split objects across boundaries, thereby extending coords
+            # and thus requiring an explicit loop. TODO: Rcpp this?
+            xy <- list () # new coords, including group membership
+            membs <- NULL
+            for (i in coords)
             {
-                xy [[length (xy) + 1]] <- i [,1:2]
-                membs <- c (membs, 0)
-            } else 
-            {
-                indx <- which (n > 2)
-                for (j in indx)
+                temp <- i [,3:ncol (i)]
+                temp [temp == 2] <- 1
+                n <- colSums (temp)
+                if (max (n) < 3)
                 {
-                    indx <- which (temp [,j] == 1)
-                    if (length (indx) > 2)
+                    xy [[length (xy) + 1]] <- i [,1:2]
+                    membs <- c (membs, 0)
+                } else 
+                {
+                    indx <- which (n > 2)
+                    for (j in indx)
                     {
-                        xy [[length (xy) + 1]] <- i [indx, 1:2]
-                        membs <- c (membs, j)
-                    }
-                } # end for j
-            } # end else !(max (n) < 3)
-        } # end for i
+                        indx <- which (temp [,j] == 1)
+                        if (length (indx) > 2)
+                        {
+                            xy [[length (xy) + 1]] <- i [indx, 1:2]
+                            membs <- c (membs, j)
+                        }
+                    } # end for j
+                } # end else !(max (n) < 3)
+            } # end for i
+        } # end else split objects across boundaries
         membs [membs == 0] <- length (groups) + 1
-    } # end else split objects across boundaries
+    } # end else col_extra
 
     # cbind membs to xy and submit to plot, so that membs maps straight onto
     # colours
