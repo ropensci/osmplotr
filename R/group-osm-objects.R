@@ -115,7 +115,6 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
 
     usr <- par ("usr")
     boundaries <- list ()
-    group_indx <- rep (NA, length (obj))
     xy_list <- list () 
     # xy_list list for centroids of each object in each group; used to reallocate
     # stray objects if is.null (col_extra)
@@ -133,9 +132,9 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         else
             bdry <- coordinates (groups [[i]])
         bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
+        # The next 3 lines are only used if is.null (col_extra)
         indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
         indx <- which (indx == 2) # pinpoly returns 2 for points within hull
-        group_indx [indx] <- i
         xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
 
         boundaries [[i]] <- bdry
