@@ -43,7 +43,9 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     {
         warning (paste0 ("No groups defined in group_osm_objects; ",
                          "passing to add_osm_objects"))
-        add_osm_objects (obj, col=col_extra)
+        if (is.null (cols))
+            cols <- col_extra
+        add_osm_objects (obj, col=cols [1])
         return ()
     } else if (class (groups) != "list")
     {
@@ -128,7 +130,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                 bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
             }
         else
-            bdry <- coordinates (groups [[i]])
+            bdry <- sp::coordinates (groups [[i]])
         bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
         # The next 3 lines are only used if is.null (col_extra)
         indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
@@ -168,6 +170,9 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         membs <- sapply (coords, function (i)
                          {
                              temp <- i [,3:ncol (i)]
+                             if (!is.matrix (temp))
+                                 temp <- matrix (temp, ncol=1, 
+                                                 nrow=length (temp))
                              temp [temp == 2] <- 1
                              n <- colSums (temp)
                              if (max (n) < 3) # must have > 2 elements in group
@@ -195,8 +200,6 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         # Then simply extract the group holding the overall minimum dist:
         membs [indx] <- apply (dists, 1, which.min)
         xy <- lapply (coords, function (i) i [,1:2])
-        # And re-map membs == 0:
-        membs [membs == 0] <- length (groups) + 1
     } else
     {
         # Allocate objects within boundaries to groups, and all remaining
@@ -212,9 +215,13 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                                      nrow=length (temp))
                                  temp [temp == 2] <- 1
                                  n <- colSums (temp)
-                                 if (boundary < 0 & max (n) < nrow (temp))
-                                     n <- 0
-                                 else if (boundary > 0 & max (n) > 0)
+                                 if (boundary < 0)
+                                 {
+                                     if (max (n) < nrow (temp))
+                                         n <- 0
+                                     else
+                                         n <- which.max (n)
+                                 } else if (boundary > 0 & max (n) > 0)
                                      n <- which.max (n)
                                  else
                                      n <- 0
@@ -250,13 +257,15 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                 } # end else !(max (n) < 3)
             } # end for i
         } # end else split objects across boundaries
+        # Re-map membs == 0:
         membs [membs == 0] <- length (groups) + 1
     } # end else col_extra
 
     # cbind membs to xy and submit to plot, so that membs maps straight onto
     # colours
     xym <- mapply (cbind, xy, membs)
-    cols <- c (cols, col_extra)
+    if (!is.null (col_extra))
+        cols <- c (cols, col_extra)
     junk <- lapply (xym, function (x)
                     do.call (plotfun, list ( x [,1:2], col=cols [x [1,3]])))
 }
