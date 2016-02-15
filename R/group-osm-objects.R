@@ -63,19 +63,14 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     if (length (groups) == 1 & is.null (col_extra))
         col_extra <- "gray40"
 
-    plot_poly <- function (i, col=col) 
-        polypath (i, border=NA, col=col)
-    plot_line <- function (i, col=col) 
-        lines (i, col=col)
-
     if (class (obj) == "SpatialPolygonsDataFrame")
     {
         objtxt <- c ("polygons", "Polygons")
-        plotfun <- "plot_poly"
+        plotfun <- function (i, col=col) polypath (i, border=NA, col=col)
     } else if (class (obj) == "SpatialLinesDataFrame")
     {
         objtxt <- c ("lines", "Lines")
-        plotfun <- "plot_line"
+        plotfun <- function (i, col=col) lines (i, col=col)
     } else
         stop ("obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame")
 
@@ -216,7 +211,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                      temp <- matrix (temp, ncol=1, 
                                                      nrow=length (temp))
                                  temp [temp == 2] <- 1
-                                 n <- colSums (matrix (temp))
+                                 n <- colSums (temp)
                                  if (boundary < 0 & max (n) < nrow (temp))
                                      n <- 0
                                  else if (boundary > 0 & max (n) > 0)
