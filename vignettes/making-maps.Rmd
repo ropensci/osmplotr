@@ -11,8 +11,8 @@ vignette: >
 
 ```{r, include=FALSE}
 setwd ("../..")
-devtools::load_all ("urbanplotr")
-setwd ("./urbanplotr/vignettes")
+devtools::load_all ("osmplotr")
+setwd ("./osmplotr/vignettes")
 ```
 
 # Making Maps

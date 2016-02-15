@@ -60,6 +60,9 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                 
     stopifnot (length (make_hull) == 1 | length (make_hull) == length (groups))
 
+    if (length (groups) == 1 & is.null (col_extra))
+        col_extra <- "gray40"
+
     plot_poly <- function (i, col=col) 
         polypath (i, border=NA, col=col)
     plot_line <- function (i, col=col) 
@@ -209,8 +212,11 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             membs <- lapply (coords, function (i)
                              {
                                  temp <- i [,3:ncol (i)]
+                                 if (!is.matrix (temp))
+                                     temp <- matrix (temp, ncol=1, 
+                                                     nrow=length (temp))
                                  temp [temp == 2] <- 1
-                                 n <- colSums (temp)
+                                 n <- colSums (matrix (temp))
                                  if (boundary < 0 & max (n) < nrow (temp))
                                      n <- 0
                                  else if (boundary > 0 & max (n) > 0)
