@@ -12,24 +12,35 @@
 #' groups specifying whether a convex hull should be constructed around the
 #' group (TRUE), or whether they group already defines a hull (convex or
 #' otherwise; FALSE).
+#' @param boundary (negative, 0, positive) values define whether the boundary of
+#' groups should (exlude, bisect, include) objects which straddle the precise
+#' boundary. (Has no effect if col_extra is NULL.)
 #' @param cols Either a vector of >= 4 colours passed to colour_mat (is
 #' colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default
 #' uses rainbow colours), or 2. If !colmat, a vector of the same length as
 #' groups specifying individual colours for each.
 #' @param col_extra If NULL, then any polygons *NOT* within the convex hulls are
-#' assigned to nearest group and coloured accordingly; if NOT NULL, then any
+#' assigned to nearest group and coloured accordingly (and boundary has no
+#' effect); if NOT NULL, then any
 #' polygons not within groups are coloured this colour.
 #' @param colmat If TRUE generates colours according to \code{get.colours},
 #' otherwise the colours of groups are specified directly by the vector of cols.
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
 
 group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
-                               cols=NULL, col_extra=NULL, colmat=TRUE)
+                               boundary=-1, cols=NULL, col_extra=NULL,
+                               colmat=TRUE)
 {
     if (is.null (dev.list ()))
         stop ("group.osm.objects can only be called after plot.osm.basemap")
 
-    if (class (groups) != "list")
+    if (is.null (groups))
+    {
+        warning (paste0 ("No groups defined in group_osm_objects; ",
+                         "passing to add_osm_objects"))
+        add_osm_objects (obj, col=col_extra)
+        return ()
+    } else if (class (groups) != "list")
     {
         stopifnot (class (groups) == "SpatialPoints")
         groups <- list (groups)
@@ -45,15 +56,9 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     stopifnot (length (make_hull) == 1 | length (make_hull) == length (groups))
 
     plot_poly <- function (i, col=col) 
-    {
-        xy <- slot (slot (i, "Polygons") [[1]], "coords")
-        polypath (xy, border=NA, col=col)
-    }
+        polypath (i, border=NA, col=col)
     plot_line <- function (i, col=col) 
-    {
-        xy <- slot (slot (i, "Lines") [[1]], "coords")
-        lines (xy, col=col)
-    }
+        lines (i, col=col)
 
     if (class (obj) == "SpatialPolygonsDataFrame")
     {
@@ -66,15 +71,10 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     } else
         stop ("obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame")
 
-    # first extract mean coordinates for every polygon or line in obj:
-    xy_mn <- lapply (slot (obj, objtxt [1]),  function (x)
-                  colMeans  (slot (slot (x, objtxt [2]) [[1]], "coords")))
-    xmn <- sapply (xy_mn, function (x) x [1])
-    ymn <- sapply (xy_mn, function (x) x [2])
-
+    # Set up group colours
     if (length (cols) < 4)
     {
-        warnings ("There are < 4 colors; passing directly to group colours")
+        warning ("There are < 4 colors; passing directly to group colours")
         if (is.null (cols))
             cols <- rainbow (length (groups))
         else if (length (cols) < length (groups))
@@ -98,17 +98,22 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         ncols <- 20
         cmat <- colour_mat (ncols, cols=cols)
         cols <- rep (NA, length (groups)) 
+        # cols is then a vector of colours to be filled by matching group
+        # centroids to relative positions within cmat
     }
-    # cols is a vector of colours to be filled by matching group centroids to
-    # relative positions within cmat
+
+    # first extract mean coordinates for every polygon or line in obj:
+    xy_mn <- lapply (slot (obj, objtxt [1]),  function (x)
+                  colMeans  (slot (slot (x, objtxt [2]) [[1]], "coords")))
+    xmn <- sapply (xy_mn, function (x) x [1])
+    ymn <- sapply (xy_mn, function (x) x [2])
+
+    usr <- par ("usr")
+    boundaries <- list ()
     group_indx <- rep (NA, length (obj))
     xy_list <- list () 
     # xy_list list for centroids of each object in each group; used to reallocate
     # stray objects if is.null (col_extra)
-
-    usr <- par ("usr")
-
-    boundaries <- list ()
     for (i in seq (groups))
     {
         if ((length (make_hull) == 1 & make_hull) |
@@ -141,27 +146,35 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         }
     }
 
-    # Assign every segment of each line to a particular group
-    if (class (obj) == "SpatialLinesDataFrame")
-    {
-        coords <- lapply (slot (obj, objtxt [1]),  function (x)
-                          slot (slot (x, objtxt [2]) [[1]], "coords"))
-        pins <- list ()
-        for (i in seq (boundaries))
-        {
-            pins [[i]] <- lapply (coords, function (j)
-                           spatialkernel::pinpoly (boundaries [[i]], j))
-                           
-        }
-    }
-    # This works fast enough, but from this point requires the entire routine to
-    # be rewritten ...
-
+    # Extract coordinates of each item and cbind memberships for each group.
+    # NOTE that pinpooly returns (0,1,2) for (not, on, in) boundary
+    coords <- lapply (slot (obj, objtxt [1]),  function (x)
+                      slot (slot (x, objtxt [2]) [[1]], "coords"))
+    coords <- lapply (coords, function (i)
+                    {
+                        pins <- lapply (boundaries, function (j)
+                                        spatialkernel::pinpoly (j, i))
+                        pins <- do.call (cbind, pins)
+                        cbind (i, pins)
+                    })
     if (is.null (col_extra)) 
     {
-        # then assign remaining sp objects to nearest groups based on Euclidean
-        # distances.
-        indx <- which (is.na (group_indx))
+        # Then each component is assigned to a single group based on entire
+        # boundary.  NOTE that in cases where membership is *equally*
+        # distributed between 2 groups, the which.max function will always
+        # return the numerically first group. TODO: Improve this.
+        membs <- sapply (coords, function (i)
+                         {
+                             temp <- i [,3:ncol (i)]
+                             temp [temp == 2] <- 1
+                             n <- colSums (temp)
+                             if (max (n) < 3) # must have > 2 elements in group
+                                 n <- 0
+                             else
+                                 n <- which.max (n)
+                             return (n)
+                         })
+        indx <- which (membs == 0)
         x0 <- xmn [indx]
         y0 <- ymn [indx]
         dists <- array (NA, dim=c (length (indx), length (groups)))
@@ -178,19 +191,47 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             dists [, i] <- apply (dg, 1, min)
         }
         # Then simply extract the group holding the overall minimum dist:
-        min_group <- apply (dists, 1, which.min)
-        group_indx [indx] <- min_group
-    } else { # plot stray objects with col_extra
-        indx <- which (is.na (group_indx))
-        junk <- lapply (slot (obj [indx,], objtxt [1]), function (x)
-                        do.call (plotfun, c (x, col_extra)))
-    }
-
-    for (i in 1:length (groups))
+        membs [indx] <- apply (dists, 1, which.min)
+        xy <- lapply (coords, function (i) i [,1:2])
+        # And re-map membs == 0:
+        membs [membs == 0] <- length (groups) + 1
+    } else
     {
-        indx <- which (group_indx == i)
-        junk <- lapply (slot (obj [indx,], objtxt [1]), function (x)
-                        do.call (plotfun, c (x, cols [i])))
-    }
+        # potentially split objects across boundaries, thereby extending coords
+        # and thus requiring an explicit loop. TODO: Rcpp this?
+        xy <- list () # new coords, including group membership
+        membs <- NULL
+        for (i in coords)
+        {
+            temp <- i [,3:ncol (i)]
+            temp [temp == 2] <- 1
+            n <- colSums (temp)
+            if (max (n) < 3)
+            {
+                xy [[length (xy) + 1]] <- i [,1:2]
+                membs <- c (membs, 0)
+            } else 
+            {
+                indx <- which (n > 2)
+                for (j in indx)
+                {
+                    indx <- which (temp [,j] == 1)
+                    if (length (indx) > 2)
+                    {
+                        xy [[length (xy) + 1]] <- i [indx, 1:2]
+                        membs <- c (membs, j)
+                    }
+                } # end for j
+            } # end else !(max (n) < 3)
+        } # end for i
+        membs [membs == 0] <- length (groups) + 1
+    } # end else split objects across boundaries
+
+    # cbind membs to xy and submit to plot, so that membs maps straight onto
+    # colours
+    xym <- mapply (cbind, xy, membs)
+    cols <- c (cols, col_extra)
+    junk <- lapply (xym, function (x)
+                    do.call (plotfun, list ( x [,1:2], col=cols [x [1,3]])))
 }
 

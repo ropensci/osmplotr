@@ -5,7 +5,7 @@
 \title{group_osm_objects}
 \usage{
 group_osm_objects(obj = obj, groups = NULL, make_hull = FALSE,
-  cols = NULL, col_extra = NULL, colmat = TRUE)
+  boundary = -1, cols = NULL, col_extra = NULL, colmat = TRUE)
 }
 \arguments{
 \item{obj}{An sp SPDF or SLDF (list of polygons or lines) returned by
@@ -19,13 +19,18 @@ groups specifying whether a convex hull should be constructed around the
 group (TRUE), or whether they group already defines a hull (convex or
 otherwise; FALSE).}
 
+\item{boundary}{(negative, 0, positive) values define whether the boundary of
+groups should (exlude, bisect, include) objects which straddle the precise
+boundary. (Has no effect if col_extra is NULL.)}
+
 \item{cols}{Either a vector of >= 4 colours passed to colour_mat (is
 colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default
 uses rainbow colours), or 2. If !colmat, a vector of the same length as
 groups specifying individual colours for each.}
 
 \item{col_extra}{If NULL, then any polygons *NOT* within the convex hulls are
-assigned to nearest group and coloured accordingly; if NOT NULL, then any
+assigned to nearest group and coloured accordingly (and boundary has no
+effect); if NOT NULL, then any
 polygons not within groups are coloured this colour.}
 
 \item{colmat}{If TRUE generates colours according to \code{get.colours},
