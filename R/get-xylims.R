@@ -9,12 +9,17 @@
 
 get_xylims <- function (obj)
 {
-    if (class (obj) == "SpatialPolygonsDataFrame")
-        slNames <- c ("polygons", "Polygons")
-    else if (class (obj) == "SpatialLinesDataFrame")
-        slNames <- c ("lines", "Lines")
+    if (class (obj) == "numeric" & length (obj) == 4) # bounding box
+        ranges <- array (obj, dim=c(2, 2))
+    else
+    {
+        if (class (obj) == "SpatialPolygonsDataFrame")
+            slNames <- c ("polygons", "Polygons")
+        else if (class (obj) == "SpatialLinesDataFrame")
+            slNames <- c ("lines", "Lines")
 
-    ranges <- sapply (slot (obj, slNames [1]),  function (x)
-                  range (slot (slot (x, slNames [2]) [[1]], "coords")))
+        ranges <- sapply (slot (obj, slNames [1]),  function (x)
+                      range (slot (slot (x, slNames [2]) [[1]], "coords")))
+    }
     list (xrange=range (ranges [1,]), yrange=range (ranges [2,]))
 }

@@ -85,7 +85,7 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     for (i in indx)
     {
         ii <- which (structures == structures [i])
-        suffixes [ii] <- lettrs_full [i]
+        suffixes [ii] <- suffixes [i]
     }
 
     # Color scheme:

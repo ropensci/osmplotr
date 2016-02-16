@@ -15,8 +15,8 @@
 #' @param boundary (negative, 0, positive) values define whether the boundary of
 #' groups should (exlude, bisect, include) objects which straddle the precise
 #' boundary. (Has no effect if col_extra is NULL.)
-#' @param cols Either a vector of >= 4 colours passed to colour_mat (is
-#' colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default
+#' @param cols Either a vector of >= 4 colours passed to colour_mat (if
+#' colmat=T) to arrange as a 2-D map of visually distinct colours (default
 #' uses rainbow colours), or 2. If !colmat, a vector of the same length as
 #' groups specifying individual colours for each.
 #' @param col_extra If NULL, then any polygons *NOT* within the convex hulls are
@@ -55,11 +55,11 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     {
         e <- simpleError ("Cannot coerce groups to SpatialPoints")
         tryCatch (
-            groups <- lapply (groups, function (x) 
-                              as (x, "SpatialPoints")),
-            finally = stop (e))
+                  groups <- lapply (groups, function (x) 
+                                    as (x, "SpatialPoints")),
+                  finally = stop (e))
     }
-                
+
     stopifnot (length (make_hull) == 1 | length (make_hull) == length (groups))
 
     if (length (groups) == 1 & is.null (col_extra))
@@ -108,7 +108,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
 
     # first extract mean coordinates for every polygon or line in obj:
     xy_mn <- lapply (slot (obj, objtxt [1]),  function (x)
-                  colMeans  (slot (slot (x, objtxt [2]) [[1]], "coords")))
+                     colMeans  (slot (slot (x, objtxt [2]) [[1]], "coords")))
     xmn <- sapply (xy_mn, function (x) x [1])
     ymn <- sapply (xy_mn, function (x) x [2])
 
@@ -124,32 +124,32 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     {
         if ((length (make_hull) == 1 & make_hull) |
             (length (make_hull) > 1 & make_hull [i]))
-            {
-                x <- slot (groups [[i]], "coords") [,1]
-                y <- slot (groups [[i]], "coords") [,2]
-                xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
-                ch <- spatstat::convexhull (xy)
-                bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
-            }
-        else
-            bdry <- sp::coordinates (groups [[i]])
-        bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
-        # The next 3 lines are only used if is.null (col_extra)
-        indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
-        indx <- which (indx == 2) # pinpoly returns 2 for points within hull
-        xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
-
-        boundaries [[i]] <- bdry
-
-        if (colmat)
         {
-            # Then get colour from colour.mat
-            xi <- ceiling (ncols * (mean (xmn [indx]) - usr [1]) / 
-                           (usr [2] - usr [1]))
-            yi <- ceiling (ncols * (mean (ymn [indx]) - usr [3]) / 
-                           (usr [4] - usr [3]))
-            cols [i] <- cmat [xi, yi]
+            x <- slot (groups [[i]], "coords") [,1]
+            y <- slot (groups [[i]], "coords") [,2]
+            xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+            ch <- spatstat::convexhull (xy)
+            bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
         }
+    else
+        bdry <- sp::coordinates (groups [[i]])
+    bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
+    # The next 3 lines are only used if is.null (col_extra)
+    indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
+    indx <- which (indx == 2) # pinpoly returns 2 for points within hull
+    xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
+
+    boundaries [[i]] <- bdry
+
+    if (colmat)
+    {
+        # Then get colour from colour.mat
+        xi <- ceiling (ncols * (mean (xmn [indx]) - usr [1]) / 
+                       (usr [2] - usr [1]))
+        yi <- ceiling (ncols * (mean (ymn [indx]) - usr [3]) / 
+                       (usr [4] - usr [3]))
+        cols [i] <- cmat [xi, yi]
+    }
     }
 
     # Extract coordinates of each item and cbind memberships for each group.
@@ -157,12 +157,12 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     coords <- lapply (slot (obj, objtxt [1]),  function (x)
                       slot (slot (x, objtxt [2]) [[1]], "coords"))
     coords <- lapply (coords, function (i)
-                    {
-                        pins <- lapply (boundaries, function (j)
-                                        spatialkernel::pinpoly (j, i))
-                        pins <- do.call (cbind, pins)
-                        cbind (i, pins)
-                    })
+                      {
+                          pins <- lapply (boundaries, function (j)
+                                          spatialkernel::pinpoly (j, i))
+                          pins <- do.call (cbind, pins)
+                          cbind (i, pins)
+                      })
     if (is.null (col_extra)) 
     {
         # Then each component is assigned to a single group based on entire
@@ -236,18 +236,18 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             # potentially split objects across boundaries, thereby extending coords
             # and thus requiring an explicit loop. TODO: Rcpp this?
             split_objs <- sapply (coords, function (i)
-                             {
-                                 temp <- i [,3:ncol (i)]
-                                 if (!is.matrix (temp))
-                                     temp <- matrix (temp, ncol=1, 
-                                                     nrow=length (temp))
-                                 temp [temp == 2] <- 1
-                                 n <- colSums (temp)
-                                 if (max (n) > 0 & max (n) < nrow (temp))
-                                     return (which.max (n))
-                                 else
-                                     return (0)
-                             })
+                                  {
+                                      temp <- i [,3:ncol (i)]
+                                      if (!is.matrix (temp))
+                                          temp <- matrix (temp, ncol=1, 
+                                                          nrow=length (temp))
+                                      temp [temp == 2] <- 1
+                                      n <- colSums (temp)
+                                      if (max (n) > 0 & max (n) < nrow (temp))
+                                          return (which.max (n))
+                                      else
+                                          return (0)
+                                  })
             split_objs <- which (split_objs > 0)
             # Then split coords into 2 lists, one for non-split objects and one
             # containing those listed in split_objs
@@ -263,6 +263,8 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             {
                 temp <- i [,3:ncol (i)]
                 temp [temp == 2] <- 1
+                if (!is.matrix (temp))
+                    temp <- matrix (temp, ncol=1, nrow=length (temp))
                 n <- colSums (temp)
                 if (max (n) < 3)
                 {
@@ -292,19 +294,19 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             # Then add the non-split groups
             xy <- c (xy, lapply (coords, function (i) i [,1:2]))
             membs2 <- sapply (coords, function (i)
-                             {
-                                 temp <- i [,3:ncol (i)]
-                                 if (!is.matrix (temp))
-                                     temp <- matrix (temp, ncol=1, 
-                                                     nrow=length (temp))
-                                 temp [temp == 2] <- 1
-                                 n <- colSums (temp)
-                                 if (max (n) < nrow (temp))
-                                     n <- 0
-                                 else
-                                     n <- which.max (n)
-                                 return (n)
-                             })
+                              {
+                                  temp <- i [,3:ncol (i)]
+                                  if (!is.matrix (temp))
+                                      temp <- matrix (temp, ncol=1, 
+                                                      nrow=length (temp))
+                                  temp [temp == 2] <- 1
+                                  n <- colSums (temp)
+                                  if (max (n) < nrow (temp))
+                                      n <- 0
+                                  else
+                                      n <- which.max (n)
+                                  return (n)
+                              })
             membs <- c (membs, membs2)
         } # end else split objects across boundaries
         # Re-map membs == 0:

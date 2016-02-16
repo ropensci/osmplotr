@@ -1,6 +1,6 @@
-#' urbanplotr.
+#' osmplotr.
 #'
-#' @name urbanplotr
+#' @name osmplotr
 #' @docType package
 #' @import RCurl sp spatstat spatialkernel osmar XML igraph ggm rgeos
 NULL

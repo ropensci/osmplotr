@@ -5,7 +5,7 @@
 \title{make_osm_map}
 \usage{
 make_osm_map(filename = NULL, bbox = NULL, osm_data = NULL,
-  structures = osm_structures(), dat_prefix = "dat_")
+  structures = osm_structures(), width = 640, dat_prefix = "dat_")
 }
 \arguments{
 \item{filename}{Name of plot file; default=NULL plots to screen device (low
@@ -24,6 +24,9 @@ without downloading. These should all be named with the stated
 from osm_structures, and potentially modified to alter lists of structures to
 be plotted, and their associated colours. The order of structs determines the
 plot order of objects.}
+
+\item{width}{Width of graphics device, with height calculated according to
+latitudinal and longitudinal proportions of \code{bbox}.}
 
 \item{dat_prefix}{Prefix for data structures (default 'dat_'). Final data
 structures are created by appending the suffixes from \code{osm_structures}.}

@@ -23,8 +23,8 @@ otherwise; FALSE).}
 groups should (exlude, bisect, include) objects which straddle the precise
 boundary. (Has no effect if col_extra is NULL.)}
 
-\item{cols}{Either a vector of >= 4 colours passed to colour_mat (is
-colmat=T) to arrange as a 2-D map of visually distinct colours (NULL default
+\item{cols}{Either a vector of >= 4 colours passed to colour_mat (if
+colmat=T) to arrange as a 2-D map of visually distinct colours (default
 uses rainbow colours), or 2. If !colmat, a vector of the same length as
 groups specifying individual colours for each.}
 
