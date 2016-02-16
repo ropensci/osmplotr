@@ -1,5 +1,5 @@
-Package: urbanplotr
-Title: Produces visually impressive customisable images of urban areas from OpenStreetMap data
+Package: osmplotr
+Title: Produces visually impressive customisable images of OpenStreetMap data
 Version: 0.0.0.9000
 Authors@R: person("Mark", "Padgham", email = "mark.padghm@email.com", role = c("aut", "cre"))
 Description: Extracts OpenStreetMap data for specified key-value pairs (e.g. key="building") using the overpass API. Different OSM objects can be plotted in different colours using the add.osm.object function.
@@ -15,7 +15,7 @@ Imports:
     spatstat, 
     XML,
 License: GPL-3
-URL: https://github.com/mpadge/urbanplotr
+URL: https://github.com/mpadge/osmplotr
 LazyData: true
 Suggests: knitr,
     rmarkdown

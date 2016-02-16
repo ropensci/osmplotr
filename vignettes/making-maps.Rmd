@@ -420,4 +420,42 @@ Beyond a handful of groups, manually devising an appropriate colour scheme may
 become difficult.
 
 `osmplotr` offers a convenient way to allocate systematiclly distinct colours to
-spatially distinct groups through using 
+spatially distinct groups with the `colour_mat` function.
+
+```{r, fig.width=5}
+plot.new ()
+cmat <- colour_mat (plot=TRUE)
+```
+
+This function accepts a vector of 4 or more colours assinged to each corner of a
+rectangular grid of defined size(s). The interior of the grid is then filled
+through interpolation. The default colours are `rainbow (4)` (or red, green,
+violet, blue), as illustrated above.
+
+Regional groups may be coloured using `colour_mat` by setting `colmat=TRUE` in
+`group_osm_objects` and by submitting a desired vector of colours. A
+`colour_mat` may be illustrated by plotting inclusive groups defined by simple
+points.
+```{r}
+x <- xylims$xrange [1] + rep (0.5 + 0:3, each=3) * diff (xylims$xrange) / 4
+y <- xylims$yrange [1] + rep (0.5 + 0:2, times=4) * diff (xylims$yrange) / 3
+pts <- cbind (x, y)
+pts <- apply (pts, 1, function (i) 
+              sp::SpatialPoints (matrix (i, nrow=1, ncol=2)))
+# Then create small rectangles around each pts
+pts <- lapply (pts, function (i)
+               {
+                   x <- sp::coordinates (i) [1] + c (-0.002, 0.002, 0.002,
+                                                     -0.002)
+                   y <- sp::coordinates (i) [2] + c (-0.002, -0.002, 0.002,
+                                                     0.002)
+                   sp::SpatialPoints (cbind (x, y))
+               })
+plot_osm_basemap (xylims=xylims, bg="gray20", file="map14.png")
+plot_osm_basemap (xylims=xylims, bg="gray20")
+group_osm_objects (dat_B, groups=pts, col_extra=NA, 
+                   colmat=TRUE, boundary=-1)
+graphics.off ()
+```
+![map](map14.png)
+

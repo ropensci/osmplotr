@@ -39,6 +39,8 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     if (is.null (dev.list ()))
         stop ("group.osm.objects can only be called after plot.osm.basemap")
 
+    if (is.na (col_extra))
+        col_extra <- NULL
     if (is.null (groups))
     {
         warning (paste0 ("No groups defined in group_osm_objects; ",
@@ -131,25 +133,25 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             ch <- spatstat::convexhull (xy)
             bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
         }
-    else
-        bdry <- sp::coordinates (groups [[i]])
-    bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
-    # The next 3 lines are only used if is.null (col_extra)
-    indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
-    indx <- which (indx == 2) # pinpoly returns 2 for points within hull
-    xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
+        else
+            bdry <- sp::coordinates (groups [[i]])
+        bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
+        # The next 3 lines are only used if is.null (col_extra)
+        indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
+        indx <- which (indx == 2) # pinpoly returns 2 for points within hull
+        xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
 
-    boundaries [[i]] <- bdry
+        boundaries [[i]] <- bdry
 
-    if (colmat)
-    {
-        # Then get colour from colour.mat
-        xi <- ceiling (ncols * (mean (xmn [indx]) - usr [1]) / 
-                       (usr [2] - usr [1]))
-        yi <- ceiling (ncols * (mean (ymn [indx]) - usr [3]) / 
-                       (usr [4] - usr [3]))
-        cols [i] <- cmat [xi, yi]
-    }
+        if (colmat)
+        {
+            # Then get colour from colour.mat
+            xi <- ceiling (ncols * (mean (xmn [indx]) - usr [1]) / 
+                           (usr [2] - usr [1]))
+            yi <- ceiling (ncols * (mean (ymn [indx]) - usr [3]) / 
+                           (usr [4] - usr [3]))
+            cols [i] <- cmat [xi, yi]
+        }
     }
 
     # Extract coordinates of each item and cbind memberships for each group.
@@ -192,14 +194,17 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         for (i in seq (groups))
         {
             ng <- dim (xy_list [[i]]) [1]
-            x0mat <- array (x0, dim=c(length (x0), ng))
-            y0mat <- array (y0, dim=c(length (y0), ng))
-            xmat <- t (array (xy_list [[i]] [,1], dim=c(ng, length (x0))))
-            ymat <- t (array (xy_list [[i]] [,2], dim=c(ng, length (x0))))
-            dg <- sqrt ((xmat - x0mat) ^ 2 + (ymat - y0mat) ^ 2)
-            # Then the minimum distance for each stray object to any object in
-            # group [i]:
-            dists [, i] <- apply (dg, 1, min)
+            if (ng > 0)
+            {
+                x0mat <- array (x0, dim=c(length (x0), ng))
+                y0mat <- array (y0, dim=c(length (y0), ng))
+                xmat <- t (array (xy_list [[i]] [,1], dim=c(ng, length (x0))))
+                ymat <- t (array (xy_list [[i]] [,2], dim=c(ng, length (x0))))
+                dg <- sqrt ((xmat - x0mat) ^ 2 + (ymat - y0mat) ^ 2)
+                # Then the minimum distance for each stray object to any object in
+                # group [i]:
+                dists [, i] <- apply (dg, 1, min)
+            }
         }
         # Then simply extract the group holding the overall minimum dist:
         membs [indx] <- apply (dists, 1, which.min)

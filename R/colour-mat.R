@@ -53,31 +53,28 @@ colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
     tr <- cols [,2] # top right
     bl <- cols [,3] # bottom left
     br <- cols [,4] # bottom right
-    # the corner colours are then (linearly) graduated across the top and bottom
-    # rows
-    indx_tr <- seq (tl [1], tr [1], length.out=n [1]) # top red shade
-    indx_tg <- seq (tl [2], tr [2], length.out=n [1]) # top green shade
-    indx_tb <- seq (tl [3], tr [3], length.out=n [1]) # top blue shade
-    indx_br <- seq (bl [1], br [1], length.out=n [1]) 
-    indx_bg <- seq (bl [2], br [2], length.out=n [1]) 
-    indx_bb <- seq (bl [3], br [3], length.out=n [1]) 
+    # Then constuct distance matrices from each corner
+    col_dist <- array (1:n[1] - 1, dim=n)
+    row_dist <- t (array (1:n[2] - 1, dim=rev (n)))
+    dtl <- sqrt (col_dist ^ 2 + row_dist ^ 2) # indexed from top-left
+    dbl <- apply (dtl, 2, rev)
+    dbr <- t (apply (dbl, 1, rev))
+    dtr <- t (apply (dtl, 1, rev))
+    dtl <- 1 - dtl / max (dtl)
+    dtr <- 1 - dtr / max (dtr)
+    dbl <- 1 - dbl / max (dbl)
+    dbr <- 1 - dbr / max (dbr)
 
-    # Then fill colums with the vector indxs of RGB colours:
-    indx_r <- indx_g <- indx_b <- array (NA, dim=n)
-    tr_arr <- array (indx_tr, dim=n)
-    br_arr <- array (indx_br, dim=n)
-    tg_arr <- array (indx_tg, dim=n)
-    bg_arr <- array (indx_bg, dim=n)
-    tb_arr <- array (indx_tb, dim=n)
-    bb_arr <- array (indx_bb, dim=n)
-    p <- t (array ((1:n[2]) / n[2], dim=rev (n))) # proportion of Top vs. Bottom colours
-
-    indx_r <- p * tr_arr + (1 - p) * br_arr
-    indx_g <- p * tg_arr + (1 - p) * bg_arr
-    indx_b <- p * tb_arr + (1 - p) * bb_arr
-
+    col_arrs <- list ()
+    for (i in seq (3))
+    {
+        arr <- (tl [i] * dtl + tr [i] * dtr + bl [i] * dbl + br [i] * dbr) / 4
+        col_arrs [[i]] <- (arr - min (arr)) * diff (range (cols [i,])) / 
+                    diff (range (arr))
+    }
     # Then fill the actual colourmat with RGB colours composed of the 3 indices:
-    carr <- array (rgb (indx_r, indx_g, indx_b, maxColorValue=255), dim=n)
+    carr <- array (rgb (col_arrs [[1]], col_arrs [[2]], col_arrs [[3]], 
+                        maxColorValue=255), dim=n)
 
     if (plot) {
         plot.new ()
