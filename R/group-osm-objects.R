@@ -79,7 +79,6 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     # Set up group colours
     if (length (cols) < 4)
     {
-        warning ("There are < 4 colors; passing directly to group colours")
         if (is.null (cols))
             cols <- rainbow (length (groups))
         else if (length (cols) < length (groups))
@@ -116,8 +115,11 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     usr <- par ("usr")
     boundaries <- list ()
     xy_list <- list () 
-    # xy_list list for centroids of each object in each group; used to reallocate
-    # stray objects if is.null (col_extra)
+    # The following loop constructs:
+    # 1.  xy_list list for centroids of each object in each group; used to
+    # reallocate stray objects if is.null (col_extra)
+    # 2. boundaries list of enclosing polygons, creating convex hulls if
+    # necessary.
     for (i in seq (groups))
     {
         if ((length (make_hull) == 1 & make_hull) |
@@ -165,8 +167,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     {
         # Then each component is assigned to a single group based on entire
         # boundary.  NOTE that in cases where membership is *equally*
-        # distributed between 2 groups, the which.max function will always
-        # return the numerically first group. TODO: Improve this.
+        # distributed between 2 groups, one of these is *randomly* selected.
         membs <- sapply (coords, function (i)
                          {
                              temp <- i [,3:ncol (i)]
@@ -178,7 +179,10 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                              if (max (n) < 3) # must have > 2 elements in group
                                  n <- 0
                              else
-                                 n <- which.max (n)
+                             {
+                                 indx <- which (n == max (n))
+                                 n <- indx [ceiling (runif (1) * length (indx))]
+                             }
                              return (n)
                          })
         indx <- which (membs == 0)
@@ -231,9 +235,31 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         { 
             # potentially split objects across boundaries, thereby extending coords
             # and thus requiring an explicit loop. TODO: Rcpp this?
-            xy <- list () # new coords, including group membership
+            split_objs <- sapply (coords, function (i)
+                             {
+                                 temp <- i [,3:ncol (i)]
+                                 if (!is.matrix (temp))
+                                     temp <- matrix (temp, ncol=1, 
+                                                     nrow=length (temp))
+                                 temp [temp == 2] <- 1
+                                 n <- colSums (temp)
+                                 if (max (n) > 0 & max (n) < nrow (temp))
+                                     return (which.max (n))
+                                 else
+                                     return (0)
+                             })
+            split_objs <- which (split_objs > 0)
+            # Then split coords into 2 lists, one for non-split objects and one
+            # containing those listed in split_objs
+            coords_split <- lapply (split_objs, function (i) coords [[i]])
+            indx <- seq (coords) [!seq (coords) %in% split_objs]
+            coords <- lapply (indx, function (i) coords [[i]])
+            # Then make new lists of xy and memberships by spliiting objects in
+            # coords_split. These lists are of unknown length, requiring an
+            # unsightly double loop.
+            xy <- list () 
             membs <- NULL
-            for (i in coords)
+            for (i in coords_split)
             {
                 temp <- i [,3:ncol (i)]
                 temp [temp == 2] <- 1
@@ -244,18 +270,42 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                     membs <- c (membs, 0)
                 } else 
                 {
-                    indx <- which (n > 2)
-                    for (j in indx)
+                    # Allow for multiple group memberships
+                    indx_i <- which (n > 2)
+                    for (j in indx_i)
                     {
-                        indx <- which (temp [,j] == 1)
-                        if (length (indx) > 2)
+                        indx_j <- which (temp [,j] == 1)
+                        if (length (indx_j) > 2)
                         {
-                            xy [[length (xy) + 1]] <- i [indx, 1:2]
+                            xy [[length (xy) + 1]] <- i [indx_j, 1:2]
                             membs <- c (membs, j)
+                        }
+                        indx_j <- which (temp [,j] == 0)
+                        if (length (indx_j) > 2)
+                        {
+                            xy [[length (xy) + 1]] <- i [indx_j, 1:2]
+                            membs <- c (membs, 0)
                         }
                     } # end for j
                 } # end else !(max (n) < 3)
             } # end for i
+            # Then add the non-split groups
+            xy <- c (xy, lapply (coords, function (i) i [,1:2]))
+            membs2 <- sapply (coords, function (i)
+                             {
+                                 temp <- i [,3:ncol (i)]
+                                 if (!is.matrix (temp))
+                                     temp <- matrix (temp, ncol=1, 
+                                                     nrow=length (temp))
+                                 temp [temp == 2] <- 1
+                                 n <- colSums (temp)
+                                 if (max (n) < nrow (temp))
+                                     n <- 0
+                                 else
+                                     n <- which.max (n)
+                                 return (n)
+                             })
+            membs <- c (membs, membs2)
         } # end else split objects across boundaries
         # Re-map membs == 0:
         membs [membs == 0] <- length (groups) + 1
