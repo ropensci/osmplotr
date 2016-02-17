@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include=FALSE}
+```{r load, include=FALSE}
 setwd ("../..")
 devtools::load_all ("osmplotr")
 setwd ("./osmplotr/vignettes")
@@ -18,21 +18,11 @@ setwd ("./osmplotr/vignettes")
 # Making Maps
 
 This `R` package is designed to produce visually impressive graphical plots of
-OpenStreetMap (OSM) data. The above illustrates a small portion of central
-London, with selected areas highlighted. All data are downloaded from the
+OpenStreetMap (OSM) data. All of the following examples display results for a
+small portion of central London, U.K. All data are downloaded from the
 [overpass API](https://overpass-api.de).  
 
-## 1. A simple map
-
-OSM data for particular types of objects can be downloaded using
-`extract_osm_objects`.
-```{r}
-bbox <- c(-0.15,51.5,-0.1,51.52) # A small part of inner London, U.K.
-```
-```{r, eval=FALSE}
-dat_B <- extract_osm_objects (key="building", bbox=bbox)
-dat_H <- extract_osm_objects (key="highway", bbox=bbox)
-```
+A simple map may be produced using the following simple steps:
 ```{r, echo=FALSE}
 # Combining (dat_B, dat_BC) and (dat_H, dat_HP) requires removing the repeated
 # objects
@@ -40,6 +30,48 @@ indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
 dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
 indx <- which (!london$dat_H$id %in% london$dat_HP$id)
 dat_H <- maptools::spRbind (london$dat_H [indx,], london$dat_HP)
+```
+1. Specify the bounding box for the desired region
+```{r}
+bbox <- c(-0.15,51.5,-0.1,51.52) 
+```
+2. Download the desired data---in this case, all building perimeters.
+```{r, eval=FALSE}
+dat_B <- extract_osm_objects (key="building", bbox=bbox)
+```
+3. Initiate an `osm_basemap` with desired background (`bg`) colour
+```{r map1, eval=TRUE}
+plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map1.png")
+```
+```{r, echo=FALSE}
+graphics.off ()
+```
+![map](map1.png)
+
+4. Add desired plotting objects
+```{r, eval=FALSE}
+add_osm_objects (dat_B, col="gray40")
+```
+```{r map2, eval=TRUE, echo=FALSE}
+plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map2.png")
+add_osm_objects (dat_B, col="gray40")
+graphics.off ()
+```
+![map](map2.png)
+5. When finished, close graphics device
+```{r}
+graphics.off ()
+```
+
+## 1. A simple map
+
+OSM data for particular types of objects can be downloaded using
+`extract_osm_objects`.
+```{r}
+```
+```{r, eval=FALSE}
+dat_B <- extract_osm_objects (key="building", bbox=bbox)
+dat_H <- extract_osm_objects (key="highway", bbox=bbox)
 ```
 This function returns spatial (`sp`) `data.frame` objects of an appropriate
 types.
@@ -60,23 +92,23 @@ background colour. The basemap also defines the dimensions of the plot, which
 may be scaled in proportion to the latitudinal and longitudinal range of the
 objects to be plotted using `get_xylims`, or any other desired limits may be
 passed. Objects may then be overlaid on this basemap using `add_osm_objects`.
-```{r}
+```{r map3, eval=TRUE}
 xylims <- get_xylims (dat_B)
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map1.png")
 add_osm_objects (dat_B, col="gray40")
 add_osm_objects (dat_H, col="gray70")
 graphics.off ()
 ```
-![map](map1.png)
+![map](map3.png)
 
 Other graphical parameters can also be passed to `add_osm_objects`, such as
 border colours or line widths and types. For example,
-```{r}
+```{r map4, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map2.png")
 add_osm_objects (dat_B, col="gray40", border="orange", lwd=0.1)
 graphics.off ()
 ```
-![map](map2.png)
+![map](map4.png)
 
 This package is generally intended to produce high quality graphical output
 written to particular graphic devices such as `png` or `jpeg` (see `?png` for a
@@ -100,15 +132,15 @@ dat_BR <- london$dat_BR
 dat_HP <- london$dat_HP
 ```
 ```{r}
-length (dat_B)
+length (dat_BR)
 ```
-```{r}
+```{r map5, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map3.png")
 add_osm_objects (dat_BR, col="gray40")
 add_osm_objects (dat_HP, col="gray70")
 graphics.off ()
 ```
-![map](map3.png)
+![map](map5.png)
 
 (There are evidently very few buildings in this part of London marked as
 'residential'.)
@@ -123,13 +155,13 @@ dat_H <- extract_osm_objects (key="highway", value="!primary", bbox=bbox)
 ```{r, echo=FALSE}
 dat_H <- london$dat_H
 ```
-```{r}
+```{r map6, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map4.png")
 add_osm_objects (dat_H, col="gray50")
 add_osm_objects (dat_HP, col="gray80")
 graphics.off ()
 ```
-![map](map4.png)
+![map](map6.png)
 
 Or non-residential buildings can be extracted.
 ```{r, eval=FALSE}
@@ -138,13 +170,13 @@ dat_BNR <- extract_osm_objects (key="building", value="!residential", bbox=bbox)
 ```{r, echo=FALSE}
 dat_BNR <- london$dat_BNR
 ```
-```{r}
+```{r map7, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map5.png")
 add_osm_objects (dat_BR, col="gray80")
 add_osm_objects (dat_BNR, col="gray40")
 graphics.off ()
 ```
-![map](map5.png)
+![map](map7.png)
 
 ### 2b. Additional `key-value` pairs
 
@@ -170,7 +202,7 @@ as illustrated in the following.
 dat_RFH <- london$dat_RFH
 dat_ST <- london$dat_ST
 ```
-```{r}
+```{r map8, eval=TRUE}
 xylims <- list (xrange=c(-0.118, -0.110), yrange=c(51.504, 51.507))
 plot_osm_basemap (xylims=xylims, bg="gray95", file="map6.png", width=480)
 add_osm_objects (dat_H, col="gray80")
@@ -179,7 +211,7 @@ add_osm_objects (dat_RFH, col="orange", border="red", lwd=3)
 add_osm_objects (dat_ST, col="skyblue", border="blue", lwd=3)
 graphics.off ()
 ```
-![map](map6.png)
+![map](map8.png)
 
 ## 3. Automating map production
 
@@ -250,59 +282,25 @@ london$dat_ST <- extract_osm_objects (key="building", extra_pairs=extra_pairs,
                                 bbox=bbox)
 ```
 
-The above `structs` can be used to make a map using the `london` data:
-```{r, eval=FALSE}
-make_osm_map (osm_data=london, structures=structs, dat_prefix="dat_",
-              file="map7.png")
+The above `structures` can be used to make a map using the `london` data:
+```{r map9, eval=TRUE}
+osm_data <- make_osm_map (osm_data=london, structures=structures, 
+                          dat_prefix="dat_", file="map7.png")
 graphics.off ()
 ```
-```{r, echo=FALSE}
-# knitr evidently does not include figures that are generated entire within
-# external function calls, so this just repeats the relevant lines
-xylims <- list (xrange=c (Inf, -Inf), yrange=c(Inf, -Inf))
-for (i in london)
-{
-    lims <- get_xylims (i)
-    if (lims$xrange [1] < xylims$xrange [1])
-        xylims$xrange [1] <- lims$xrange [1]
-    if (lims$xrange [2] > xylims$xrange [2])
-        xylims$xrange [2] <- lims$xrange [2]
-    if (lims$yrange [1] < xylims$yrange [1])
-        xylims$yrange [1] <- lims$yrange [1]
-    if (lims$yrange [2] > xylims$yrange [2])
-        xylims$yrange [2] <- lims$yrange [2]
-}
-bg <- structures$col [structures$structures == "background"]
-plot_osm_basemap (xylims=xylims, bg=bg, file="map7.png")
-for (i in seq (nrow (structures) - 1))
-{
-    obji <- paste0 ("dat_", structures$suffixes [i])
-    add_osm_objects (london [[obji]], col=structures$cols [i])
-}
-graphics.off()
-```
-![map](map7.png)
+![map](map9.png)
 
 Because no bounding box was passed to `make_osm_map`, a bounding box is
 extracted as the **largest** box spanning all objects in `osm_data`. These
 objects include the highways which extend notably further to the north and west
 than the actual bounding box used to extract these highways. Passing the
 previous bounding box to the same call gives:
-```{r, eval=FALSE}
-make_osm_map (osm_data=london, structures=structs, dat_prefix="dat_",
-              bbox=bbox, file="map8.png")
+```{r map10, eval=TRUE}
+osm_data <- make_osm_map (osm_data=london, structures=structures, 
+                          dat_prefix="dat_", bbox=bbox, file="map8.png")
 graphics.off ()
 ```
-```{r, echo=FALSE}
-plot_osm_basemap (xylims=get_xylims (bbox), bg=bg, file="map8.png")
-for (i in seq (nrow (structures) - 1))
-{
-    obji <- paste0 ("dat_", structures$suffixes [i])
-    add_osm_objects (london [[obji]], col=structures$cols [i])
-}
-graphics.off()
-```
-![map](map8.png)
+![map](map10.png)
 
 
 
@@ -329,7 +327,7 @@ or a set of points generated through any other means, can then be passed as the
 indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
 dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
 ```
-```{r}
+```{r map11, eval=TRUE}
 pts <- sp::SpatialPoints (cbind (c (-0.120, -0.135, -0.135, -0.120),
                              c (51.510, 51.510, 51.516, 51.516)))
 xylims <- get_xylims (c (-0.14, 51.505, -0.11, 51.52))
@@ -338,7 +336,7 @@ group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40",
                    colmat=FALSE) 
 graphics.off ()
 ```
-![map](map9.png)
+![map](map11.png)
 
 ### 4.1 Inclusive, exclusive, and bisected polygons
 
@@ -349,20 +347,20 @@ groups inclusively (`boundary>0`) or exclusively (`boundary<0`), or whether they
 should be precisely bisected by a group border (`boundary=0`). The two options
 in addition to the default of `boundary=-1` produce the following maps. 
 
-```{r}
+```{r map12, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map10.png")
 group_osm_objects (dat_B, pts, col="orange", col_extra="gray40", colmat=FALSE,
                    boundary=0)
 graphics.off ()
 ```
-![map](map10.png)
-```{r}
+![map](map12.png)
+```{r map13, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map11.png")
 group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 graphics.off ()
 ```
-![map](map11.png)
+![map](map13.png)
 
 The ability to combine inclusive and bisected polygons is particularly useful
 when selected areas partially contain large polygons such as parks. The
@@ -373,6 +371,8 @@ and parks bisected by the boundary.
 xylims <- get_xylims (c (-0.15, 51.5, -0.1, 51.52)) # zoom out again
 pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
                              c (51.502, 51.502, 51.515, 51.515)))
+```
+```{r map14, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map12.png")
 group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
@@ -382,7 +382,7 @@ group_osm_objects (london$dat_P, groups=pts, col=col_park_in,
                    col_extra=col_park_out, colmat=FALSE, boundary=0)
 graphics.off ()
 ```
-![map](map12.png)
+![map](map14.png)
 
 Bisection allocates points either to within or beyond a given boundary, with
 resultant polygons generally separated by a visible gap between locations at
@@ -394,6 +394,8 @@ layers prior to grouping objects:
 xylims <- get_xylims (c (-0.15, 51.5, -0.1, 51.52)) # zoom out again
 pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
                              c (51.502, 51.502, 51.515, 51.515)))
+```
+```{r map15, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map13.png")
 group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
@@ -404,7 +406,7 @@ group_osm_objects (london$dat_P, groups=pts, col=col_park_in,
                    col_extra=col_park_out, colmat=FALSE, boundary=0)
 graphics.off ()
 ```
-![map](map13.png)
+![map](map15.png)
 
 
 ### 4.2 The Colour Matrix: Colouring Several Regions
@@ -459,22 +461,22 @@ groups <- lapply (groups, function (i)
                })
 ```
 The `ngroups` can then simply be plotted as follows.
-```{r}
+```{r map16, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map14.png")
 group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
                    colmat=TRUE, lwd=3)
 graphics.off ()
 ```
-![map](map14.png)
+![map](map16.png)
 
 The `colour_mat` function has an option to rotate the colour space. This may
 also be passed directly to `group_osm_objects` enabling, for example, the
 colours in the previous plot to be rotate by 90 degrees.
 
-```{r}
+```{r map17, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map15.png")
 group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
                    colmat=TRUE, rotate=90, lwd=3)
 graphics.off ()
 ```
-![map](map15.png)
+![map](map17.png)

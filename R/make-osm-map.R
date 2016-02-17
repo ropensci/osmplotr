@@ -33,12 +33,10 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
                           structures=osm_structures (), width=640,
                           dat_prefix="dat_")
 {
-    if (is.null (bbox) & is.null (osm_data))
-        stop ("Either bounding box or osm_data must be given")
-    if (!is.null (osm_data))
-        attach (osm_data)
     if (is.null (bbox)) # get it from osm_data
     {
+        if (is.null (osm_data))
+            stop ("Either bounding box or osm_data must be given")
         xylims <- list (xrange=c (Inf, -Inf), yrange=c(Inf, -Inf))
         for (i in osm_data)
         {
@@ -58,7 +56,7 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
 
     sfx <- structures$suffixes [1:(nrow (structures) - 1)]
     structs_new <- which (!sapply (sfx, function (i) 
-                                     exists (paste0 (dat_prefix, i))))
+                           any (paste0 (dat_prefix, i) %in% names (osm_data))))
     if (length (structs_new) > 0)
     {
         structs_full <- structures
@@ -72,7 +70,6 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
                                         value=structures$value [i], bbox=bbox)
             fname <- paste0 (dat_prefix, structures$suffixes [i])
             assign (fname, dat)
-            #osm_data <- c (osm_data, list (fname=get (fname)))
             osm_data [[fname]] <- get (fname)
             setTxtProgressBar(pb, i / nrow (structures))
         }
@@ -83,7 +80,7 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
     }
     ns <- nrow (structures) - 1 # last row is background
 
-    bg <- structs$col [structs$structures == "background"]
+    bg <- structures$col [structures$structures == "background"]
     plot_osm_basemap (xylims=get_xylims (bbox), filename=filename,
                       bg=bg, width=width)
     for (i in seq (nrow (structures) - 1))
