@@ -22,7 +22,10 @@ OpenStreetMap (OSM) data. All of the following examples display results for a
 small portion of central London, U.K. All data are downloaded from the
 [overpass API](https://overpass-api.de).  
 
-A simple map may be produced using the following simple steps:
+This map:
+![map](map2.png)
+
+can be made using the following simple steps:
 ```{r, echo=FALSE}
 # Combining (dat_B, dat_BC) and (dat_H, dat_HP) requires removing the repeated
 # objects
@@ -30,6 +33,7 @@ indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
 dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
 indx <- which (!london$dat_H$id %in% london$dat_HP$id)
 dat_H <- maptools::spRbind (london$dat_H [indx,], london$dat_HP)
+dat_T <- london$dat_T
 ```
 1. Specify the bounding box for the desired region
 ```{r}
@@ -46,8 +50,6 @@ plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map1.png")
 ```{r, echo=FALSE}
 graphics.off ()
 ```
-![map](map1.png)
-
 4. Add desired plotting objects in the desired colour.
 ```{r, eval=FALSE}
 add_osm_objects (dat_B, col="gray40")
@@ -57,7 +59,6 @@ plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map2.png")
 add_osm_objects (dat_B, col="gray40")
 graphics.off ()
 ```
-![map](map2.png)
 
 5. When finished, close graphics device
 ```{r}
@@ -73,20 +74,24 @@ using `extract_osm_objects`.
 ```{r, eval=FALSE}
 dat_B <- extract_osm_objects (key="building", bbox=bbox)
 dat_H <- extract_osm_objects (key="highway", bbox=bbox)
+dat_T <- extract_osm_objects (key="natural", value="tree", bbox=bbox)
 ```
 The `extract_osm_objects` function returns spatial (`sp`) `data.frame` objects
 of an appropriate types.
 ```{r}
 class (dat_B)
 class (dat_H)
+class (dat_T)
 ```
-The `SpatialPolygonsDataFrame` (SPDF) and `SpatialLinesDataFrame` (SLDF) of
-London buildings and highways contain 
+The `SpatialPolygonsDataFrame`, `SpatialLinesDataFrame`, and
+`SpatialPointsDataFrame` of London buildings, highways, and trees respectively
+contain 
 ```{r}
 length (dat_B)
 length (dat_H)
+length (dat_T)
 ```
-... 6,209 building polygons and 4,524 highway lines.
+... 6,209 building polygons, 4,524 highway lines, and 3,182 trees.
 
 As illustrated above, plotting maps requires first making a basemap with a
 specified background colour. The basemap also defines the dimensions of the
@@ -114,10 +119,10 @@ graphics.off ()
 ```
 ![map](map4.png)
 
-This package is generally intended to produce high quality graphical output
+The `osmplotr` package is intended to produce high quality graphical output
 written to particular graphic devices such as `png` or `jpeg` (see `?png` for a
 list of possible devices). Map production generally involves the sequential
-addition of objects, for which the graphic device must remain open. It is
+addition of objects, for which the graphic device must remain open.  It is
 important once finished a map to close the device with `dev.off` or
 `graphics.off`.
 
@@ -262,7 +267,7 @@ suffix given in `osm_structures`.  Any additional data present in
 `osm_data` and returned from `make_osm_map`.
 
 `osmplotr` includes example data for a small area of central London, U.K.
-(`bbox=c(-0.15,51.5,-0.1,51.52)`)---see `?london`
+---see `?london`
 ```{r}
 names (london)
 ```
@@ -295,7 +300,9 @@ london$dat_ST <- extract_osm_objects (key="building", extra_pairs=extra_pairs,
                                 bbox=bbox)
 ```
 
-The above `structures` can be used to make a map using the `london` data:
+Having appropriately modified a data frame of `osm_structures`, a corresponding
+map may then be produced through submitting these structures, and any
+accompanying data, to `make_osm_map`:
 ```{r map9, eval=FALSE}
 osm_data <- make_osm_map (osm_data=london, structures=structures, 
                           dat_prefix="dat_", file="map9.png")
@@ -468,8 +475,10 @@ lie *within* groups, then if `col_extra=NULL` (or `NA`), all points are assigned
 to the nearest group. This nevertheless requires the initial groups to be of
 non-zero size, and so the following lines initially select random points and
 then extend them by creating small rectangles around each.
-```{r}
+```{r, echo=FALSE}
 set.seed (2)
+```
+```{r}
 ngroups <- 12
 x <- xylims$xrange [1] + runif (ngroups) * diff (xylims$xrange)
 y <- xylims$yrange [1] + runif (ngroups) * diff (xylims$yrange)
