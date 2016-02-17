@@ -54,7 +54,7 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
                    xylims$xrange [2], xylims$yrange [2])
     }
 
-    sfx <- structures$suffixes [1:(nrow (structures) - 1)]
+    sfx <- structures$suffix [1:(nrow (structures) - 1)]
     structs_new <- which (!sapply (sfx, function (i) 
                            any (paste0 (dat_prefix, i) %in% names (osm_data))))
     if (length (structs_new) > 0)
@@ -68,7 +68,7 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
         for (i in 1:nrow (structures)) {
             dat <- extract_osm_objects (key=structures$key [i],
                                         value=structures$value [i], bbox=bbox)
-            fname <- paste0 (dat_prefix, structures$suffixes [i])
+            fname <- paste0 (dat_prefix, structures$suffix [i])
             assign (fname, dat)
             osm_data [[fname]] <- get (fname)
             setTxtProgressBar(pb, i / nrow (structures))
@@ -80,12 +80,12 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
     }
     ns <- nrow (structures) - 1 # last row is background
 
-    bg <- structures$col [structures$structures == "background"]
+    bg <- structures$col [structures$structure == "background"]
     plot_osm_basemap (xylims=get_xylims (bbox), filename=filename,
                       bg=bg, width=width)
     for (i in seq (nrow (structures) - 1))
     {
-        obji <- paste0 ("dat_", structures$suffixes [i])
+        obji <- paste0 ("dat_", structures$suffix [i])
         add_osm_objects (osm_data [[obji]], col=structures$cols [i])
     }
 

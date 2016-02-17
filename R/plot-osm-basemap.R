@@ -27,7 +27,7 @@ plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
                               graphic.device="png", ...)
 {
     if (!is.null (structures))
-        bg = structures$cols [which (structures$structures == "background")]
+        bg = structure$cols [which (structures$structure == "background")]
 
     if (!is.null (filename))
         if (nchar (filename) == 0)

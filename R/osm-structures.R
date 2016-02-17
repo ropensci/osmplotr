@@ -140,7 +140,7 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     
     dat <- data.frame (cbind (structures, keys, values, suffixes, cols),
                        stringsAsFactors=FALSE, row.names=seq (length (keys)))
-    names (dat) <- c ("structures", "key", "value", "suffixes", "cols")
+    names (dat) <- c ("structure", "key", "value", "suffix", "cols")
     return (dat)
 }
 
