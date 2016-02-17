@@ -5,7 +5,8 @@
 \title{group_osm_objects}
 \usage{
 group_osm_objects(obj = obj, groups = NULL, make_hull = FALSE,
-  boundary = -1, cols = NULL, col_extra = NULL, colmat = TRUE)
+  boundary = -1, cols = NULL, col_extra = NULL, colmat = TRUE,
+  rotate = NULL, lwd = 0)
 }
 \arguments{
 \item{obj}{An sp SPDF or SLDF (list of polygons or lines) returned by
@@ -35,6 +36,11 @@ polygons not within groups are coloured this colour.}
 
 \item{colmat}{If TRUE generates colours according to \code{get.colours},
 otherwise the colours of groups are specified directly by the vector of cols.}
+
+\item{rotate}{Passed to colour_mat to rotate colours by the specified number
+of degrees clockwise.}
+
+\item{lwd}{Width of boundary line (0 for no line)}
 }
 \value{
 nothing (adds to graphics.device opened with plot.osm.basemap)

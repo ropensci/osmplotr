@@ -37,9 +37,13 @@ colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
             rotate <- rotate + 360
         while (rotate > 360)
             rotate <- rotate - 360
-        i <- ceiling ((rotate + 1) / 90)
         cols <- cbind (cols, cols)
-        i1 <- i:(i+3)
+        # Clockwise rotation shifts the top left to the top right, meaning the
+        # index of four colours must move *down* or *to the left* of cols
+        i <- floor (rotate / 90) # number of columns to move
+        i1 <- 1:4 - i
+        if (min (i1) < 1)
+            i1 <- i1 + 4
         i2 <- i1 + 1
         x <- (rotate %% 90) / 360
         cols <- (1 - x) * cols [,i1] + x * cols [,i2]
@@ -51,8 +55,8 @@ colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
 
     tl <- cols [,1] # top left
     tr <- cols [,2] # top right
-    bl <- cols [,3] # bottom left
-    br <- cols [,4] # bottom right
+    br <- cols [,3] # bottom right
+    bl <- cols [,4] # bottom left
     # Then constuct distance matrices from each corner
     col_dist <- array (1:n[1] - 1, dim=n)
     row_dist <- t (array (1:n[2] - 1, dim=rev (n)))

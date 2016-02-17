@@ -25,6 +25,9 @@
 #' polygons not within groups are coloured this colour.
 #' @param colmat If TRUE generates colours according to \code{get.colours},
 #' otherwise the colours of groups are specified directly by the vector of cols.
+#' @param rotate Passed to colour_mat to rotate colours by the specified number
+#' of degrees clockwise.
+#' @param lwd Width of boundary line (0 for no line)
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
 #'
 #' @section Warning:
@@ -34,7 +37,7 @@
 
 group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                boundary=-1, cols=NULL, col_extra=NULL,
-                               colmat=TRUE)
+                               colmat=TRUE, rotate=NULL, lwd=0)
 {
     if (is.null (dev.list ()))
         stop ("group.osm.objects can only be called after plot.osm.basemap")
@@ -79,13 +82,12 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         stop ("obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame")
 
     # Set up group colours
-    if (length (cols) < 4)
+    if (!colmat)
     {
         if (is.null (cols))
             cols <- rainbow (length (groups))
         else if (length (cols) < length (groups))
             cols <- rep (cols, length.out=length (groups))
-        colmat <- FALSE
         if (length (groups) == 1 & is.null (col_extra))
         {
             warning ("There is only one group; using default col_extra")
@@ -98,11 +100,12 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             else
                 col_extra <- "white"
         }
-    }
-    if (colmat)
+    } else
     {
+        if (is.null (cols) | length (cols) < 4)
+            cols <- rainbow (4)
         ncols <- 20
-        cmat <- colour_mat (ncols, cols=cols)
+        cmat <- colour_mat (ncols, cols=cols, rotate=rotate)
         cols <- rep (NA, length (groups)) 
         # cols is then a vector of colours to be filled by matching group
         # centroids to relative positions within cmat
@@ -204,7 +207,8 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                 # Then the minimum distance for each stray object to any object in
                 # group [i]:
                 dists [, i] <- apply (dg, 1, min)
-            }
+            } else
+                dists [, i] <- Inf
         }
         # Then simply extract the group holding the overall minimum dist:
         membs [indx] <- apply (dists, 1, which.min)
@@ -325,5 +329,22 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         cols <- c (cols, col_extra)
     junk <- lapply (xym, function (x)
                     do.call (plotfun, list ( x [,1:2], col=cols [x [1,3]])))
+    if (lwd > 0)
+        for (i in seq (groups))
+        {
+            indx <- which (membs == i)
+            if (length (indx) > 1)
+            {
+                x <- unlist (lapply (indx, function (j) xy [[j]] [,1]))
+                y <- unlist (lapply (indx, function (j) xy [[j]] [,2]))
+                xy2 <- unique (cbind (x, y))
+                x <- xy2 [,1]
+                y <- xy2 [,2]
+                xy2 <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+                ch <- spatstat::convexhull (xy2)
+                bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+                lines (ch$bdry [[1]]$x, ch$bdry [[1]]$y, lwd=lwd, col=cols [i])
+            }
+        }
 }
 

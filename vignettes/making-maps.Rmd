@@ -434,16 +434,22 @@ violet, blue), as illustrated above.
 
 Regional groups may be coloured using `colour_mat` by setting `colmat=TRUE` in
 `group_osm_objects` and by submitting a desired vector of colours. A
-`colour_mat` may be illustrated by plotting inclusive groups defined by simple
-points.
+`colour_mat` may be illustrated by plotting inclusive groups defined by random
+points. `group_osm_objects` first discerns which components (polygons or lines)
+lie *within* groups, then if `col_extra=NULL` (or `NA`), all points are assigned
+to the nearest group. This nevertheless requires the initial groups to be of
+non-zero size, and so the following lines initially select random points and
+then extend them by creating small rectangles around each.
 ```{r}
-x <- xylims$xrange [1] + rep (0.5 + 0:3, each=3) * diff (xylims$xrange) / 4
-y <- xylims$yrange [1] + rep (0.5 + 0:2, times=4) * diff (xylims$yrange) / 3
-pts <- cbind (x, y)
-pts <- apply (pts, 1, function (i) 
+set.seed (2)
+ngroups <- 12
+x <- xylims$xrange [1] + runif (ngroups) * diff (xylims$xrange)
+y <- xylims$yrange [1] + runif (ngroups) * diff (xylims$yrange)
+groups <- cbind (x, y)
+groups <- apply (groups, 1, function (i) 
               sp::SpatialPoints (matrix (i, nrow=1, ncol=2)))
 # Then create small rectangles around each pts
-pts <- lapply (pts, function (i)
+groups <- lapply (groups, function (i)
                {
                    x <- sp::coordinates (i) [1] + c (-0.002, 0.002, 0.002,
                                                      -0.002)
@@ -451,11 +457,24 @@ pts <- lapply (pts, function (i)
                                                      0.002)
                    sp::SpatialPoints (cbind (x, y))
                })
+```
+The `ngroups` can then simply be plotted as follows.
+```{r}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map14.png")
-plot_osm_basemap (xylims=xylims, bg="gray20")
-group_osm_objects (dat_B, groups=pts, col_extra=NA, 
-                   colmat=TRUE, boundary=-1)
+group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
+                   colmat=TRUE, lwd=3)
 graphics.off ()
 ```
 ![map](map14.png)
 
+The `colour_mat` function has an option to rotate the colour space. This may
+also be passed directly to `group_osm_objects` enabling, for example, the
+colours in the previous plot to be rotate by 90 degrees.
+
+```{r}
+plot_osm_basemap (xylims=xylims, bg="gray20", file="map15.png")
+group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
+                   colmat=TRUE, rotate=90, lwd=3)
+graphics.off ()
+```
+![map](map15.png)
