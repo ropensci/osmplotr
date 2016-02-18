@@ -22,6 +22,14 @@ NULL
 #'  \item dat_N an SPDF of natural areas with 36 polygons 
 #'  \item dat_RFH an SPDF containing 1 polygon representing Royal Festival Hall
 #'  \item dat_ST an SPDF containing 1 polygon representing 150 Stamford Street
+#'  \item highways1 A SpatialPoints object containing 178 points representing
+#'  the circular perimeter of ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+#'  "Fleet.St", "Aldwych")
+#'  \item highways2 A SpatialPoints object containing 126 points representing
+#'  the circular perimeter of ("Queen.s.Walk", "Blackfriars", "Waterloo", 
+#'  "The.Cut")
+#'  \item highways2 A SpatialPoints object containing 126 points representing
+#'  the circular perimeter of ("Regent.St", "Oxford.St", "Shaftesbury")
 #' }
 #'
 #' @examples
@@ -56,6 +64,13 @@ NULL
 #'                      c ("addr:housenumber", "150"))
 #' london$dat_ST <- extract_osm_objects (key="building", extra_pairs=extra_pairs, 
 #'                                 bbox=bbox)
+#' highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+#'                "Fleet.St", "Aldwych")
+#' london$highways1 <- highways2polygon (highways=highways, bbox=bbox)
+#' highways <- c ("Queen.s.Walk", "Blackfriars", "Waterloo", "The.Cut")
+#' london$highways2 <- highways2polygon (highways=highways, bbox=bbox)
+#' highways <- c ("Regent.St", "Oxford.St", "Shaftesbury")
+#' london$highways3 <- highways2polygon (highways=highways, bbox=bbox)
 #' }
 #'
 #' @docType data

@@ -322,6 +322,14 @@ graphics.off ()
 ```
 ![map](map10.png)
 
+### 3.1 A note on rivers
+
+OSM objects are extracted by the `osmar` package which does not currently handle
+the extraction of rivers. These are defined by
+`(key,value)=('waterway','riverbank')`, with relations returned as an OSM
+`multipolygon`. These `multipolygon` objects are, however, **not** extracted by
+`osmar`, preventing rivers from being included in plots. This problem will be
+addressed in future releases of `osmplotr`.
 
 ## 4. Highlighting particular areas
 
@@ -515,3 +523,216 @@ group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
 graphics.off ()
 ```
 ![map](map18.png)
+
+## 5 Bounding areas within named highways
+
+The function `highways2polygon` takes a list of OSM highway names and a bounding
+box, and returns the boundary of a polygon encircling the named highways. This
+can be used to highlight selected regions simply by naming the highways which
+encircle them, producing maps which look like this:
+```{r, message=FALSE, echo=FALSE}
+require (RColorBrewer)
+```
+```{r, echo=FALSE}
+structures <- c ("amenity", "grass", "park", "natural")
+structs <- osm_structures (structures=structures, col_scheme="dark")
+col_G <- structs$cols [structs$structure == "grass"]
+col_A <- structs$cols [structs$structure == "amenity"]
+
+groups <- list (london$highways1, london$highways2, london$highways3)
+cols_B <- brewer.pal (4, "Set2") [2:4] # first colour is green
+# First plot buildings:
+st_full <- osm_structures ()
+col_extra_B <- st_full$cols [which (st_full$structure == "building")]
+
+# Then darken colours for highways
+cols <- 0.6 * col2rgb (cols_B)
+# convert to hex:
+cols_H <- rep (NA, ncol (cols))
+for (i in seq (ncol (cols)))
+{
+    s <- sprintf ('%X', round (cols [,i]))
+    cols_H [i] <- paste0 ("#", s [1], s [2], s [3])
+}
+col_extra_H <- "gray20"
+```
+
+```{r, echo=FALSE, eval=FALSE}
+plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map19.png")
+add_osm_objects (london$dat_P, col=col_G)
+add_osm_objects (london$dat_G, col=col_G)
+add_osm_objects (london$dat_N, col=col_G)
+add_osm_objects (london$dat_A, col=col_A)
+group_osm_objects (london$dat_BNR, groups=groups, boundary=0,
+                   col_extra=col_extra_B, colmat=FALSE, col=cols_B)
+group_osm_objects (london$dat_BR, groups=groups, boundary=0,
+                   col_extra=col_extra_B, colmat=FALSE, col=cols_B)
+
+group_osm_objects (london$dat_H, groups=groups, boundary=0,
+                   col_extra=col_extra_H, colmat=FALSE, col=cols_H)
+group_osm_objects (london$dat_HP, groups=groups, boundary=0,
+                   col_extra=col_extra_H, colmat=FALSE, col=cols_H)
+graphics.off ()
+```
+![map](map19.png)
+
+### 5.1 The highways2polygon function
+
+The primary function enabling the delination of groups like the above is
+`highways2polygon`, an example of which is the orange area above, the boundary
+of which was obtained from:
+```{r, eval=FALSE}
+highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+               "Fleet.St", "Aldwych")
+highways1 <- highways2polygon (highways=highways, bbox=bbox)
+```
+```{r}
+## Warning in connect_highways(ways): Cycle unable to be extended through all
+## ways
+```
+The reason for the warning will be explored further below. In the meantime, note
+that,
+```{r, echo=FALSE}
+highways1 <- london$highways1
+```
+```{r}
+class (highways1)
+head (sp::coordinates (highways1))
+dim (sp::coordinates (highways1))
+```
+
+```{r, eval=FALSE}
+highways <- c ("Queen.s.Walk", "Blackfriars", "Waterloo", "The.Cut")
+highways2 <- highways2polygon (highways=highways, bbox=bbox)
+highways <- c ("Regent.St", "Oxford.St", "Shaftesbury")
+highways3 <- highways2polygon (highways=highways, bbox=bbox)
+```
+Multiple regions may be highlighted simply by passing a list of bounding
+polygons (each of class `SpatialPoints`) to `group_osm_structures`. 
+```{r, eval=FALSE}
+groups <- list (highways1, highways2, highways3)
+```
+```{r, echo=FALSE}
+groups <- list (london$highways1, london$highways2, london$highways3)
+```
+Highlighted groups are then added as above using `group_osm_objects`. These are
+overlaid on top of a basemap. The following maps highlight the selected regions
+with both buildings and highways, while the remaining structures are plotted on
+the initial basemap with the following lines.
+```{r, eval=TRUE}
+structures <- c ("amenity", "grass", "park", "natural")
+structs <- osm_structures (structures=structures, col_scheme="dark")
+plot_osm_basemap (xylims=get_xylims (bbox), file="map20.png")
+#plot_osm_basemap (xylims=get_xylims (bbox))
+for (i in seq (nrow (structs) - 1)) # because background is last row
+{
+    j <- match (paste ("dat_", structs$suffix [i], sep=""),
+                names (london))
+    add_osm_objects (london [[j]], col=structs$cols [i])
+}
+graphics.off ()
+```
+![map](map20.png)
+
+And then the desired areas highlighted using colours from `RColorBrewer`.
+Highway colours are darkened versions of the `RColorBrewer` colours used for
+buildings.
+```{r, message=FALSE}
+require (RColorBrewer)
+```
+```{r}
+cols <- brewer.pal (4, "Set1") [2:4] # first colour is green
+# darken colours for highways by first converting to rgb
+cols_rgb <- 0.6 * col2rgb (cols)
+# convert to hex using `sprintf ('%X',...)`
+cols_hex <- rep (NA, ncol (cols_rgb))
+for (i in seq (ncol (cols_rgb)))
+{
+    s <- sprintf ('%X', round (cols_rgb [,i]))
+    cols_hex [i] <- paste0 ("#", s [1], s [2], s [3])
+}
+cols
+cols_hex
+```
+Then define non-highlighted colours for highways and buildings
+```{r}
+st_all <- osm_structures ()
+col_extra_B <- st_all$cols [which (st_all$structure == "building")]
+col_extra_H <- "gray20"
+```
+And finally add groups to plot using these colours, resulting in the plot shown
+at the start of this section.
+```{r, eval=FALSE}
+group_osm_objects (london$dat_BNR, groups=groups, boundary=0,
+                   col_extra=col_extra_B, colmat=FALSE, col=cols)
+group_osm_objects (london$dat_BR, groups=groups, boundary=0,
+                   col_extra=col_extra_B, colmat=FALSE, col=cols)
+
+group_osm_objects (london$dat_H, groups=groups, boundary=0,
+                   col_extra=col_extra_H, colmat=FALSE, col=cols_hex)
+group_osm_objects (london$dat_HP, groups=groups, boundary=0,
+                   col_extra=col_extra_H, colmat=FALSE, col=cols_hex)
+graphics.off ()
+```
+
+The extraction of bounding polygons from named highways is not failsafe, as
+demonstrated by the above error message. There are nevertheless steps that can
+be taken to overcome potential problems, as now explored in the final section of
+this vignette.
+
+### 5.2 highways2polygon in detail
+
+`highways2polygon` finds a sequential polygon that circularly connected the
+named highways. Cases where no circular connection is possible generate an error
+<<<<<<< HEAD
+message. The function which actually connects the given highways into a circular
+sequence is `connect_highways`, which, as explained in `?connect_highways`,
+
+> Takes a list of OpenStreetMap highways returned by `extract_highways`
+> and sequentially connects closest nodes of adjacent highways until the set of
+> highways connects to form a cycle.
+
+`connect_highways` proceeds through the three stages of,
+
+1. Adding intersection nodes to junctions of ways where these don't already
+   exist
+
+2. Filling a connectivity matrix between the listed highways and extracting the
+   **longest** cycle connecting them all
+
+3. Inserting extra connections between highways until the length of the longest
+   cycle is equal to `length (highways)`.
+
+However, even once the highways are connected, the individual components of each
+highway may not necessarily connect in a continuous manner to complete the
+cycle. The final task, completed within the `highways2polygons` routine, is thus
+ensuring that the components of each individual highway actually connect,
+through sequentially connecting the closest pair of components until a shortest
+path is possible between the two components which connect with other highways.
+
+This procedure can not be guaranteed failsafe owing both to the inherently
+unpredictable nature of OpenStreetMap, as well as to the unknown relationships
+between named highways. To enable problematic cases to be examined and hopefully
+resolved, `highways2polygons` has a `plot` option:
+```{r, fig.width=7, message=FALSE}
+highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+               "Fleet.St", "Aldwych")
+highway_list <- highways2polygon (highways=highways, bbox=bbox, plot=TRUE)
+```
+The plot depicts each highway in a different colour, along with numbers at start
+and end points of each segements. This plot reveals in this case that highway#6
+('Aldwych') is actually nested within two components of highway#4 ('Strand').
+`connect_highways` searches for the shortest path connecting all named highways,
+and since 'Strand' connects to both highways#1 and #5, the shortest path
+excludes #6. This exclusion of one of the named components generates the
+warning message. The first step is ordering the OSM data sequentially, with this
+first done for the individual highways using `order_lines`. As explained in
+`?order_lines`, this function:
+
+> Accepts a SpatialLinesDataFrame representing an OpenStreetMap line object such
+> as a highway. The list items of these objects are arbitrarily organised within
+> OpenStreetMap. This function orders the components, returning a list of
+> components each of which is ordered sequentially along the line.  Points of
+> intersection between components are also inserted where these are not
+> explicitly present in OpenStreetMap. Nodes are also sequentially renumbered,
+> starting at (i0+1)

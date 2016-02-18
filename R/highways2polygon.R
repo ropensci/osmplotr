@@ -8,16 +8,12 @@
 #' API. Wildcards and whitespaces are '.'; for other options see overpass help.
 #' @param bbox The bounding box within which to look for highways.  Must be a
 #' vector of 4 elements (xmin, ymin, xmax, ymax).  
-#' @param plot If TRUE, then all OSM data for each highway is plotted (with
-#' \code{lwds[1]}, \code{cols[1]}), with the final cycle overlaid (with
-#' \code{lwds[2]}, \code{cols[2]}).
-#' @param lwds Line widths for (all highways, final cycle)
-#' @param cols Line colours for (all highways, final cycle)
+#' @param plot If TRUE, then all OSM data for each highway is plotted and the
+#' final cycle overlaid.
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic
 #' line connecting all given streets.
 
-highways2polygon <- function (highways=NULL, bbox=NULL, 
-                             plot=FALSE, lwds=c(1,3), cols=c("black","red"))
+highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
 {
     if (is.null (highways))
         stop ("A vector of highway names must be given")
@@ -108,9 +104,17 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
         par (mar=rep (0, 4))
         plot (NULL, NULL, xlim=xlims, ylim=ylims, xaxt="n", yaxt="n",
               xlab="", ylab="", frame=FALSE)
+        cols <- rainbow (length (ways))
         for (i in seq (ways))
-            for (j in ways [[i]])
-                lines (j [,1], j [,2], col=cols [1], lwd=lwds [1])
+            for (j in seq (ways [[i]]))
+            {
+                x <- ways [[i]] [[j]] [,1]
+                y <- ways [[i]] [[j]] [,2]
+                n <- length (x)
+                lines (x, y, col=cols [i])
+                text (x [1], y [1], labels=paste0 (i, ".", j), col=cols [i])
+                text (x [n], y [n], labels=paste0 (i, ".", j), col=cols [i])
+            }
     }
 
     # Extract the cycle as established in connect_highways
@@ -267,7 +271,8 @@ highways2polygon <- function (highways=NULL, bbox=NULL,
     path <- do.call (rbind, paths)
 
     if (plot)
-        lines (path [,1], path [,2], lwd=lwds [2], col=cols [2])
+        lines (path [,1], path [,2], lwd=3, col="black", lty=2)
 
-    return (sp::SpatialPoints (unique (path)))
+    indx <- which (!duplicated (rownames (path)))
+    return (sp::SpatialPoints (path [indx,]))
 }
