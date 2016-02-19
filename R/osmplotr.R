@@ -35,6 +35,7 @@ NULL
 #' @examples
 #' \dontrun{
 #' # Data were downloaded using the following code:
+#' bbox <- c(-0.15,51.5,-0.1,51.52)
 #' structures <- c ("highway", "highway", "building", "building", "building",
 #'                  "amenity", "grass", "park", "natural", "tree")   
 #' structs <- osm_structures (structures=structures, col_scheme="dark")   
