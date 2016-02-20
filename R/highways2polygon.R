@@ -101,7 +101,7 @@ highways2polygon <- function (highways=NULL, bbox=NULL, exclude=NULL,
         exclude <- sort (exclude, decreasing=TRUE)
         i <- floor (exclude)
         j <- 10 * (exclude - i)
-        for (k in seq (i))
+        for (k in seq (length (i)))
             ways [[i [k] ]] [[j [k] ]] <- NULL
     }
     ways <- connect_highways (ways)
