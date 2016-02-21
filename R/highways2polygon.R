@@ -8,16 +8,12 @@
 #' API. Wildcards and whitespaces are '.'; for other options see overpass help.
 #' @param bbox The bounding box within which to look for highways.  Must be a
 #' vector of 4 elements (xmin, ymin, xmax, ymax).  
-#' @param exclude A vector of highway segments to exclude from the calculation.
-#' Numbers must first be extracted from `plot=TRUE`, then re-entered to
-#' `exclude` on a subsequent function call.
 #' @param plot If TRUE, then all OSM data for each highway is plotted and the
 #' final cycle overlaid.
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic
 #' line connecting all given streets.
 
-highways2polygon <- function (highways=NULL, bbox=NULL, exclude=NULL,
-                              plot=FALSE)
+highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
 {
     if (is.null (highways))
         stop ("A vector of highway names must be given")
@@ -96,14 +92,14 @@ highways2polygon <- function (highways=NULL, bbox=NULL, exclude=NULL,
     # Start by getting the sequentially ordered list of highways, exluding any
     # components, and connecting them:
     ways <- extract_highways (highway_names=highways, bbox=bbox)
-    if (!is.null (exclude))
-    {
-        exclude <- sort (exclude, decreasing=TRUE)
-        i <- floor (exclude)
-        j <- 10 * (exclude - i)
-        for (k in seq (length (i)))
-            ways [[i [k] ]] [[j [k] ]] <- NULL
-    }
+    #if (!is.null (exclude))
+    #{
+    #    exclude <- sort (exclude, decreasing=TRUE)
+    #    i <- floor (exclude)
+    #    j <- 10 * (exclude - i)
+    #    for (k in seq (length (i)))
+    #        ways [[i [k] ]] [[j [k] ]] <- NULL
+    #}
     ways <- connect_highways (ways)
 
     if (plot)

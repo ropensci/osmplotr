@@ -4,8 +4,7 @@
 \alias{highways2polygon}
 \title{highways2polygon}
 \usage{
-highways2polygon(highways = NULL, bbox = NULL, exclude = NULL,
-  plot = FALSE)
+highways2polygon(highways = NULL, bbox = NULL, plot = FALSE)
 }
 \arguments{
 \item{highways}{A vector of highway names passed directly to the Overpass
@@ -13,10 +12,6 @@ API. Wildcards and whitespaces are '.'; for other options see overpass help.}
 
 \item{bbox}{The bounding box within which to look for highways.  Must be a
 vector of 4 elements (xmin, ymin, xmax, ymax).}
-
-\item{exclude}{A vector of highway segments to exclude from the calculation.
-Numbers must first be extracted from `plot=TRUE`, then re-entered to
-`exclude` on a subsequent function call.}
 
 \item{plot}{If TRUE, then all OSM data for each highway is plotted and the
 final cycle overlaid.}

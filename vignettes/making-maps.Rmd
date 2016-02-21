@@ -530,9 +530,6 @@ The function `highways2polygon` takes a list of OSM highway names and a bounding
 box, and returns the boundary of a polygon encircling the named highways. This
 can be used to highlight selected regions simply by naming the highways which
 encircle them, producing maps which look like this:
-```{r, message=FALSE, echo=FALSE}
-require (RColorBrewer)
-```
 ```{r, echo=FALSE}
 structures <- c ("amenity", "grass", "park", "natural")
 structs <- osm_structures (structures=structures, col_scheme="dark")
@@ -540,7 +537,7 @@ col_G <- structs$cols [structs$structure == "grass"]
 col_A <- structs$cols [structs$structure == "amenity"]
 
 groups <- list (london$highways1, london$highways2, london$highways3)
-cols_B <- brewer.pal (4, "Set2") [2:4] # first colour is green
+cols_B <- RColorBrewer::brewer.pal (4, "Set2") [2:4] # first colour is green
 # First plot buildings:
 st_full <- osm_structures ()
 col_extra_B <- st_full$cols [which (st_full$structure == "building")]
