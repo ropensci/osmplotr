@@ -10,7 +10,7 @@ group_osm_objects(obj = obj, groups = NULL, make_hull = FALSE,
 }
 \arguments{
 \item{obj}{An sp SPDF or SLDF (list of polygons or lines) returned by
-\code{get.osm.polygons}}
+\code{extract_osm_objects}}
 
 \item{groups}{A list of spatial points objects, each of which contains the
 coordinates of points defining one group}
@@ -50,6 +50,14 @@ Plots spatially distinct groups of osm objects in different colours. OSM
 objects are attributed to groups based on mean coordinates, so this routine
 work best for SpatialPolygons, while may give odd results for SpatialLines.
 }
+\section{Note}{
+
+Any group that is entire contained within any other group is assumed to
+represent a hole, such that points internal to the smaller contained group
+are *excluded* from the group, while those outside the smaller yet inside the
+bigger group are included.
+}
+
 \section{Warning}{
 
 Bisecting objects along group boundaries (\code{boundary=0}) can take

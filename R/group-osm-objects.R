@@ -5,7 +5,7 @@
 #' work best for SpatialPolygons, while may give odd results for SpatialLines.
 #'
 #' @param obj An sp SPDF or SLDF (list of polygons or lines) returned by
-#' \code{get.osm.polygons}
+#' \code{extract_osm_objects}
 #' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group
 #' @param make_hull Either a single boolean value or a vector of same length as
@@ -29,6 +29,12 @@
 #' of degrees clockwise.
 #' @param lwd Width of boundary line (0 for no line)
 #' @return nothing (adds to graphics.device opened with plot.osm.basemap)
+#'
+#' @section Note:
+#' Any group that is entire contained within any other group is assumed to
+#' represent a hole, such that points internal to the smaller contained group
+#' are *excluded* from the group, while those outside the smaller yet inside the
+#' bigger group are included.
 #'
 #' @section Warning:
 #' Bisecting objects along group boundaries (\code{boundary=0}) can take
@@ -80,6 +86,38 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         plotfun <- function (i, col=col) lines (i, col=col)
     } else
         stop ("obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame")
+
+    # Determine whether any groups are holes
+    holes <- rep (FALSE, length (groups))
+    group_pairs <- combn (length (groups), 2)
+    for (i in seq (ncol (group_pairs)))
+    {
+        x1 <- coordinates (groups [[group_pairs [1, i] ]]) [,1]
+        y1 <- coordinates (groups [[group_pairs [1, i] ]]) [,2]
+        indx <- which (!duplicated (cbind (x1, y1)))
+        x1 <- x1 [indx]
+        y1 <- y1 [indx]
+        xy1 <- spatstat::ppp (x1, y1, xrange=range (x1), yrange=range (y1))
+        ch1 <- spatstat::convexhull (xy1)
+        bdry1 <- cbind (ch1$bdry[[1]]$x, ch1$bdry[[1]]$y)
+        x2 <- coordinates (groups [[group_pairs [2, i] ]]) [,1]
+        y2 <- coordinates (groups [[group_pairs [2, i] ]]) [,2]
+        indx <- which (!duplicated (cbind (x2, y2)))
+        x2 <- x2 [indx]
+        y2 <- y2 [indx]
+        xy2 <- spatstat::ppp (x2, y2, xrange=range (x2), yrange=range (y2))
+        ch2 <- spatstat::convexhull (xy2)
+        bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
+        
+        indx <- sapply (bdry1, function (x) 
+                        spatialkernel::pinpoly (bdry1, bdry2))
+        if (all (indx == 2))
+            holes [group_pairs [1, i]] <- TRUE
+        indx <- sapply (bdry2, function (x) 
+                        spatialkernel::pinpoly (bdry2, bdry1))
+        if (all (indx == 2))
+            holes [group_pairs [2, i]] <- TRUE
+    }
 
     # Set up group colours
     if (!colmat)
