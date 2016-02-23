@@ -721,14 +721,4 @@ and end points of each segements. This plot reveals in this case that highway#6
 `connect_highways` searches for the shortest path connecting all named highways,
 and since 'Strand' connects to both highways#1 and #5, the shortest path
 excludes #6. This exclusion of one of the named components generates the
-warning message. The first step is ordering the OSM data sequentially, with this
-first done for the individual highways using `order_lines`. As explained in
-`?order_lines`, this function:
-
-> Accepts a SpatialLinesDataFrame representing an OpenStreetMap line object such
-> as a highway. The list items of these objects are arbitrarily organised within
-> OpenStreetMap. This function orders the components, returning a list of
-> components each of which is ordered sequentially along the line.  Points of
-> intersection between components are also inserted where these are not
-> explicitly present in OpenStreetMap. Nodes are also sequentially renumbered,
-> starting at (i0+1)
+warning message. 
