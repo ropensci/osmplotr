@@ -15,17 +15,29 @@ devtools::load_all ("osmplotr")
 setwd ("./osmplotr/vignettes")
 ```
 
-# Making Maps
+# Using osmplotr
 
 This `R` package is designed to produce visually impressive graphical plots of
-OpenStreetMap (OSM) data. All of the following examples display results for a
-small portion of central London, U.K. All data are downloaded from the
-[overpass API](https://overpass-api.de).  
+OpenStreetMap (OSM) data. A particular feature of `osmplotr` is the ability to
+highlight selected areas using user-definable graphical styles which contrast
+with the remaining background of a map, like this:
 
-This map:
+![map](map16.png)
+
+This ability a not currently facilitated by any other `R` package.  This map,
+and all of the following examples, displays results for a small portion of
+central London, U.K. 
+
+# Making Maps
+
+Before demonstrating how particular regions may be selected and highlighted,
+this vignette describes how `osmplotr` may be used to generate visually
+customised plots of OSM data.  `osmplotr` downloads data directly from the
+[overpass API](https://overpass-api.de).  The following map can be made by
+following the subsequent simple steps:
+
 ![map](map2.png)
 
-can be made using the following simple steps:
 ```{r, echo=FALSE}
 # Combining (dat_B, dat_BC) and (dat_H, dat_HP) requires removing the repeated
 # objects
@@ -67,7 +79,7 @@ graphics.off ()
 
 Additional capabilities of `osmplotr` are described in the following sections.
 
-## 1. A simple map
+## 1. Combining multiple OSM objects
 
 As illustrated above, OSM data for particular types of objects can be downloaded
 using `extract_osm_objects`.
@@ -95,10 +107,11 @@ length (dat_T)
 
 As illustrated above, plotting maps requires first making a basemap with a
 specified background colour. The basemap also defines the dimensions of the
-plot, which may be scaled in proportion to the latitudinal and longitudinal
-range of the objects to be plotted using `get_xylims`, or any other desired
-limits may be passed. Objects may then be overlaid on this basemap using
-`add_osm_objects`.
+plot, which are scaled by default in proportion to the latitudinal and
+longitudinal range of the objects to be plotted using `get_xylims`. This default
+scaling may be overridden by passing any other desired longitudinal and
+latitudinal limits to `plot_osm_basemap`.  Objects are overlaid on basemaps
+using `add_osm_objects`.
 ```{r}
 xylims <- get_xylims (dat_B)
 ```
@@ -450,7 +463,7 @@ graphics.off ()
 ![map](map16.png)
 
 
-### 4.2 The Colour Matrix: Colouring Several Regions
+### 4.3 The Colour Matrix: Colouring Several Regions
 
 Individual studies of particular regions are almost always based on
 *representative* data sampled at some particular set of points. Presuming such
@@ -468,6 +481,7 @@ spatially distinct groups with the `colour_mat` function.
 ```{r, fig.width=5}
 plot.new ()
 cmat <- colour_mat (plot=TRUE)
+graphics.off ()
 ```
 
 This function accepts a vector of 4 or more colours assinged to each corner of a
@@ -710,7 +724,7 @@ This procedure can not be guaranteed failsafe owing both to the inherently
 unpredictable nature of OpenStreetMap, as well as to the unknown relationships
 between named highways. To enable problematic cases to be examined and hopefully
 resolved, `highways2polygons` has a `plot` option:
-```{r, fig.width=7, message=FALSE}
+```{r, fig.width=7, message=FALSE, eval=FALSE}
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
 highway_list <- highways2polygon (highways=highways, bbox=bbox, plot=TRUE)
