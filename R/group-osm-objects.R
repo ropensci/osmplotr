@@ -88,35 +88,38 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         stop ("obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame")
 
     # Determine whether any groups are holes
-    holes <- rep (FALSE, length (groups))
-    group_pairs <- combn (length (groups), 2)
-    for (i in seq (ncol (group_pairs)))
+    if (length (groups) > 1)
     {
-        x1 <- coordinates (groups [[group_pairs [1, i] ]]) [,1]
-        y1 <- coordinates (groups [[group_pairs [1, i] ]]) [,2]
-        indx <- which (!duplicated (cbind (x1, y1)))
-        x1 <- x1 [indx]
-        y1 <- y1 [indx]
-        xy1 <- spatstat::ppp (x1, y1, xrange=range (x1), yrange=range (y1))
-        ch1 <- spatstat::convexhull (xy1)
-        bdry1 <- cbind (ch1$bdry[[1]]$x, ch1$bdry[[1]]$y)
-        x2 <- coordinates (groups [[group_pairs [2, i] ]]) [,1]
-        y2 <- coordinates (groups [[group_pairs [2, i] ]]) [,2]
-        indx <- which (!duplicated (cbind (x2, y2)))
-        x2 <- x2 [indx]
-        y2 <- y2 [indx]
-        xy2 <- spatstat::ppp (x2, y2, xrange=range (x2), yrange=range (y2))
-        ch2 <- spatstat::convexhull (xy2)
-        bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
-        
-        indx <- sapply (bdry1, function (x) 
-                        spatialkernel::pinpoly (bdry1, bdry2))
-        if (all (indx == 2))
-            holes [group_pairs [1, i]] <- TRUE
-        indx <- sapply (bdry2, function (x) 
-                        spatialkernel::pinpoly (bdry2, bdry1))
-        if (all (indx == 2))
-            holes [group_pairs [2, i]] <- TRUE
+        holes <- rep (FALSE, length (groups))
+        group_pairs <- combn (length (groups), 2)
+        for (i in seq (ncol (group_pairs)))
+        {
+            x1 <- coordinates (groups [[group_pairs [1, i] ]]) [,1]
+            y1 <- coordinates (groups [[group_pairs [1, i] ]]) [,2]
+            indx <- which (!duplicated (cbind (x1, y1)))
+            x1 <- x1 [indx]
+            y1 <- y1 [indx]
+            xy1 <- spatstat::ppp (x1, y1, xrange=range (x1), yrange=range (y1))
+            ch1 <- spatstat::convexhull (xy1)
+            bdry1 <- cbind (ch1$bdry[[1]]$x, ch1$bdry[[1]]$y)
+            x2 <- coordinates (groups [[group_pairs [2, i] ]]) [,1]
+            y2 <- coordinates (groups [[group_pairs [2, i] ]]) [,2]
+            indx <- which (!duplicated (cbind (x2, y2)))
+            x2 <- x2 [indx]
+            y2 <- y2 [indx]
+            xy2 <- spatstat::ppp (x2, y2, xrange=range (x2), yrange=range (y2))
+            ch2 <- spatstat::convexhull (xy2)
+            bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
+            
+            indx <- sapply (bdry1, function (x) 
+                            spatialkernel::pinpoly (bdry1, bdry2))
+            if (all (indx == 2))
+                holes [group_pairs [1, i]] <- TRUE
+            indx <- sapply (bdry2, function (x) 
+                            spatialkernel::pinpoly (bdry2, bdry1))
+            if (all (indx == 2))
+                holes [group_pairs [2, i]] <- TRUE
+        }
     }
 
     # Set up group colours
