@@ -2,6 +2,7 @@
 title: "Making Maps"
 author: "Mark Padgham"
 date: "`r Sys.Date()`"
+#output: rmarkdown::pdf_document
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Making Maps}
