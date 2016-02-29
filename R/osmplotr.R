@@ -1,5 +1,12 @@
 #' osmplotr.
 #'
+#' Produces customisable images of OpenStreetMap data.  Extracts OpenStreetMap
+#' data for specified key-value pairs (e.g.  key="building") using the overpass
+#' API. Different OSM objects can be plotted in different colours using the
+#' function \code{add.osm.objects}.  The function \code{group_osm_objects}
+#' enables customised highlighting of selected regions using different graphical
+#' schemes designed to contrast with surrounding backgrounds.
+#'
 #' @name osmplotr
 #' @docType package
 #' @import RCurl sp spatstat spatialkernel osmar XML ggm rgeos
