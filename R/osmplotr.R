@@ -2,7 +2,8 @@
 #'
 #' @name osmplotr
 #' @docType package
-#' @import RCurl sp spatstat spatialkernel osmar XML igraph ggm rgeos
+#' @import RCurl sp spatstat spatialkernel osmar XML ggm rgeos
+#' @importFrom igraph graph_from_edgelist shortest_paths
 NULL
 
 #' london 

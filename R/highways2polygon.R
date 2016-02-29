@@ -51,7 +51,8 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
         from <- unlist (lapply (way, function (x) 
                                 rownames (x) [1:(nrow (x) - 1)]))
         to <- unlist (lapply (way, function (x) rownames (x) [2:nrow (x)]))
-        g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
+        #g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
+        g <- graph_from_edgelist (cbind (from, to), directed=FALSE)
 
         from_node_list <- rep (node_from, length (node_to))
         to_node_list <- rep (node_to, each=length (node_from))
@@ -60,7 +61,9 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
         the_path <- NULL
         for (j in seq (from_node_list))
         {
-            sp <- suppressWarnings (igraph::shortest_paths (g,
+            #sp <- suppressWarnings (igraph::shortest_paths (g,
+            #                        from_node_list [j], to_node_list [j]))
+            sp <- suppressWarnings (shortest_paths (g,
                                     from_node_list [j], to_node_list [j]))
             sp <- sp$vpath [[1]]
             if (length (sp) > maxlen)
