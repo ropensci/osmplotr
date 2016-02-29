@@ -2,5 +2,5 @@ language: r
 warnings_are_errors: true
 sudo: required
 
-before_deploy:
-      - R -e "install.packages('roxygen2', repos = 'http://cran.rstudio.com')"
+install:
+    - ./travis-tool.sh install_r roxygen2
