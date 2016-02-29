@@ -652,7 +652,7 @@ buildings.
 require (RColorBrewer)
 ```
 ```{r}
-cols <- brewer.pal (4, "Set1") [2:4] # first colour is green
+cols <- RColorBrewer::brewer.pal (4, "Set1") [2:4] # first colour is green
 # darken colours for highways by first converting to rgb
 cols_rgb <- 0.6 * col2rgb (cols)
 # convert to hex using `sprintf ('%X',...)`
