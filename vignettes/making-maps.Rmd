@@ -11,7 +11,8 @@ vignette: >
 
 ```{r load, include=FALSE}
 setwd ("../..")
-devtools::load_all ("osmplotr")
+library (devtools)
+load_all ("osmplotr")
 setwd ("./osmplotr/vignettes")
 ```
 
@@ -41,10 +42,11 @@ following the subsequent simple steps:
 ```{r, echo=FALSE}
 # Combining (dat_B, dat_BC) and (dat_H, dat_HP) requires removing the repeated
 # objects
+library (maptools)
 indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
-dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
+dat_B <- spRbind (london$dat_BR [indx,], london$dat_BNR)
 indx <- which (!london$dat_H$id %in% london$dat_HP$id)
-dat_H <- maptools::spRbind (london$dat_H [indx,], london$dat_HP)
+dat_H <- spRbind (london$dat_H [indx,], london$dat_HP)
 dat_T <- london$dat_T
 ```
 1. Specify the bounding box for the desired region
@@ -363,7 +365,7 @@ defined by manually entering coordinates of bounding points.
 
 ```{r, echo=FALSE}
 indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
-dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
+dat_B <- spRbind (london$dat_BR [indx,], london$dat_BNR)
 ```
 ```{r map11, eval=FALSE}
 pts <- sp::SpatialPoints (cbind (c (-0.120, -0.135, -0.135, -0.120),
@@ -551,7 +553,8 @@ col_G <- structs$cols [structs$structure == "grass"]
 col_A <- structs$cols [structs$structure == "amenity"]
 
 groups <- list (london$highways1, london$highways2, london$highways3)
-cols_B <- RColorBrewer::brewer.pal (4, "Set2") [2:4] # first colour is green
+library (RColorBrewer)
+cols_B <- brewer.pal (4, "Set2") [2:4] # first colour is green
 # First plot buildings:
 st_full <- osm_structures ()
 col_extra_B <- st_full$cols [which (st_full$structure == "building")]

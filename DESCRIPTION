@@ -14,12 +14,12 @@ Imports:
     spatialkernel, 
     spatstat, 
     XML,
-Suggests:
+Suggests: knitr,
+    rmarkdown,
     devtools,
-    maptool
+    maptools,
+    RColorBrewer
 License: GPL-3
 URL: https://github.com/mpadge/osmplotr
 LazyData: true
-Suggests: knitr,
-    rmarkdown
 VignetteBuilder: knitr

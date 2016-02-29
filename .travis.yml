@@ -7,6 +7,3 @@ sudo: required
 r_packages:
     devtools
     roxygen2
-
-#r_build_args: "--no-build-vignettes"
-r_check_args: "--as-cran"
