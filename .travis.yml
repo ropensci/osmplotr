@@ -2,8 +2,5 @@ language: r
 warnings_are_errors: true
 sudo: required
 
-env:
-    global:
-        - WARNINGS_ARE_ERRORS=1
-        - R_BUILD_ARGS=--no-vignettes
-        - R_CHECK_ARGS=--no-vignettes --as-cran
+before_deploy:
+      - R -e "install.packages('roxygen2', repos = 'http://cran.rstudio.com')"
