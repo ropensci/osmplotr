@@ -3,4 +3,4 @@ warnings_are_errors: true
 sudo: required
 
 install:
-    - R -e "install.packages('roxygen2')"
+    - R -e "install.packages(c ('roxygen2', 'knitr'))"
