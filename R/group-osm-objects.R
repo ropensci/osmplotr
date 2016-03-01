@@ -111,13 +111,19 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             ch2 <- spatstat::convexhull (xy2)
             bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
             
+            #indx <- sapply (bdry1, function (x) 
+            #                spatialkernel::pinpoly (bdry1, bdry2))
             indx <- sapply (bdry1, function (x) 
-                            spatialkernel::pinpoly (bdry1, bdry2))
-            if (all (indx == 2))
+                            sp::point.in.polygon (bdry2 [,1], bdry2 [,2],
+                                                  bdry1 [,1], bdry1 [,2]))
+            if (all (indx == 1))
                 holes [group_pairs [1, i]] <- TRUE
+            #indx <- sapply (bdry2, function (x) 
+            #                spatialkernel::pinpoly (bdry2, bdry1))
             indx <- sapply (bdry2, function (x) 
-                            spatialkernel::pinpoly (bdry2, bdry1))
-            if (all (indx == 2))
+                            sp::point.in.polygon (bdry1 [,1], bdry1 [,2],
+                                                  bdry2 [,1], bdry2 [,2]))
+            if (all (indx == 1))
                 holes [group_pairs [2, i]] <- TRUE
         }
     }
@@ -180,8 +186,11 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         else
             bdry <- sp::coordinates (groups [[i]])
         bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
-        # The next 3 lines are only used if is.null (col_extra)
-        indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
+        # The next 4 lines are only used if is.null (col_extra)
+        #indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
+        indx <- sapply (xy_mn, function (x)
+                        sp::point.in.polygon (x [,1], x [,2], 
+                                              bdry [,1], bdry [,2]))
         indx <- which (indx == 2) # pinpoly returns 2 for points within hull
         xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
 
@@ -200,12 +209,20 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
 
     # Extract coordinates of each item and cbind memberships for each group.
     # NOTE that pinpooly returns (0,1,2) for (not, on, in) boundary
+    # while point.in.polygon returns (0,1,2-3) for (not, in, on)
+    # pinpoly (poly, pts), but point.in.polygon (pt.x, pt.y, pol.x, pol.y).
+    # pinpoly had to be ditched because spatialkernel caused an error:
+    # "package ... eventually depends on the the following package which
+    # restricts usage"
     coords <- lapply (slot (obj, objtxt [1]),  function (x)
                       slot (slot (x, objtxt [2]) [[1]], "coords"))
     coords <- lapply (coords, function (i)
                       {
+                          #pins <- lapply (boundaries, function (j)
+                          #                spatialkernel::pinpoly (j, i))
                           pins <- lapply (boundaries, function (j)
-                                          spatialkernel::pinpoly (j, i))
+                                          sp::point.in.polygon (i [,1], i [,2],
+                                                                j [,1], j [,2]))
                           pins <- do.call (cbind, pins)
                           cbind (i, pins)
                       })
@@ -220,7 +237,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                              if (!is.matrix (temp))
                                  temp <- matrix (temp, ncol=1, 
                                                  nrow=length (temp))
-                             temp [temp == 2] <- 1
+                             temp [temp > 1] <- 1
                              n <- colSums (temp)
                              if (max (n) < 3) # must have > 2 elements in group
                                  n <- 0
@@ -267,7 +284,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                  if (!is.matrix (temp))
                                      temp <- matrix (temp, ncol=1, 
                                                      nrow=length (temp))
-                                 temp [temp == 2] <- 1
+                                 temp [temp > 1] <- 1
                                  n <- colSums (temp)
                                  if (boundary < 0)
                                  {
@@ -291,7 +308,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                       if (!is.matrix (temp))
                                           temp <- matrix (temp, ncol=1, 
                                                           nrow=length (temp))
-                                      temp [temp == 2] <- 1
+                                      temp [temp > 1] <- 1
                                       n <- colSums (temp)
                                       if (max (n) > 0 & max (n) < nrow (temp))
                                           return (which.max (n))
@@ -312,7 +329,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             for (i in coords_split)
             {
                 temp <- i [,3:ncol (i)]
-                temp [temp == 2] <- 1
+                temp [temp > 1] <- 1
                 if (!is.matrix (temp))
                     temp <- matrix (temp, ncol=1, nrow=length (temp))
                 n <- colSums (temp)
@@ -349,7 +366,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                   if (!is.matrix (temp))
                                       temp <- matrix (temp, ncol=1, 
                                                       nrow=length (temp))
-                                  temp [temp == 2] <- 1
+                                  temp [temp > 1] <- 1
                                   n <- colSums (temp)
                                   if (max (n) < nrow (temp))
                                       n <- 0

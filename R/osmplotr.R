@@ -9,7 +9,7 @@
 #'
 #' @name osmplotr
 #' @docType package
-#' @import RCurl sp spatstat spatialkernel osmar XML ggm rgeos
+#' @import RCurl sp spatstat osmar XML ggm rgeos
 #' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom graphics polypath lines points locator plot.new par rect text
 #' @importFrom methods slot as

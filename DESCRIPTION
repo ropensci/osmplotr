@@ -13,7 +13,6 @@ Imports:
     RCurl, 
     rgeos,
     sp, 
-    spatialkernel, 
     spatstat, 
     XML,
 Suggests: knitr,
