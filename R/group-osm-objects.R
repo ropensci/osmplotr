@@ -189,9 +189,9 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         # The next 4 lines are only used if is.null (col_extra)
         #indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
         indx <- sapply (xy_mn, function (x)
-                        sp::point.in.polygon (x [,1], x [,2], 
+                        sp::point.in.polygon (x [1], x [2], 
                                               bdry [,1], bdry [,2]))
-        indx <- which (indx == 2) # pinpoly returns 2 for points within hull
+        indx <- which (indx > 0) # see below for point.in.polygon values
         xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
 
         boundaries [[i]] <- bdry
