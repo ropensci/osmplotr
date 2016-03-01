@@ -38,17 +38,22 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
         if (is.null (osm_data))
             stop ("Either bounding box or osm_data must be given")
         xylims <- list (xrange=c (Inf, -Inf), yrange=c(Inf, -Inf))
+        classes <- c ("SpatialLinesDataFrame", "SpatialPolygonsDataFrame",
+                      "SpatialPointsDataFrame")
         for (i in osm_data)
         {
-            lims <- get_xylims (i)
-            if (lims$xrange [1] < xylims$xrange [1])
-                xylims$xrange [1] <- lims$xrange [1]
-            if (lims$xrange [2] > xylims$xrange [2])
-                xylims$xrange [2] <- lims$xrange [2]
-            if (lims$yrange [1] < xylims$yrange [1])
-                xylims$yrange [1] <- lims$yrange [1]
-            if (lims$yrange [2] > xylims$yrange [2])
-                xylims$yrange [2] <- lims$yrange [2]
+            if (class (i) %in% classes)
+            {
+                lims <- get_xylims (i)
+                if (lims$xrange [1] < xylims$xrange [1])
+                    xylims$xrange [1] <- lims$xrange [1]
+                if (lims$xrange [2] > xylims$xrange [2])
+                    xylims$xrange [2] <- lims$xrange [2]
+                if (lims$yrange [1] < xylims$yrange [1])
+                    xylims$yrange [1] <- lims$yrange [1]
+                if (lims$yrange [2] > xylims$yrange [2])
+                    xylims$yrange [2] <- lims$yrange [2]
+            }
         }
         bbox <- c (xylims$xrange [1], xylims$yrange [1],
                    xylims$xrange [2], xylims$yrange [2])

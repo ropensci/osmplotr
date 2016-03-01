@@ -11,7 +11,10 @@ get_xylims <- function (obj)
 {
     if (class (obj) == "numeric" & length (obj) == 4) # bounding box
         ranges <- array (obj, dim=c(2, 2))
-    else
+    else if (class (obj) == "SpatialPointsDataFrame")
+    {
+        ranges <- t (slot (obj, "coords"))
+    } else
     {
         if (class (obj) == "SpatialPolygonsDataFrame")
             slNames <- c ("polygons", "Polygons")
