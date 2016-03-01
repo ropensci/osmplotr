@@ -3,4 +3,4 @@ warnings_are_errors: true
 sudo: required
 
 install:
-    - ./travis-tool.sh install_r roxygen2
+    - R -e "install.packages('roxygen2')"
