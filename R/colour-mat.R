@@ -57,25 +57,23 @@ colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
     tr <- cols [,2] # top right
     br <- cols [,3] # bottom right
     bl <- cols [,4] # bottom left
-    # Then constuct distance matrices from each corner
-    col_dist <- array (1:n[1] - 1, dim=n)
-    row_dist <- t (array (1:n[2] - 1, dim=rev (n)))
-    dtl <- sqrt (col_dist ^ 2 + row_dist ^ 2) # indexed from top-left
-    dbl <- apply (dtl, 2, rev)
-    dbr <- t (apply (dbl, 1, rev))
-    dtr <- t (apply (dtl, 1, rev))
-    dtl <- 1 - dtl / max (dtl)
-    dtr <- 1 - dtr / max (dtr)
-    dbl <- 1 - dbl / max (dbl)
-    dbr <- 1 - dbr / max (dbr)
-
-    col_arrs <- list ()
+    # Then interpolate, starting with top and bottom rows
+    ih <- t (array (seq (n [1]) - 1, dim=c (n [1], 3))) / (n [1] - 1)
+    iv <- t (array (seq (n [2]) - 1, dim=c (n [2], 3))) / (n [2] - 1)
+    top <- (1 - ih) * tl + ih * tr
+    bot <- (1 - ih) * bl + ih * br
+    arr <- array (NA, dim=n)
+    col_arrs <- list (r=arr, g=arr, b=arr)
     for (i in seq (3))
     {
-        arr <- (tl [i] * dtl + tr [i] * dtr + bl [i] * dbl + br [i] * dbr) / 4
-        col_arrs [[i]] <- (arr - min (arr)) * diff (range (cols [i,])) / 
-                    diff (range (arr))
+        col_arrs [[i]] [1,] <- top [i,]
+        col_arrs [[i]] [n [1],] <- bot [i,]
     }
+    # Then fill intervening rows
+    indx <- (seq (n [2]) - 1) / (n [2] - 1)
+    for (i in seq (3))
+        col_arrs [[i]] <- apply (col_arrs [[i]], 2, function (x)
+                             (1 - indx) * x [1] + indx * tail (x, 1))
     # Then fill the actual colourmat with RGB colours composed of the 3 indices:
     carr <- array (rgb (col_arrs [[1]], col_arrs [[2]], col_arrs [[3]], 
                         maxColorValue=255), dim=n)
