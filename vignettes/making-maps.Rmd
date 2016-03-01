@@ -17,8 +17,6 @@ load_all ("osmplotr")
 setwd ("./osmplotr/vignettes")
 ```
 
-# Using osmplotr
-
 This `R` package is designed to produce visually impressive graphical plots of
 OpenStreetMap (OSM) data. A particular feature of `osmplotr` is the ability to
 highlight selected areas using user-definable graphical styles which contrast
@@ -30,7 +28,7 @@ This ability a not currently facilitated by any other `R` package.  This map,
 and all of the following examples, displays results for a small portion of
 central London, U.K. 
 
-# Making Maps
+# 1. Introduction
 
 Before demonstrating how particular regions may be selected and highlighted,
 this vignette describes how `osmplotr` may be used to generate visually
@@ -81,7 +79,7 @@ graphics.off ()
 
 Additional capabilities of `osmplotr` are described in the following sections.
 
-## 1. Combining multiple OSM objects
+## 2. Combining multiple OSM objects
 
 As illustrated above, OSM data for particular types of objects can be downloaded
 using `extract_osm_objects`.
@@ -141,7 +139,7 @@ addition of objects, for which the graphic device must remain open.  It is
 important once finished a map to close the device with `dev.off` or
 `graphics.off`.
 
-## 2. OSM Structures
+## 3. OSM Structures
 
 OSM structures are identified through `key-value` pairs. The preceding calls to
 `extract_osm_objects` did not specify any values, and so returned all objects
@@ -169,7 +167,7 @@ graphics.off ()
 ![map5](map5.png)
 
 
-### 2a. Negation
+### 3a. Negation
 
 Values can also be negated through the prefix `!`---for example, non-primary
 highways can be extracted, allowing primary highways to be overlaid in a
@@ -203,7 +201,7 @@ graphics.off ()
 ```
 ![map7](map7.png)
 
-### 2b. Additional `key-value` pairs
+### 3b. Additional `key-value` pairs
 
 `extract_osm_objects` accepts an additional argument `extra_pairs` through which
 additional OSM `key-value` pairs can be passed to the 
@@ -241,7 +239,7 @@ graphics.off ()
 Note that `add_osm_objects` calls `polypath` to fill polygons, and this function
 can only fill polygons with solid colours, as described in `?polypath`.
 
-## 3. Automating map production
+## 4. Automating map production
 
 Production of complete maps overlaying various type of OSM objects is
 facilitated with `make_osm_map`.  The structure of a map is defined by
@@ -337,16 +335,18 @@ graphics.off ()
 ```
 ![map10](map10.png)
 
-### 3.1 A note on rivers
+### 4.1 A note on rivers
 
 OSM objects are extracted by the `osmar` package which does not currently handle
-the extraction of rivers. These are defined by
+the extraction of rivers in a failsafe way. Rivers are generally defined by
 `(key,value)=('waterway','riverbank')`, with relations returned as an OSM
 `multipolygon`. These `multipolygon` objects are, however, **not** extracted by
-`osmar`, preventing rivers from being included in plots. This problem will be
-addressed in future releases of `osmplotr`.
+`osmar` when they extend beyond a requested `bbox` (and there is no way to know
+in advance whether or not that may be the case), preventing rivers from being
+included in plots. This problem will be addressed in future releases of
+`osmplotr`.
 
-## 4. Highlighting particular areas
+## 5. Highlighting particular areas
 
 One of the primary aims of `osmplotr` is to offer a convenient means to
 highlight particular regions within a city simply by applying different colours
@@ -354,7 +354,7 @@ to the same OSM structures. The routine which enables this is
 `group_osm_objects`, the two primary arguments to which are `obj`, which defines
 the OSM structure to be used for plotting the regions (for example, `dat_B`
 defining the previous buildings), and `groups` which is a list of SpatialPoints
-objects defining the regions.
+objects defining the desired regions.
 
 The simplest way of defining a region is with `click_map`, which enables a map
 to be clicked and returns a set of `SpatialPoints` corresponding to the clicks.
@@ -378,14 +378,14 @@ graphics.off ()
 ```
 ![map11](map11.png)
 
-### 4.1 Inclusive, exclusive, and bisected polygons
+### 5.1 Inclusive, exclusive, and bisected polygons
 
 The highlighted region of the previous map is irregular because inclusion for
 each polygon within a group is defined by mean coordinates. `group_osm_objects`
 has a `boundary` argument which defines whether objects should be assigned to
 groups inclusively (`boundary>0`) or exclusively (`boundary<0`), or whether they
-should be precisely bisected by a group border (`boundary=0`). The two options
-in addition to the default of `boundary=-1` produce the following maps. 
+should be precisely bisected by a group boundary (`boundary=0`). The two options
+in addition to the above default of `boundary=-1` produce the following maps. 
 
 ```{r map12, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map12.png")
@@ -448,7 +448,7 @@ graphics.off ()
 ```
 ![map15](map15.png)
 
-### 4.2 Dark-on-Light Highlights 
+### 5.2 Dark-on-Light Highlights 
 
 A particularly effective way to highlight particular areas is through using dark
 colours upon otherwise light coloured maps.
@@ -465,7 +465,7 @@ graphics.off ()
 ![map16](map16.png)
 
 
-### 4.3 The Colour Matrix: Colouring Several Regions
+### 5.3 The Colour Matrix: Colouring Several Regions
 
 Individual studies of particular regions are almost always based on
 *representative* data sampled at some particular set of points. Presuming such
@@ -540,7 +540,7 @@ graphics.off ()
 ```
 ![map18](map18.png)
 
-## 5 Bounding areas within named highways
+## 6 Bounding areas within named highways
 
 The function `highways2polygon` takes a list of OSM highway names and a bounding
 box, and returns the boundary of a polygon encircling the named highways. This
@@ -590,7 +590,7 @@ graphics.off ()
 ```
 ![map19](map19.png)
 
-### 5.1 The highways2polygon function
+### 6.1 The highways2polygon function
 
 The primary function enabling the delination of groups like the above is
 `highways2polygon`, an example of which is the orange area above, the boundary
@@ -632,24 +632,21 @@ groups <- list (london$highways1, london$highways2, london$highways3)
 Highlighted groups are then added as above using `group_osm_objects`. These are
 overlaid on top of a basemap. The following maps highlight the selected regions
 with both buildings and highways, while the remaining structures are plotted on
-the initial basemap with the following lines.
+the initial basemap with the following lines. (Note that `make_osm_map` returns
+`osm_data` with any additional structures not previously present added; in the
+following case, these data are not altered.)
 ```{r, eval=TRUE}
 structures <- c ("amenity", "grass", "park", "natural")
 structs <- osm_structures (structures=structures, col_scheme="dark")
+junk <- make_osm_map (bbox=bbox, osm_data=london, structures=structs)
 plot_osm_basemap (xylims=get_xylims (bbox), file="map20.png")
-for (i in seq (nrow (structs) - 1)) # because background is last row
-{
-    j <- match (paste ("dat_", structs$suffix [i], sep=""),
-                names (london))
-    add_osm_objects (london [[j]], col=structs$cols [i])
-}
 graphics.off ()
 ```
 ![map20](map20.png)
 
-And then the desired areas highlighted using colours from `RColorBrewer`.
-Highway colours are darkened versions of the `RColorBrewer` colours used for
-buildings.
+The desired areas are then highlighted in the following lines using colours from
+`RColorBrewer`.  These lines also demonstrate how particular colours may be
+lightened or darkened for use as highlights. 
 ```{r, message=FALSE}
 require (RColorBrewer)
 ```
@@ -658,14 +655,14 @@ cols <- RColorBrewer::brewer.pal (4, "Set1") [2:4] # first colour is green
 # darken colours for highways by first converting to rgb
 cols_rgb <- 0.6 * col2rgb (cols)
 # convert to hex using `sprintf ('%X',...)`
-cols_hex <- rep (NA, ncol (cols_rgb))
+cols_dark <- rep (NA, ncol (cols_rgb))
 for (i in seq (ncol (cols_rgb)))
 {
     s <- sprintf ('%X', round (cols_rgb [,i]))
-    cols_hex [i] <- paste0 ("#", s [1], s [2], s [3])
+    cols_dark [i] <- paste0 ("#", s [1], s [2], s [3])
 }
 cols
-cols_hex
+cols_dark
 ```
 Then define non-highlighted colours for highways and buildings
 ```{r}
@@ -682,20 +679,19 @@ group_osm_objects (london$dat_BR, groups=groups, boundary=0,
                    col_extra=col_extra_B, colmat=FALSE, col=cols)
 
 group_osm_objects (london$dat_H, groups=groups, boundary=0,
-                   col_extra=col_extra_H, colmat=FALSE, col=cols_hex)
+                   col_extra=col_extra_H, colmat=FALSE, col=cols_dark)
 group_osm_objects (london$dat_HP, groups=groups, boundary=0,
-                   col_extra=col_extra_H, colmat=FALSE, col=cols_hex)
+                   col_extra=col_extra_H, colmat=FALSE, col=cols_dark)
 graphics.off ()
 ```
 
 The extraction of bounding polygons from named highways is not failsafe, as
-demonstrated by the above error message. There are nevertheless steps that can
-be taken to overcome potential problems, as now explored in the final section of
-this vignette.
+demonstrated by the above error message. To understand why it may not work, it
+is usefull to examine `highways2polygons` in more detail, as follows.
 
-### 5.2 highways2polygon in detail
+### 6.2 highways2polygon in detail
 
-`highways2polygon` finds a sequential polygon that circularly connected the
+`highways2polygon` finds a sequential polygon that circularly connects the
 named highways. Cases where no circular connection is possible generate an error
 message. The function which actually connects the given highways into a circular
 sequence is `connect_highways`, which, as explained in `?connect_highways`,
