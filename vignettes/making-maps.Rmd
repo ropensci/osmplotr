@@ -638,8 +638,8 @@ following case, these data are not altered.)
 ```{r, eval=TRUE}
 structures <- c ("amenity", "grass", "park", "natural")
 structs <- osm_structures (structures=structures, col_scheme="dark")
-junk <- make_osm_map (bbox=bbox, osm_data=london, structures=structs)
-plot_osm_basemap (xylims=get_xylims (bbox), file="map20.png")
+junk <- make_osm_map (filename="map20.png", bbox=bbox, 
+                      osm_data=london, structures=structs)
 graphics.off ()
 ```
 ![map20](map20.png)
