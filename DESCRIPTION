@@ -4,7 +4,7 @@ Version: 0.1-1
 Date: 2016-02-29
 Authors@R: person("Mark", "Padgham", email = "mark.padghm@email.com", role = c("aut", "cre"))
 Description: Produces customisable images of OpenStreetMap data.  Extracts OpenStreetMap data for specified key-value pairs (e.g.  key="building") using the overpass API. Different OSM objects can be plotted in different colours using the function \code{add.osm.objects}.  The function \code{group_osm_objects} enables customised highlighting of selected regions using different graphical schemes designed to contrast with surrounding backgrounds.
-Depends: R (>= 3.1.0)
+Depends: R (>= 3.2.3)
 Imports: 
     ggm,
     igraph,
@@ -16,6 +16,7 @@ Imports:
     spatstat, 
     XML,
 Suggests: knitr,
+    roxygen2,
     rmarkdown,
     devtools,
     maptools,

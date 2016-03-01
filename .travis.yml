@@ -1,8 +1,6 @@
 language: r
 warnings_are_errors: true
 sudo: required
-
-install:
-    - R -e "install.packages(c ('roxygen2', 'knitr'))"
-    - R -e "install.packages(c ('ggm', 'igraph', 'osmar,', 'RCurl,', 'rgeos'))"
-    - R -e "install.packages(c ('sp,', 'spatialkernel,', 'spatstat,', 'XML'))"
+r:
+    - oldrel
+    - release
