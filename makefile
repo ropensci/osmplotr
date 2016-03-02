@@ -1,4 +1,3 @@
-#LFILE = ./vignettes/making-maps
 LFILE = README
 
 all: knit open 
@@ -11,4 +10,4 @@ open: $(LFILE).html
 	xdg-open $(LFILE).html &
 
 clean:
-	rm -f vignettes/*.png
+	rm -f *.html

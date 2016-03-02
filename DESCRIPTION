@@ -3,7 +3,7 @@ Title: Customisable Images of OpenStreetMap Data
 Version: 0.1-1
 Date: 2016-03-01
 Authors@R: person("Mark", "Padgham", email = "mark.padgham@email.com", role = c("aut", "cre"))
-Description: Produces customisable images of OpenStreetMap data.  Extracts OpenStreetMap data for specified key-value pairs (e.g.  key="building") using the overpass API. Different OSM objects can be plotted in different colours using the function \code{add.osm.objects}.  The function \code{group_osm_objects} enables customised highlighting of selected regions using different graphical schemes designed to contrast with surrounding backgrounds.
+Description: Produces customisable images of OpenStreetMap data.  Extracts OpenStreetMap data for specified key-value pairs (e.g.  key="building") using the overpass API. Different OSM objects can be plotted in different colours using the function add_osm_objects().  The function group_osm_objects() enables customised highlighting of selected regions using different graphical schemes designed to contrast with surrounding backgrounds.
 Depends: R (>= 3.2.3)
 Imports: 
     ggm,
