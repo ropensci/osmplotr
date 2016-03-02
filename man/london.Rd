@@ -33,7 +33,7 @@ structures in a small part of central London, U.K.  (bbox = -0.15, 51.5,
 }
 \examples{
 # Data were downloaded using the following code:
-bbox <- c(-0.13,51.51,-0.12,51.52) # smaller bbox for the example
+bbox <- c(-0.13,51.5,-0.12,51.51) # smaller bbox for the example
 #bbox <- c(-0.15,51.5,-0.1,51.52) # but this one actually used
 structures <- c ('highway', 'highway', 'building', 'building', 'building',
                  'amenity', 'grass', 'park', 'natural', 'tree')
@@ -48,7 +48,8 @@ structs$suffix [3] <- 'BNR'
 structs$suffix [4] <- 'BR'
 structs$suffix [5] <- 'BC'
 london <- list ()
-for (i in 1:(nrow (structs) - 1)) {
+for (i in 1:(nrow (structs) - 1))
+{
     dat <- extract_osm_objects (key=structs$key [i], value=structs$value [i],
                                bbox=bbox)
     fname <- paste0 ('dat_', structs$suffix [i])
@@ -57,6 +58,7 @@ for (i in 1:(nrow (structs) - 1)) {
     names (london)[i] <- fname
     rm (list=c(fname))
 }
+bbox <- c(-0.15,51.5,-0.1,51.52)
 extra_pairs <- c ('name', 'Royal.Festival.Hall')
 london$dat_RFH <- extract_osm_objects (key='building', extra_pairs=extra_pairs,
                                 bbox=bbox)
@@ -66,7 +68,7 @@ london$dat_ST <- extract_osm_objects (key='building', extra_pairs=extra_pairs,
                                 bbox=bbox)
 highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
                'Fleet.St', 'Aldwych')
-london$highways1 <- highways2polygon (highways=highways, bbox=bbox)
+#london$highways1 <- highways2polygon (highways=highways, bbox=bbox)
 highways <- c ('Queen.s.Walk', 'Blackfriars', 'Waterloo', 'The.Cut')
 london$highways2 <- highways2polygon (highways=highways, bbox=bbox)
 highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')

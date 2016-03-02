@@ -1,8 +1,6 @@
 #' group_osm_objects
 #'
-#' Plots spatially distinct groups of osm objects in different colours. OSM
-#' objects are attributed to groups based on mean coordinates, so this routine
-#' work best for SpatialPolygons, while may give odd results for SpatialLines.
+#' Plots spatially distinct groups of osm objects in different colours. 
 #'
 #' @param obj An sp SPDF or SLDF (list of polygons or lines) returned by
 #' extract_osm_objects()
@@ -14,21 +12,21 @@
 #' otherwise; FALSE).
 #' @param boundary (negative, 0, positive) values define whether the boundary of
 #' groups should (exlude, bisect, include) objects which straddle the precise
-#' boundary. (Has no effect if col_extra is NULL.)
-#' @param cols Either a vector of >= 4 colours passed to colour_mat (if
-#' colmat=T) to arrange as a 2-D map of visually distinct colours (default
-#' uses rainbow colours), or 2. If !colmat, a vector of the same length as
+#' boundary. (Has no effect if 'col_extra' is NULL.)
+#' @param cols Either a vector of >= 4 colours passed to colour_mat() (if
+#' 'colmat=T') to arrange as a 2-D map of visually distinct colours (default
+#' uses rainbow colours), or (if 'colmat=F'), a vector of the same length as
 #' groups specifying individual colours for each.
 #' @param col_extra If NULL, then any polygons *NOT* within the convex hulls are
 #' assigned to nearest group and coloured accordingly (and boundary has no
 #' effect); if NOT NULL, then any polygons not within groups are coloured this
 #' colour.
-#' @param colmat If TRUE generates colours according to colour_mat(),
-#' otherwise the colours of groups are specified directly by the vector of cols.
-#' @param rotate Passed to colour_mat to rotate colours by the specified number
-#' of degrees clockwise.
+#' @param colmat If TRUE generates colours according to colour_mat(), otherwise
+#' the colours of groups are specified directly by the vector of cols.
+#' @param rotate Passed to colour_mat() to rotate colours by the specified
+#' number of degrees clockwise.
 #' @param lwd Width of boundary line (0 for no line)
-#' @return nothing (adds to graphics.device opened with plot.osm.basemap)
+#' @return nothing (adds to graphics.device opened with plot_osm_basemap())
 #'
 #' @section Note:
 #' Any group that is entire contained within any other group is assumed to
@@ -46,46 +44,46 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                colmat=TRUE, rotate=NULL, lwd=0)
 {
     if (is.null (dev.list ()))
-        stop ("group.osm.objects can only be called after plot.osm.basemap")
+        stop ('group.osm.objects can only be called after plot.osm.basemap')
 
     if (is.na (col_extra))
         col_extra <- NULL
     if (is.null (groups))
     {
-        warning (paste0 ("No groups defined in group_osm_objects; ",
-                         "passing to add_osm_objects"))
+        warning (paste0 ('No groups defined in group_osm_objects; ',
+                         'passing to add_osm_objects'))
         if (is.null (cols))
             cols <- col_extra
         add_osm_objects (obj, col=cols [1])
         return ()
-    } else if (class (groups) != "list")
+    } else if (class (groups) != 'list')
     {
-        stopifnot (class (groups) == "SpatialPoints")
+        stopifnot (class (groups) == 'SpatialPoints')
         groups <- list (groups)
-    } else if (!all ((lapply (groups, class)) == "SpatialPoints"))
+    } else if (!all ((lapply (groups, class)) == 'SpatialPoints'))
     {
-        e <- simpleError ("Cannot coerce groups to SpatialPoints")
+        e <- simpleError ('Cannot coerce groups to SpatialPoints')
         tryCatch (
                   groups <- lapply (groups, function (x) 
-                                    as (x, "SpatialPoints")),
+                                    as (x, 'SpatialPoints')),
                   finally = stop (e))
     }
 
     stopifnot (length (make_hull) == 1 | length (make_hull) == length (groups))
 
     if (length (groups) == 1 & is.null (col_extra))
-        col_extra <- "gray40"
+        col_extra <- 'gray40'
 
-    if (class (obj) == "SpatialPolygonsDataFrame")
+    if (class (obj) == 'SpatialPolygonsDataFrame')
     {
-        objtxt <- c ("polygons", "Polygons")
+        objtxt <- c ('polygons', 'Polygons')
         plotfun <- function (i, col=col) polypath (i, border=NA, col=col)
-    } else if (class (obj) == "SpatialLinesDataFrame")
+    } else if (class (obj) == 'SpatialLinesDataFrame')
     {
-        objtxt <- c ("lines", "Lines")
+        objtxt <- c ('lines', 'Lines')
         plotfun <- function (i, col=col) lines (i, col=col)
     } else
-        stop ("obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame")
+        stop ('obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame')
 
     # Determine whether any groups are holes
     if (length (groups) > 1)
@@ -137,15 +135,15 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
             cols <- rep (cols, length.out=length (groups))
         if (length (groups) == 1 & is.null (col_extra))
         {
-            warning ("There is only one group; using default col_extra")
+            warning ('There is only one group; using default col_extra')
             if (is.null (cols))
             {
-                cols <- "red"
-                col_extra <- "gray40"
-            } else if (cols [1] != "gray40")
-                col_extra <- "gray40"
+                cols <- 'red'
+                col_extra <- 'gray40'
+            } else if (cols [1] != 'gray40')
+                col_extra <- 'gray40'
             else
-                col_extra <- "white"
+                col_extra <- 'white'
         }
     } else
     {
@@ -160,11 +158,11 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
 
     # first extract mean coordinates for every polygon or line in obj:
     xy_mn <- lapply (slot (obj, objtxt [1]),  function (x)
-                     colMeans  (slot (slot (x, objtxt [2]) [[1]], "coords")))
+                     colMeans  (slot (slot (x, objtxt [2]) [[1]], 'coords')))
     xmn <- sapply (xy_mn, function (x) x [1])
     ymn <- sapply (xy_mn, function (x) x [2])
 
-    usr <- par ("usr")
+    usr <- par ('usr')
     boundaries <- list ()
     xy_list <- list () 
     # The following loop constructs:
@@ -177,8 +175,8 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
         if ((length (make_hull) == 1 & make_hull) |
             (length (make_hull) > 1 & make_hull [i]))
         {
-            x <- slot (groups [[i]], "coords") [,1]
-            y <- slot (groups [[i]], "coords") [,2]
+            x <- slot (groups [[i]], 'coords') [,1]
+            y <- slot (groups [[i]], 'coords') [,2]
             xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
             ch <- spatstat::convexhull (xy)
             bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
@@ -212,10 +210,10 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
     # while point.in.polygon returns (0,1,2-3) for (not, in, on)
     # pinpoly (poly, pts), but point.in.polygon (pt.x, pt.y, pol.x, pol.y).
     # pinpoly had to be ditched because spatialkernel caused an error:
-    # "package ... eventually depends on the the following package which
-    # restricts usage"
+    # 'package ... eventually depends on the the following package which
+    # restricts usage'
     coords <- lapply (slot (obj, objtxt [1]),  function (x)
-                      slot (slot (x, objtxt [2]) [[1]], "coords"))
+                      slot (slot (x, objtxt [2]) [[1]], 'coords'))
     coords <- lapply (coords, function (i)
                       {
                           #pins <- lapply (boundaries, function (j)

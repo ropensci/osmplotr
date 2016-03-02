@@ -9,9 +9,9 @@
 click_map <- function ()
 {
     if (is.null (dev.list ()))
-        stop ("group.osm.objects can only be called after plot.osm.basemap")
+        stop ('group.osm.objects can only be called after plot.osm.basemap')
 
-    cat ("click on same location twice to finish\n")
+    cat ('click on same location twice to finish\n')
 
     xy <- NULL
     loc_old <- 0

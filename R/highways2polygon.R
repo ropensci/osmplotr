@@ -1,24 +1,26 @@
 #' highways2polygon
 #'
-#' takes a list of highways names which must enclose an internal area, and returns
+#' Takes a list of highways names which must enclose an internal area, and returns
 #' a SpatialLines object containing a sequence of OSM nodes which cyclically
 #' connect all highways. Will fail if the streets do not form a cycle.
 #'
 #' @param highways A vector of highway names passed directly to the Overpass
-#' API. Wildcards and whitespaces are '.'; for other options see overpass help.
+#' API. Wildcards and whitespaces are '.'; for other options see online help for
+#' the overpass API.
 #' @param bbox The bounding box within which to look for highways.  Must be a
 #' vector of 4 elements (xmin, ymin, xmax, ymax).  
 #' @param plot If TRUE, then all OSM data for each highway is plotted and the
 #' final cycle overlaid.
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic
 #' line connecting all given streets.
+#' @export
 
 highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
 {
     if (is.null (highways))
-        stop ("A vector of highway names must be given")
+        stop ('A vector of highway names must be given')
     if (is.null (bbox))
-        stop ("A bounding box must be given")
+        stop ('A bounding box must be given')
 
     haversand <- function (way1, way2)
     {
@@ -113,8 +115,8 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
                             range (sapply (i, function (j) range (j [,2])))))
         #plot.new ()
         par (mar=rep (0, 4))
-        plot (NULL, NULL, xlim=xlims, ylim=ylims, xaxt="n", yaxt="n",
-              xlab="", ylab="", frame=FALSE)
+        plot (NULL, NULL, xlim=xlims, ylim=ylims, xaxt='n', yaxt='n',
+              xlab='', ylab='', frame=FALSE)
         cols <- rainbow (length (ways))
         for (i in seq (ways))
             for (j in seq (ways [[i]]))
@@ -123,8 +125,8 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
                 y <- ways [[i]] [[j]] [,2]
                 n <- length (x)
                 lines (x, y, col=cols [i])
-                text (x [1], y [1], labels=paste0 (i, ".", j), col=cols [i])
-                text (x [n], y [n], labels=paste0 (i, ".", j), col=cols [i])
+                text (x [1], y [1], labels=paste0 (i, '.', j), col=cols [i])
+                text (x [n], y [n], labels=paste0 (i, '.', j), col=cols [i])
             }
     }
 
@@ -150,7 +152,7 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
     }
     cycles <- ggm::fundCycles (conmat)
     if (is.null (cycles))
-        stop ("There are no cycles in the listed highways")
+        stop ('There are no cycles in the listed highways')
     i <- which.max (sapply (cycles, nrow))
     cyc <- cycles [[i]]
 
@@ -161,8 +163,8 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
     for (i in seq (cyc_len))
     {
         w0 <- cyc [i,2] # the current way
-        wf <- cyc [i,1] # the "from" way
-        wt <- cyc [i+1,2] # the "to" way
+        wf <- cyc [i,1] # the 'from' way
+        wt <- cyc [i+1,2] # the 'to' way
 
         # Find the components of [[w0]] which connect to [[wf]] & [[wt]], along
         # with the node names
@@ -170,7 +172,7 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
         w0f <- sapply (ways [[w0]], function (x) 
                        max (rowSums (array (x %in% wf_flat, dim=dim(x)))))
         if (max (w0f) < 2)
-            stop ("Error: way [[", w0, "]] does not join any others")
+            stop ('Error: way [[', w0, ']] does not join any others')
         w0f_names <- sapply (ways [[w0]], function (x) rownames (x)
                 [which (rowSums (array (x %in% wf_flat, dim=dim (x))) == 2)])
         w0f_names <- unique (unlist (w0f_names)) 
@@ -184,7 +186,7 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
         w0t <- sapply (ways [[w0]], function (x) 
                        max (rowSums (array (x %in% wt_flat, dim=dim(x)))))
         if (max (w0t) < 2)
-            stop ("Error: way [[", w0, "]] does not join any others")
+            stop ('Error: way [[', w0, ']] does not join any others')
         w0t_names <- sapply (ways [[w0]], function (x) rownames (x)
                 [which (rowSums (array (x %in% wt_flat, dim=dim (x))) == 2)])
         w0t_names <- unique (unlist (w0t_names))
@@ -261,8 +263,7 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
             conmat_way [i1, i2] <- conmat_way [i2, i1] <- Inf
             # This stop should never happen:
             if (all (!is.finite (conmat_way)))
-                stop (paste ("Segments of way#", i, 
-                             " cannot be joined", sep=""))
+                stop (paste0 ('Segments of way#', i, ' cannot be joined'))
             sp <- shortest_way (ways [[w0]], w0f_names, w0t_names)
         } # end if (maxlen == 0)
         paths [[i]] <- sp
@@ -282,7 +283,7 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
     path <- do.call (rbind, paths)
 
     if (plot)
-        lines (path [,1], path [,2], lwd=3, col="black", lty=2)
+        lines (path [,1], path [,2], lwd=3, col='black', lty=2)
 
     indx <- which (!duplicated (rownames (path)))
     return (sp::SpatialPoints (path [indx,]))

@@ -19,9 +19,9 @@ connect_highways <- function (highways=NULL)
     # ***** (3) Insert extra connections between highways until the longest
     # *****     cycle == length (highways). 
     if (is.null (highways))
-        stop ("highways must be given")
-    if (class (highways) != "list")
-        stop ("highways must be a list")
+        stop ('highways must be given')
+    if (class (highways) != 'list')
+        stop ('highways must be a list')
     # TODO: Make class so that can be properly checked
 
     # ***** (1) Add intersection nodes to junctions of ways where these don't
@@ -37,13 +37,13 @@ connect_highways <- function (highways=NULL)
         for (j in seq (obji))
         {
             li <- sp::Line (obji [[j]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID="a"))) 
+            li <- sp::SpatialLines (list (Lines (list (li), ID='a'))) 
             # The following function returns default of -1 for no geometric
             # intersection; 0 where intersections exists but area *NOT* vertices
             # of li, and 2 where intersections are vertices of li.
             intersections <- sapply (test_flat, function (x) {
                         lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+                        lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
                         int <- rgeos::gIntersection (li, lj)
                         if (!is.null (int))
                             sum (coordinates (int) %in% x)
@@ -56,7 +56,7 @@ connect_highways <- function (highways=NULL)
                     # Then they have to be added to highways [[i]] [[j]]. 
                     x <- test_flat [k] [[1]]
                     lj <- sp::Line (x)
-                    lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+                    lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
                     xy <- coordinates (rgeos::gIntersection (li, lj))
                     d <- sqrt ((xy [1] - obji [[j]] [,1]) ^ 2 + 
                                (xy [2] - obji [[j]] [,2]) ^ 2)
@@ -208,11 +208,11 @@ connect_highways <- function (highways=NULL)
         }
         if (all (is.na (cyc_len_i)))
         {
-            warning ("No cycles can be found or made")
+            warning ('No cycles can be found or made')
             break
         } else if (max (cyc_len_i < cyc_len))
         {
-            warning ("Cycle unable to be extended through all ways")
+            warning ('Cycle unable to be extended through all ways')
             break
         } else
             cyc_len <- max (cyc_len_i)

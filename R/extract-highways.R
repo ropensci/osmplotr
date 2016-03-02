@@ -11,15 +11,15 @@
 #' overpass help.
 #' @param bbox the bounding box within which to look for highways.  Must be a
 #' vector of 4 elements (xmin, ymin, xmax, ymax).  
-#' @return A list of highways matching highway_names, each element of which is a
-#' list of distinct components for the given highway.
+#' @return A list of highways matching 'highway_names', each element of which is
+#' a list of distinct components for the given highway.
 
 extract_highways <- function (highway_names=NULL, bbox=NULL)
 {
     if (is.null (highway_names))
-        stop ("A vector of highway names must be given")
+        stop ('A vector of highway names must be given')
     if (is.null (bbox))
-        stop ("A bounding box must be given")
+        stop ('A bounding box must be given')
 
     # Proceeds through five stages:
     # (1) Download OSM data for highways 
@@ -42,7 +42,7 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
                           tolower (substring (x, 1, nletters)))
     }
 
-    cat ("Downloading OSM data ...\n")
+    cat ('Downloading OSM data ...\n')
     dat <- NULL
     max_trials <- 20
     count <- 1
@@ -62,14 +62,14 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
         rm (dat)
         close (pb)
         if (notnull < length (highway_names))
-            cat ("Failed to download all data, trying again (#", count,
-                 "/", max_trials, ") ...\n", sep="")
+            cat ('Failed to download all data, trying again (#', count,
+                 '/', max_trials, ') ...\n', sep='')
         count <- count + 1
         if (count > max_trials)
             break
     }
     if (notnull < length (highway_names))
-        stop ("Unable to download all requested data.")
+        stop ('Unable to download all requested data.')
 
 
 
@@ -79,7 +79,7 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
     for (i in seq (highway_names))
     {
         dat <- order_lines (get (waynames [i]), i0=i0)
-        assign (paste (waynames [i], "o", sep=""), dat)
+        assign (paste0 (waynames [i], 'o'), dat)
         i0 <- max (unlist (lapply (dat, function (x) as.numeric (rownames (x)))))
     }
 
@@ -94,13 +94,13 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
     maxvert <- 0
     for (i in waynames)
     {
-        objs [[i]] <- get (paste (i, "o", sep=""))
+        objs [[i]] <- get (paste0 (i, 'o'))
         maxvert <- max (maxvert, unlist (lapply (objs [[i]], function (x)
                                     max (as.numeric (rownames (x))))))
     }
     maxvert <- maxvert + 1
 
-    # The OSM objects in "objs" then need to be modified through the addition of
+    # The OSM objects in 'objs' then need to be modified through the addition of
     # junction points where these don't exist, requiring a double loop.
     for (i in seq (objs))
     {
@@ -113,13 +113,13 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
         for (j in seq (obji))
         {
             li <- sp::Line (obji [[j]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID="a"))) 
+            li <- sp::SpatialLines (list (Lines (list (li), ID='a'))) 
             # The following function returns default of -1 for no geometric
             # intersection; 0 where intersections exists but area *NOT* vertices
             # of li, and 2 where intersections are vertices of li.
             intersections <- sapply (test_flat, function (x) {
                         lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+                        lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
                         int <- rgeos::gIntersection (li, lj)
                         if (!is.null (int))
                             sum (coordinates (int) %in% x)
@@ -132,7 +132,7 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
                     # Then they have to be added to objs [[i]] [[j]]. 
                     x <- test_flat [k] [[1]]
                     lj <- sp::Line (x)
-                    lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+                    lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
                     xy <- coordinates (rgeos::gIntersection (li, lj))
                     d <- sqrt ((xy [1] - obji [[j]] [,1]) ^ 2 + 
                                (xy [2] - obji [[j]] [,2]) ^ 2)

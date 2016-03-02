@@ -15,8 +15,8 @@ overpass help.}
 vector of 4 elements (xmin, ymin, xmax, ymax).}
 }
 \value{
-A list of highways matching highway_names, each element of which is a
-list of distinct components for the given highway.
+A list of highways matching 'highway_names', each element of which is
+a list of distinct components for the given highway.
 }
 \description{
 Extracts a list of named OpenStreetMap highways. OSM data are neither

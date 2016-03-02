@@ -5,13 +5,16 @@
 #' @param n number of rows and columns (default = 10; if length 2, then
 #' dimensions of rectangle). 
 #' @param cols vector of length >= 4 of colors (example, default = rainbow
-#' (4), or from RColorBrewer, brewer.pal (4, "Set1")). cols are wrapped
+#' (4), or from RColorBrewer, brewer.pal (4, 'Set1')). cols are wrapped
 #' clockwise around the corners from top left to bottom left. 
 #' @param rotate rotates the entire colour matrix by the specified angle (in
 #' degrees).
 #' @param plot plots the colour matrix (default FALSE)
 #' @return matrix of colours
+#' @export
+#'
 #' @examples
+#' library (osmplotr)
 #' cm <- colour_mat (n=20, cols=rainbow(4), rotate=90, plot=TRUE)
 
 colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
@@ -19,10 +22,10 @@ colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
     if (is.null (cols))
         cols <- rainbow (4)
     else if (length (cols) < 4)
-        stop ("cols must have length = 4")
+        stop ('cols must have length = 4')
 
     cols <- cols [round (1:4 * length (cols) / 4)]
-    if (class (cols [1]) != "matrix")
+    if (class (cols [1]) != 'matrix')
         cols <- col2rgb (cols)
 
     if (!is.null (rotate))

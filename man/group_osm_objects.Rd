@@ -22,11 +22,11 @@ otherwise; FALSE).}
 
 \item{boundary}{(negative, 0, positive) values define whether the boundary of
 groups should (exlude, bisect, include) objects which straddle the precise
-boundary. (Has no effect if col_extra is NULL.)}
+boundary. (Has no effect if 'col_extra' is NULL.)}
 
-\item{cols}{Either a vector of >= 4 colours passed to colour_mat (if
-colmat=T) to arrange as a 2-D map of visually distinct colours (default
-uses rainbow colours), or 2. If !colmat, a vector of the same length as
+\item{cols}{Either a vector of >= 4 colours passed to colour_mat() (if
+'colmat=T') to arrange as a 2-D map of visually distinct colours (default
+uses rainbow colours), or (if 'colmat=F'), a vector of the same length as
 groups specifying individual colours for each.}
 
 \item{col_extra}{If NULL, then any polygons *NOT* within the convex hulls are
@@ -34,21 +34,19 @@ assigned to nearest group and coloured accordingly (and boundary has no
 effect); if NOT NULL, then any polygons not within groups are coloured this
 colour.}
 
-\item{colmat}{If TRUE generates colours according to colour_mat(),
-otherwise the colours of groups are specified directly by the vector of cols.}
+\item{colmat}{If TRUE generates colours according to colour_mat(), otherwise
+the colours of groups are specified directly by the vector of cols.}
 
-\item{rotate}{Passed to colour_mat to rotate colours by the specified number
-of degrees clockwise.}
+\item{rotate}{Passed to colour_mat() to rotate colours by the specified
+number of degrees clockwise.}
 
 \item{lwd}{Width of boundary line (0 for no line)}
 }
 \value{
-nothing (adds to graphics.device opened with plot.osm.basemap)
+nothing (adds to graphics.device opened with plot_osm_basemap())
 }
 \description{
-Plots spatially distinct groups of osm objects in different colours. OSM
-objects are attributed to groups based on mean coordinates, so this routine
-work best for SpatialPolygons, while may give odd results for SpatialLines.
+Plots spatially distinct groups of osm objects in different colours.
 }
 \section{Note}{
 

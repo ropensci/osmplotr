@@ -11,7 +11,7 @@ colour_mat(n = c(10, 10), cols = NULL, rotate = NULL, plot = FALSE)
 dimensions of rectangle).}
 
 \item{cols}{vector of length >= 4 of colors (example, default = rainbow
-(4), or from RColorBrewer, brewer.pal (4, "Set1")). cols are wrapped
+(4), or from RColorBrewer, brewer.pal (4, 'Set1')). cols are wrapped
 clockwise around the corners from top left to bottom left.}
 
 \item{rotate}{rotates the entire colour matrix by the specified angle (in
@@ -26,6 +26,7 @@ matrix of colours
 Generates a 2D matrix of graduated colours.
 }
 \examples{
+library (osmplotr)
 cm <- colour_mat (n=20, cols=rainbow(4), rotate=90, plot=TRUE)
 }
 

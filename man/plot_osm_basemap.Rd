@@ -17,7 +17,7 @@ quality and likely slow)}
 \item{width}{Width of graphics file (in px; default 480).}
 
 \item{structures}{Data frame returned by osm_structures() used here to
-specify background colour of plot; if structs=NULL, the colour is specified
+specify background colour of plot; if 'structs=NULL', the colour is specified
 by 'bg'}
 
 \item{bg}{Background colour of map (default = 'gray20' only if structs not
@@ -33,10 +33,10 @@ height; see ?png, for example, for details)}
 nothing (generates file of specified type)
 }
 \description{
-Generates a base OSM plot ready for polygon and line objects to be overlain
-with add_osm_polygons() and add_osm_lines(). NOTE: Graphics files must be
-closed after finishing map with dev.off() or graphics.off(). Files size may
-be adjusted by width only: height is automatically calculated from the aspect
-ratio of the bounding box.
+Generates a base OSM plot ready for polygon, line, and point objects to be
+overlain with add_osm_objects(). NOTE: Graphics files must be closed after
+finishing map with dev.off() or graphics.off(). Unless specified, height of
+graphics device is automatically calculated in proportion to the given width
+according to the aspect ratio of the bounding box.
 }
 

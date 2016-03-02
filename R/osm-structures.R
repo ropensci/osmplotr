@@ -11,36 +11,37 @@
 #' '?extract_osm_objects').  
 #' @param col_scheme Colour scheme for the plot (current options include 'dark'
 #' and 'light') 
-#' @return List of structures, corresponding prefixes, and colours.
+#' @return 'data.frame' of structures, key-value pairs, corresponding prefixes,
+#' and colours.
 #'
 #' @export
 
-osm_structures <- function (structures = c ("building", "amenity", "waterway",
-                         "grass", "natural", "park", "highway", "boundary",
-                         "tree"), col_scheme="dark")
+osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
+                         'grass', 'natural', 'park', 'highway', 'boundary',
+                         'tree'), col_scheme='dark')
 {
     # Set up key-value pairs:
     keys <- structures
-    values <- rep ("", length (keys))
-    if (any (structures == "grass"))
+    values <- rep ('', length (keys))
+    if (any (structures == 'grass'))
     {
-        keys [structures == "grass"] <- "landuse"
-        values [structures == "grass"] <- "grass"
+        keys [structures == 'grass'] <- 'landuse'
+        values [structures == 'grass'] <- 'grass'
     }
-    if (any (structures == "park"))
+    if (any (structures == 'park'))
     {
-        keys [structures == "park"] <- "leisure"
-        values [structures == "park"] <- "park"
+        keys [structures == 'park'] <- 'leisure'
+        values [structures == 'park'] <- 'park'
     }
-    if (any (structures == "tree"))
+    if (any (structures == 'tree'))
     {
-        keys [structures == "tree"] <- "natural"
-        values [structures == "tree"] <- "tree"
+        keys [structures == 'tree'] <- 'natural'
+        values [structures == 'tree'] <- 'tree'
     }
-    if (any (structures == "water"))
+    if (any (structures == 'water'))
     {
-        keys [structures == "water"] <- "natural"
-        values [structures == "water"] <- "water"
+        keys [structures == 'water'] <- 'natural'
+        values [structures == 'water'] <- 'water'
     }
 
     # Get suffixes for naming data objects, extending suffixes until
@@ -89,9 +90,9 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     }
 
     # Color scheme:
-    if (col_scheme == "dark")
+    if (col_scheme == 'dark')
     {
-        col_bg <- "gray20"
+        col_bg <- 'gray20'
         col_green <- rgb (100, 120, 100, 255, maxColorValue=255)
         col_green_bright <- rgb (100, 160, 100, 255, maxColorValue=255)
         col_blue <- rgb (100, 100, 120, 255, maxColorValue=255)
@@ -100,18 +101,18 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
         col_white <- rgb (200, 200, 200, 255, maxColorValue=255)
         col_black <- rgb (0, 0, 0, 255, maxColorValue=255)
         cols <- rep (col_bg, length (structures))
-        cols [structures == "building"] <- col_gray1
-        cols [structures == "amenity"] <- col_gray2
-        cols [structures == "waterway"] <- col_blue
-        cols [structures == "natural"] <- col_green
-        cols [structures == "park"] <- col_green
-        cols [structures == "tree"] <- col_green_bright
-        cols [structures == "grass"] <- col_green_bright
-        cols [structures == "highway"] <- col_black
-        cols [structures == "boundary"] <- col_white
-    } else if (col_scheme == "light")
+        cols [structures == 'building'] <- col_gray1
+        cols [structures == 'amenity'] <- col_gray2
+        cols [structures == 'waterway'] <- col_blue
+        cols [structures == 'natural'] <- col_green
+        cols [structures == 'park'] <- col_green
+        cols [structures == 'tree'] <- col_green_bright
+        cols [structures == 'grass'] <- col_green_bright
+        cols [structures == 'highway'] <- col_black
+        cols [structures == 'boundary'] <- col_white
+    } else if (col_scheme == 'light')
     {
-        col_bg <- "gray95"
+        col_bg <- 'gray95'
         col_green <- rgb (200, 220, 200, 255, maxColorValue=255)
         col_green_bright <- rgb (200, 255, 200, 255, maxColorValue=255)
         col_blue <- rgb (200, 200, 220, 255, maxColorValue=255)
@@ -120,27 +121,27 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
         col_white <- rgb (255, 255, 255, 255, maxColorValue=255)
         col_black <- rgb (150, 150, 150, 255, maxColorValue=255)
         cols <- rep (col_bg, length (structures))
-        cols [structures == "building"] <- col_gray1
-        cols [structures == "amenity"] <- col_gray2
-        cols [structures == "waterway"] <- col_blue
-        cols [structures == "natural"] <- col_green
-        cols [structures == "park"] <- col_green
-        cols [structures == "tree"] <- col_green_bright
-        cols [structures == "grass"] <- col_green_bright
-        cols [structures == "highway"] <- col_black
-        cols [structures == "boundary"] <- col_white
+        cols [structures == 'building'] <- col_gray1
+        cols [structures == 'amenity'] <- col_gray2
+        cols [structures == 'waterway'] <- col_blue
+        cols [structures == 'natural'] <- col_green
+        cols [structures == 'park'] <- col_green
+        cols [structures == 'tree'] <- col_green_bright
+        cols [structures == 'grass'] <- col_green_bright
+        cols [structures == 'highway'] <- col_black
+        cols [structures == 'boundary'] <- col_white
     }
     # Then add row to designate background colour (this has to be done prior to
     # data.frame construction, because cols are converted there to factors):
-    structures <- c (structures, "background")
-    keys <- c (keys, "")
-    values <- c (values, "")
-    suffixes <- c (suffixes, "")
+    structures <- c (structures, 'background')
+    keys <- c (keys, '')
+    values <- c (values, '')
+    suffixes <- c (suffixes, '')
     cols <- c (cols, col_bg)
     
     dat <- data.frame (cbind (structures, keys, values, suffixes, cols),
                        stringsAsFactors=FALSE, row.names=seq (length (keys)))
-    names (dat) <- c ("structure", "key", "value", "suffix", "cols")
+    names (dat) <- c ('structure', 'key', 'value', 'suffix', 'cols')
     return (dat)
 }
 

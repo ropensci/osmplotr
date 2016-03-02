@@ -21,9 +21,9 @@ all be named with the stated 'dat_prefix' and have suffixes as given in
 'structures'.}
 
 \item{structures}{A data.frame specifying types of OSM structures as returned
-from osm_structures, and potentially modified to alter lists of structures to
-be plotted, and their associated colours. The order of structs determines the
-plot order of objects.}
+from osm_structures(), and potentially modified to alter lists of structures
+to be plotted, and their associated colours. Objects are overlaid on plot
+according to the order given in 'structures'.}
 
 \item{width}{Width of graphics device, with height calculated according to
 latitudinal and longitudinal proportions of 'bbox'.}
@@ -36,13 +36,14 @@ list of OSM structures each as Spatial(Polygon/List)DataFrame, and
 appended to `osm_data` (which is NULL by default).
 }
 \description{
-Makes an entire OSM map for the given bbox by downloading all data.  This
-function can take quite some time (tens of minutes) to execute the two
-primary steps of downloading and processing the raw OSM data.  For this
-reason, this function is not intended to be actually run; rather it serves to
-demonstrate how all functions may be combined to generate a map.
+Makes an entire OSM map for the given bbox using the submitted data, or by
+downloading data if none submitted. This is a convenience function enabling
+an entire map to be produced according to the graphical format specified with
+the `structures` argument.
 }
-\details{
-Progress is dumped to screen, including time taken.
+\section{Note}{
+
+If 'osm_data=NULL', then data will be downloaded, which can take some time.
+Progress is dumped to screen.
 }
 

@@ -15,7 +15,8 @@ osm_structures(structures = c("building", "amenity", "waterway", "grass",
 and 'light')}
 }
 \value{
-List of structures, corresponding prefixes, and colours.
+'data.frame' of structures, key-value pairs, corresponding prefixes,
+and colours.
 }
 \description{
 For the given vector of structure types returns a 'data.frame' containing two

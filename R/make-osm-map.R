@@ -1,12 +1,9 @@
 #' make_osm_map
 #'
-#' Makes an entire OSM map for the given bbox by downloading all data.  This
-#' function can take quite some time (tens of minutes) to execute the two
-#' primary steps of downloading and processing the raw OSM data.  For this
-#' reason, this function is not intended to be actually run; rather it serves to
-#' demonstrate how all functions may be combined to generate a map.
-#'
-#' Progress is dumped to screen, including time taken.
+#' Makes an entire OSM map for the given bbox using the submitted data, or by
+#' downloading data if none submitted. This is a convenience function enabling
+#' an entire map to be produced according to the graphical format specified with
+#' the `structures` argument.  
 #' 
 #' @param filename Name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
@@ -18,28 +15,32 @@
 #' all be named with the stated 'dat_prefix' and have suffixes as given in
 #' 'structures'.
 #' @param structures A data.frame specifying types of OSM structures as returned
-#' from osm_structures, and potentially modified to alter lists of structures to
-#' be plotted, and their associated colours. The order of structs determines the
-#' plot order of objects.
+#' from osm_structures(), and potentially modified to alter lists of structures
+#' to be plotted, and their associated colours. Objects are overlaid on plot
+#' according to the order given in 'structures'.
 #' @param width Width of graphics device, with height calculated according to
 #' latitudinal and longitudinal proportions of 'bbox'.
 #' @param dat_prefix Prefix for data structures (default 'dat_'). Final data
 #' structures are created by appending the suffixes from osm_structures().
 #' @return list of OSM structures each as Spatial(Polygon/List)DataFrame, and
 #' appended to `osm_data` (which is NULL by default).
+#'
+#' @section Note:
+#' If 'osm_data=NULL', then data will be downloaded, which can take some time.
+#' Progress is dumped to screen.
 
 
 make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
                           structures=osm_structures (), width=640,
-                          dat_prefix="dat_")
+                          dat_prefix='dat_')
 {
     if (is.null (bbox)) # get it from osm_data
     {
         if (is.null (osm_data))
-            stop ("Either bounding box or osm_data must be given")
+            stop ('Either bounding box or osm_data must be given')
         xylims <- list (xrange=c (Inf, -Inf), yrange=c(Inf, -Inf))
-        classes <- c ("SpatialLinesDataFrame", "SpatialPolygonsDataFrame",
-                      "SpatialPointsDataFrame")
+        classes <- c ('SpatialLinesDataFrame', 'SpatialPolygonsDataFrame',
+                      'SpatialPointsDataFrame')
         for (i in osm_data)
         {
             if (class (i) %in% classes)
@@ -67,7 +68,7 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
         structs_full <- structures
         structures <- structures [structs_new,]
 
-        cat ("Downloading and extracting OSM data for", ns, "structures ...\n")
+        cat ('Downloading and extracting OSM data for', ns, 'structures ...\n')
         pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
         t0 <- proc.time ()
         for (i in 1:nrow (structures)) {
@@ -79,18 +80,18 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
             setTxtProgressBar(pb, i / nrow (structures))
         }
         close (pb)
-        cat ("That took ", (proc.time () - t0)[3], "s\n", sep="")
+        cat ('That took ', (proc.time () - t0)[3], 's\n', sep='')
 
         structures <- structs_full
     }
     ns <- nrow (structures) - 1 # last row is background
 
-    bg <- structures$col [structures$structure == "background"]
+    bg <- structures$col [structures$structure == 'background']
     plot_osm_basemap (xylims=get_xylims (bbox), filename=filename,
                       bg=bg, width=width)
     for (i in seq (nrow (structures) - 1))
     {
-        obji <- paste0 ("dat_", structures$suffix [i])
+        obji <- paste0 ('dat_', structures$suffix [i])
         add_osm_objects (osm_data [[obji]], col=structures$cols [i])
     }
 

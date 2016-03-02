@@ -7,13 +7,13 @@
 order_lines(spLines, i0 = 0)
 }
 \arguments{
-\item{spLines}{A SpatialLinesDataFrame returned from extract.osm.objects()}
+\item{spLines}{A SpatialLinesDataFrame returned from extract_osm_objects()}
 
 \item{i0}{The first node is numbered (i0+1), with other nodes (except
 junction nodes) numbered sequentially .}
 }
 \value{
-nothing (adds to graphics.device opened with plot_osm_basemap())
+A list of ordered line segments.
 }
 \description{
 Accepts a SpatialLinesDataFrame representing an OpenStreetMap line object
@@ -23,5 +23,9 @@ of components each of which is ordered sequentially along the line.
 Points of intersection between components are also inserted where these are
 not explicitly present in OpenStreetMap. Nodes are also sequentially
 renumbered, starting at (i0+1)
+}
+\section{Note}{
+
+This function is primarily used in extract_highways()
 }
 

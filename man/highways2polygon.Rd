@@ -8,7 +8,8 @@ highways2polygon(highways = NULL, bbox = NULL, plot = FALSE)
 }
 \arguments{
 \item{highways}{A vector of highway names passed directly to the Overpass
-API. Wildcards and whitespaces are '.'; for other options see overpass help.}
+API. Wildcards and whitespaces are '.'; for other options see online help for
+the overpass API.}
 
 \item{bbox}{The bounding box within which to look for highways.  Must be a
 vector of 4 elements (xmin, ymin, xmax, ymax).}
@@ -21,7 +22,7 @@ A single data.frame containing the lat-lon coordinates of the cyclic
 line connecting all given streets.
 }
 \description{
-takes a list of highways names which must enclose an internal area, and returns
+Takes a list of highways names which must enclose an internal area, and returns
 a SpatialLines object containing a sequence of OSM nodes which cyclically
 connect all highways. Will fail if the streets do not form a cycle.
 }

@@ -8,14 +8,17 @@
 #' not explicitly present in OpenStreetMap. Nodes are also sequentially
 #' renumbered, starting at (i0+1)
 #'
-#' @param spLines A SpatialLinesDataFrame returned from extract.osm.objects()
+#' @param spLines A SpatialLinesDataFrame returned from extract_osm_objects()
 #' @param i0 The first node is numbered (i0+1), with other nodes (except
 #' junction nodes) numbered sequentially .
-#' @return nothing (adds to graphics.device opened with plot_osm_basemap())
+#' @return A list of ordered line segments.
+#'
+#' @section Note:
+#' This function is primarily used in extract_highways()
 
 order_lines <- function (spLines, i0=0)
 {
-    stopifnot (class (spLines) == "SpatialLinesDataFrame")
+    stopifnot (class (spLines) == 'SpatialLinesDataFrame')
     # Extract all coords from the SLDF and store as simple list:
     xy <- coordinates (spLines)
     xy <- lapply (xy, function (x) array (unlist (x), dim=dim(x[[1]]) ))
@@ -95,11 +98,11 @@ order_lines <- function (spLines, i0=0)
             ref <- xy_ord
             ref [[i]] <- NULL
             li <- sp::Line (xy_ord [[i]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID="a"))) 
+            li <- sp::SpatialLines (list (Lines (list (li), ID='a'))) 
             # ID is filler
             intersections <- sapply (ref, function (x) {
                         lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+                        lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
                         !is.null (rgeos::gIntersection (li, lj))
                         })
             inref <- sapply (ref, function (x) {
@@ -116,7 +119,7 @@ order_lines <- function (spLines, i0=0)
             for (j in inum)
             {
                 lj <- sp::Line (xy_ord [[j]])
-                lj <- sp::SpatialLines (list (Lines (list (lj), ID="a"))) 
+                lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
                 xy <- coordinates (rgeos::gIntersection (li, lj))
                 # Then distances to from xy to xy_ord [[i]], to enable the
                 # junction point to be inserted in the appropriate sequence.
