@@ -157,4 +157,4 @@ graphics.off ()
 
 ![map6](./figure/map6.png)
 
-... see package vignette for a lot more detail and further capabilities.
+... see package vignettes on downloading data and making maps for a lot more detail and further capabilities.
