@@ -34,11 +34,11 @@ easy steps:
 
 ## Installation
 
-```{r}
+```{r, eval=FALSE}
 install.packages ('osmplotr')
 ```
 or the development version
-```{r}
+```{r, eval=FALSE}
 devtools::install_github ('mpadge/osmplotr')
 ```
 
