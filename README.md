@@ -23,7 +23,7 @@ dat_B <- extract_osm_objects (key="building", bbox=bbox)
 plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map1.png")
 ```
 
-1.  Add desired plotting objects in the desired colour.
+1.  Overlay objects on plot in the desired colour.
 
 ``` r
 add_osm_objects (dat_B, col="gray40")
@@ -67,7 +67,7 @@ pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
                              c (51.502, 51.502, 51.515, 51.515)))
 ```
 
-and then both buildings and parks highlighted with different colour schemes. The `col_extra` parameter defines the colour of the remaining, background area.
+and OSM objects within the defined regions highlighted with different colour schemes. The `col_extra` parameter defines the colour of the remaining, background area.
 
 ``` r
 plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map3.png")
@@ -98,7 +98,7 @@ graphics.off ()
 
 ### Highlighting clusters
 
-`group_osm_objects` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. First define some range groups:
+`group_osm_objects` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. First define some random groups:
 
 ``` r
 ngroups <- 12
@@ -118,7 +118,7 @@ groups <- lapply (groups, function (i)
                })
 ```
 
-Calling `group_osm_objects` with `col_extra=NA` (or `NULL`) forces all points not immediately within defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire area.
+Calling `group_osm_objects` with `col_extra=NA` (or `NULL`) forces all points lying outside defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire area.
 
 ``` r
 plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map5.png')
@@ -131,21 +131,27 @@ graphics.off ()
 
 ### Highlighting areas bounded by named highways
 
-An alternative way of defining highlighted groups is by naming the highways encircing desired regions.
+An alternative way of defining highlighted groups is by naming the highways encircling desired regions.
 
 ``` r
+highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+               "Fleet.St", "Aldwych")
+highways1 <- highways2polygon (highways=highways, bbox=bbox)
 highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
-highways <- highways2polygon (highways=highways, bbox=bbox)
+highways2 <- highways2polygon (highways=highways, bbox=bbox)
+groups <- list (highways1, highways2)
 ```
 
 and then passing the SpatialPolygon returned by `highways2polygon` to `group_osm_objects`:
 
 ``` r
 plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map6.png')
-group_osm_objects (dat_B, groups=highways, boundary=1,
-                   col_extra='gray40', colmat=FALSE, col='orange')
-group_osm_objects (dat_H, groups=highways, boundary=0,
-                   col_extra='gray70', colmat=FALSE, col='darkorange2')
+col_B <- c ('orange', 'tomato')
+col_H <- c ('darkorange2', 'tomato3')
+group_osm_objects (dat_B, groups=groups, boundary=1,
+                   col_extra='gray40', colmat=FALSE, col=col_B)
+group_osm_objects (dat_H, groups=groups, boundary=0,
+                   col_extra='gray70', colmat=FALSE, col=col_H)
 graphics.off ()
 ```
 
