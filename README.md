@@ -7,33 +7,33 @@ R package to produce visually impressive customisable images of urban areas from
 
 1.  Specify the bounding box for the desired region
 
-``` r
-bbox <- c(-0.15,51.5,-0.1,51.52) 
-```
+    ``` r
+    bbox <- c(-0.15,51.5,-0.1,51.52) 
+    ```
 
 2.  Download the desired data---in this case, all building perimeters.
 
-``` r
-dat_B <- extract_osm_objects (key="building", bbox=bbox)
-```
+    ``` r
+    dat_B <- extract_osm_objects (key="building", bbox=bbox)
+    ```
 
 3.  Initiate an `osm_basemap` with desired background (`bg`) colour
 
-``` r
-plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map1.png")
-```
+    ``` r
+    plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map1.png")
+    ```
 
 4.  Overlay objects on plot in the desired colour.
 
-``` r
-add_osm_objects (dat_B, col="gray40")
-```
+    ``` r
+    add_osm_objects (dat_B, col="gray40")
+    ```
 
 5.  Close graphics device to finish
 
-``` r
-graphics.off ()
-```
+    ``` r
+    graphics.off ()
+    ```
 
 A simple map
 ------------
