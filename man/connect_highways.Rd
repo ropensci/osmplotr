@@ -7,16 +7,15 @@
 connect_highways(highways = NULL)
 }
 \arguments{
-\item{highways}{A list of highways as returned by
-\code{extract_highways}, each element of which is a list of distinct segments
-for a particular OSM highway.}
+\item{highways}{A list of highways as returned by extract_highways(), each
+element of which is a list of distinct segments for a particular OSM highway.}
 }
 \value{
 A modified version of highways, extended by the addition of
 connecting nodes.
 }
 \description{
-Takes a list of OpenStreetMap highways returned by \code{extract_highways}
+Takes a list of OpenStreetMap highways returned by extract_highways()
 and sequentially connects closest nodes of adjacent highways until the set of
 highways connects to form a cycle.
 }

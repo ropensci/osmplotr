@@ -9,20 +9,20 @@ osm_structures(structures = c("building", "amenity", "waterway", "grass",
 }
 \arguments{
 \item{structures}{The vector of types of structures (defaults listed in
-\code{?extract_osm_objects}).}
+'?extract_osm_objects').}
 
-\item{col_scheme}{Colour scheme for the plot (current options include "dark"
-and "light")}
+\item{col_scheme}{Colour scheme for the plot (current options include 'dark'
+and 'light')}
 }
 \value{
 List of structures, corresponding prefixes, and colours.
 }
 \description{
-For the given vector of structure types returns a \code{data.frame}
-containing two columns of corresponding OpenStreetMap key-value pairs, one
-column of unambiguous suffices to be appended to the objects returned by
-\code{get_osm_data}, and one column specifying colours. This data frame may be
-subsequently modified as desired, and ultimately passed to
-\code{make_osm_map} to automate map production.
+For the given vector of structure types returns a 'data.frame' containing two
+columns of corresponding OpenStreetMap key-value pairs, one column of
+unambiguous suffices to be appended to the objects returned by
+get_osm_data(), and one column specifying colours. This data frame may be
+subsequently modified as desired, and ultimately passed to make_osm_map() to
+automate map production.
 }
 

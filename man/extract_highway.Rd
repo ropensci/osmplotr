@@ -9,7 +9,7 @@ extract_highway(name = "", bbox = NULL)
 \arguments{
 \item{name}{Name of highway. Lines components are return for *any* OSM way
 with a partially-matched. Both wildcards and whitespace should be represented
-by ".".}
+by '.'.}
 
 \item{bbox}{the bounding box within which to look for highways.  Must be a
 vector of 4 elements (xmin, ymin, xmax, ymax).}

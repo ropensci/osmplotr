@@ -13,18 +13,18 @@
 #' @param bbox The bounding box for the map.  Must be a vector of 4 elements
 #' (xmin, ymin, xmax, ymax). If NULL, bbox is taken from the largest extent of
 #' OSM objects in osm_data.
-#' @param osm_data A list of OSM objects as returned from
-#' \code{extract_osm_objects}.  These objects may be included in the plot
-#' without downloading. These should all be named with the stated
-#' \code{dat_prefix} and have suffixes as given in \code{structures}.
+#' @param osm_data A list of OSM objects as returned from extract_osm_objects().
+#' These objects may be included in the plot without downloading. These should
+#' all be named with the stated 'dat_prefix' and have suffixes as given in
+#' 'structures'.
 #' @param structures A data.frame specifying types of OSM structures as returned
 #' from osm_structures, and potentially modified to alter lists of structures to
 #' be plotted, and their associated colours. The order of structs determines the
 #' plot order of objects.
 #' @param width Width of graphics device, with height calculated according to
-#' latitudinal and longitudinal proportions of \code{bbox}.
+#' latitudinal and longitudinal proportions of 'bbox'.
 #' @param dat_prefix Prefix for data structures (default 'dat_'). Final data
-#' structures are created by appending the suffixes from \code{osm_structures}.
+#' structures are created by appending the suffixes from osm_structures().
 #' @return list of OSM structures each as Spatial(Polygon/List)DataFrame, and
 #' appended to `osm_data` (which is NULL by default).
 

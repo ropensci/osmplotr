@@ -7,14 +7,13 @@
 order_lines(spLines, i0 = 0)
 }
 \arguments{
-\item{spLines}{A SpatialLinesDataFrame returned from
-\code{extract.osm.objects}}
+\item{spLines}{A SpatialLinesDataFrame returned from extract.osm.objects()}
 
-\item{i0}{The first node is numbered \code{i0+1}, with other nodes (except
+\item{i0}{The first node is numbered (i0+1), with other nodes (except
 junction nodes) numbered sequentially .}
 }
 \value{
-nothing (adds to graphics.device opened with plot.osm.basemap)
+nothing (adds to graphics.device opened with plot_osm_basemap())
 }
 \description{
 Accepts a SpatialLinesDataFrame representing an OpenStreetMap line object

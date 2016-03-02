@@ -1,16 +1,16 @@
 #' extract_osm_objects
 #'
-#' Downloads OSM XML objects and extracts \code{sp} polygons or lines.  Requires
+#' Downloads OSM XML objects and extracts 'sp' polygons or lines.  Requires
 #' conversion to osmar object which can be quite slow, as can final conversion
 #' to sp object for large numbers of objects
 #'
-#' @param key OSM key to search for. Useful keys include "building",
-#' "waterway", "natural", "grass", "park", "amenity", "shop", "boundary", and
-#' "highway". Others will be passed directly to the overpass API and may not
+#' @param key OSM key to search for. Useful keys include 'building',
+#' 'waterway', 'natural', 'grass', 'park', 'amenity', 'shop', 'boundary', and
+#' 'highway'. Others will be passed directly to the overpass API and may not
 #' necessarily return results.
 #' @param value OSM value to match to key. If NULL, all keys will be returned.
-#' Negation is specified by \code{!value}.
-#' @param extra_pairs A list of additional \code{key-value} pairs to be passed
+#' Negation is specified by '!value'.
+#' @param extra_pairs A list of additional key-value pairs to be passed
 #' to the overpass API.
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).

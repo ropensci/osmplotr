@@ -18,11 +18,11 @@ add_osm_objects(obj = obj, col = "gray40", border = NA, ...)
 lines (such as lwd, lty), or points (such as pch, cex)}
 }
 \value{
-nothing (adds to graphics.device opened with \code{plot.osm.basemap})
+nothing (adds to graphics.device opened with plot_osm_basemap())
 }
 \description{
-\code{plot_osm_basemap} initiates a graphics device to which
-\code{add_osm_objects} adds successive layers of polygons or lines generated
-by \code{extract_osm_polygons}.
+plot_osm_basemap() initiates a graphics device to which
+add_osm_objects() adds successive layers of polygons or lines generated
+by extract_osm_polygons().
 }
 

@@ -10,7 +10,7 @@ group_osm_objects(obj = obj, groups = NULL, make_hull = FALSE,
 }
 \arguments{
 \item{obj}{An sp SPDF or SLDF (list of polygons or lines) returned by
-\code{extract_osm_objects}}
+extract_osm_objects()}
 
 \item{groups}{A list of spatial points objects, each of which contains the
 coordinates of points defining one group}
@@ -31,10 +31,10 @@ groups specifying individual colours for each.}
 
 \item{col_extra}{If NULL, then any polygons *NOT* within the convex hulls are
 assigned to nearest group and coloured accordingly (and boundary has no
-effect); if NOT NULL, then any
-polygons not within groups are coloured this colour.}
+effect); if NOT NULL, then any polygons not within groups are coloured this
+colour.}
 
-\item{colmat}{If TRUE generates colours according to \code{get.colours},
+\item{colmat}{If TRUE generates colours according to colour_mat(),
 otherwise the colours of groups are specified directly by the vector of cols.}
 
 \item{rotate}{Passed to colour_mat to rotate colours by the specified number
@@ -60,7 +60,7 @@ bigger group are included.
 
 \section{Warning}{
 
-Bisecting objects along group boundaries (\code{boundary=0}) can take
+Bisecting objects along group boundaries ('boundary=0') can take
 considerably longer than simple allocation of objects either side of
 boundary.
 }

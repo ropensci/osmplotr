@@ -5,7 +5,7 @@
 #' work best for SpatialPolygons, while may give odd results for SpatialLines.
 #'
 #' @param obj An sp SPDF or SLDF (list of polygons or lines) returned by
-#' \code{extract_osm_objects}
+#' extract_osm_objects()
 #' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group
 #' @param make_hull Either a single boolean value or a vector of same length as
@@ -21,9 +21,9 @@
 #' groups specifying individual colours for each.
 #' @param col_extra If NULL, then any polygons *NOT* within the convex hulls are
 #' assigned to nearest group and coloured accordingly (and boundary has no
-#' effect); if NOT NULL, then any
-#' polygons not within groups are coloured this colour.
-#' @param colmat If TRUE generates colours according to \code{get.colours},
+#' effect); if NOT NULL, then any polygons not within groups are coloured this
+#' colour.
+#' @param colmat If TRUE generates colours according to colour_mat(),
 #' otherwise the colours of groups are specified directly by the vector of cols.
 #' @param rotate Passed to colour_mat to rotate colours by the specified number
 #' of degrees clockwise.
@@ -37,7 +37,7 @@
 #' bigger group are included.
 #'
 #' @section Warning:
-#' Bisecting objects along group boundaries (\code{boundary=0}) can take
+#' Bisecting objects along group boundaries ('boundary=0') can take
 #' considerably longer than simple allocation of objects either side of
 #' boundary.
 

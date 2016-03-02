@@ -8,11 +8,10 @@
 #' not explicitly present in OpenStreetMap. Nodes are also sequentially
 #' renumbered, starting at (i0+1)
 #'
-#' @param spLines A SpatialLinesDataFrame returned from
-#' \code{extract.osm.objects}
-#' @param i0 The first node is numbered \code{i0+1}, with other nodes (except
+#' @param spLines A SpatialLinesDataFrame returned from extract.osm.objects()
+#' @param i0 The first node is numbered (i0+1), with other nodes (except
 #' junction nodes) numbered sequentially .
-#' @return nothing (adds to graphics.device opened with plot.osm.basemap)
+#' @return nothing (adds to graphics.device opened with plot_osm_basemap())
 
 order_lines <- function (spLines, i0=0)
 {

@@ -1,12 +1,11 @@
 #' connect_highways
 #'
-#' Takes a list of OpenStreetMap highways returned by \code{extract_highways}
+#' Takes a list of OpenStreetMap highways returned by extract_highways()
 #' and sequentially connects closest nodes of adjacent highways until the set of
 #' highways connects to form a cycle.
 #'
-#' @param highways A list of highways as returned by
-#' \code{extract_highways}, each element of which is a list of distinct segments
-#' for a particular OSM highway.
+#' @param highways A list of highways as returned by extract_highways(), each
+#' element of which is a list of distinct segments for a particular OSM highway.
 #' @return A modified version of highways, extended by the addition of
 #' connecting nodes.
 

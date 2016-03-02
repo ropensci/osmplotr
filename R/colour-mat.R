@@ -12,9 +12,7 @@
 #' @param plot plots the colour matrix (default FALSE)
 #' @return matrix of colours
 #' @examples
-#' \dontrun{
-#'   cm <- colour_mat (n=20, cols=rainbow(4), rotate=90, plot=TRUE)
-#' }
+#' cm <- colour_mat (n=20, cols=rainbow(4), rotate=90, plot=TRUE)
 
 colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
 {

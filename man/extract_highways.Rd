@@ -23,6 +23,6 @@ Extracts a list of named OpenStreetMap highways. OSM data are neither
 structured nor ordered; this routine reduces data for each given highway to a
 minimal number of discrete and sequentially ordered segments. These segments
 may or may not connect, yet may be connected at their nearest points with
-\code{connect_highways}.
+connect_highways().
 }
 

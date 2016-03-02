@@ -1,7 +1,7 @@
 #' click_map
 #'
 #' Translates clicks on a map into a convex hull object which can be passed to
-#' \code{group.osm.objects}. Clicking is stopped when same point on map is
+#' group_osm_objects(). Clicking is stopped when same point on map is
 #' clicked twice.
 #'
 #' @return A data frame containing coordinates of convex hull boundary.

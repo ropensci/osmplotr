@@ -1,8 +1,8 @@
 #' add_osm_objects
 #'
-#' \code{plot_osm_basemap} initiates a graphics device to which
-#' \code{add_osm_objects} adds successive layers of polygons or lines generated
-#' by \code{extract_osm_polygons}.
+#' plot_osm_basemap() initiates a graphics device to which
+#' add_osm_objects() adds successive layers of polygons or lines generated
+#' by extract_osm_polygons().
 #'
 #' @param obj an sp SPDF or SLDF (list of polygons or lines) returned by
 #' \code{get.osm.polygons}
@@ -10,7 +10,7 @@
 #' @param border border colour of polygons
 #' @param ... other parameters to be passed to polygons (such as border),
 #' lines (such as lwd, lty), or points (such as pch, cex)
-#' @return nothing (adds to graphics.device opened with \code{plot.osm.basemap})
+#' @return nothing (adds to graphics.device opened with plot_osm_basemap())
 
 add_osm_objects <- function (obj=obj, col="gray40", border=NA, ...)
 {
