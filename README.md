@@ -11,25 +11,25 @@ R package to produce visually impressive customisable images of urban areas from
 bbox <- c(-0.15,51.5,-0.1,51.52) 
 ```
 
-1.  Download the desired data---in this case, all building perimeters.
+2.  Download the desired data---in this case, all building perimeters.
 
 ``` r
 dat_B <- extract_osm_objects (key="building", bbox=bbox)
 ```
 
-1.  Initiate an `osm_basemap` with desired background (`bg`) colour
+3.  Initiate an `osm_basemap` with desired background (`bg`) colour
 
 ``` r
 plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map1.png")
 ```
 
-1.  Overlay objects on plot in the desired colour.
+4.  Overlay objects on plot in the desired colour.
 
 ``` r
 add_osm_objects (dat_B, col="gray40")
 ```
 
-1.  Close graphics device to finish
+5.  Close graphics device to finish
 
 ``` r
 graphics.off ()
