@@ -1,1 +1,6 @@
 ^\.travis\.yml$
+^makefile$
+^README\.Rmd$
+^README\.md$
+^README\.html$
+figure/

@@ -31,6 +31,16 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
     if (!is.null (value))
         if (nchar (value) == 0)
             value <- NULL
+
+    if (key == 'park')
+    {
+        key <- 'leisure'
+        value <- 'park'
+    } else if (key == 'grass')
+    {
+        key <- 'landuse'
+        value <- 'grass'
+    }
     
     # Construct the overpass query, starting with main key-value pair and
     # possible negation
