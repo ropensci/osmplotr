@@ -11,6 +11,7 @@
 #' @param ... other parameters to be passed to polygons (such as border),
 #' lines (such as lwd, lty), or points (such as pch, cex)
 #' @return nothing (adds to graphics.device opened with plot_osm_basemap())
+#' @export
 
 add_osm_objects <- function (obj=obj, col='gray40', border=NA, ...)
 {

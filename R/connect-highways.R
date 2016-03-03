@@ -8,6 +8,7 @@
 #' element of which is a list of distinct segments for a particular OSM highway.
 #' @return A modified version of highways, extended by the addition of
 #' connecting nodes.
+#' @export
 
 connect_highways <- function (highways=NULL)
 {
