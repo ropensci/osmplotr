@@ -18,6 +18,7 @@ Imports:
 Suggests: knitr,
     roxygen2,
     rmarkdown,
+    devtools,
     maptools,
     RColorBrewer
 License: GPL-3

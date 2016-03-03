@@ -12,9 +12,12 @@ vignette: >
 
 
 ```{r load}
-#library (devtools)
 library (maptools)
-library (osmplotr)
+#library (osmplotr)
+library (devtools)
+setwd ("../..")
+devtools::load_all ("osmplotr")
+setwd ("./osmplotr/vignettes")
 ```
 
 This `R` package is designed to produce visually impressive graphical plots of

@@ -58,10 +58,15 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
             value <- paste0 ("['", key, "'!='", 
                             substring (value, 2, nchar (value)), "']")
             negation <- TRUE
-        } else
+        } else if (key == 'name')
+            value <- paste0 ("['", key, "'~'", value, "']")
+        else
             value <- paste0 ("['", key, "'='", value, "']")
     }
-    key <- paste0 ("['", key, "']")
+    if (key == 'name')
+        key <- ''
+    else
+        key <- paste0 ("['", key, "']")
 
     # Then any extra key-value pairs
     if (!is.null (extra_pairs))
@@ -112,7 +117,10 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
         obj <- osmar::as_sp (dato, 'points')
     else
     {
-        pids <- osmar::find_down (dato, osmar::way (pids))
+        pids1 <- osmar::find_down (dato, osmar::way (pids))
+        pids2 <- osmar::find_up (dato, osmar::way (pids))
+        pids <- mapply (c, pids1, pids2, simplify=FALSE)
+        pids <- lapply (pids, function (i) unique (i))
         nvalid <- sum (sapply (pids, length))
         if (nvalid <= 3) # (nodes, ways, relations)
             warn <- paste0 ('No valid data for (', key, ', ', value, ')')
