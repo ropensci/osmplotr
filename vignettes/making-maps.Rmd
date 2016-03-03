@@ -412,7 +412,7 @@ pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
                              c (51.502, 51.502, 51.515, 51.515)))
 ```
 ```{r map14, eval=TRUE}
-plot_osm_basemap (xylims=xylims, bg="gray21", file="map14.png")
+plot_osm_basemap (xylims=xylims, bg="gray20", file="map14.png")
 group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 col_park_in <- rgb (50, 255, 50, maxColorValue=255)
