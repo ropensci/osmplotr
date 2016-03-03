@@ -8,10 +8,10 @@ Depends: R (>= 3.2.3)
 Imports: 
     ggm,
     igraph,
-    httr,
     methods,
     osmar, 
     rgeos,
+    RCurl,
     sp, 
     spatstat, 
     XML,

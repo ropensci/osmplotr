@@ -13,11 +13,7 @@ vignette: >
 
 ```{r load}
 library (maptools)
-#library (osmplotr)
-library (devtools)
-setwd ("../..")
-devtools::load_all ("osmplotr")
-setwd ("./osmplotr/vignettes")
+library (osmplotr)
 ```
 
 This `R` package is designed to produce visually impressive graphical plots of
@@ -54,7 +50,7 @@ bbox <- c(-0.15,51.5,-0.1,51.52)
 ```
 2. Download the desired data---in this case, all building perimeters.
 ```{r, eval=FALSE}
-dat_B <- extract_osm_objects (key="building", bbox=bbox)$obj
+dat_B <- extract_osm_objects (key="building", bbox=bbox)
 ```
 3. Initiate an `osm_basemap` with desired background (`bg`) colour
 ```{r map1, eval=FALSE}
@@ -86,9 +82,9 @@ Additional capabilities of `osmplotr` are described in the following sections.
 As illustrated above, OSM data for particular types of objects can be downloaded
 using `extract_osm_objects`.
 ```{r, eval=FALSE}
-dat_B <- extract_osm_objects (key="building", bbox=bbox)$obj
-dat_H <- extract_osm_objects (key="highway", bbox=bbox)$obj
-dat_T <- extract_osm_objects (key="natural", value="tree", bbox=bbox)$obj
+dat_B <- extract_osm_objects (key="building", bbox=bbox)
+dat_H <- extract_osm_objects (key="highway", bbox=bbox)
+dat_T <- extract_osm_objects (key="natural", value="tree", bbox=bbox)
 ```
 The `extract_osm_objects` function returns a list with `warn` containing any
 warnings generated during download, and `obj` containing the spatial (`sp`)
@@ -150,8 +146,8 @@ matching the `key`, regardless of value. Particular values can also be
 requested:
 ```{r, eval=FALSE}
 dat_BR <- extract_osm_objects (key="building", value="residential",
-                               bbox=bbox)$obj
-dat_HP <- extract_osm_objects (key="highway", value="primary", bbox=bbox)$obj
+                               bbox=bbox)
+dat_HP <- extract_osm_objects (key="highway", value="primary", bbox=bbox)
 ```
 ```{r, echo=FALSE}
 dat_BR <- london$dat_BR
@@ -177,7 +173,7 @@ Values can also be negated through the prefix `!`---for example, non-primary
 highways can be extracted, allowing primary highways to be overlaid in a
 different colour.
 ```{r, eval=FALSE}
-dat_H <- extract_osm_objects (key="highway", value="!primary", bbox=bbox)$obj
+dat_H <- extract_osm_objects (key="highway", value="!primary", bbox=bbox)
 ```
 ```{r, echo=FALSE}
 dat_H <- london$dat_H
@@ -193,7 +189,7 @@ graphics.off ()
 Or non-residential buildings can be extracted.
 ```{r, eval=FALSE}
 dat_BNR <- extract_osm_objects (key="building", value="!residential",
-                                bbox=bbox)$obj
+                                bbox=bbox)
 ```
 ```{r, echo=FALSE}
 dat_BNR <- london$dat_BNR
@@ -215,14 +211,14 @@ particular building can be extracted by passing its name:
 ```{r, eval=FALSE}
 extra_pairs <- c ("name", "Royal.Festival.Hall")
 dat_RFH <- extract_osm_objects (key="building", extra_pairs=extra_pairs, 
-                                bbox=bbox)$obj
+                                bbox=bbox)
 ```
 Or a street address can be given:
 ```{r, eval=FALSE}
 extra_pairs <- list (c ("addr:street", "Stamford.St"),
                      c ("addr:housenumber", "150"))
 dat_ST <- extract_osm_objects (key="building", extra_pairs=extra_pairs, 
-                                bbox=bbox)$obj
+                                bbox=bbox)
 ```
 As mentioned, additional graphics arguments can be passed to `add_osm_objects`,
 as illustrated in the following.
@@ -311,11 +307,11 @@ above, which were extracted as follows.
 ```{r, eval=FALSE}
 extra_pairs <- c ("name", "Royal.Festival.Hall")
 london$dat_RFH <- extract_osm_objects (key="building", extra_pairs=extra_pairs, 
-                                bbox=bbox)$obj
+                                bbox=bbox)
 extra_pairs <- list (c ("addr:street", "Stamford.St"),
                      c ("addr:housenumber", "150"))
 london$dat_ST <- extract_osm_objects (key="building", extra_pairs=extra_pairs, 
-                                bbox=bbox)$obj
+                                bbox=bbox)
 ```
 
 Having appropriately modified a data frame of `osm_structures`, a corresponding

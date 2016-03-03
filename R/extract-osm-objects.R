@@ -14,11 +14,7 @@
 #' to the overpass API.
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
-#' @return A list with two components:
-#' \enumerate{
-#'  \item obj: a data frame of either spatial polygons or spatial lines
-#'  \item warn: any warnings produced in downloading the data
-#' }
+#' @return Data frame of either spatial polygons or spatial lines
 #' @export
 
 extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
@@ -93,11 +89,8 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
 
     warn <- obj <- NULL
 
-    #dat <- RCurl::getURL (query)
-    dat <- httr::GET (query)
-    if (httr::http_status (dat)$category != "success")
-        warn <- 'http download failed'
-    dat <- XML::xmlParse (httr::content (dat, "text"))
+    dat <- RCurl::getURL (query)
+    dat <- XML::xmlParse (dat)
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
     dato <- osmar::as_osmar (dat)
@@ -123,8 +116,10 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
         pids <- lapply (pids, function (i) unique (i))
         nvalid <- sum (sapply (pids, length))
         if (nvalid <= 3) # (nodes, ways, relations)
-            warn <- paste0 ('No valid data for (', key, ', ', value, ')')
-        else
+        {
+            warning ('No valid data for (', key, ', ', value, ')')
+            obj <- NULL
+        } else
         {
             obj <- subset (dato, ids = pids)
             # TODO: Extract names of objects (at least for streets, buildings)
@@ -136,5 +131,5 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
         }
     }
 
-    return (list (obj=obj, warn=warn))
+    return (obj)
 }
