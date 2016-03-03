@@ -38,11 +38,11 @@ subsequent map:
 ```{r, echo=FALSE, message=FALSE}
 # Combining (dat_B, dat_BC) and (dat_H, dat_HP) requires removing the repeated
 # objects
-library (maptools)
+#library (maptools)
 indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
-dat_B <- spRbind (london$dat_BR [indx,], london$dat_BNR)
+dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
 indx <- which (!london$dat_H$id %in% london$dat_HP$id)
-dat_H <- spRbind (london$dat_H [indx,], london$dat_HP)
+dat_H <- maptools::spRbind (london$dat_H [indx,], london$dat_HP)
 dat_T <- london$dat_T
 ```
 1. Specify the bounding box for the desired region

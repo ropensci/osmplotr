@@ -149,24 +149,34 @@ graphics.off ()
 An alternative way of defining highlighted groups is by naming the highways encircling desired regions.
 
 ``` r
-highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
-               "Fleet.St", "Aldwych")
+highways <- c ('Davies.St', 'Berkeley.Sq', 'Berkeley.St', 'Piccadilly',
+               'Regent.St', 'Oxford.St')
 highways1 <- highways2polygon (highways=highways, bbox=bbox)
 highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
 highways2 <- highways2polygon (highways=highways, bbox=bbox)
-groups <- list (highways1, highways2)
+highways <- c ('Piccadilly', 'Shaftesbury.Ave', 'Charing.Cross.R',
+               'Saint.Martin', 'Trafalgar.Sq', 'Cockspur.St',
+               'Pall.Mall', 'St.James')
+highways3 <- highways2polygon (highways=highways, bbox=bbox)
+highways <- c ('Charing.Cross', 'Duncannon.St', 'Strand', 'Aldwych',
+               'Kingsway', 'High.Holborn', 'Shaftesbury.Ave')
+highways4 <- highways2polygon (highways=highways, bbox=bbox)
+highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+               "Fleet.St", "Aldwych")
+highways5 <- highways2polygon (highways=highways, bbox=bbox)
+groups <- list (highways1, highways2, highways3, highways4, highways5)
 ```
 
-and then passing the SpatialPolygon returned by `highways2polygon` to `group_osm_objects`:
+and then passing the SpatialPolygon returned by `highways2polygon` to `group_osm_objects`, this time with some Wes Anderson flair.
 
 ``` r
 plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map6.png')
-col_B <- c ('orange', 'tomato')
-col_H <- c ('darkorange2', 'tomato3')
+library (wesanderson)
+cols <- wes_palette ("Darjeeling", 5) 
 group_osm_objects (dat_B, groups=groups, boundary=1,
-                   col_extra='gray40', colmat=FALSE, col=col_B)
+                   col_extra='gray40', colmat=FALSE, col=cols)
 group_osm_objects (dat_H, groups=groups, boundary=0,
-                   col_extra='gray70', colmat=FALSE, col=col_H)
+                   col_extra='gray70', colmat=FALSE, col=cols)
 graphics.off ()
 ```
 

@@ -25,8 +25,8 @@ extract_highway <- function (name='', bbox=NULL)
     bbox <- paste0 ('(', bbox [2], ',', bbox [1], ',',
                    bbox[4], ',', bbox [3], ')')
 
-    query <- paste0 ("(way['name'~'", name, "']", bbox)
-    query <- paste0 (query, ';>;);out;')
+    query <- paste0 ("way['name'~'", name, "']", bbox)
+    query <- paste0 (query, ';(._;>;);out;')
     url_base <- 'http://overpass-api.de/api/interpreter?data='
     query <- paste0 (url_base, query)
     dat <- RCurl::getURL (query)
