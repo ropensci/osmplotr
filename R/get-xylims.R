@@ -7,6 +7,7 @@
 #' @param obj A spatial polygon or line data.frame returned by
 #' get_osm_objects().
 #' @return list of lat-lon ranges
+#' @export
 
 get_xylims <- function (obj)
 {

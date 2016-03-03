@@ -5,6 +5,7 @@
 #' clicked twice.
 #'
 #' @return A data frame containing coordinates of convex hull boundary.
+#' @export
 
 click_map <- function ()
 {

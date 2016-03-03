@@ -24,6 +24,7 @@
 #' structures are created by appending the suffixes from osm_structures().
 #' @return list of OSM structures each as Spatial(Polygon/List)DataFrame, and
 #' appended to `osm_data` (which is NULL by default).
+#' @export
 #'
 #' @section Note:
 #' If 'osm_data=NULL', then data will be downloaded, which can take some time.

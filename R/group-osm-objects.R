@@ -27,6 +27,7 @@
 #' number of degrees clockwise.
 #' @param lwd Width of boundary line (0 for no line)
 #' @return nothing (adds to graphics.device opened with plot_osm_basemap())
+#' @export
 #'
 #' @section Note:
 #' Any group that is entire contained within any other group is assumed to

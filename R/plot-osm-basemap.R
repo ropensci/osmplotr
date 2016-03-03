@@ -21,6 +21,7 @@
 #' @param ... Other parameters to be passed to graphic device (such as width and
 #' height; see ?png, for example, for details)
 #' @return nothing (generates file of specified type)
+#' @export
 
 plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
                               structures=NULL, bg='gray20',

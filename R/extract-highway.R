@@ -8,6 +8,7 @@
 #' @param bbox the bounding box within which to look for highways.  Must be a
 #' vector of 4 elements (xmin, ymin, xmax, ymax).  
 #' @return SpatialLinesDataFrame containing the highway
+#' @export
 
 extract_highway <- function (name='', bbox=NULL)
 {
