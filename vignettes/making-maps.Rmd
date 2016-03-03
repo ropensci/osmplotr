@@ -12,7 +12,7 @@ vignette: >
 
 
 ```{r load}
-library (devtools)
+#library (devtools)
 library (maptools)
 library (osmplotr)
 ```
