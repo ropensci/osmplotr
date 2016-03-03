@@ -16,7 +16,7 @@ R package to produce visually impressive customisable images of urban areas from
 2.  Download the desired data---in this case, all building perimeters.
 
     ``` r
-    dat_B <- extract_osm_objects (key="building", bbox=bbox)
+    dat_B <- extract_osm_objects (key="building", bbox=bbox)$obj
     ```
 
 3.  Initiate an `osm_basemap` with desired background (`bg`) colour
@@ -56,9 +56,9 @@ A simple map
 Simple maps can be made by overlaying different kinds of OSM data in different colours:
 
 ``` r
-dat_H <- extract_osm_objects (key="highway", bbox=bbox)
-dat_P <- extract_osm_objects (key="park", bbox=bbox)
-dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)
+dat_H <- extract_osm_objects (key="highway", bbox=bbox)$obj
+dat_P <- extract_osm_objects (key="park", bbox=bbox)$obj
+dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)$obj
 ```
 
 ``` r
@@ -113,27 +113,7 @@ graphics.off ()
 
 ### Highlighting clusters
 
-`group_osm_objects` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. First define some random groups:
-
-``` r
-ngroups <- 12
-x <- bbox [1] + runif (ngroups) * (bbox [3] - bbox [1])
-y <- bbox [2] + runif (ngroups) * (bbox [4] - bbox [2])
-groups <- cbind (x, y)
-groups <- apply (groups, 1, function (i) 
-              sp::SpatialPoints (matrix (i, nrow=1, ncol=2)))
-# Then create small rectangles around each pts
-groups <- lapply (groups, function (i)
-               {
-                   x <- sp::coordinates (i) [1] + c (-0.002, 0.002, 0.002,
-                                                     -0.002)
-                   y <- sp::coordinates (i) [2] + c (-0.002, -0.002, 0.002,
-                                                     0.002)
-                   sp::SpatialPoints (cbind (x, y))
-               })
-```
-
-Calling `group_osm_objects` with `col_extra=NA` (or `NULL`) forces all points lying outside defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire area.
+`group_osm_objects` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. The argument `groups` in the following call is a list of `SpatialPoints` objects defining 12 small, spatially separated regions. Calling `group_osm_objects` with `col_extra=NA` (or `NULL`) forces all points lying outside those defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire area.
 
 ``` r
 plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map5.png')
@@ -167,7 +147,7 @@ highways5 <- highways2polygon (highways=highways, bbox=bbox)
 groups <- list (highways1, highways2, highways3, highways4, highways5)
 ```
 
-and then passing the SpatialPolygon returned by `highways2polygon` to `group_osm_objects`, this time with some Wes Anderson flair.
+And then passing the SpatialPolygon returned by `highways2polygon` to `group_osm_objects`, this time with some Wes Anderson flair.
 
 ``` r
 plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map6.png')
@@ -182,4 +162,4 @@ graphics.off ()
 
 ![map6](./figure/map6.png)
 
-... see package vignettes on downloading data and making maps for a lot more detail and further capabilities.
+See package vignettes ('Downloading Data' and 'Making Maps') for a lot more detail and further capabilities of `osmplotr`.

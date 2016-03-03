@@ -33,7 +33,9 @@ structs$suffix [4] <- 'BR'
 structs$suffix [5] <- 'BC'
 ```
 
-Then download the corresponding data
+Then download the corresponding data, noting that `extract_osm_objects` returns
+two components: `warn` containing any warnings generated during download, and
+`obj` containing the appropriate spatial object.
 
 ```{r, eval=FALSE}
 london <- list ()
@@ -41,24 +43,27 @@ for (i in 1:(nrow (structs) - 1))
 {
     dat <- extract_osm_objects (key=structs$key [i], value=structs$value [i],
                                 bbox=bbox)
+    if (!is.null (dat$warn))
+        warning (dat$warn)
     fname <- paste0 ('dat_', structs$suffix [i])
-    assign (fname, dat)
+    assign (fname, dat$obj)
     london [[i]] <- get (fname)
     names (london)[i] <- fname
     rm (list=c(fname))
 }
 ```
 
-And finally the additional data for specific buildings and highways
+And finally the additional data for specific buildings and highways (ignoring
+potential warnings this time).
 
 ```{r, eval=FALSE}
 extra_pairs <- c ('name', 'Royal.Festival.Hall')
 london$dat_RFH <- extract_osm_objects (key='building', extra_pairs=extra_pairs, 
-                                       bbox=bbox)
+                                       bbox=bbox)$obj
 extra_pairs <- list (c ('addr:street', 'Stamford.St'),
                      c ('addr:housenumber', '150'))
 london$dat_ST <- extract_osm_objects (key='building', extra_pairs=extra_pairs, 
-                                      bbox=bbox)
+                                      bbox=bbox)$obj
 highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
                'Fleet.St', 'Aldwych')
 london$highways1 <- highways2polygon (highways=highways, bbox=bbox)

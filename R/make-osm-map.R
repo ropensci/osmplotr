@@ -75,8 +75,10 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
         for (i in 1:nrow (structures)) {
             dat <- extract_osm_objects (key=structures$key [i],
                                         value=structures$value [i], bbox=bbox)
+            if (!is.null (dat$warn))
+                warning (dat$warn)
             fname <- paste0 (dat_prefix, structures$suffix [i])
-            assign (fname, dat)
+            assign (fname, dat$obj)
             osm_data [[fname]] <- get (fname)
             setTxtProgressBar(pb, i / nrow (structures))
         }

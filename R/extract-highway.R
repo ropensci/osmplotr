@@ -8,6 +8,11 @@
 #' @param bbox the bounding box within which to look for highways.  Must be a
 #' vector of 4 elements (xmin, ymin, xmax, ymax).  
 #' @return SpatialLinesDataFrame containing the highway
+#' @return A list with two components:
+#' \enumerate{
+#'  \item sp: a SpatialLinesDataFrame containing the highway
+#'  \item warn: any warnings produced in downloading the data
+#' }
 #' @export
 
 extract_highway <- function (name='', bbox=NULL)
@@ -25,12 +30,17 @@ extract_highway <- function (name='', bbox=NULL)
     bbox <- paste0 ('(', bbox [2], ',', bbox [1], ',',
                    bbox[4], ',', bbox [3], ')')
 
+    warn <- sp <- NULL
+
     query <- paste0 ("way['name'~'", name, "']", bbox)
     query <- paste0 (query, ';(._;>;);out;')
     url_base <- 'http://overpass-api.de/api/interpreter?data='
     query <- paste0 (url_base, query)
-    dat <- RCurl::getURL (query)
-    dat <- XML::xmlParse (dat)
+    dat <- httr::GET (query)
+    if (httr::http_status (dat)$category != "success")
+        warn <- 'http download failed'
+    #dat <- RCurl::getURL (query)
+    dat <- XML::xmlParse (httr::content (dat, "text"))
     dato <- osmar::as_osmar (dat)
     key <- 'highway'
     k <- NULL # supress 'no visible binding' note from R CMD check
@@ -38,12 +48,9 @@ extract_highway <- function (name='', bbox=NULL)
     pids <- osmar::find_down (dato, osmar::way (pids))
     nvalid <- sum (sapply (pids, length))
     if (nvalid <= 3) # (nodes, ways, relations)
-    {
-        warning ('No valid data for name=(', name, ')')
-        return (NULL)
-    } else
-    {
-        sp <- subset (dato, ids = pids)
-        return (osmar::as_sp (sp, 'lines'))
-    }
+        warn <- paste0 ('No valid data for name=(', name, ')')
+    else
+        sp <- osmar::as_sp (subset (dato, ids = pids), 'lines')
+    
+    return (list (highway=sp, warn=warn))
 }

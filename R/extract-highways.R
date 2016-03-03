@@ -52,12 +52,17 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
     {
         pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
         notnull <- 0
+        warns <- rep ("", length (highway_names))
         for (i in seq (highway_names))
         {
             dat <- extract_highway (name = highway_names [i], bbox=bbox)
-            if (!is.null (dat))
+            if (is.null (dat$warn))
                 notnull <- notnull + 1
-            assign (waynames [i], dat)
+            else if (dat$warn != 'http download failed')
+                notnull <- notnull + 1
+            if (!is.null (dat$warn))
+                warns [i] <- dat$warn
+            assign (waynames [i], dat$highway)
             setTxtProgressBar(pb, i / length (highway_names))
         }
         rm (dat)
@@ -71,7 +76,10 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
     }
     if (notnull < length (highway_names))
         stop ('Unable to download all requested data.')
-
+    # print warnings:
+    indx <- which (nchar (warns) > 0)
+    if (length (indx) > 0)
+        sapply (indx, function (i) warning (warns [i]))
 
 
     # ***** (2) Order the individual OSM objects into a minimal number of

@@ -17,7 +17,7 @@ easy steps:
     ```
 2. Download the desired data---in this case, all building perimeters.
     ```{r, eval=FALSE}
-    dat_B <- extract_osm_objects (key="building", bbox=bbox)
+    dat_B <- extract_osm_objects (key="building", bbox=bbox)$obj
     ```
 3. Initiate an `osm_basemap` with desired background (`bg`) colour
     ```{r map1, eval=FALSE}
@@ -47,9 +47,9 @@ devtools::install_github ('mpadge/osmplotr')
 Simple maps can be made by overlaying different kinds of OSM data in different
 colours:
 ```{r, eval=FALSE}
-dat_H <- extract_osm_objects (key="highway", bbox=bbox)
-dat_P <- extract_osm_objects (key="park", bbox=bbox)
-dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)
+dat_H <- extract_osm_objects (key="highway", bbox=bbox)$obj
+dat_P <- extract_osm_objects (key="park", bbox=bbox)$obj
+dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)$obj
 ```
 ```{r, echo=FALSE, eval=FALSE}
 library (maptools)
@@ -111,12 +111,15 @@ graphics.off ()
 ### Highlighting clusters
 
 `group_osm_objects` also enables plotting an entire region as a group of
-spatially distinct clusters of defined colours. First define some random groups:
+spatially distinct clusters of defined colours. The argument `groups` in the
+following call is a list of `SpatialPoints` objects defining 12 small, spatially
+separated regions.  Calling `group_osm_objects` with `col_extra=NA` (or `NULL`)
+forces all points lying outside those defined groups to be allocated to the
+nearest groups, and thus produces an inclusive grouping extending across an
+entire area.
 
 ```{r, echo=FALSE}
 set.seed (2)
-```
-```{r}
 ngroups <- 12
 x <- bbox [1] + runif (ngroups) * (bbox [3] - bbox [1])
 y <- bbox [2] + runif (ngroups) * (bbox [4] - bbox [2])
@@ -133,9 +136,6 @@ groups <- lapply (groups, function (i)
                    sp::SpatialPoints (cbind (x, y))
                })
 ```
-Calling `group_osm_objects` with `col_extra=NA` (or `NULL`) forces all points
-lying outside defined groups to be allocated to the nearest groups, and thus
-produces an inclusive grouping extending across an entire area.
 ```{r map17, eval=FALSE}
 plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map5.png')
 group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,

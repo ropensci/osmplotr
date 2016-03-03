@@ -8,9 +8,9 @@ Depends: R (>= 3.2.3)
 Imports: 
     ggm,
     igraph,
+    httr,
     methods,
     osmar, 
-    RCurl, 
     rgeos,
     sp, 
     spatstat, 

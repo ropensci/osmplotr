@@ -14,7 +14,11 @@
 #' to the overpass API.
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
-#' @return Data frame of either spatial polygons or spatial lines
+#' @return A list with two components:
+#' \enumerate{
+#'  \item obj: a data frame of either spatial polygons or spatial lines
+#'  \item warn: any warnings produced in downloading the data
+#' }
 #' @export
 
 extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
@@ -82,8 +86,13 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
     value <- valold
     key <- keyold
 
-    dat <- RCurl::getURL (query)
-    dat <- XML::xmlParse (dat)
+    warn <- obj <- NULL
+
+    #dat <- RCurl::getURL (query)
+    dat <- httr::GET (query)
+    if (httr::http_status (dat)$category != "success")
+        warn <- 'http download failed'
+    dat <- XML::xmlParse (httr::content (dat, "text"))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
     dato <- osmar::as_osmar (dat)
@@ -91,8 +100,6 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
         pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     else if (!is.null (value))
         pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
-    else 
-        stop ('key-value missing')
     
     # spts converts to SpatialPoints, currently only for trees but easily
     # extended
@@ -102,26 +109,24 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
             spts <- TRUE
 
     if (spts)
-        sp <- osmar::as_sp (dato, 'points')
+        obj <- osmar::as_sp (dato, 'points')
     else
     {
         pids <- osmar::find_down (dato, osmar::way (pids))
         nvalid <- sum (sapply (pids, length))
         if (nvalid <= 3) # (nodes, ways, relations)
+            warn <- paste0 ('No valid data for (', key, ', ', value, ')')
+        else
         {
-            warning ('No valid data for (', key, ', ', value, ')')
-            sp <- NULL
-        } else
-        {
-            sp <- subset (dato, ids = pids)
+            obj <- subset (dato, ids = pids)
             # TODO: Extract names of objects (at least for streets, buildings)
 
             if (key=='boundary' | key == 'highway' | key == 'waterway') 
-                sp <- osmar::as_sp (sp, 'lines')
+                obj <- osmar::as_sp (obj, 'lines')
             else 
-                sp <- osmar::as_sp (sp, 'polygons')
+                obj <- osmar::as_sp (obj, 'polygons')
         }
     }
 
-    return (sp)
+    return (list (obj=obj, warn=warn))
 }
