@@ -53,6 +53,7 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
         from <- unlist (lapply (way, function (x) 
                                 rownames (x) [1:(nrow (x) - 1)]))
         to <- unlist (lapply (way, function (x) rownames (x) [2:nrow (x)]))
+        # graph_from_edgelist is @importFrom
         #g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
         g <- graph_from_edgelist (cbind (from, to), directed=FALSE)
 
@@ -63,6 +64,7 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
         the_path <- NULL
         for (j in seq (from_node_list))
         {
+            # shortest_paths is @importFrom
             #sp <- suppressWarnings (igraph::shortest_paths (g,
             #                        from_node_list [j], to_node_list [j]))
             sp <- suppressWarnings (shortest_paths (g,
@@ -153,14 +155,12 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
     cycles <- ggm::fundCycles (conmat)
     if (is.null (cycles))
         stop ('There are no cycles in the listed highways')
-    i <- which.max (sapply (cycles, nrow))
-    cyc <- cycles [[i]]
+    cyc <- cycles [[which.max (sapply (cycles, nrow))]]
 
     # ***** Then calculate shortest paths along each part of the cycle
-    cyc_len <- nrow (cyc)
     cyc <- rbind (cyc, cyc [1,])
     paths <- list ()
-    for (i in seq (cyc_len))
+    for (i in seq (nrow (cyc) - 1))
     {
         w0 <- cyc [i,2] # the current way
         wf <- cyc [i,1] # the 'from' way
@@ -267,17 +267,18 @@ highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
             sp <- shortest_way (ways [[w0]], w0f_names, w0t_names)
         } # end if (maxlen == 0)
         paths [[i]] <- sp
-    } # end for i over cyc_len
+    } # end for i over nrow (cyc)
 
     # Finally, connect paths together to form desired cyclic boundary.  This
     # involves first checking whether any of the paths need to be flipped 
-    for (i in 1:(length (paths) - 1))
+    for (i in seq (length (paths) - 1))
     {
         n <- which (rowSums (array (paths [[i]] %in% paths [[i+1]], 
                                     dim=dim (paths [[i]]))) == 2)
         # n is the index into paths [[i]] of nodes occuring in paths [[i+1]].
-        # This obviously should be nrow (paths [[i]]), so:
-        if (n == 1)
+        # This obviously should be nrow (paths [[i]]) (although there can also
+        # be multiple values) so:
+        if (min (n) == 1)
             paths [[i]] <- apply (t (paths [[i]]), 1, rev) # flip
     }
     path <- do.call (rbind, paths)
