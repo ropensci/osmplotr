@@ -20,7 +20,8 @@ Suggests: knitr,
     rmarkdown,
     devtools,
     maptools,
-    RColorBrewer
+    RColorBrewer,
+    wesanderson
 License: GPL-3
 URL: https://github.com/mpadge/osmplotr
 LazyData: true
