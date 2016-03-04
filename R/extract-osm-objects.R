@@ -91,7 +91,7 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
 
     #dat <- RCurl::getURL (query)
     #dat <- XML::xmlParse (dat)
-    dat <- httr::get (query)
+    dat <- httr::GET (query)
     dat <- XML::xmlParse (httr::content (dat, "text"))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check

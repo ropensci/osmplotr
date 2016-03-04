@@ -32,7 +32,7 @@ extract_highway <- function (name='', bbox=NULL)
     query <- paste0 (url_base, query)
     #dat <- RCurl::getURL (query)
     #dat <- XML::xmlParse (dat)
-    dat <- httr::get (query)
+    dat <- httr::GET (query)
     dat <- XML::xmlParse (httr::content (dat, "text"))
     dato <- osmar::as_osmar (dat)
     key <- 'highway'
