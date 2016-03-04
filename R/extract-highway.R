@@ -30,8 +30,10 @@ extract_highway <- function (name='', bbox=NULL)
     query <- paste0 (query, ';(._;>;);out;')
     url_base <- 'http://overpass-api.de/api/interpreter?data='
     query <- paste0 (url_base, query)
-    dat <- RCurl::getURL (query)
-    dat <- XML::xmlParse (dat)
+    #dat <- RCurl::getURL (query)
+    #dat <- XML::xmlParse (dat)
+    dat <- httr::get (query)
+    dat <- XML::xmlParse (httr::content (dat, "text"))
     dato <- osmar::as_osmar (dat)
     key <- 'highway'
     k <- NULL # supress 'no visible binding' note from R CMD check
