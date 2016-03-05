@@ -92,6 +92,8 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
     #dat <- RCurl::getURL (query)
     #dat <- XML::xmlParse (dat)
     dat <- httr::GET (query)
+    if (dat$status_code != 200)
+        warn <- http_status (dat)$message
     dat <- XML::xmlParse (httr::content (dat, "text"))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
@@ -118,10 +120,8 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
         pids <- lapply (pids, function (i) unique (i))
         nvalid <- sum (sapply (pids, length))
         if (nvalid <= 3) # (nodes, ways, relations)
-        {
-            warning ('No valid data for (', key, ', ', value, ')')
-            obj <- NULL
-        } else
+            warn <- paste0 ('No valid data for (', key, ', ', value, ')')
+        else
         {
             obj <- subset (dato, ids = pids)
             # TODO: Extract names of objects (at least for streets, buildings)

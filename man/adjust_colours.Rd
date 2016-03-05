@@ -7,14 +7,14 @@
 adjust_colours(cols = NULL, adj = 0, plot = FALSE)
 }
 \arguments{
+\item{cols}{A vector of R colours (for allowable formats of which, see
+?col2rgb).}
+
 \item{adj}{A number between -1 and 1 determining how much to lighten
 (positive values) or darken (negative values) the colours.}
 
 \item{plot}{If true, generates a plot to allow visual comparison of original
 and adjusted colours}
-
-\item{col}{A vector of R colours (for allowable formats of which, see
-?col2rgb).}
 }
 \value{
 Corresponding vector of adjusted colours (as hexadecimal strings)

@@ -3,7 +3,7 @@
 #' Adjusts a given colour by lightening or darkening it by the specified amount.
 #' Adjustments are made in RGB space, for limitations of which see ?convertColor
 #'
-#' @param col A vector of R colours (for allowable formats of which, see
+#' @param cols A vector of R colours (for allowable formats of which, see
 #' ?col2rgb).
 #' @param adj A number between -1 and 1 determining how much to lighten
 #' (positive values) or darken (negative values) the colours.

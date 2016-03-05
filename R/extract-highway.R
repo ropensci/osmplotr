@@ -26,6 +26,8 @@ extract_highway <- function (name='', bbox=NULL)
     bbox <- paste0 ('(', bbox [2], ',', bbox [1], ',',
                    bbox[4], ',', bbox [3], ')')
 
+    obj <- warn <- NULL
+
     query <- paste0 ("way['name'~'", name, "']", bbox)
     query <- paste0 (query, ';(._;>;);out;')
     url_base <- 'http://overpass-api.de/api/interpreter?data='
@@ -33,6 +35,8 @@ extract_highway <- function (name='', bbox=NULL)
     #dat <- RCurl::getURL (query)
     #dat <- XML::xmlParse (dat)
     dat <- httr::GET (query)
+    if (dat$status_code != 200)
+        warn <- http_status (dat)$message
     dat <- XML::xmlParse (httr::content (dat, "text"))
     dato <- osmar::as_osmar (dat)
     key <- 'highway'
@@ -41,9 +45,9 @@ extract_highway <- function (name='', bbox=NULL)
     pids <- osmar::find_down (dato, osmar::way (pids))
     nvalid <- sum (sapply (pids, length))
     if (nvalid <= 3) # (nodes, ways, relations)
-    {
-        warning ('No valid data for name=(', name, ')')
-        return (NULL)
-    } else
-        return (osmar::as_sp (subset (dato, ids = pids), 'lines'))
+        warn <- paste0 ('No valid data for name=(', name, ')')
+    else
+        obj <- osmar::as_sp (subset (dato, ids = pids), 'lines')
+
+    return (obj)
 }
