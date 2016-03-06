@@ -133,5 +133,5 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
         }
     }
 
-    return (obj)
+    return (list (obj=obj, warn=warn))
 }
