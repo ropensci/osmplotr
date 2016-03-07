@@ -23,7 +23,11 @@ downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).}
 to the overpass API.}
 }
 \value{
-Data frame of either spatial polygons or spatial lines
+A list of 2 components:
+\enumerate{
+ \item obj: A data frame of sp objects
+ \item warn: Any warnings produced in downloading the data
+}
 }
 \description{
 Downloads OSM XML objects and extracts 'sp' polygons or lines.  Requires

@@ -42,7 +42,7 @@ london <- list ()
 for (i in 1:(nrow (structs) - 1)) 
 {
     dat <- extract_osm_objects (key=structs$key [i], value=structs$value [i],
-                                bbox=bbox)
+                                bbox=bbox)$obj
     if (!is.null (dat$warn))
         warning (dat$warn)
     fname <- paste0 ('dat_', structs$suffix [i])
@@ -59,11 +59,11 @@ potential warnings this time).
 ```{r, eval=FALSE}
 extra_pairs <- c ('name', 'Royal.Festival.Hall')
 london$dat_RFH <- extract_osm_objects (key='building', extra_pairs=extra_pairs, 
-                                       bbox=bbox)$dat
+                                       bbox=bbox)$obj
 extra_pairs <- list (c ('addr:street', 'Stamford.St'),
                      c ('addr:housenumber', '150'))
 london$dat_ST <- extract_osm_objects (key='building', extra_pairs=extra_pairs, 
-                                      bbox=bbox)$dat
+                                      bbox=bbox)$obj
 highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
                'Fleet.St', 'Aldwych')
 london$highways1 <- highways2polygon (highways=highways, bbox=bbox)

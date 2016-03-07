@@ -14,7 +14,11 @@
 #' to the overpass API.
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
-#' @return Data frame of either spatial polygons or spatial lines
+#' @return A list of 2 components:
+#' \enumerate{
+#'  \item obj: A data frame of sp objects
+#'  \item warn: Any warnings produced in downloading the data
+#' }
 #' @export
 
 extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,

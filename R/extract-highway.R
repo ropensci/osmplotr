@@ -49,5 +49,5 @@ extract_highway <- function (name='', bbox=NULL)
     else
         obj <- osmar::as_sp (subset (dato, ids = pids), 'lines')
 
-    return (obj)
+    return (list (obj=obj, warn=warn))
 }
