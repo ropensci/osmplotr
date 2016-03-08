@@ -20,13 +20,22 @@ add_osm_objects <- function (obj=obj, col='gray40', border=NA, ...)
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
-        plotfunPts <- function (i, col=col, border=border, ...) 
+        plotfunPts <- function (i, dx=dx, dy=dy, col=col, border=border, ...) 
         {
             xy <- slot (slot (i, 'Polygons') [[1]], 'coords')
-            polypath (xy, col=col, border=border, ...)
+            if (diff (range (xy [,1])) > dx | diff (range (xy [,2])) > dy)
+                polypath (xy, col=col, border=border, ...)
         }
+        # Find out which objects are < 1 pixel in size. NOTE this presumes
+        # standard device resolution of 72dpi. 
+        # TODO#1: Find out how to read dpi from open devices and modify
+        din <- par ("din") * 72
+        dx <- diff (par ("usr") [1:2]) / din [1]
+        dy <- diff (par ("usr") [3:4]) / din [2]
+        # NOTE dy=dx only if figures are sized automatically
         junk <- lapply (slot (obj, 'polygons'), function (i)
-                        plotfunPts (i, col=col, border=border, ...))
+                            plotfunPts (i, dx=dx, dy=dy, 
+                                        col=col, border=border, ...))
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
         plotfunLines <- function (i, col=col, ...) 
