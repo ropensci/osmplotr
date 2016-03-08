@@ -2,6 +2,7 @@
 
 export(add_axes)
 export(add_osm_objects)
+export(add_osm_surface)
 export(adjust_colours)
 export(click_map)
 export(colour_mat)

@@ -45,7 +45,7 @@ group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                colmat=TRUE, rotate=NULL, lwd=0)
 {
     if (is.null (dev.list ()))
-        stop ('group.osm.objects can only be called after plot.osm.basemap')
+        stop ('group_osm_objects can only be called after plot.osm.basemap')
 
     if (is.na (col_extra))
         col_extra <- NULL

@@ -16,7 +16,7 @@
 add_osm_objects <- function (obj=obj, col='gray40', border=NA, ...)
 {
     if (is.null (dev.list ()))
-        stop ('group.osm.objects can only be called after plot.osm.basemap')
+        stop ('add_osm_objects can only be called after plot.osm.basemap')
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
@@ -34,8 +34,7 @@ add_osm_objects <- function (obj=obj, col='gray40', border=NA, ...)
         dy <- diff (par ("usr") [3:4]) / din [2]
         # NOTE dy=dx only if figures are sized automatically
         junk <- lapply (slot (obj, 'polygons'), function (i)
-                            plotfunPts (i, dx=dx, dy=dy, 
-                                        col=col, border=border, ...))
+                    plotfunPts (i, dx=dx, dy=dy, col=col, border=border, ...))
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
         plotfunLines <- function (i, col=col, ...) 
