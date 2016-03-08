@@ -24,9 +24,9 @@ add_axes <- function (axis_col="white", axis_ps=8, axis_pos=c(0.01,0.03))
                 max (xp) - (max (xp) - max (xrange)) / 2)
     ylims <- c (yp [1] - (yp [1] - min (yrange)) / 2,
                 max (yp) - (max (yp) - max (yrange)) / 2)
-    xaxs_pos <- min (yrange) + axs_pos * diff (yrange)
+    xaxs_pos <- min (yrange) + axis_pos * diff (yrange)
     axis_ratio <- diff (yrange) / diff (xrange)
-    yaxs_pos <- min (xrange) + axs_pos * axis_ratio * diff (xrange)
+    yaxs_pos <- min (xrange) + axis_pos * axis_ratio * diff (xrange)
 
     lines (c (yaxs_pos [1], max (xrange)), rep (xaxs_pos [1], 2), col=axis_col)
     junk <- sapply (xp, function (i)

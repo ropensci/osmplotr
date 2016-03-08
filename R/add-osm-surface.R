@@ -16,6 +16,9 @@
 #' @param method Either 'idw' (Inverse Distance Weighting as spatstat::idw;
 #' default), otherwise uses 'Gaussian' for kernel smoothing (as
 #' spatstat::Smooth.ppp)
+#' @param bg If specified, OSM objects outside the convex hull surrounding 'dat'
+#' are plotted in this colour, otherwise they are included in the interpolation
+#' (which will generally be inaccurate for peripheral values)
 #' @param cols Vector of colours for shading z-values (for example,
 #' 'terrain.colors (30)')
 #' @param border Plot border? (For SpatialPolygons only)

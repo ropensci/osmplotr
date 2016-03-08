@@ -18,6 +18,10 @@ extract_osm_objects ()}
 default), otherwise uses 'Gaussian' for kernel smoothing (as
 spatstat::Smooth.ppp)}
 
+\item{bg}{If specified, OSM objects outside the convex hull surrounding 'dat'
+are plotted in this colour, otherwise they are included in the interpolation
+(which will generally be inaccurate for peripheral values)}
+
 \item{cols}{Vector of colours for shading z-values (for example,
 'terrain.colors (30)')}
 
