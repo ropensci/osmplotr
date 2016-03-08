@@ -24,7 +24,7 @@
 #' @export
 
 plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
-                              structures=NULL, bg='gray20',
+                              structures=NULL, bg='gray20', 
                               graphic.device='png', ...)
 {
     if (!is.null (structures))
@@ -43,7 +43,7 @@ plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
     else 
         dev.new (width=width, height=height)
 
-    par (mar=c(0,0,0,0))
+    par (mar=rep (0, 4))
     plot (NULL, NULL, xlim=xylims$x, ylim=xylims$y, xaxs='i', yaxs='i',
           xaxt='n', yaxt='n', xlab='', ylab='', bty='n')
     usr <- par ('usr')
