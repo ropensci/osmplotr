@@ -1,6 +1,6 @@
 # osmplotr 
 [![Build Status](https://travis-ci.org/mpadge/osmplotr.svg?branch=master)](https://travis-ci.org/mpadge/osmplotr)
-[![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr)](http://cran.r-project.org/package=osmplotr)
+[![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 
 ![map1](./figure/map1.png)
