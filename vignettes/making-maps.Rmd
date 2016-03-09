@@ -352,7 +352,7 @@ included in plots. This problem will be addressed in future releases of
 One of the primary aims of `osmplotr` is to offer a convenient means to
 highlight particular regions within a city simply by applying different colours
 to the same OSM structures. The routine which enables this is
-`group_osm_objects`, the two primary arguments to which are `obj`, which defines
+`add_osm_groups`, the two primary arguments to which are `obj`, which defines
 the OSM structure to be used for plotting the regions (for example, `dat_B`
 defining the previous buildings), and `groups` which is a list of SpatialPoints
 objects defining the desired regions.
@@ -361,7 +361,7 @@ The simplest way of defining a region is with `click_map`, which enables a map
 to be clicked and returns a set of `SpatialPoints` corresponding to the clicks.
 (`click_map` finishes when the same point is clicked twice.) This set of points,
 or a set of points generated through any other means, can then be passed as the
-`groups` argument to `group_osm_objects`. The following illustrates an area
+`groups` argument to `add_osm_groups`. The following illustrates an area
 defined by manually entering coordinates of bounding points.
 
 ```{r, echo=FALSE}
@@ -373,7 +373,7 @@ pts <- sp::SpatialPoints (cbind (c (-0.120, -0.135, -0.135, -0.120),
                              c (51.510, 51.510, 51.516, 51.516)))
 xylims <- get_xylims (c (-0.14, 51.505, -0.11, 51.52))
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map11.png")
-group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40",
+add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40",
                    colmat=FALSE) 
 graphics.off ()
 ```
@@ -382,7 +382,7 @@ graphics.off ()
 ### 5.1 Inclusive, exclusive, and bisected polygons
 
 The highlighted region of the previous map is irregular because inclusion for
-each polygon within a group is defined by mean coordinates. `group_osm_objects`
+each polygon within a group is defined by mean coordinates. `add_osm_groups`
 has a `boundary` argument which defines whether objects should be assigned to
 groups inclusively (`boundary>0`) or exclusively (`boundary<0`), or whether they
 should be precisely bisected by a group boundary (`boundary=0`). The two options
@@ -390,14 +390,14 @@ in addition to the above default of `boundary=-1` produce the following maps.
 
 ```{r map12, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map12.png")
-group_osm_objects (dat_B, pts, col="orange", col_extra="gray40", colmat=FALSE,
+add_osm_groups (dat_B, pts, col="orange", col_extra="gray40", colmat=FALSE,
                    boundary=0)
 graphics.off ()
 ```
 ![map12](map12.png)
 ```{r map13, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map13.png")
-group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40", 
+add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 graphics.off ()
 ```
@@ -415,11 +415,11 @@ pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
 ```
 ```{r map14, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map14.png")
-group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40", 
+add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 col_park_in <- rgb (50, 255, 50, maxColorValue=255)
 col_park_out <- rgb (50, 155, 50, maxColorValue=255)
-group_osm_objects (london$dat_P, groups=pts, col=col_park_in, 
+add_osm_groups (london$dat_P, groups=pts, col=col_park_in, 
                    col_extra=col_park_out, colmat=FALSE, boundary=0)
 graphics.off ()
 ```
@@ -438,12 +438,12 @@ pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
 ```
 ```{r map15, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map15.png")
-group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40", 
+add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 add_osm_objects (london$dat_P, col=col_park_out)
 col_park_in <- rgb (50, 255, 50, maxColorValue=255)
 col_park_out <- rgb (50, 155, 50, maxColorValue=255)
-group_osm_objects (london$dat_P, groups=pts, col=col_park_in, 
+add_osm_groups (london$dat_P, groups=pts, col=col_park_in, 
                    col_extra=col_park_out, colmat=FALSE, boundary=0)
 graphics.off ()
 ```
@@ -455,11 +455,11 @@ A particularly effective way to highlight particular areas is through using dark
 colours upon otherwise light coloured maps.
 ```{r map16, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray95", file="map16.png")
-group_osm_objects (dat_B, groups=pts, col="gray40", col_extra="gray85",
+add_osm_groups (dat_B, groups=pts, col="gray40", col_extra="gray85",
                    colmat=FALSE, boundary=1)
-group_osm_objects (dat_H, groups=pts, col="gray20", col_extra="gray70",
+add_osm_groups (dat_H, groups=pts, col="gray20", col_extra="gray70",
                    colmat=FALSE, boundary=0)
-group_osm_objects (dat_HP, groups=pts, col="gray10", col_extra="white",
+add_osm_groups (dat_HP, groups=pts, col="gray10", col_extra="white",
                    colmat=FALSE, boundary=0)
 graphics.off ()
 ```
@@ -493,9 +493,9 @@ through interpolation. The default colours are `rainbow (4)` (or red, green,
 violet, blue), as illustrated above.
 
 Regional groups may be coloured using `colour_mat` by setting `colmat=TRUE` in
-`group_osm_objects` and by submitting a desired vector of colours. A
+`add_osm_groups` and by submitting a desired vector of colours. A
 `colour_mat` may be illustrated by plotting inclusive groups defined by random
-points. `group_osm_objects` first discerns which components (polygons or lines)
+points. `add_osm_groups` first discerns which components (polygons or lines)
 lie *within* groups, then if `col_extra=NULL` (or `NA`), all points are assigned
 to the nearest group. This nevertheless requires the initial groups to be of
 non-zero size, and so the following lines initially select random points and
@@ -523,19 +523,19 @@ groups <- lapply (groups, function (i)
 The `ngroups` can then simply be plotted as follows.
 ```{r map17, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map17.png")
-group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
+add_osm_groups (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
                    colmat=TRUE, lwd=3)
 graphics.off ()
 ```
 ![map17](map17.png)
 
 The `colour_mat` function has an option to rotate the colour space. This may
-also be passed directly to `group_osm_objects` enabling, for example, the
+also be passed directly to `add_osm_groups` enabling, for example, the
 colours in the previous plot to be rotated by 90 degrees.
 
 ```{r map18, eval=TRUE}
 plot_osm_basemap (xylims=xylims, bg="gray20", file="map18.png")
-group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
+add_osm_groups (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
                    colmat=TRUE, rotate=90, lwd=3)
 graphics.off ()
 ```
@@ -578,14 +578,14 @@ add_osm_objects (london$dat_P, col=col_G)
 add_osm_objects (london$dat_G, col=col_G)
 add_osm_objects (london$dat_N, col=col_G)
 add_osm_objects (london$dat_A, col=col_A)
-group_osm_objects (london$dat_BNR, groups=groups, boundary=0,
+add_osm_groups (london$dat_BNR, groups=groups, boundary=0,
                    col_extra=col_extra_B, colmat=FALSE, col=cols_B)
-group_osm_objects (london$dat_BR, groups=groups, boundary=0,
+add_osm_groups (london$dat_BR, groups=groups, boundary=0,
                    col_extra=col_extra_B, colmat=FALSE, col=cols_B)
 
-group_osm_objects (london$dat_H, groups=groups, boundary=0,
+add_osm_groups (london$dat_H, groups=groups, boundary=0,
                    col_extra=col_extra_H, colmat=FALSE, col=cols_H)
-group_osm_objects (london$dat_HP, groups=groups, boundary=0,
+add_osm_groups (london$dat_HP, groups=groups, boundary=0,
                    col_extra=col_extra_H, colmat=FALSE, col=cols_H)
 graphics.off ()
 ```
@@ -623,14 +623,14 @@ highways <- c ("Regent.St", "Oxford.St", "Shaftesbury")
 highways3 <- highways2polygon (highways=highways, bbox=bbox)
 ```
 Multiple regions may be highlighted simply by passing a list of bounding
-polygons (each of class `SpatialPoints`) to `group_osm_structures`. 
+polygons (each of class `SpatialPoints`) to `add_osm_groups`. 
 ```{r, eval=FALSE}
 groups <- list (highways1, highways2, highways3)
 ```
 ```{r, echo=FALSE}
 groups <- list (london$highways1, london$highways2, london$highways3)
 ```
-Highlighted groups are then added as above using `group_osm_objects`. These are
+Highlighted groups are then added as above using `add_osm_groups`. These are
 overlaid on top of a basemap. The following maps highlight the selected regions
 with both buildings and highways, while the remaining structures are plotted on
 the initial basemap with the following lines. (Note that `make_osm_map` returns
@@ -674,14 +674,14 @@ col_extra_H <- "gray20"
 And finally add groups to plot using these colours, resulting in the plot shown
 at the start of this section.
 ```{r, eval=FALSE}
-group_osm_objects (london$dat_BNR, groups=groups, boundary=0,
+add_osm_groups (london$dat_BNR, groups=groups, boundary=0,
                    col_extra=col_extra_B, colmat=FALSE, col=cols)
-group_osm_objects (london$dat_BR, groups=groups, boundary=0,
+add_osm_groups (london$dat_BR, groups=groups, boundary=0,
                    col_extra=col_extra_B, colmat=FALSE, col=cols)
 
-group_osm_objects (london$dat_H, groups=groups, boundary=0,
+add_osm_groups (london$dat_H, groups=groups, boundary=0,
                    col_extra=col_extra_H, colmat=FALSE, col=cols_dark)
-group_osm_objects (london$dat_HP, groups=groups, boundary=0,
+add_osm_groups (london$dat_HP, groups=groups, boundary=0,
                    col_extra=col_extra_H, colmat=FALSE, col=cols_dark)
 graphics.off ()
 ```

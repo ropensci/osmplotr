@@ -37,7 +37,7 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
                              cols=terrain.colors (30), border=FALSE, ...)
 {
     if (is.null (dev.list ()))
-        stop ('add_osm_surface can only be called after plot.osm.basemap')
+        stop ('add_osm_surface can only be called after plot_osm_basemap')
     if (is.null (dat))
         stop ('data must be supplied to add_osm_surface ()')
     if (!dim (dat)[2] >= 3)

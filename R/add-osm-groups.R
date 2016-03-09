@@ -1,4 +1,4 @@
-#' group_osm_objects
+#' add_osm_groups
 #'
 #' Plots spatially distinct groups of osm objects in different colours. 
 #'
@@ -40,18 +40,18 @@
 #' considerably longer than simple allocation of objects either side of
 #' boundary.
 
-group_osm_objects <- function (obj=obj, groups=NULL, make_hull=FALSE,
+add_osm_groups <- function (obj=obj, groups=NULL, make_hull=FALSE,
                                boundary=-1, cols=NULL, col_extra=NULL,
                                colmat=TRUE, rotate=NULL, lwd=0)
 {
     if (is.null (dev.list ()))
-        stop ('group_osm_objects can only be called after plot.osm.basemap')
+        stop ('add_osm_groups can only be called after plot_osm_basemap')
 
     if (is.na (col_extra))
         col_extra <- NULL
     if (is.null (groups))
     {
-        warning (paste0 ('No groups defined in group_osm_objects; ',
+        warning (paste0 ('No groups defined in add_osm_groups; ',
                          'passing to add_osm_objects'))
         if (is.null (cols))
             cols <- col_extra

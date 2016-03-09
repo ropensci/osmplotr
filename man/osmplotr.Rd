@@ -9,7 +9,7 @@
 Produces customisable images of OpenStreetMap data.  Extracts OpenStreetMap
 data for specified key-value pairs (e.g.  key='building') using the overpass
 API. Different OSM objects can be plotted in different colours using the
-function add_osm_objects().  The function group_osm_objects()
+function add_osm_objects().  The function add_osm_groups()
 enables customised highlighting of selected regions using different graphical
 schemes designed to contrast with surrounding backgrounds.
 }

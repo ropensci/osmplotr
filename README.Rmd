@@ -87,10 +87,10 @@ schemes. The `col_extra` parameter defines the colour of the remaining,
 background area.
 ```{r map15, eval=FALSE}
 plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map3.png")
-group_osm_objects (dat_B, groups=pts, col="orange", col_extra="gray40", 
+add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 add_osm_objects (london$dat_P, col="darkseagreen1")
-group_osm_objects (london$dat_P, groups=pts, col='darkseagreen1',
+add_osm_groups (london$dat_P, groups=pts, col='darkseagreen1',
                    col_extra='darkseagreen', colmat=FALSE, boundary=0)
 graphics.off ()
 ```
@@ -99,11 +99,11 @@ graphics.off ()
 Or may highlighted in dark-on-light:
 ```{r map16, eval=FALSE}
 plot_osm_basemap (xylims=xylims, bg="gray95", file="map4.png")
-group_osm_objects (dat_B, groups=pts, col="gray40", col_extra="gray85",
+add_osm_groups (dat_B, groups=pts, col="gray40", col_extra="gray85",
                    colmat=FALSE, boundary=1)
-group_osm_objects (dat_H, groups=pts, col="gray20", col_extra="gray70",
+add_osm_groups (dat_H, groups=pts, col="gray20", col_extra="gray70",
                    colmat=FALSE, boundary=0)
-group_osm_objects (dat_HP, groups=pts, col="gray10", col_extra="white",
+add_osm_groups (dat_HP, groups=pts, col="gray10", col_extra="white",
                    colmat=FALSE, boundary=0)
 graphics.off ()
 ```
@@ -111,10 +111,10 @@ graphics.off ()
 
 ### Highlighting clusters
 
-`group_osm_objects` also enables plotting an entire region as a group of
+`add_osm_groups` also enables plotting an entire region as a group of
 spatially distinct clusters of defined colours. The argument `groups` in the
 following call is a list of `SpatialPoints` objects defining 12 small, spatially
-separated regions.  Calling `group_osm_objects` with `col_extra=NA` (or `NULL`)
+separated regions.  Calling `add_osm_groups` with `col_extra=NA` (or `NULL`)
 forces all points lying outside those defined groups to be allocated to the
 nearest groups, and thus produces an inclusive grouping extending across an
 entire area.
@@ -139,7 +139,7 @@ groups <- lapply (groups, function (i)
 ```
 ```{r map17, eval=FALSE}
 plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map5.png')
-group_osm_objects (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
+add_osm_groups (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
                    colmat=TRUE, lwd=3)
 graphics.off ()
 ```
@@ -168,14 +168,14 @@ highways5 <- highways2polygon (highways=highways, bbox=bbox)
 groups <- list (highways1, highways2, highways3, highways4, highways5)
 ```
 And then passing the SpatialPolygon returned by `highways2polygon` to
-`group_osm_objects`, this time with some Wes Anderson flair.
+`add_osm_groups`, this time with some Wes Anderson flair.
 ```{r, eval=FALSE}
 plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map6.png')
 library (wesanderson)
 cols <- wes_palette ("Darjeeling", 5) 
-group_osm_objects (dat_B, groups=groups, boundary=1,
+add_osm_groups (dat_B, groups=groups, boundary=1,
                    col_extra='gray40', colmat=FALSE, col=cols)
-group_osm_objects (dat_H, groups=groups, boundary=0,
+add_osm_groups (dat_H, groups=groups, boundary=0,
                    col_extra='gray70', colmat=FALSE, col=cols)
 graphics.off ()
 ```

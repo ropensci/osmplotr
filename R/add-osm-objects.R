@@ -16,7 +16,7 @@
 add_osm_objects <- function (obj=obj, col='gray40', border=NA, ...)
 {
     if (is.null (dev.list ()))
-        stop ('add_osm_objects can only be called after plot.osm.basemap')
+        stop ('add_osm_objects can only be called after plot_osm_basemap')
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
