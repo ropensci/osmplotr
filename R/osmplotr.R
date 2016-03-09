@@ -14,6 +14,7 @@
 #' @importFrom graphics polypath lines points locator plot.new par rect text
 #' @importFrom methods slot as
 #' @importFrom grDevices dev.new dev.list dev.off dev.cur rainbow rgb col2rgb png
+#' @importFrom grDevices terrain.colors
 #' @importFrom utils txtProgressBar setTxtProgressBar combn tail
 #' @importFrom stats runif
 NULL
