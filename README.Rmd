@@ -188,24 +188,22 @@ detail and further capabilities of `osmplotr`.
 
 Finally, `osmplotr` contains a function `add_osm_surface` to spatially
 interpolate a given set of spatial data points and colour OSM objects according
-to a specified colour gradient. This is illustrated here with a surface laid on
-regular points interior to `bbox`.
+to a specified colour gradient. This is illustrated here with the `volcano` data
+projected onto the `bbox`.
 ```{r}
-x <- seq (-0.145, -0.105, by=0.005)
-y <- seq (51.502, 51.518, by=0.002)
-xarr <- array (x, dim=c(length (x), length (y)))
-yarr <- t (array (y, dim=c(length (y), length (x))))
-z <- sin (100 * (xarr + 0.125)) + cos (100 * (yarr - 51.51) - 1)
-surf <- cbind (as.numeric (xarr), as.numeric (yarr), as.numeric (z))
+x <- seq (bbox [1], bbox [3], length.out=dim (volcano)[1])
+y <- seq (bbox [2], bbox [4], length.out=dim (volcano)[2])
+xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
+z <- as.numeric (volcano)
 ```
 Passing the `bg` argument to `add_osm_surface` plots all objects beyond the
 convex hull of the `xy` points as that colour. (Such points may be included in
 the interpolation with `bg=NULL`.)
 ```{r, eval=FALSE}
 plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file='map7.png')
-add_osm_surface (dat_B, dat=surf, method="idw", bg="gray40")
+add_osm_surface (dat_B, dat=cbind (xy, z), method="idw", bg="gray40")
 cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20%
-add_osm_surface (dat_H, dat=surf, cols=cols, bg="gray40")
+add_osm_surface (dat_H, dat=cbind (xy, z), cols=cols, bg="gray40")
 graphics.off ()
 ```
 ![map7](./figure/map7.png)
