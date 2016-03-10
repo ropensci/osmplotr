@@ -197,8 +197,9 @@ xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
 z <- as.numeric (volcano)
 ```
 Passing the `bg` argument to `add_osm_surface` plots all objects beyond the
-convex hull of the `xy` points as that colour. (Such points may be included in
-the interpolation with `bg=NULL`.)
+convex hull of the `xy` points as that colour. (In this case, there are no such
+points, but where they do exist, they may be included in the interpolation with
+`bg=NULL`.)
 ```{r, eval=FALSE}
 plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file='map7.png')
 add_osm_surface (dat_B, dat=cbind (xy, z), method="idw", bg="gray40")
