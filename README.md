@@ -175,13 +175,14 @@ xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
 z <- as.numeric (volcano)
 ```
 
-Passing the `bg` argument to `add_osm_surface` plots all objects beyond the convex hull of the `xy` points as that colour. (In this case, there are no such points, but where they do exist, they may be included in the interpolation with `bg=NULL`.)
+`add_osm_surface` returns the limits of the *interpolated* surface. These may differ from the original limits, and should be used to scale `add_colourbar`.
 
 ``` r
 plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file='map7.png')
-add_osm_surface (dat_B, dat=cbind (xy, z), method="idw", bg="gray40")
+zl <- add_osm_surface (dat_B, dat=cbind (xy, z), method="idw", bg="gray40")
 cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20%
-add_osm_surface (dat_H, dat=cbind (xy, z), cols=cols, bg="gray40")
+zl <- add_osm_surface (dat_H, dat=cbind (xy, z), cols=cols, bg="gray40")
+add_colourbar (cols=terrain.colors (30), side=4, zlims=zl)
 graphics.off ()
 ```
 

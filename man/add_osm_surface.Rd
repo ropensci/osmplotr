@@ -5,7 +5,7 @@
 \title{add_osm_suface}
 \usage{
 add_osm_surface(obj = obj, dat = NULL, method = "idw", bg = NULL,
-  cols = terrain.colors(30), border = FALSE, ...)
+  cols = terrain.colors(30), border = FALSE, verbose = FALSE, ...)
 }
 \arguments{
 \item{obj}{an sp SPDF or SLDF (list of polygons or lines) returned by
@@ -26,6 +26,8 @@ are plotted in this colour, otherwise they are included in the interpolation
 'terrain.colors (30)')}
 
 \item{border}{Plot border? (For SpatialPolygons only)}
+
+\item{verbose}{If TRUE, provides notification of progress}
 
 \item{...}{other parameters to be passed to polygons, lines (such as lwd,
 lty), or points (such as pch, cex)}

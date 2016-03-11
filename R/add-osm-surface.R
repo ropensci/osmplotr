@@ -22,6 +22,7 @@
 #' @param cols Vector of colours for shading z-values (for example,
 #' 'terrain.colors (30)')
 #' @param border Plot border? (For SpatialPolygons only)
+#' @param verbose If TRUE, provides notification of progress
 #' @param ... other parameters to be passed to polygons, lines (such as lwd,
 #' lty), or points (such as pch, cex)
 #' @return nothing (adds to graphics.device opened with plot_osm_basemap())
@@ -34,7 +35,8 @@
 #' @export
 
 add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
-                             cols=terrain.colors (30), border=FALSE, ...)
+                             cols=terrain.colors (30), border=FALSE, 
+                             verbose=FALSE, ...)
 {
     if (is.null (dev.list ()))
         stop ('add_osm_surface can only be called after plot_osm_basemap')
@@ -50,16 +52,19 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
     y <- dat [,2]
     marks <- dat [,3]
     xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range(y), marks=marks)
+    if (verbose) cat ("1/3: Interpolating surface ... ")
     if (method == 'idw')
         z <- spatstat::idw (xy, at="pixels", dimyx=din)$v
     else
         z <- spatstat::Smooth (xy, at="pixels", dimyx=din, diggle=TRUE)$v
+    if (verbose) cat ("\t\tdone\n")
     # Then set all z-values beyond the convex hull of xy to NA
     if (!is.null (bg))
         if (is.na (bg))
             bg <- NULL
     if (!is.null (bg))
     {
+        if (verbose) cat ("2/3: identifying background objects ... ")
         xyh <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
         ch <- spatstat::convexhull (xyh)
         bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
@@ -71,6 +76,7 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
         x1 <- rep (seq (din [1]), din [2])
         y1 <- rep (seq (din [2]), each=din [1])
         z [which (indx == 0)] <- NA
+        if (verbose) cat ("done\n")
     }
 
 
@@ -92,6 +98,7 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
         return (ci)
     }
 
+    if (verbose) cat ("3/3: Drawing objects on map ... ")
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
         plotfunPtsColour <- function (i, dx=dx, dy=dy, z=z, border=border, 
@@ -130,5 +137,8 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
         xyi <- slot (obj, 'coords')
         points (xyi[,1], xyi[,2], col=getColour (xyi, z=z, bg=bg, cols=cols), ...)
     }
+    if (verbose) cat ("\tdone\n")
+
+    return (range (z, na.rm=TRUE))
 }
 
