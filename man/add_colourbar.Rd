@@ -5,7 +5,7 @@
 \title{add_colorbar}
 \usage{
 add_colourbar(len = c(0.1, 0.9), width = 0.02, side = 1, cols = NULL,
-  zlims = c(0, 1), transp = 0.4, tcol = "black")
+  zlims = c(0, 1), transp = 0.4, tcol = "black", ps = 8)
 }
 \arguments{
 \item{len}{Relative positions of start and end of colourbar}
@@ -24,6 +24,8 @@ be the values returned from add_osm_surface ().}
 including behind text. Lower values are more transparent.}
 
 \item{tcol}{Colour of text, tick marks, and lines on colourbar}
+
+\item{ps}{PointSize of text labels}
 }
 \description{
 Adds a colourbar to an existing map. Intended to be used in combination with
