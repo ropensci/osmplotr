@@ -7,8 +7,8 @@
 #' @param highways A vector of highway names passed directly to the Overpass
 #' API. Wildcards and whitespaces are '.'; for other options see online help for
 #' the overpass API.
-#' @param bbox The bounding box within which to look for highways.  Must be a
-#' vector of 4 elements (xmin, ymin, xmax, ymax).  
+#' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
+#' columns of min and max values, and rows of x and y values.  
 #' @param plot If TRUE, then all OSM data for each highway is plotted and the
 #' final cycle overlaid.
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic

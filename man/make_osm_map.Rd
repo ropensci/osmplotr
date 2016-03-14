@@ -11,9 +11,9 @@ make_osm_map(filename = NULL, bbox = NULL, osm_data = NULL,
 \item{filename}{Name of plot file; default=NULL plots to screen device (low
 quality and likely slow)}
 
-\item{bbox}{The bounding box for the map.  Must be a vector of 4 elements
-(xmin, ymin, xmax, ymax). If NULL, bbox is taken from the largest extent of
-OSM objects in osm_data.}
+\item{bbox}{the bounding box for the map.  A 2-by-2 matrix of 4 elements with
+columns of min and max values, and rows of x and y values.  If NULL, bbox is
+taken from the largest extent of OSM objects in osm_data.}
 
 \item{osm_data}{A list of OSM objects as returned from extract_osm_objects().
 These objects may be included in the plot without downloading. These should

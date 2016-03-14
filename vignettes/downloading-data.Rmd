@@ -10,15 +10,22 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r load}
-library (osmplotr)
+```{r load, eval=FALSE}
+#library (osmplotr)
+devtools::install_github ('mpadge/osmplotr')
+```
+```{r, echo=FALSE, message=FALSE}
+require (devtools)
+setwd ("../..")
+load_all ("osmplotr")
+setwd ("./osmplotr/vignettes")
 ```
 
 This vignette demonstrates how the `london` data included with the `osmplotr`
 package were generated. First customise an `osm_structures` data frame.
 
 ```{r}
-bbox <- c(-0.15,51.5,-0.1,51.52) 
+bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52))
 structures <- c ('highway', 'highway', 'building', 'building', 'building',
                  'amenity', 'grass', 'park', 'natural', 'tree')   
 structs <- osm_structures (structures=structures, col_scheme='dark')   

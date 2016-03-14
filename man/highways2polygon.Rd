@@ -11,8 +11,8 @@ highways2polygon(highways = NULL, bbox = NULL, plot = FALSE)
 API. Wildcards and whitespaces are '.'; for other options see online help for
 the overpass API.}
 
-\item{bbox}{The bounding box within which to look for highways.  Must be a
-vector of 4 elements (xmin, ymin, xmax, ymax).}
+\item{bbox}{the bounding box for the map.  A 2-by-2 matrix of 4 elements with
+columns of min and max values, and rows of x and y values.}
 
 \item{plot}{If TRUE, then all OSM data for each highway is plotted and the
 final cycle overlaid.}

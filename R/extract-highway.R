@@ -5,8 +5,8 @@
 #' @param name Name of highway. Lines components are return for *any* OSM way
 #' with a partially-matched. Both wildcards and whitespace should be represented
 #' by '.'. 
-#' @param bbox the bounding box within which to look for highways.  Must be a
-#' vector of 4 elements (xmin, ymin, xmax, ymax).  
+#' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
+#' columns of min and max values, and rows of x and y values.  
 #' @return SpatialLinesDataFrame containing the highway
 #' @return SpatialLinesDataFrame containing the highway
 #' @export
@@ -19,12 +19,8 @@ extract_highway <- function (name='', bbox=NULL)
         stop ('bbox must be provided')
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
-    if (bbox [3] < bbox [1])
-        bbox <- bbox [c (3, 2, 1, 4)]
-    if (bbox [4] < bbox [2])
-        bbox <- bbox [c (1, 4, 3, 2)]
-    bbox <- paste0 ('(', bbox [2], ',', bbox [1], ',',
-                   bbox[4], ',', bbox [3], ')')
+    bbox <- paste0 ('(', bbox [2,1], ',', bbox [1,1], ',',
+                    bbox [2,2], ',', bbox [1,2], ')')
 
     obj <- warn <- NULL
 

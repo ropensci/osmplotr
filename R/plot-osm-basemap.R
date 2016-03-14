@@ -6,8 +6,9 @@
 #' graphics device is automatically calculated in proportion to the given width
 #' according to the aspect ratio of the bounding box.
 #'
-#' @param xylims Latitude-longitude range to be plotted as returned from
-#' get_xylims()
+#' @param bbox bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
+#' matrix of 4 elements with columns of min and max values, and rows of x and y
+#' values.
 #' @param filename Name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
 #' @param width Width of graphics file (in px; default 480).
@@ -23,7 +24,7 @@
 #' @return nothing (generates file of specified type)
 #' @export
 
-plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
+plot_osm_basemap <- function (bbox=bbox, filename=NULL, width=640,
                               structures=NULL, bg='gray20', 
                               graphic.device='png', ...)
 {
@@ -36,7 +37,7 @@ plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
 
     if (is.null (filename) & width == 640)
         width <- 7
-    height <- width * diff (xylims$y) / diff (xylims$x)
+    height <- width * diff (bbox [2,]) / diff (bbox [1,])
     if (!is.null (filename))
         png (filename=filename, width=width, height=height,
              type='cairo-png', bg='white', ...)
@@ -44,7 +45,7 @@ plot_osm_basemap <- function (xylims=xylims, filename=NULL, width=640,
         dev.new (width=width, height=height)
 
     par (mar=rep (0, 4))
-    plot (NULL, NULL, xlim=xylims$x, ylim=xylims$y, xaxs='i', yaxs='i',
+    plot (NULL, NULL, xlim=bbox [1,], ylim=bbox [2,], xaxs='i', yaxs='i',
           xaxt='n', yaxt='n', xlab='', ylab='', bty='n')
     usr <- par ('usr')
     rect (usr [1], usr [3], usr [2], usr [4], border=NA, col=bg)

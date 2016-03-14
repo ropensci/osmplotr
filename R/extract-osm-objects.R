@@ -13,7 +13,8 @@
 #' @param extra_pairs A list of additional key-value pairs to be passed
 #' to the overpass API.
 #' @param bbox the bounding box within which all key-value objects should be
-#' downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).
+#' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
+#' max values, and rows of x and y values.
 #' @return A list of 2 components:
 #' \enumerate{
 #'  \item obj: A data frame of sp objects
@@ -26,10 +27,6 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
 {
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
-    if (bbox [3] < bbox [1])
-        bbox <- bbox [c (3, 2, 1, 4)]
-    if (bbox [4] < bbox [2])
-        bbox <- bbox [c (1, 4, 3, 2)]
 
     # make_osm_map passes empty values as '' rather than NULL:
     if (!is.null (value))
@@ -79,8 +76,8 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
         extra_pairs <- ep
     }
 
-    bbox <- paste0 ('(', bbox [2], ',', bbox [1], ',',
-                   bbox[4], ',', bbox [3], ')')
+    bbox <- paste0 ('(', bbox [2,1], ',', bbox [1,1], ',',
+                    bbox [2,2], ',', bbox [1,2], ')')
 
 
     query <- paste0 ('(node', key, value, extra_pairs, bbox,

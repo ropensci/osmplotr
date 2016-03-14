@@ -11,8 +11,8 @@ extract_highway(name = "", bbox = NULL)
 with a partially-matched. Both wildcards and whitespace should be represented
 by '.'.}
 
-\item{bbox}{the bounding box within which to look for highways.  Must be a
-vector of 4 elements (xmin, ymin, xmax, ymax).}
+\item{bbox}{the bounding box for the map.  A 2-by-2 matrix of 4 elements with
+columns of min and max values, and rows of x and y values.}
 }
 \value{
 SpatialLinesDataFrame containing the highway

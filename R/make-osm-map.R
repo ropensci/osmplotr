@@ -7,9 +7,9 @@
 #' 
 #' @param filename Name of plot file; default=NULL plots to screen device (low
 #' quality and likely slow)
-#' @param bbox The bounding box for the map.  Must be a vector of 4 elements
-#' (xmin, ymin, xmax, ymax). If NULL, bbox is taken from the largest extent of
-#' OSM objects in osm_data.
+#' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
+#' columns of min and max values, and rows of x and y values.  If NULL, bbox is
+#' taken from the largest extent of OSM objects in osm_data.
 #' @param osm_data A list of OSM objects as returned from extract_osm_objects().
 #' These objects may be included in the plot without downloading. These should
 #' all be named with the stated 'dat_prefix' and have suffixes as given in
@@ -39,26 +39,21 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
     {
         if (is.null (osm_data))
             stop ('Either bounding box or osm_data must be given')
-        xylims <- list (xrange=c (Inf, -Inf), yrange=c(Inf, -Inf))
+        bbox <- matrix (c (Inf, Inf, -Inf, -Inf), nrow=2, ncol=2)
+        rownames (bbox) <- c ("x", "y")
         classes <- c ('SpatialLinesDataFrame', 'SpatialPolygonsDataFrame',
                       'SpatialPointsDataFrame')
         for (i in osm_data)
         {
             if (class (i) %in% classes)
             {
-                lims <- get_xylims (i)
-                if (lims$xrange [1] < xylims$xrange [1])
-                    xylims$xrange [1] <- lims$xrange [1]
-                if (lims$xrange [2] > xylims$xrange [2])
-                    xylims$xrange [2] <- lims$xrange [2]
-                if (lims$yrange [1] < xylims$yrange [1])
-                    xylims$yrange [1] <- lims$yrange [1]
-                if (lims$yrange [2] > xylims$yrange [2])
-                    xylims$yrange [2] <- lims$yrange [2]
+                bbi <- slot (i, "bbox")
+                if (bbi [1,1] < bbox [1,1]) bbox [1,1] <- bbi [1,1]
+                if (bbi [2,1] < bbox [2,1]) bbox [2,1] <- bbi [2,1]
+                if (bbi [1,2] > bbox [1,2]) bbox [1,2] <- bbi [1,2]
+                if (bbi [2,2] > bbox [2,2]) bbox [2,2] <- bbi [2,2]
             }
         }
-        bbox <- c (xylims$xrange [1], xylims$yrange [1],
-                   xylims$xrange [2], xylims$yrange [2])
     }
 
     sfx <- structures$suffix [1:(nrow (structures) - 1)]
@@ -90,8 +85,7 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
     ns <- nrow (structures) - 1 # last row is background
 
     bg <- structures$col [structures$structure == 'background']
-    plot_osm_basemap (xylims=get_xylims (bbox), filename=filename,
-                      bg=bg, width=width)
+    plot_osm_basemap (bbox=bbox, filename=filename, bg=bg, width=width)
     for (i in seq (nrow (structures) - 1))
     {
         obji <- paste0 ('dat_', structures$suffix [i])

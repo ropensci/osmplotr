@@ -17,7 +17,8 @@ necessarily return results.}
 Negation is specified by '!value'.}
 
 \item{bbox}{the bounding box within which all key-value objects should be
-downloaded.  Must be a vector of 4 elements (xmin, ymin, xmax, ymax).}
+downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
+max values, and rows of x and y values.}
 
 \item{extra_pairs}{A list of additional key-value pairs to be passed
 to the overpass API.}

@@ -10,7 +10,7 @@ R package to produce visually impressive customisable images of urban areas from
 1.  Specify the bounding box for the desired region
 
     ``` r
-    bbox <- c(-0.15,51.5,-0.1,51.52) 
+    bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52))
     ```
 
 2.  Download the desired data---in this case, all building perimeters.
@@ -22,7 +22,7 @@ R package to produce visually impressive customisable images of urban areas from
 3.  Initiate an `osm_basemap` with desired background (`bg`) colour
 
     ``` r
-    plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map1.png")
+    plot_osm_basemap (bbox=bbox, bg="gray20", file="map1.png")
     ```
 
 4.  Overlay objects on plot in the desired colour.
@@ -62,7 +62,7 @@ dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)$obj
 ```
 
 ``` r
-plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map2.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map2.png")
 add_osm_objects (dat_B, col="gray40")
 add_osm_objects (dat_H, col="gray80")
 add_osm_objects (dat_P, col="darkseagreen")
@@ -85,7 +85,7 @@ pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
 and OSM objects within the defined regions highlighted with different colour schemes. The `col_extra` parameter defines the colour of the remaining, background area.
 
 ``` r
-plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file="map3.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map3.png")
 add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 add_osm_objects (london$dat_P, col="darkseagreen1")
@@ -99,12 +99,10 @@ graphics.off ()
 Or may highlighted in dark-on-light:
 
 ``` r
-plot_osm_basemap (xylims=xylims, bg="gray95", file="map4.png")
+plot_osm_basemap (bbox=bbox, bg="gray95", file="map4.png")
 add_osm_groups (dat_B, groups=pts, col="gray40", col_extra="gray85",
                    colmat=FALSE, boundary=1)
 add_osm_groups (dat_H, groups=pts, col="gray20", col_extra="gray70",
-                   colmat=FALSE, boundary=0)
-add_osm_groups (dat_HP, groups=pts, col="gray10", col_extra="white",
                    colmat=FALSE, boundary=0)
 graphics.off ()
 ```
@@ -116,7 +114,7 @@ graphics.off ()
 `add_osm_groups` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. The argument `groups` in the following call is a list of `SpatialPoints` objects defining 12 small, spatially separated regions. Calling `add_osm_groups` with `col_extra=NA` (or `NULL`) forces all points lying outside those defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire area.
 
 ``` r
-plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map5.png')
+plot_osm_basemap (bbox=bbox, bg='gray20', file='map5.png')
 add_osm_groups (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
                    colmat=TRUE, lwd=3)
 graphics.off ()
@@ -150,7 +148,7 @@ groups <- list (highways1, highways2, highways3, highways4, highways5)
 And then passing the SpatialPolygon returned by `highways2polygon` to `add_osm_groups`, this time with some Wes Anderson flair.
 
 ``` r
-plot_osm_basemap (xylims=get_xylims (bbox), bg='gray20', file='map6.png')
+plot_osm_basemap (bbox=bbox, bg='gray20', file='map6.png')
 library (wesanderson)
 cols <- wes_palette ("Darjeeling", 5) 
 add_osm_groups (dat_B, groups=groups, boundary=1,
@@ -169,8 +167,8 @@ See package vignettes ('Downloading Data' and 'Making Maps') for a lot more deta
 Finally, `osmplotr` contains a function `add_osm_surface` to spatially interpolate a given set of spatial data points and colour OSM objects according to a specified colour gradient. This is illustrated here with the `volcano` data projected onto the `bbox`.
 
 ``` r
-x <- seq (bbox [1], bbox [3], length.out=dim (volcano)[1])
-y <- seq (bbox [2], bbox [4], length.out=dim (volcano)[2])
+x <- seq (bbox [1,1], bbox [1,2], length.out=dim (volcano)[1])
+y <- seq (bbox [2,1], bbox [2,2], length.out=dim (volcano)[2])
 xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
 z <- as.numeric (volcano)
 ```
@@ -178,7 +176,7 @@ z <- as.numeric (volcano)
 `add_osm_surface` returns the limits of the *interpolated* surface. These may differ from the original limits, and should be used to scale `add_colourbar`.
 
 ``` r
-plot_osm_basemap (xylims=get_xylims (bbox), bg="gray20", file='map7.png')
+plot_osm_basemap (bbox=bbox, bg="gray20", file='map7.png')
 zl <- add_osm_surface (dat_B, dat=cbind (xy, z), method="idw", bg="gray40")
 cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20%
 zl <- add_osm_surface (dat_H, dat=cbind (xy, z), cols=cols, bg="gray40")

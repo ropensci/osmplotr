@@ -4,12 +4,13 @@
 \alias{plot_osm_basemap}
 \title{plot_osm_basemap}
 \usage{
-plot_osm_basemap(xylims = xylims, filename = NULL, width = 640,
+plot_osm_basemap(bbox = bbox, filename = NULL, width = 640,
   structures = NULL, bg = "gray20", graphic.device = "png", ...)
 }
 \arguments{
-\item{xylims}{Latitude-longitude range to be plotted as returned from
-get_xylims()}
+\item{bbox}{bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
+matrix of 4 elements with columns of min and max values, and rows of x and y
+values.}
 
 \item{filename}{Name of plot file; default=NULL plots to screen device (low
 quality and likely slow)}
