@@ -33,7 +33,8 @@ extract_highway <- function (name='', bbox=NULL)
     dat <- httr::GET (query)
     if (dat$status_code != 200)
         warn <- http_status (dat)$message
-    dat <- XML::xmlParse (httr::content (dat, "text"))
+    # Encoding must be supplied to suppress warning
+    dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
     dato <- osmar::as_osmar (dat)
     key <- 'highway'
     k <- NULL # supress 'no visible binding' note from R CMD check

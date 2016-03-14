@@ -94,8 +94,9 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
     #dat <- XML::xmlParse (dat)
     dat <- httr::GET (query)
     if (dat$status_code != 200)
-        warn <- http_status (dat)$message
-    dat <- XML::xmlParse (httr::content (dat, "text"))
+        warn <- httr::http_status (dat)$message
+    # Encoding must be supplied to suppress warning
+    dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
     dato <- osmar::as_osmar (dat)
