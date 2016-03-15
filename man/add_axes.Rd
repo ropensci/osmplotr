@@ -17,4 +17,9 @@ ticks, and labels)}
 \description{
 Adds axes to the internal region of an OSM plot.
 }
+\examples{
+plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
+add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
+add_axes ()
+}
 

@@ -33,6 +33,21 @@
 #' polygon are only included in the interpolation if 'bg' is NA or NULL.
 #'
 #' @export
+#'
+#' @examples
+#' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
+#' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
+#' bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))
+#' x <- seq (bbox [1,1], bbox [1,2], length.out=dim (volcano)[1])
+#' y <- seq (bbox [2,1], bbox [2,2], length.out=dim (volcano)[2])
+#' xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
+#' z <- as.numeric (volcano)
+#' plot_osm_basemap (bbox=bbox, bg="gray20")
+#' zl <- add_osm_surface (london$dat_BNR, dat=cbind (xy, z), method="idw")
+#' cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20%
+#' zl <- add_osm_surface (london$dat_H, dat=cbind (xy, z), cols=cols)
+#' zl <- add_osm_surface (london$dat_HP, dat=cbind (xy, z), cols=cols, lwd=2)
+#' add_colourbar (cols=terrain.colors (30), side=4, zlims=zl)
 
 add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
                              cols=terrain.colors (30), border=FALSE, 

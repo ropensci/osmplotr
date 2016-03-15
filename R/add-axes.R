@@ -7,6 +7,11 @@
 #' @param axis_ps Point size of axis font (default 8)
 #' @param axis_pos Relative positions of axes and labels (default=c(0.01,0.03))
 #' @export
+#'
+#' @examples
+#' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
+#' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
+#' add_axes ()
 
 add_axes <- function (axis_col="white", axis_ps=8, axis_pos=c(0.01,0.03))
 {

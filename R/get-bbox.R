@@ -8,6 +8,9 @@
 #' @return A 2-by-2 matrix of 4 elements with columns of min and max values, and
 #' rows of x and y values.  
 #' @export
+#'
+#' @examples
+#' bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))
 
 get_bbox <- function (latlon)
 {

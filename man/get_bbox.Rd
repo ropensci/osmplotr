@@ -18,4 +18,7 @@ Converts a string of latitudes and longitudes into a square matrix to be
 passed as a 'bbox' argument (to extract_osm_objects(), plot_osm_basemap (),
 make_osm_map (), or extract_highway ()).
 }
+\examples{
+bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))
+}
 

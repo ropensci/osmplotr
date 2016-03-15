@@ -15,6 +15,12 @@
 #' @param tcol Colour of text, tick marks, and lines on colourbar
 #' @param ps PointSize of text labels
 #' @export
+#'
+#' @examples
+#' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
+#' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
+#' add_axes ()
+#' add_colourbar (cols=heat.colors(20), tcol="white", side=4)
 
 add_colourbar <- function (len=c(0.1, 0.9), width=0.02, side=1, cols=NULL,
                            zlims=c(0,1), transp=0.4, tcol="black", ps=8)

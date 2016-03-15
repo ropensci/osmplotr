@@ -12,6 +12,10 @@
 #' lines (such as lwd, lty), or points (such as pch, cex)
 #' @return nothing (adds to graphics.device opened with plot_osm_basemap())
 #' @export
+#'
+#' @examples
+#' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
+#' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
 
 add_osm_objects <- function (obj=obj, col='gray40', border=NA, ...)
 {

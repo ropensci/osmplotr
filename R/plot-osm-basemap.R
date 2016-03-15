@@ -23,6 +23,10 @@
 #' height; see ?png, for example, for details)
 #' @return nothing (generates file of specified type)
 #' @export
+#'
+#' @examples
+#' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
+#' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
 
 plot_osm_basemap <- function (bbox=bbox, filename=NULL, width=640,
                               structures=NULL, bg='gray20', 

@@ -40,4 +40,8 @@ finishing map with dev.off() or graphics.off(). Unless specified, height of
 graphics device is automatically calculated in proportion to the given width
 according to the aspect ratio of the bounding box.
 }
+\examples{
+plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
+add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
+}
 

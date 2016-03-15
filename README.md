@@ -177,9 +177,9 @@ z <- as.numeric (volcano)
 
 ``` r
 plot_osm_basemap (bbox=bbox, bg="gray20", file='map7.png')
-zl <- add_osm_surface (dat_B, dat=cbind (xy, z), method="idw", bg="gray40")
+zl <- add_osm_surface (dat_B, dat=cbind (xy, z), cols=terrain.colors (30))
 cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20%
-zl <- add_osm_surface (dat_H, dat=cbind (xy, z), cols=cols, bg="gray40")
+zl <- add_osm_surface (dat_H, dat=cbind (xy, z), cols=cols)
 add_colourbar (cols=terrain.colors (30), side=4, zlims=zl)
 graphics.off ()
 ```

@@ -26,4 +26,11 @@ get_osm_data(), and one column specifying colours. This data frame may be
 subsequently modified as desired, and ultimately passed to make_osm_map() to
 automate map production.
 }
+\examples{
+structures <- c ("highway", "park", "grass")
+structs <- osm_structures (structures=structures, col_scheme="light")
+# make_osm_map returns potentially modified list of data
+dat <- make_osm_map (bbox=get_bbox(c (-0.15, 51.5, -0.1, 51.52)),
+    osm_data=london, structures=structs)
+}
 
