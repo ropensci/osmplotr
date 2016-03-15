@@ -59,10 +59,11 @@ y <- seq (bbox [2,1], bbox [2,2], length.out=dim (volcano)[2])
 xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
 z <- as.numeric (volcano)
 plot_osm_basemap (bbox=bbox, bg="gray20")
-zl <- add_osm_surface (london$dat_BNR, dat=cbind (xy, z), method="idw")
+# uncomment to run: can be time-consuming
+# zl <- add_osm_surface (london$dat_BNR, dat=cbind (xy, z), method="idw")
 cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20\%
-zl <- add_osm_surface (london$dat_H, dat=cbind (xy, z), cols=cols)
-zl <- add_osm_surface (london$dat_HP, dat=cbind (xy, z), cols=cols, lwd=2)
+# zl <- add_osm_surface (london$dat_H, dat=cbind (xy, z), cols=cols)
+# zl <- add_osm_surface (london$dat_HP, dat=cbind (xy, z), cols=cols, lwd=2)
 add_colourbar (cols=terrain.colors (30), side=4, zlims=zl)
 }
 
