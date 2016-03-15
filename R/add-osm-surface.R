@@ -48,7 +48,7 @@
 #' cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20%
 #' # zl <- add_osm_surface (london$dat_H, dat=cbind (xy, z), cols=cols)
 #' # zl <- add_osm_surface (london$dat_HP, dat=cbind (xy, z), cols=cols, lwd=2)
-#' add_colourbar (cols=terrain.colors (30), side=4, zlims=zl)
+#' # add_colourbar (cols=terrain.colors (30), side=4, zlims=zl)
 
 add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
                              cols=terrain.colors (30), border=FALSE, 
