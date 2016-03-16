@@ -25,7 +25,8 @@
 #' @param verbose If TRUE, provides notification of progress
 #' @param ... other parameters to be passed to polygons, lines (such as lwd,
 #' lty), or points (such as pch, cex)
-#' @return nothing (adds to graphics.device opened with plot_osm_basemap())
+#' @return Range of interpolated values (which may differ from range of 'dat$z'
+#' as submitted, and can be used to scale 'add_colourbar()')
 #'
 #' @note 
 #' Spatial smoothing is *interpolative* and so values beyond the bounding

@@ -47,15 +47,12 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
     # possible negation
     valold <- value
     keyold <- key
-    negation <- FALSE
     if (!is.null (value))
     {
         if (substring (value, 1, 1) == '!')
-        {
             value <- paste0 ("['", key, "'!='", 
                             substring (value, 2, nchar (value)), "']")
-            negation <- TRUE
-        } else if (key == 'name')
+        else if (key == 'name')
             value <- paste0 ("['", key, "'~'", value, "']")
         else
             value <- paste0 ("['", key, "'='", value, "']")

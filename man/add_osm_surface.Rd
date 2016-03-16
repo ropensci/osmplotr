@@ -33,7 +33,8 @@ are plotted in this colour, otherwise they are included in the interpolation
 lty), or points (such as pch, cex)}
 }
 \value{
-nothing (adds to graphics.device opened with plot_osm_basemap())
+Range of interpolated values (which may differ from range of 'dat$z'
+as submitted, and can be used to scale 'add_colourbar()')
 }
 \description{
 Adds a colour-coded surface of spatial objects (polygons, lines, or points
