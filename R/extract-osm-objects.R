@@ -97,6 +97,16 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
     dato <- osmar::as_osmar (dat)
+    # A very important NOTE: It can arise the OSM relations have IDs which
+    # duplicate IDs in OSM ways, even through the two may bear no relationship
+    # at all. This causes the attempt in `osmar::as_sp` to force them to an `sp`
+    # object to crash because 
+    # # Error in validObject(.Object) :
+    # #   invalid class "SpatialLines" object: non-unique Lines ID of slot values
+    # The IDs are actually neither needed not used, so the next line simply
+    # modifies all relation IDs by pre-pending "r" to avoid such problems:
+    for (i in seq (dato$relations))
+        dato$relations [[i]]$id <- paste0 ("r", dato$relations [[i]]$id)
     if (!is.null (key))
         pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     else if (!is.null (value))
