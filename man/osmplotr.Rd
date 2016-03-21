@@ -6,11 +6,76 @@
 \alias{osmplotr-package}
 \title{osmplotr.}
 \description{
-Produces customisable images of OpenStreetMap data.  Extracts OpenStreetMap
-data for specified key-value pairs (e.g.  key='building') using the overpass
-API. Different OSM objects can be plotted in different colours using the
-function add_osm_objects().  The function add_osm_groups()
-enables customised highlighting of selected regions using different graphical
-schemes designed to contrast with surrounding backgrounds.
+Produces customisable images of OpenStreetMap (OSM) data and enables data
+visualisation using OSM objects.  Extracts OpenStreetMap data using the
+overpass API. Contains the following functions, data, and vignettes.
+}
+\section{Data Functions}{
+
+\tabular{ll}{
+'extract_highway'\tab Download a single highway\cr
+'extract_highways'\tab Download a series of named highways\cr
+'extract_osm_objects'\tab Download arbitrary OSM objects\cr
+}
+}
+
+\section{Basic Plotting Functions (without data)}{
+
+\tabular{ll}{
+'add_axes'\tab Overlay longitudinal and latitudinal axes on plot\cr
+'add_colourbar'\tab Overlay a scaled colourbar for data added with
+'add_osm_surface'\cr
+'add_osm_objects'\tab Overlay arbitrary OSM objects\cr
+'make_osm_map'\tab Automate map production with structures defined in
+'osm_structures'\cr
+'osm_structures'\tab Define structures and graphics schemes for automating
+map production \cr
+'plot_osm_basemap'\tab Initiate a plotting device for an OSM map\cr
+}
+}
+
+\section{Advanced Plotting Functions (with data)}{
+
+\tabular{ll}{
+'add_osm_groups'\tab Overlay groups of objects using specified colour
+scheme\cr
+'add_osm_surface'\tab Overlay data surface by interpolating given data \cr
+}
+}
+
+\section{Colour Manipulation Functions}{
+
+\tabular{ll}{
+'adjust_colours'\tab Lighted or darken given colours by specified amount\cr
+'colour_mat'\tab Generate continuous 2D spatial matrix of colours\cr
+}
+}
+
+\section{Other Functions}{
+
+\tabular{ll}{
+'click_map'\tab Return lat-lon coordinates of series of clicked points\cr
+'connect_highways'\tab Connect lists of highways (used in 'highways2polygon')
+\cr
+'get_bbox'\tab return bounding box from input vector\cr
+'highways2polygon'\tab Return a polygonal boundary circularly connecting a
+given series of named highways \cr
+'order_lines'\tab Spatially order highway lines in a given set of OSM data\cr
+}
+}
+
+\section{Data}{
+
+\tabular{ll}{
+'london'\tab OSM Data from a small portion of central London\cr
+}
+}
+
+\section{Vignettes}{
+
+\tabular{ll}{
+'downloading-data'\tab Describes how 'london' data were downloaded\cr
+'making-maps'\tab Main package vignette
+}
 }
 

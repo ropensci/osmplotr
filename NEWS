@@ -1,0 +1,18 @@
+osmplotr v0.1-3
+===============
+
+Changes:
+
+* added 'add_axes' to plot lat-lon axes
+* added 'add_osm_surface' to spatially interpolate continuous surfaces from
+user-defined data
+* added 'add_colourbar' to plot a colourbar legend for 'add_osm_surface'
+* renamed 'group_osm_objects' to 'add_osm_groups' 
+* added 'adjust_colours' to allow colours to be lightened or darkened
+* all usages of 'xylims' (vectors of four components) and 'get_xylims' changed
+to 'bbox' (2-by-2 matrices) for consistency with sp and tmap
+
+osmplotr v0.1-1, 0.1-2
+=================
+
+Published on CRAN
