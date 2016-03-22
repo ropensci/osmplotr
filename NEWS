@@ -11,6 +11,8 @@ user-defined data
 * added 'adjust_colours' to allow colours to be lightened or darkened
 * all usages of 'xylims' (vectors of four components) and 'get_xylims' changed
 to 'bbox' (2-by-2 matrices) for consistency with sp and tmap
+* reduce size of 'london' data (through smaller bbox), with corresponding
+changes in vignettes
 
 osmplotr v0.1-1, 0.1-2
 =================
