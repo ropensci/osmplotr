@@ -7,8 +7,8 @@
 \title{osmplotr.}
 \description{
 Produces customisable images of OpenStreetMap (OSM) data and enables data
-visualisation using OSM objects.  Extracts OpenStreetMap data using the
-overpass API. Contains the following functions, data, and vignettes.
+visualisation using OSM objects.  Extracts data using the overpass API.
+Contains the following functions, data, and vignettes.
 }
 \section{Data Functions}{
 

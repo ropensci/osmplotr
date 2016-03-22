@@ -15,6 +15,8 @@
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
 #' max values, and rows of x and y values.
+#' @param verbose If TRUE, provides notification of progress
+#'
 #' @return A list of 2 components:
 #' \enumerate{
 #'  \item obj: A data frame of sp objects
@@ -22,8 +24,8 @@
 #' }
 #' @export
 
-extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
-                                 extra_pairs=NULL)
+extract_osm_objects <- function (key='building', value=NULL, extra_pairs=NULL, 
+                                 bbox=NULL, verbose=FALSE)
 {
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
@@ -87,8 +89,7 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
 
     warn <- obj <- NULL
 
-    #dat <- RCurl::getURL (query)
-    #dat <- XML::xmlParse (dat)
+    if (verbose) message ("downloading OSM data ... ")
     dat <- httr::GET (query)
     if (dat$status_code != 200)
         warn <- httr::http_status (dat)$message
@@ -96,6 +97,7 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
     dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
+    if (verbose) message ("converting OSM data to omsar format")
     dato <- osmar::as_osmar (dat)
     # A very important NOTE: It can arise the OSM relations have IDs which
     # duplicate IDs in OSM ways, even through the two may bear no relationship
@@ -103,10 +105,11 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
     # object to crash because 
     # # Error in validObject(.Object) :
     # #   invalid class "SpatialLines" object: non-unique Lines ID of slot values
-    # The IDs are actually neither needed not used, so the next line simply
+    # The IDs are actually neither needed not used, so the next lines simply
     # modifies all relation IDs by pre-pending "r" to avoid such problems:
     for (i in seq (dato$relations))
-        dato$relations [[i]]$id <- paste0 ("r", dato$relations [[i]]$id)
+        if (nrow (dato$relations [[i]]) > 0)
+            dato$relations [[i]]$id <- paste0 ("r", dato$relations [[i]]$id)
     if (!is.null (key))
         pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     else if (!is.null (value))
@@ -119,6 +122,7 @@ extract_osm_objects <- function (key='building', value=NULL, bbox=NULL,
         if (value == 'tree') # no pids needed
             spts <- TRUE
 
+    if (verbose) message ("converting osmar data to sp format")
     if (spts)
         obj <- osmar::as_sp (dato, 'points')
     else

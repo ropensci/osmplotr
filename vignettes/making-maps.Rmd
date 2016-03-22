@@ -108,7 +108,7 @@ length (dat_B)
 length (dat_H)
 length (dat_T)
 ```
-... 6,209 building polygons, 4,524 highway lines, and 3,182 trees.
+... 6,215 building polygons, 4,524 highway lines, and 3,182 trees.
 
 As illustrated above, plotting maps requires first making a basemap with a
 specified background colour. The basemap also defines the dimensions of the
@@ -729,7 +729,7 @@ This procedure can not be guaranteed failsafe owing both to the inherently
 unpredictable nature of OpenStreetMap, as well as to the unknown relationships
 between named highways. To enable problematic cases to be examined and hopefully
 resolved, `highways2polygons` has a `plot` option:
-```{r, fig.width=7, message=FALSE, eval=TRUE}
+```{r highways2polygon, fig.width=7, message=FALSE, eval=TRUE}
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
 highway_list <- highways2polygon (highways=highways, bbox=bbox, plot=TRUE)

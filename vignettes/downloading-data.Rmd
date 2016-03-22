@@ -49,14 +49,15 @@ london <- list ()
 for (i in 1:(nrow (structs) - 1)) 
 {
     dat <- extract_osm_objects (key=structs$key [i], value=structs$value [i],
-                                bbox=bbox)$obj
+                                bbox=bbox)
     if (!is.null (dat$warn))
         warning (dat$warn)
     fname <- paste0 ('dat_', structs$suffix [i])
-    assign (fname, dat$dat)
+    assign (fname, dat$obj)
     london [[i]] <- get (fname)
     names (london)[i] <- fname
     rm (list=c(fname))
+    cat (i, "\n")
 }
 ```
 

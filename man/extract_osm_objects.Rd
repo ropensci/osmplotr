@@ -4,8 +4,8 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(key = "building", value = NULL, bbox = NULL,
-  extra_pairs = NULL)
+extract_osm_objects(key = "building", value = NULL, extra_pairs = NULL,
+  bbox = NULL, verbose = FALSE)
 }
 \arguments{
 \item{key}{OSM key to search for. Useful keys include 'building',
@@ -16,12 +16,14 @@ necessarily return results.}
 \item{value}{OSM value to match to key. If NULL, all keys will be returned.
 Negation is specified by '!value'.}
 
+\item{extra_pairs}{A list of additional key-value pairs to be passed
+to the overpass API.}
+
 \item{bbox}{the bounding box within which all key-value objects should be
 downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
 max values, and rows of x and y values.}
 
-\item{extra_pairs}{A list of additional key-value pairs to be passed
-to the overpass API.}
+\item{verbose}{If TRUE, provides notification of progress}
 }
 \value{
 A list of 2 components:
