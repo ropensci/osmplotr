@@ -70,7 +70,7 @@ graphics.off ()
 add_osm_objects (dat_B, col="gray40")
 ```
 ```{r map2, eval=TRUE, echo=FALSE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map2.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map2.png", width=200)
 add_osm_objects (dat_B, col="gray40")
 graphics.off ()
 ```
@@ -121,7 +121,7 @@ overlaid on basemaps using `add_osm_objects`.
 bbox <- slot (dat_B, "bbox")
 ```
 ```{r map3, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map3.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map3.png", width=200)
 add_osm_objects (dat_B, col="gray40")
 add_osm_objects (dat_H, col="gray70")
 graphics.off ()
@@ -131,7 +131,7 @@ graphics.off ()
 Other graphical parameters can also be passed to `add_osm_objects`, such as
 border colours or line widths and types. For example,
 ```{r map4, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map4.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map4.png", width=200)
 add_osm_objects (dat_B, col="gray40", border="orange", lwd=0.2)
 graphics.off ()
 ```
@@ -165,7 +165,7 @@ length (dat_BR)
 There are only 40 buildings in this part of central London marked as
 'residential'.
 ```{r map5, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map5.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map5.png", width=200)
 add_osm_objects (dat_BR, col="gray40")
 add_osm_objects (dat_HP, col="gray70")
 graphics.off ()
@@ -185,7 +185,7 @@ dat_H <- extract_osm_objects (key="highway", value="!primary", bbox=bbox)$obj
 dat_H <- london$dat_H
 ```
 ```{r map6, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map6.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map6.png", width=200)
 add_osm_objects (dat_H, col="gray50")
 add_osm_objects (dat_HP, col="gray80")
 graphics.off ()
@@ -201,7 +201,7 @@ dat_BNR <- extract_osm_objects (key="building", value="!residential",
 dat_BNR <- london$dat_BNR
 ```
 ```{r map7, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map7.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map7.png", width=200)
 add_osm_objects (dat_BR, col="gray80")
 add_osm_objects (dat_BNR, col="gray40")
 graphics.off ()
@@ -234,7 +234,7 @@ dat_ST <- london$dat_ST
 ```
 ```{r map8, eval=TRUE}
 bbox <- get_bbox (c (-0.118, 51.504, -0.110, 51.507))
-plot_osm_basemap (bbox=bbox, bg="gray95", file="map8.png", width=480)
+plot_osm_basemap (bbox=bbox, bg="gray95", file="map8.png", width=200)
 add_osm_objects (dat_H, col="gray80")
 add_osm_objects (dat_HP, col="gray60", lwd=4)
 add_osm_objects (dat_RFH, col="orange", border="red", lwd=3)
@@ -325,7 +325,7 @@ map may then be produced through submitting these structures, and any
 accompanying data, to `make_osm_map`:
 ```{r map9, eval=TRUE}
 osm_data <- make_osm_map (osm_data=london, structures=structures, 
-                          dat_prefix="dat_", file="map9.png")
+                          dat_prefix="dat_", file="map9.png", width=200)
 graphics.off ()
 ```
 ![map9](map9.png)
@@ -338,7 +338,8 @@ previous bounding box to the same call gives:
 ```{r map10, eval=TRUE}
 bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
 osm_data <- make_osm_map (osm_data=london, structures=structures, 
-                          dat_prefix="dat_", bbox=bbox, file="map10.png")
+                          dat_prefix="dat_", bbox=bbox, file="map10.png",
+                          width=200)
 graphics.off ()
 ```
 ![map10](map10.png)
@@ -379,7 +380,7 @@ dat_B <- spRbind (london$dat_BR [indx,], london$dat_BNR)
 pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
                              c (51.510, 51.510, 51.516, 51.516)))
 bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map11.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map11.png", width=200)
 add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40",
                    colmat=FALSE) 
 graphics.off ()
@@ -396,14 +397,14 @@ should be precisely bisected by a group boundary (`boundary=0`). The two options
 in addition to the above default of `boundary=-1` produce the following maps. 
 
 ```{r map12, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map12.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map12.png", width=200)
 add_osm_groups (dat_B, pts, col="orange", col_extra="gray40", colmat=FALSE,
                    boundary=0)
 graphics.off ()
 ```
 ![map12](map12.png)
 ```{r map13, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map13.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map13.png", width=200)
 add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 graphics.off ()
@@ -420,7 +421,7 @@ pts <- sp::SpatialPoints (cbind (c (-0.117, -0.122, -0.122, -0.117),
                                  c (51.512, 51.512, 51.518, 51.518)))
 ```
 ```{r map14, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map14.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map14.png", width=200)
 add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 col_park_in <- rgb (50, 255, 50, maxColorValue=255)
@@ -438,7 +439,7 @@ such gaps can nevertheless be avoided simply by initially plotting underlying
 layers prior to grouping objects:
 
 ```{r map15, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map15.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map15.png", width=200)
 add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
                    colmat=FALSE, boundary=1)
 add_osm_objects (london$dat_P, col=col_park_out)
@@ -455,7 +456,7 @@ graphics.off ()
 A particularly effective way to highlight particular areas is through using dark
 colours upon otherwise light coloured maps.
 ```{r map16, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray95", file="map16.png")
+plot_osm_basemap (bbox=bbox, bg="gray95", file="map16.png", width=200)
 add_osm_groups (dat_B, groups=pts, col="gray40", col_extra="gray85",
                    colmat=FALSE, boundary=1)
 add_osm_groups (dat_H, groups=pts, col="gray20", col_extra="gray70",
@@ -482,7 +483,7 @@ become difficult.
 `osmplotr` offers a convenient way to allocate systematiclly distinct colours to
 spatially distinct groups with the `colour_mat` function.
 
-```{r, fig.width=5}
+```{r, fig.width=4}
 plot.new ()
 cmat <- colour_mat (plot=TRUE)
 graphics.off ()
@@ -523,7 +524,7 @@ groups <- lapply (groups, function (i)
 ```
 The `ngroups` can then simply be plotted as follows.
 ```{r map17, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map17.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map17.png", width=200)
 add_osm_groups (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
                    colmat=TRUE, lwd=3)
 graphics.off ()
@@ -535,7 +536,7 @@ also be passed directly to `add_osm_groups` enabling, for example, the
 colours in the previous plot to be rotated by 90 degrees.
 
 ```{r map18, eval=TRUE}
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map18.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map18.png", width=200)
 add_osm_groups (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
                    colmat=TRUE, rotate=90, lwd=3)
 graphics.off ()
@@ -575,7 +576,7 @@ col_extra_H <- "gray20"
 
 ```{r, echo=FALSE, eval=TRUE}
 plot_osm_basemap (bbox=bbox, bg="gray20")
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map19.png")
+plot_osm_basemap (bbox=bbox, bg="gray20", file="map19.png", width=200)
 add_osm_objects (london$dat_P, col=col_G)
 add_osm_objects (london$dat_G, col=col_G)
 add_osm_objects (london$dat_N, col=col_G)
@@ -650,7 +651,7 @@ structures <- c ("amenity", "grass", "park", "natural")
 structs <- osm_structures (structures=structures, col_scheme="dark")
 bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52)) # back to smaller bbox
 junk <- make_osm_map (filename="map20.png", bbox=bbox, 
-                      osm_data=london, structures=structs)
+                      osm_data=london, structures=structs, width=200)
 graphics.off ()
 ```
 ![map20](map20.png)
@@ -733,7 +734,7 @@ This procedure can not be guaranteed failsafe owing both to the inherently
 unpredictable nature of OpenStreetMap, as well as to the unknown relationships
 between named highways. To enable problematic cases to be examined and hopefully
 resolved, `highways2polygons` has a `plot` option:
-```{r highways2polygon, fig.width=7, message=FALSE, eval=TRUE}
+```{r highways2polygon, fig.width=4, message=FALSE, eval=TRUE}
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
 bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
