@@ -52,7 +52,7 @@ dat_T <- london$dat_T
 ```
 1. Specify the bounding box for the desired region
 ```{r}
-bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52))
+bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
 ```
 2. Download the desired data---in this case, all building perimeters.
 ```{r, eval=FALSE}
@@ -108,7 +108,7 @@ length (dat_B)
 length (dat_H)
 length (dat_T)
 ```
-... 6,215 building polygons, 4,524 highway lines, and 3,182 trees.
+... 2,178 building polygons, 2,139 highway lines, and 1,310 trees.
 
 As illustrated above, plotting maps requires first making a basemap with a
 specified background colour. The basemap also defines the dimensions of the
@@ -162,7 +162,7 @@ dat_HP <- london$dat_HP
 ```{r}
 length (dat_BR)
 ```
-There are only 124 buildings in this part of central London marked as
+There are only 40 buildings in this part of central London marked as
 'residential'.
 ```{r map5, eval=TRUE}
 plot_osm_basemap (bbox=bbox, bg="gray20", file="map5.png")
@@ -336,7 +336,7 @@ objects include the highways which extend notably further to the north and west
 than the actual bounding box used to extract these highways. Passing the
 previous bounding box to the same call gives:
 ```{r map10, eval=TRUE}
-bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52))
+bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
 osm_data <- make_osm_map (osm_data=london, structures=structures, 
                           dat_prefix="dat_", bbox=bbox, file="map10.png")
 graphics.off ()
@@ -376,9 +376,9 @@ indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
 dat_B <- spRbind (london$dat_BR [indx,], london$dat_BNR)
 ```
 ```{r map11, eval=TRUE}
-pts <- sp::SpatialPoints (cbind (c (-0.120, -0.135, -0.135, -0.120),
+pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
                              c (51.510, 51.510, 51.516, 51.516)))
-bbox <- get_bbox (c (-0.14, 51.505, -0.11, 51.52))
+bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
 plot_osm_basemap (bbox=bbox, bg="gray20", file="map11.png")
 add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40",
                    colmat=FALSE) 
@@ -416,9 +416,8 @@ following map is created with buildings plotting *inclusively* within the group,
 and parks bisected by the boundary.
 
 ```{r}
-bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52)) # zoom out again
-pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
-                             c (51.502, 51.502, 51.515, 51.515)))
+pts <- sp::SpatialPoints (cbind (c (-0.117, -0.122, -0.122, -0.117),
+                                 c (51.512, 51.512, 51.518, 51.518)))
 ```
 ```{r map14, eval=TRUE}
 plot_osm_basemap (bbox=bbox, bg="gray20", file="map14.png")
@@ -438,10 +437,6 @@ which the polygons are defined.  Because plotting is progressively overlaid,
 such gaps can nevertheless be avoided simply by initially plotting underlying
 layers prior to grouping objects:
 
-```{r}
-pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
-                             c (51.502, 51.502, 51.515, 51.515)))
-```
 ```{r map15, eval=TRUE}
 plot_osm_basemap (bbox=bbox, bg="gray20", file="map15.png")
 add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
@@ -579,6 +574,7 @@ col_extra_H <- "gray20"
 ```
 
 ```{r, echo=FALSE, eval=TRUE}
+plot_osm_basemap (bbox=bbox, bg="gray20")
 plot_osm_basemap (bbox=bbox, bg="gray20", file="map19.png")
 add_osm_objects (london$dat_P, col=col_G)
 add_osm_objects (london$dat_G, col=col_G)
@@ -596,6 +592,13 @@ add_osm_groups (london$dat_HP, groups=groups, boundary=0,
 graphics.off ()
 ```
 ![map19](map19.png)
+
+Note that this map was generated with the `london` data provided with
+`osmplotr`. The full polygons surrounding the named areas can be seen by
+repeating the extraction of data with a larger bounding box:
+```{r}
+bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) 
+```
 
 ### 6.1 The highways2polygon function
 
@@ -645,6 +648,7 @@ following case, these data are not altered.)
 ```{r, eval=TRUE}
 structures <- c ("amenity", "grass", "park", "natural")
 structs <- osm_structures (structures=structures, col_scheme="dark")
+bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52)) # back to smaller bbox
 junk <- make_osm_map (filename="map20.png", bbox=bbox, 
                       osm_data=london, structures=structs)
 graphics.off ()
@@ -732,6 +736,7 @@ resolved, `highways2polygons` has a `plot` option:
 ```{r highways2polygon, fig.width=7, message=FALSE, eval=TRUE}
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
+bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
 highway_list <- highways2polygon (highways=highways, bbox=bbox, plot=TRUE)
 ```
 The plot depicts each highway in a different colour, along with numbers at start
