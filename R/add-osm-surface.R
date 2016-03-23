@@ -62,6 +62,10 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
     if (!dim (dat)[2] >= 3)
         stop ('data must have at least 3 columns')
 
+    nsteps <- 2 # for verbose output
+    if (!is.null (bg))
+        nsteps <- 3
+
     # Spatial interpolation.
     usr <- par ("usr") # used below
     din <- floor (par ("din") * 72)
@@ -69,7 +73,7 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
     y <- dat [,2]
     marks <- dat [,3]
     xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range(y), marks=marks)
-    if (verbose) cat ("1/3: Interpolating surface ... ")
+    if (verbose) cat ("1/", nsteps, ": Interpolating surface ... ", sep="")
     if (method == 'idw')
         z <- spatstat::idw (xy, at="pixels", dimyx=din)$v
     else
@@ -115,7 +119,7 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
         return (ci)
     }
 
-    if (verbose) cat ("3/3: Drawing objects on map ... ")
+    if (verbose) cat ("3/", nsteps, ": Drawing objects on map ... ", sep="")
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
         plotfunPtsColour <- function (i, dx=dx, dy=dy, z=z, border=border, 
