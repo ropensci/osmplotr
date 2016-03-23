@@ -65,6 +65,7 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
     nsteps <- 2 # for verbose output
     if (!is.null (bg))
         nsteps <- 3
+    n <- 2 # for verbose output at final step
 
     # Spatial interpolation.
     usr <- par ("usr") # used below
@@ -98,6 +99,7 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
         y1 <- rep (seq (din [2]), each=din [1])
         z [which (indx == 0)] <- NA
         if (verbose) cat ("done\n")
+        n <- n + 1 # for verbose output only
     }
 
 
@@ -119,7 +121,7 @@ add_osm_surface <- function (obj=obj, dat=NULL, method="idw", bg=NULL,
         return (ci)
     }
 
-    if (verbose) cat ("3/", nsteps, ": Drawing objects on map ... ", sep="")
+    if (verbose) cat (n, "/", nsteps, ": Drawing objects on map ... ", sep="")
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
         plotfunPtsColour <- function (i, dx=dx, dy=dy, z=z, border=border, 
