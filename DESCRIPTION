@@ -21,7 +21,8 @@ Suggests: knitr,
     devtools,
     maptools,
     RColorBrewer,
-    wesanderson
+    wesanderson,
+    testthat
 License: GPL-3
 URL: https://github.com/mpadge/osmplotr
 LazyData: true

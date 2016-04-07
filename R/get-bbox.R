@@ -14,6 +14,13 @@
 
 get_bbox <- function (latlon)
 {
+    if (missing (latlon))
+        stop ("latlon must be supplied to bbox")
+    if (!is.numeric (latlon))
+        stop ("latlon is not numeric")
+    if (length (latlon) < 4)
+        stop ("latlon must have length = 4")
+
     if (latlon [1] > latlon [3]) latlon [c (1, 3)] <- latlon [c (3, 1)]
     if (latlon [2] > latlon [4]) latlon [c (2, 4)] <- latlon [c (4, 2)]
 

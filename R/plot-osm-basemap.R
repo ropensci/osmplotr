@@ -28,12 +28,24 @@
 #' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
 #' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
 
-plot_osm_basemap <- function (bbox=bbox, filename=NULL, width=640,
+plot_osm_basemap <- function (bbox, filename=NULL, width=640,
                               structures=NULL, bg='gray20', 
                               graphic.device='png', ...)
 {
+    if (missing (bbox))
+        stop ("bbox must be supplied")
+    if (!is.numeric (bbox))
+        stop ("bbox is not numeric")
+    if (length (bbox) < 4)
+        stop ("bbox must have length = 4")
+
     if (!is.null (structures))
         bg = structure$cols [which (structures$structure == 'background')]
+    if (!(is.character (bg) | is.numeric (bg)))
+    {
+        warning ("bg will be coerced to character")
+        bg <- as.character (bg)
+    }
 
     if (!is.null (filename))
         if (nchar (filename) == 0)

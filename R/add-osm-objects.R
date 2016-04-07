@@ -17,10 +17,17 @@
 #' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
 #' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
 
-add_osm_objects <- function (obj=obj, col='gray40', border=NA, ...)
+add_osm_objects <- function (obj, col='gray40', border=NA, ...)
 {
     if (is.null (dev.list ()))
         stop ('add_osm_objects can only be called after plot_osm_basemap')
+    if (missing (obj))
+        stop ("no object passed to add_osm_objects")
+    if (!(is.character (col) | is.numeric (col)))
+    {
+        warning ("col will be coerced to character")
+        col <- as.character (col)
+    }
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
@@ -52,6 +59,7 @@ add_osm_objects <- function (obj=obj, col='gray40', border=NA, ...)
     {
         xy <- slot (obj, 'coords')
         points (xy[,1], xy[,2], col=col, ...)
-    }
+    } else
+        stop ("obj is not a spatial class")
 }
 
