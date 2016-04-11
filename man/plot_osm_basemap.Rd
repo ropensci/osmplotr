@@ -4,8 +4,8 @@
 \alias{plot_osm_basemap}
 \title{plot_osm_basemap}
 \usage{
-plot_osm_basemap(bbox = bbox, filename = NULL, width = 640,
-  structures = NULL, bg = "gray20", graphic.device = "png", ...)
+plot_osm_basemap(bbox, filename = NULL, width = 640, structures = NULL,
+  bg = "gray20", graphic.device = "png", ...)
 }
 \arguments{
 \item{bbox}{bounding box (Latitude-longitude range) to be plotted.  A 2-by-2

@@ -4,7 +4,7 @@
 \alias{add_osm_objects}
 \title{add_osm_objects}
 \usage{
-add_osm_objects(obj = obj, col = "gray40", border = NA, ...)
+add_osm_objects(obj, col = "gray40", border = NA, ...)
 }
 \arguments{
 \item{obj}{an sp SPDF or SLDF (list of polygons or lines) returned by
