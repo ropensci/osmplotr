@@ -4,22 +4,34 @@
 \alias{add_axes}
 \title{add_axes}
 \usage{
-add_axes(axis_col = "white", axis_ps = 8, axis_pos = c(0.01, 0.03))
+add_axes(map, colour = "black", axis_pos = c(0.02, 0.03), alpha = 0.5,
+  fontsize = 3, fontface, fontfamily)
 }
 \arguments{
-\item{axis_col}{Colour of axis (determines colour of all elements: lines,
+\item{map}{A ggplot2 object to which the axes are to be added}
+
+\item{colour}{Colour of axis (determines colour of all elements: lines,
 ticks, and labels)}
 
-\item{axis_ps}{Point size of axis font (default 8)}
+\item{axis_pos}{Positions of axes and labels relative to entire plot device}
 
-\item{axis_pos}{Relative positions of axes and labels (default=c(0.01,0.03))}
+\item{alpha}{alpha value for semi-transparent background surrounding axes and
+labels (lower values increase transparency)}
+
+\item{fontsize}{Size of axis font}
+
+\item{fontface}{Fontface for axis labels (1:4=plain,bold,italic,bold-italic)}
+
+\item{fontfamily}{Family of axis font (for example, 'Times')}
 }
 \description{
 Adds axes to the internal region of an OSM plot.
 }
 \examples{
-plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
-add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
-add_axes ()
+bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- add_osm_objects (map, london$dat_BNR, col="gray40")
+map <- add_axes (map)
+print (map)
 }
 

@@ -4,23 +4,26 @@
 \alias{add_colourbar}
 \title{add_colorbar}
 \usage{
-add_colourbar(len = c(0.1, 0.9), width = 0.02, side = 1, cols = NULL,
-  zlims = c(0, 1), transp = 0.4, tcol = "black", ps = 8)
+add_colourbar(map, barwidth = 0.02, barlength = 0.7, zlims, cols,
+  vertical = TRUE, alpha = 0.4, text_col = "black", fontsize = 3)
 }
 \arguments{
-\item{len}{Relative positions of start and end of colourbar}
+\item{map}{A ggplot2 object to which the colourbar is to be added}
 
-\item{width}{Relative width}
+\item{barwidth}{Relative width of the bar (perpendicular to its direction),
+either a single number giving distance from right or upper margin, or two
+numbers giving left/right or lower/upper limits.}
 
-\item{side}{(1,2,3,4) for colourbar (below, left, above, right) of map. (Not
-yet implemented.)}
-
-\item{cols}{Vector of colours}
+\item{barlength}{Relative length of the bar (parallel to its direction),
+either a signle number giving total length of centred bar, or two numbers
+giving lower/upper or left/right limits.}
 
 \item{zlims}{Vector of (min,max) values for scale of colourbar. These should
 be the values returned from add_osm_surface ().}
 
-\item{transp}{Transparency level of region immediately surrounding colourbar,
+\item{cols}{Vector of colours}
+
+\item{alpha}{Transparency level of region immediately surrounding colourbar,
 including behind text. Lower values are more transparent.}
 
 \item{tcol}{Colour of text, tick marks, and lines on colourbar}
@@ -32,9 +35,32 @@ Adds a colourbar to an existing map. Intended to be used in combination with
 add_osm_surface (). At present, only plots on right side of map.
 }
 \examples{
-plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
-add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
-add_axes ()
-add_colourbar (cols=heat.colors(20), tcol="white", side=4)
+bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+# Align volcano data to lat-lon range of bbox
+dv <- dim (volcano)
+x <- seq (bbox [1,1], bbox [1,2], length.out=dv [1])
+y <- seq (bbox [2,1], bbox [2,2], length.out=dv [2])
+dat <- data.frame (
+                  x=rep (x, dv [2]),
+                  y=rep (y, each=dv [1]),
+                  z=as.numeric (volcano)
+                  )
+map <- add_osm_surface (map, obj=london$dat_BNR, dat=dat,
+                        cols=heat.colors (30))
+map <- add_axes (map)
+# Note colours of colourbar can be artibrarily set, and need not equal those
+# passed to 'add_osm_surface'
+map <- add_colourbar (map, zlims=range (volcano), cols=heat.colors(100),
+                      text_col="black")
+print (map)
+
+# Horizontal colourbar shifted away from margins:
+map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- add_osm_surface (map, obj=london$dat_BNR, dat=dat,
+                        cols=heat.colors (30))
+map <- add_colourbar (map, zlims=range (volcano), cols=heat.colors(100),
+                      barwidth=c(0.1,0.15), barlength=c(0.5, 0.9), vertical=FALSE)
+print (map)
 }
 

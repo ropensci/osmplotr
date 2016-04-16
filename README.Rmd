@@ -3,6 +3,8 @@
 [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 
+(travis broken during major upgrade---will be fixed shortly ...)
+
 ![map1](./figure/map1.png)
 
 R package to produce visually impressive customisable images of urban areas from
@@ -12,9 +14,8 @@ for a small portion of central London, U.K., and was made with the following
 easy steps:
 
 ```{r, echo=FALSE, message=FALSE}
-require (devtools)
 setwd ("..")
-load_all ("osmplotr")
+devtools::load_all ("osmplotr")
 setwd ("./osmplotr")
 ```
 

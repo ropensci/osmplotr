@@ -2,31 +2,40 @@
 #'
 #' Plots spatially distinct groups of osm objects in different colours. 
 #'
+#' @param map A ggplot2 object to which the grouped objects are to be added
 #' @param obj An sp SPDF or SLDF (list of polygons or lines) returned by
 #' extract_osm_objects()
 #' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group
 #' @param make_hull Either a single boolean value or a vector of same length as
-#' groups specifying whether a convex hull should be constructed around the
-#' group (TRUE), or whether they group already defines a hull (convex or
+#' groups specifying whether convex hulls should be constructed around all
+#' groups (TRUE), or whether the group already defines a hull (convex or
 #' otherwise; FALSE).
 #' @param boundary (negative, 0, positive) values define whether the boundary of
 #' groups should (exlude, bisect, include) objects which straddle the precise
-#' boundary. (Has no effect if 'col_extra' is NULL.)
+#' boundary. (Has no effect if 'bg' is given)
 #' @param cols Either a vector of >= 4 colours passed to colour_mat() (if
 #' 'colmat=T') to arrange as a 2-D map of visually distinct colours (default
 #' uses rainbow colours), or (if 'colmat=F'), a vector of the same length as
 #' groups specifying individual colours for each.
-#' @param col_extra If NULL, then any polygons *NOT* within the convex hulls are
-#' assigned to nearest group and coloured accordingly (and boundary has no
-#' effect); if NOT NULL, then any polygons not within groups are coloured this
-#' colour.
+#' @param bg If given, then any objects not within groups are coloured this
+#' colour, otherwise (if not given) they are assigned to nearest group and
+#' coloured accordingly. ('boundary' has no effect in this latter case.)
+#' @param size Size argument passed to ggplot2 (polygon, path, point) functions:
+#' determines width of lines for (polygon, line), and sizes of points.
+#' Respective defaults are (0, 0.5, 0.5).
+#' @param shape Shape of points or lines (the latter passed as 'linetype'): see
+#' ?ggplot2::shape
+#' @param borderWidth If given, draws convex hull borders around entire groups
+#' in same colours as groups (try values around 1-2)
 #' @param colmat If TRUE generates colours according to colour_mat(), otherwise
 #' the colours of groups are specified directly by the vector of cols.
 #' @param rotate Passed to colour_mat() to rotate colours by the specified
 #' number of degrees clockwise.
-#' @param lwd Width of boundary line (0 for no line)
-#' @return nothing (adds to graphics.device opened with plot_osm_basemap())
+#' @param size Width of lines for SpatialLines objects; width of boundary lines
+#' for SpatialPolygon objects (in which case default = 0); or size of
+#' SpatialPoints.
+#' @return Modified version of map with groups added
 #' @export
 #'
 #' @section Note:
@@ -36,25 +45,77 @@
 #' bigger group are included.
 #'
 #' @section Warning:
-#' Bisecting objects along group boundaries ('boundary=0') can take
-#' considerably longer than simple allocation of objects either side of
-#' boundary.
+#' Bisecting objects along group boundaries ('boundary=0') can take longer than
+#' simple allocation of objects either side of boundary.
+#'
+#' @examples
+#' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+#' # Define a function to easily generate a basemap
+#' bmap <- function ()
+#' {
+#'     map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+#'     map <- add_osm_objects (map, london$dat_HP, col="gray70", size=1)
+#'     add_osm_objects (map, london$dat_T, col="green")
+#' }
+#' 
+#' # Highlight a single region using all objects lying partially inside the
+#' # boundary (via the boundary=1 argument)
+#' pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
+#'                                  c (51.505, 51.505, 51.515, 51.515)))
+#' map <- bmap ()
+#' map <- add_osm_groups (map, london$dat_BNR, groups=pts, cols="gray90",
+#'                        bg="gray40", boundary=1)
+#' map <- add_osm_groups (map, london$dat_H, groups=pts, cols="gray80",
+#'                        bg="gray30", boundary=1)
+#' print (map)
+#' 
+#' # Function to generate random regions
+#' get_groups <- function (ngroups=6)
+#' {
+#'     x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
+#'     y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
+#'     groups <- cbind (x, y)
+#'     groups <- apply (groups, 1, function (i) 
+#'                      sp::SpatialPoints (matrix (i, nrow=1, ncol=2)))
+#'     # Then create small rectangles around each pt
+#'     lapply (groups, function (i)
+#'             {
+#'                 x <- sp::coordinates (i) [1] + c (-0.002, 0.002, 0.002,
+#'                                                   -0.002)
+#'                 y <- sp::coordinates (i) [2] + c (-0.002, -0.002, 0.002,
+#'                                                   0.002)
+#'                 sp::SpatialPoints (cbind (x, y))
+#'             })
+#' }
+#' groups <- get_groups (6)
+#' map <- bmap ()
+#' cols <- rainbow (length (groups))
+#' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
+#'                        colmat=FALSE, make_hull=FALSE)
+#' cols <- adjust_colours (cols, -0.2)
+#' map <- add_osm_groups (map, obj=london$dat_H, groups=groups, cols=cols,
+#'                        colmat=FALSE, make_hull=FALSE)
+#' print (map)
+#' 
+#' # Highlight convex hulls containing groups:
+#' map <- bmap ()
+#' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
+#'                        colmat=FALSE, make_hull=FALSE, borderWidth=2)
+#' print (map)
 
-add_osm_groups <- function (obj=obj, groups=NULL, make_hull=FALSE,
-                               boundary=-1, cols=NULL, col_extra=NULL,
-                               colmat=TRUE, rotate=NULL, lwd=0)
+add_osm_groups <- function (map, obj, groups, make_hull=FALSE,
+                               boundary=-1, cols, bg, size, shape, borderWidth,
+                               colmat=TRUE, rotate, lwd=0)
 {
-    if (is.null (dev.list ()))
-        stop ('add_osm_groups can only be called after plot_osm_basemap')
-
-    if (is.na (col_extra))
-        col_extra <- NULL
-    if (is.null (groups))
+    if (missing (groups))
     {
         warning (paste0 ('No groups defined in add_osm_groups; ',
                          'passing to add_osm_objects'))
-        if (is.null (cols))
-            cols <- col_extra
+        if (missing (cols))
+            if (missing (bg))
+                stop ("either 'cols' or 'bg' must be minimally given")
+            else
+            cols <- bg
         add_osm_objects (obj, col=cols [1])
         return ()
     } else if (class (groups) != 'list')
@@ -72,21 +133,26 @@ add_osm_groups <- function (obj=obj, groups=NULL, make_hull=FALSE,
 
     stopifnot (length (make_hull) == 1 | length (make_hull) == length (groups))
 
-    if (length (groups) == 1 & is.null (col_extra))
-        col_extra <- 'gray40'
+    if (length (groups) == 1)
+    {
+        colmat <- FALSE
+        if (missing (bg))
+        {
+            message (paste0 ('plotting one group only makes sense with bg;',
+                             ' defaulting to gray40'))
+            bg <- 'gray40'
+        }
+    }
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
-    {
         objtxt <- c ('polygons', 'Polygons')
-        plotfun <- function (i, col=col) polypath (i, border=NA, col=col)
-    } else if (class (obj) == 'SpatialLinesDataFrame')
-    {
+    else if (class (obj) == 'SpatialLinesDataFrame')
         objtxt <- c ('lines', 'Lines')
-        plotfun <- function (i, col=col) lines (i, col=col)
-    } else
+    else
         stop ('obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame')
+    # ... because points not yet implemented
 
-    # Determine whether any groups are holes
+    # Determine whether any groups are holes - not implemented at present
     if (length (groups) > 1)
     {
         holes <- rep (FALSE, length (groups))
@@ -134,17 +200,17 @@ add_osm_groups <- function (obj=obj, groups=NULL, make_hull=FALSE,
             cols <- rainbow (length (groups))
         else if (length (cols) < length (groups))
             cols <- rep (cols, length.out=length (groups))
-        if (length (groups) == 1 & is.null (col_extra))
+        if (length (groups) == 1 & missing (bg))
         {
-            warning ('There is only one group; using default col_extra')
+            warning ('There is only one group; using default bg')
             if (is.null (cols))
             {
                 cols <- 'red'
-                col_extra <- 'gray40'
+                bg <- 'gray40'
             } else if (cols [1] != 'gray40')
-                col_extra <- 'gray40'
+                bg <- 'gray40'
             else
-                col_extra <- 'white'
+                bg <- 'white'
         }
     } else
     {
@@ -163,12 +229,14 @@ add_osm_groups <- function (obj=obj, groups=NULL, make_hull=FALSE,
     xmn <- sapply (xy_mn, function (x) x [1])
     ymn <- sapply (xy_mn, function (x) x [2])
 
-    usr <- par ('usr')
+    #usr <- par ('usr')
+    xrange <- map$coordinates$limits$x
+    yrange <- map$coordinates$limits$y
     boundaries <- list ()
     xy_list <- list () 
     # The following loop constructs:
     # 1.  xy_list list for centroids of each object in each group; used to
-    # reallocate stray objects if is.null (col_extra)
+    # reallocate stray objects if missing (bg)
     # 2. boundaries list of enclosing polygons, creating convex hulls if
     # necessary.
     for (i in seq (groups))
@@ -185,7 +253,7 @@ add_osm_groups <- function (obj=obj, groups=NULL, make_hull=FALSE,
         else
             bdry <- sp::coordinates (groups [[i]])
         bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
-        # The next 4 lines are only used if is.null (col_extra)
+        # The next 4 lines are only used if missing (bg)
         #indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
         indx <- sapply (xy_mn, function (x)
                         sp::point.in.polygon (x [1], x [2], 
@@ -198,34 +266,27 @@ add_osm_groups <- function (obj=obj, groups=NULL, make_hull=FALSE,
         if (colmat)
         {
             # Then get colour from colour.mat
-            xi <- ceiling (ncols * (mean (xmn [indx]) - usr [1]) / 
-                           (usr [2] - usr [1]))
-            yi <- ceiling (ncols * (mean (ymn [indx]) - usr [3]) / 
-                           (usr [4] - usr [3]))
+            xi <- ceiling (ncols * (mean (xmn [indx]) - xrange [1]) /
+                           diff (xrange))
+            yi <- ceiling (ncols * (mean (ymn [indx]) - yrange [1]) /
+                           diff (yrange))
             cols [i] <- cmat [xi, yi]
         }
     }
 
     # Extract coordinates of each item and cbind memberships for each group.
     # NOTE that pinpooly returns (0,1,2) for (not, on, in) boundary
-    # while point.in.polygon returns (0,1,2-3) for (not, in, on)
-    # pinpoly (poly, pts), but point.in.polygon (pt.x, pt.y, pol.x, pol.y).
-    # pinpoly had to be ditched because spatialkernel caused an error:
-    # 'package ... eventually depends on the the following package which
-    # restricts usage'
     coords <- lapply (slot (obj, objtxt [1]),  function (x)
                       slot (slot (x, objtxt [2]) [[1]], 'coords'))
     coords <- lapply (coords, function (i)
                       {
-                          #pins <- lapply (boundaries, function (j)
-                          #                spatialkernel::pinpoly (j, i))
                           pins <- lapply (boundaries, function (j)
                                           sp::point.in.polygon (i [,1], i [,2],
                                                                 j [,1], j [,2]))
                           pins <- do.call (cbind, pins)
                           cbind (i, pins)
                       })
-    if (is.null (col_extra)) 
+    if (missing (bg))
     {
         # Then each component is assigned to a single group based on entire
         # boundary.  NOTE that in cases where membership is *equally*
@@ -377,31 +438,69 @@ add_osm_groups <- function (obj=obj, groups=NULL, make_hull=FALSE,
         } # end else split objects across boundaries
         # Re-map membs == 0:
         membs [membs == 0] <- length (groups) + 1
-    } # end else col_extra
+    } # end else bg
 
     # cbind membs to xy and submit to plot, so that membs maps straight onto
     # colours
     xym <- mapply (cbind, xy, membs)
-    if (!is.null (col_extra))
-        cols <- c (cols, col_extra)
-    junk <- lapply (xym, function (x)
-                    do.call (plotfun, list ( x [,1:2], col=cols [x [1,3]])))
-    if (lwd > 0)
+    for (i in seq (xym))
+    {
+        xym [[i]] <- data.frame (cbind (i, xym [[i]]))
+        names (xym [[i]]) <- c ("id", "lon", "lat", "col")
+    }
+    xyflat <- do.call (rbind, xym)
+    if (!missing (bg))
+        cols <- c (cols, bg)
+    aes <- ggplot2::aes (x=lon, y=lat, group=id) 
+
+    if (class (obj) == 'SpatialPolygonsDataFrame')
+    {
+        if (missing (size))
+            size <- 0
+        map <- map + ggplot2::geom_polygon (data=xyflat, mapping=aes, 
+                                            fill=cols [xyflat$col], size=size)
+    } else if (class (obj) == 'SpatialLinesDataFrame')
+    {
+        if (missing (size))
+            size <- 0.5
+        if (missing (shape))
+            shape <- 1
+        map <- map + ggplot2::geom_path (data=xyflat, mapping=aes, 
+                                         colour=cols [xyflat$col], 
+                                         size=size, linetype=shape)
+    } else if (class (obj) == 'SpatialPointsDataFrame')
+    {
+        # Not implemented yet
+    }
+
+    if (!missing (borderWidth)) # draw hulls around entire groups
+    {
+        bdry <- list ()
         for (i in seq (groups))
         {
-            indx <- which (membs == i)
+            indx <- which (xyflat$col == i) # col = group membership
             if (length (indx) > 1)
             {
-                x <- unlist (lapply (indx, function (j) xy [[j]] [,1]))
-                y <- unlist (lapply (indx, function (j) xy [[j]] [,2]))
-                xy2 <- unique (cbind (x, y))
-                x <- xy2 [,1]
-                y <- xy2 [,2]
+                x <- xyflat$lon [indx]
+                y <- xyflat$lat [indx]
+                indx <- which (!duplicated (cbind (x, y)))
+                x <- x [indx]
+                y <- y [indx]
                 xy2 <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
                 ch <- spatstat::convexhull (xy2)
-                bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
-                lines (ch$bdry [[1]]$x, ch$bdry [[1]]$y, lwd=lwd, col=cols [i])
+                bdry [[i]] <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
             }
+            bdry [[i]] <- cbind (i, bdry [[i]])
         }
-}
+        bdry <- data.frame (do.call (rbind, bdry))
+        names (bdry) <- c ("id", "x", "y")
 
+        aes <- ggplot2::aes (x=x, y=y, group=id) 
+        map <- map + ggplot2::geom_polygon (data=bdry, mapping=aes, 
+                                            colour=cols [bdry$id],
+                                            fill="transparent", 
+                                            size=borderWidth)
+    }
+
+    return (map)
+}

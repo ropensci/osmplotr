@@ -3,126 +3,223 @@
 #' Adds a colourbar to an existing map. Intended to be used in combination with
 #' add_osm_surface (). At present, only plots on right side of map.
 #'
-#' @param len Relative positions of start and end of colourbar
-#' @param width Relative width
-#' @param side (1,2,3,4) for colourbar (below, left, above, right) of map. (Not
-#' yet implemented.)
+#' @param map A ggplot2 object to which the colourbar is to be added
+#' @param barwidth Relative width of the bar (perpendicular to its direction),
+#' either a single number giving distance from right or upper margin, or two
+#' numbers giving left/right or lower/upper limits.
+#' @param barlength Relative length of the bar (parallel to its direction),
+#' either a signle number giving total length of centred bar, or two numbers
+#' giving lower/upper or left/right limits.
 #' @param cols Vector of colours
 #' @param zlims Vector of (min,max) values for scale of colourbar. These should
 #' be the values returned from add_osm_surface (). 
-#' @param transp Transparency level of region immediately surrounding colourbar,
+#' @param alpha Transparency level of region immediately surrounding colourbar,
 #' including behind text. Lower values are more transparent.
 #' @param tcol Colour of text, tick marks, and lines on colourbar
 #' @param ps PointSize of text labels
 #' @export
 #'
 #' @examples
-#' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
-#' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
-#' add_axes ()
-#' add_colourbar (cols=heat.colors(20), tcol="white", side=4)
+#' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+#' # Align volcano data to lat-lon range of bbox
+#' dv <- dim (volcano)
+#' x <- seq (bbox [1,1], bbox [1,2], length.out=dv [1])
+#' y <- seq (bbox [2,1], bbox [2,2], length.out=dv [2])
+#' dat <- data.frame (
+#'                   x=rep (x, dv [2]),
+#'                   y=rep (y, each=dv [1]),
+#'                   z=as.numeric (volcano)
+#'                   )
+#' map <- add_osm_surface (map, obj=london$dat_BNR, dat=dat,
+#'                         cols=heat.colors (30))
+#' map <- add_axes (map)
+#' # Note colours of colourbar can be artibrarily set, and need not equal those
+#' # passed to 'add_osm_surface'
+#' map <- add_colourbar (map, zlims=range (volcano), cols=heat.colors(100),
+#'                       text_col="black")
+#' print (map)
+#'
+#' # Horizontal colourbar shifted away from margins:
+#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+#' map <- add_osm_surface (map, obj=london$dat_BNR, dat=dat,
+#'                         cols=heat.colors (30))
+#' map <- add_colourbar (map, zlims=range (volcano), cols=heat.colors(100),
+#'                       barwidth=c(0.1,0.15), barlength=c(0.5, 0.9), vertical=FALSE)
+#' print (map)
 
-add_colourbar <- function (len=c(0.1, 0.9), width=0.02, side=1, cols=NULL,
-                           zlims=c(0,1), transp=0.4, tcol="black", ps=8)
+add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols, 
+                           vertical=TRUE, alpha=0.4,
+                           text_col="black", fontsize=3)
 {
     if (is.null (cols))
         stop ("cols must be specified in add_colourbar")
     # Default sanity checks
-    if (!side %in% 1:4) side <- 4
-    if (!transp >= 0 & transp <= 1) transp <- 0.4
-    if (!width > 0 & width < 0.5) width <- 0.02
-    if (!is.numeric (ps)) ps <- 8
-    if (!all (is.numeric (len))) len <- c (0.1, 0.9)
+    if (!alpha >= 0 & alpha <= 1) alpha <- 0.4
+    if (length (barwidth) == 1)
+        if (barwidth < 0 | barwidth > 0.5)
+        barwidth <- 0.02
+    if (!is.numeric (fontsize))
+        fontsize <- 3
+    if (!all (is.numeric (barlength))) barlength <- 0.7
 
-    ncols <- length (cols)
-    usr <- par ("usr")
-    tpos <- c (3, 4, 1, 2) [side] # 'pos' for text () command
-    # epos = positions of elements: (l-edge/text, lbar, rbar, r-edge)
-    if (side == 1)
-        epos <- c (0, 0.25, 1.25, 1.5) * width
-    else if (side == 2)
-        epos <- c (1.5, 0.25, 1.25, 0) * width
+    barwidth <- sort (barwidth)
+    barlength <- sort (barlength)
+
+    # This function adds five distinct layers to map. These layers could be
+    # constructed as separate functions, with calls as
+    # map <- map + layer1 ()
+    # but the five can not be combined in a single function:
+    # layers <- layer1 () + layer2 () + ...
+    # and so would have to remain as five separate functions, and a colourbar
+    # would have be assembled by calling:
+    # map <- map + layer1() + layer2() + ...,
+    # ultimately requiring map to be submitted to the colourbar construction
+    # function anyway, which is then functionally no different from having all
+    # five within a single function as done here.
+
+    # ---------- Initial data setup
+    xrange <- map$coordinates$limits$x
+    yrange <- map$coordinates$limits$y
+
+    # expand is for semi-transparent underlay, done for direction parallel to
+    # colourbar only; perpendicular expansion is handled by size=5 below.
+    expand <- 0.02 
+
+    n <- length (cols)
+    if (!vertical)
+    {
+        zr <- xrange
+        xrange <- yrange
+        yrange <- zr
+    }
+
+    if (length (barwidth) == 1)
+    {
+        # barwidth transformed to map scale
+        barwidth <- diff (xrange) * barwidth
+        # x0 is centre of bar, shifted by 1/2 barwidth + 2 * expand, so the
+        # transparent underlay fits entirely within panel
+        x0 <- xrange [2] - (1/2 + 2 * expand) * barwidth
+    } else
+    {
+        # x0 not shifted by expand here, just by mean (barwidth)
+        x0 <- xrange [2] - mean (barwidth) * diff (xrange)
+        # with barwidth then converted to a single number
+        barwidth <- diff (xrange) * diff (barwidth)
+    }
+    x <- rep (x0, n)
+    if (length (barlength) == 1)
+        y0 <- yrange [1] + (0.5 + c (-1/2, 1/2) * barlength) * diff (yrange)
     else
-        epos <- 1 - c (1.5, 1.25, 0.25, 0) * width
+        y0 <- yrange [1] + barlength * diff (yrange)
+    y <- seq (y0 [1], y0 [2], length.out=n)
 
-    i2 <- 1:2 # used in text positioning below
-    if (side == 1 | side == 3)
+    # Note that the actual limits of geom_tile are increased by 1/2 an
+    # increment, so the final range of the bar must be expanded
+    bary <- range (y) + c (-1, 1) * (y [2] - y [1]) / 2
+
+    if (!vertical)
     {
-        indx <- c (2, 1, 4, 3)
-        ulen <- usr [1] + len * (usr [2] - usr [1])
-        epos <- usr [3] + epos * (usr [4] - usr [3])
+        z <- x
+        x <- y
+        y <- z
+    }
+
+    cb <- data.frame (x=x, y=y)
+
+    # ---------- LAYER#1: semi-transparent underlay
+    # The colour bar is also moved to middle of the underlay, away from the edge
+    # by expand/2
+    if (vertical)
+    {
+        x1 <- cb$x [1] + barwidth * c (-1, 1) * (1 + 1 * expand) / 2
+        y1 <- bary
+        cb$x <- mean (x1)
     } else
     {
-        i2 <- i2 + 2
-        indx <- 1:4
-        ulen <- usr [3] + len * (usr [4] - usr [3])
-        epos <- usr [1] + epos * (usr [2] - usr [1])
+        x1 <- bary
+        y1 <- cb$y [1] + barwidth * c (-1, 1) * (1 + 1 * expand) / 2
+        cb$y <- mean (y1)
     }
-    # Transparent box underlying colourbar:
-    tb <- ulen [1] + c (-0.02, 1.02) * diff (ulen)
-    xy <- c (epos [1], tb [1], epos [4], tb [2]) [indx]
-    rect (xy [1], xy [2], xy [3], xy [4], col=rgb (1, 1, 1, transp), border=NA)
-    # Then actual colourbar
-    cb <- seq (ulen [1], ulen [2], len=ncols)
-    for (i in 2:length (cb))
-    {
-        ri <- c (epos [2], cb [i-1], epos [3], cb [i])
-        rect (ri [indx [1]], ri [indx [2]], ri [indx [3]], ri [indx [4]],
-              col=cols [i], border=NA)
-    }
-    xy <- c (epos [2], ulen [1], epos [3], ulen [2]) [indx]
-    rect (xy [1], xy [2], xy [3], xy [4], col=NA, border="black")
+    # The df needs the 6th point to connect up properly
+    rdat <- data.frame (
+                        "x" = c (x1 [1], x1 [1], x1 [2], x1 [2], x1 [1], x1 [1]),
+                        "y" = c (y1 [1], y1 [2], y1 [2], y1 [1], y1 [1], y1 [2])
+                        )
+    aes <- ggplot2::aes (x=x, y=y, size=0)
+    pcol <- rgb (1, 1, 1, alpha)
+    # geom_path rounded corners, geom_poly does not, and size=5 *should* ensure
+    # it covers the inside of most bars
+    map <- map + ggplot2::geom_path (data=rdat, mapping=aes, inherit.aes=FALSE,
+                                     colour=pcol, size=5)
 
-    lvals <- pretty (zlims)
-    lvals <- lvals [lvals > zlims [1] & lvals < zlims [2]]
-    # max character string (width, height) in "usr" coordinates
-    par (ps=ps)
-    ch_width <- max (sapply (lvals, strwidth))
-    # Then extend width by equivalent of one character
-    nc <- max (sapply (lvals, nchar))
-    ch_width <- ch_width * (nc + 1) / nc
-    ch_height <- max (sapply (lvals, strheight))
-    ch_height <- ch_height * 1.5
-    ytxt <- sapply (lvals, as.character)
-    lvals <- (lvals - zlims [1]) / diff (zlims)
-    # Transform lvals to plot scale:
-    lvals <- usr [i2 [1]] + (len [1] + lvals * diff (len)) * 
-                            (usr [i2 [2]] - usr [i2 [1]])
-    # Then print the axis labels. These require distinctly different adjustments
-    # for horizontal and vertical options, so it the only bit requiring an
-    # extensive if-clause.
-    if (side == 1 | side == 3)
+    # ---------- LAYER#2: colourbar
+    aes <- ggplot2::aes (x=x, y=y)
+    args <- list (data=cb, mapping=aes, fill=cols)
+    if (vertical)
+        args <- c (args, width=barwidth)
+    else
+        args <- c (args, height=barwidth)
+    map <- map + do.call (ggplot2::geom_tile, args)
+
+    # ---------- LAYER#3: outline around colourbar
+    makedat <- function (a, b, barwidth, expand)
     {
-        wx <- ch_width * c (-0.5, 0.5)
-        if (side == 1)
-        {
-            ty <- epos [4]
-            wy <- epos [4] + c (0, ch_height)
-        } else
-        {
-            ty <- epos [1]
-            wy <- epos [1] - c (ch_height, 0)
-        }
-        for (i in seq (lvals)) 
-        {
-            lines (rep (lvals [i], 2), c (epos [2], epos [4]), col="black")
-            rect (lvals [i] - wx, wy [1], lvals [i] + wx, wy [2],
-                  col=rgb (1, 1, 1, transp), border=NA)
-            text (lvals [i], ty, pos=tpos, labels=ytxt [i], offset=0.1)
-        }
+        bt <- max (b) + diff (b) [1] / 2
+        bb <- min (b) - diff (b) [1] / 2
+        data.frame (
+                    x = mean (a) + c (-1, -1, 1, 1, -1) * barwidth / 2,
+                    y = c (bb, bt, bt, bb, bb)
+                    )
+    }
+    if (vertical)
+        rdat <- makedat (x, y, barwidth, expand)
+    else
+    {
+        rdat <- makedat (y, x, barwidth, expand)
+        names (rdat) <- c ("y", "x")
+    }
+
+    map <- map + ggplot2::geom_path (data=rdat, mapping=aes, colour=text_col)
+
+    # ---------- LAYERS#4-5: ticks and labels
+    # Note that the actual limits of geom_tile are increased by 1/2 an
+    # increment, so:
+    zlabs <- pretty (zlims)
+    zlabs <- zlabs [which (zlabs %in% zlims[1]:zlims[2])]
+    z <- bary [1] + (zlabs - zlims [1]) * diff (bary) / diff (zlims)
+
+    if (vertical)
+    {
+        segdat <- data.frame (x1=x1 [1], x2=x1 [2], y1=z, y2=z)
+        labdat <- data.frame (x=x1 [1], y=z, z=zlabs)
+        nudge_x <- -0.005 * diff (map$coordinates$limits$x)
+        if (length (nudge_x) == 0)
+            nudge_x <- -0.005 
+        nudge_y <- 0
+        vjust <- 0.5
+        hjust <- 1
     } else
     {
-        if (side == 2)
-            wx <- c (epos [1], epos [1] + ch_width)
-        else
-            wx <- c (epos [1] - ch_width, epos [1])
-        for (i in seq (lvals)) 
-        {
-            lines (c (epos [1], epos [3]), rep (lvals [i], 2), col="black")
-            rect (wx [1], lvals [i] - ch_height / 2, 
-                  wx [2], lvals [i] + ch_height / 2, 
-                  col=rgb (1, 1, 1, transp), border=NA)
-            text (epos [1], lvals [i], pos=tpos, labels=ytxt [i], offset=0.2)
-        }
+        segdat <- data.frame (x1=z, x2=z, y1=y1 [1], y2=y1 [2])
+        labdat <- data.frame (x=z, y=y1 [1], z=zlabs)
+        nudge_x <- 0
+        nudge_y <- -0.005 * diff (map$coordinates$limits$y)
+        if (length (nudge_y) == 0)
+            nudge_y <- -0.010 
+        vjust <- 1
+        hjust <- 0.5
     }
+
+    gs <- ggplot2::geom_segment
+    glab <- ggplot2::geom_label
+
+    map + gs (data=segdat, colour=text_col,
+                     mapping=ggplot2::aes (x=x1, y=y1, xend=x2, yend=y2)) +
+                glab (data=labdat, mapping=ggplot2::aes (x=x, y=y, label=z),
+                      alpha=alpha, size=fontsize, colour=text_col,
+                      inherit.aes=FALSE, label.size=0,
+                      nudge_x=nudge_x, nudge_y=nudge_y,
+                      vjust=vjust, hjust=hjust)
 }

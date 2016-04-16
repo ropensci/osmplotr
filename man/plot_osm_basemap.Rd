@@ -4,18 +4,12 @@
 \alias{plot_osm_basemap}
 \title{plot_osm_basemap}
 \usage{
-plot_osm_basemap(bbox, filename = NULL, width = 640, structures = NULL,
-  bg = "gray20", graphic.device = "png", ...)
+plot_osm_basemap(bbox, structures = NULL, bg = "gray20")
 }
 \arguments{
 \item{bbox}{bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
 matrix of 4 elements with columns of min and max values, and rows of x and y
 values.}
-
-\item{filename}{Name of plot file; default=NULL plots to screen device (low
-quality and likely slow)}
-
-\item{width}{Width of graphics file (in px; default 480).}
 
 \item{structures}{Data frame returned by osm_structures() used here to
 specify background colour of plot; if 'structs=NULL', the colour is specified
@@ -23,15 +17,9 @@ by 'bg'}
 
 \item{bg}{Background colour of map (default = 'gray20' only if structs not
 given)}
-
-\item{graphic.device}{Type of graphic device to print to. For example, 'png'
-(default), 'jpeg', 'png', or 'tiff'}
-
-\item{...}{Other parameters to be passed to graphic device (such as width and
-height; see ?png, for example, for details)}
 }
 \value{
-nothing (generates file of specified type)
+ggplot object containing base map
 }
 \description{
 Generates a base OSM plot ready for polygon, line, and point objects to be
@@ -41,7 +29,9 @@ graphics device is automatically calculated in proportion to the given width
 according to the aspect ratio of the bounding box.
 }
 \examples{
-plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
-add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
+bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- add_osm_objects (map, london$dat_BNR, col="gray40")
+print (map)
 }
 

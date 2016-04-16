@@ -4,11 +4,12 @@
 \alias{add_osm_groups}
 \title{add_osm_groups}
 \usage{
-add_osm_groups(obj = obj, groups = NULL, make_hull = FALSE,
-  boundary = -1, cols = NULL, col_extra = NULL, colmat = TRUE,
-  rotate = NULL, lwd = 0)
+add_osm_groups(map, obj, groups, make_hull = FALSE, boundary = -1, cols, bg,
+  size, shape, borderWidth, colmat = TRUE, rotate, lwd = 0)
 }
 \arguments{
+\item{map}{A ggplot2 object to which the grouped objects are to be added}
+
 \item{obj}{An sp SPDF or SLDF (list of polygons or lines) returned by
 extract_osm_objects()}
 
@@ -16,23 +17,32 @@ extract_osm_objects()}
 coordinates of points defining one group}
 
 \item{make_hull}{Either a single boolean value or a vector of same length as
-groups specifying whether a convex hull should be constructed around the
-group (TRUE), or whether they group already defines a hull (convex or
+groups specifying whether convex hulls should be constructed around all
+groups (TRUE), or whether the group already defines a hull (convex or
 otherwise; FALSE).}
 
 \item{boundary}{(negative, 0, positive) values define whether the boundary of
 groups should (exlude, bisect, include) objects which straddle the precise
-boundary. (Has no effect if 'col_extra' is NULL.)}
+boundary. (Has no effect if 'bg' is given)}
 
 \item{cols}{Either a vector of >= 4 colours passed to colour_mat() (if
 'colmat=T') to arrange as a 2-D map of visually distinct colours (default
 uses rainbow colours), or (if 'colmat=F'), a vector of the same length as
 groups specifying individual colours for each.}
 
-\item{col_extra}{If NULL, then any polygons *NOT* within the convex hulls are
-assigned to nearest group and coloured accordingly (and boundary has no
-effect); if NOT NULL, then any polygons not within groups are coloured this
-colour.}
+\item{bg}{If given, then any objects not within groups are coloured this
+colour, otherwise (if not given) they are assigned to nearest group and
+coloured accordingly. ('boundary' has no effect in this latter case.)}
+
+\item{size}{Size argument passed to ggplot2 (polygon, path, point) functions:
+determines width of lines for (polygon, line), and sizes of points.
+Respective defaults are (0, 0.5, 0.5).}
+
+\item{shape}{Shape of points or lines (the latter passed as 'linetype'): see
+?ggplot2::shape}
+
+\item{borderWidth}{If given, draws convex hull borders around entire groups
+in same colours as groups (try values around 1-2)}
 
 \item{colmat}{If TRUE generates colours according to colour_mat(), otherwise
 the colours of groups are specified directly by the vector of cols.}
@@ -40,10 +50,12 @@ the colours of groups are specified directly by the vector of cols.}
 \item{rotate}{Passed to colour_mat() to rotate colours by the specified
 number of degrees clockwise.}
 
-\item{lwd}{Width of boundary line (0 for no line)}
+\item{size}{Width of lines for SpatialLines objects; width of boundary lines
+for SpatialPolygon objects (in which case default = 0); or size of
+SpatialPoints.}
 }
 \value{
-nothing (adds to graphics.device opened with plot_osm_basemap())
+Modified version of map with groups added
 }
 \description{
 Plots spatially distinct groups of osm objects in different colours.
@@ -58,8 +70,62 @@ bigger group are included.
 
 \section{Warning}{
 
-Bisecting objects along group boundaries ('boundary=0') can take
-considerably longer than simple allocation of objects either side of
-boundary.
+Bisecting objects along group boundaries ('boundary=0') can take longer than
+simple allocation of objects either side of boundary.
+}
+\examples{
+bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+# Define a function to easily generate a basemap
+bmap <- function ()
+{
+    map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+    map <- add_osm_objects (map, london$dat_HP, col="gray70", size=1)
+    add_osm_objects (map, london$dat_T, col="green")
+}
+
+# Highlight a single region using all objects lying partially inside the
+# boundary (via the boundary=1 argument)
+pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
+                                 c (51.505, 51.505, 51.515, 51.515)))
+map <- bmap ()
+map <- add_osm_groups (map, london$dat_BNR, groups=pts, cols="gray90",
+                       bg="gray40", boundary=1)
+map <- add_osm_groups (map, london$dat_H, groups=pts, cols="gray80",
+                       bg="gray30", boundary=1)
+print (map)
+
+# Function to generate random regions
+get_groups <- function (ngroups=6)
+{
+    x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
+    y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
+    groups <- cbind (x, y)
+    groups <- apply (groups, 1, function (i)
+                     sp::SpatialPoints (matrix (i, nrow=1, ncol=2)))
+    # Then create small rectangles around each pt
+    lapply (groups, function (i)
+            {
+                x <- sp::coordinates (i) [1] + c (-0.002, 0.002, 0.002,
+                                                  -0.002)
+                y <- sp::coordinates (i) [2] + c (-0.002, -0.002, 0.002,
+                                                  0.002)
+                sp::SpatialPoints (cbind (x, y))
+            })
+}
+groups <- get_groups (6)
+map <- bmap ()
+cols <- rainbow (length (groups))
+map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
+                       colmat=FALSE, make_hull=FALSE)
+cols <- adjust_colours (cols, -0.2)
+map <- add_osm_groups (map, obj=london$dat_H, groups=groups, cols=cols,
+                       colmat=FALSE, make_hull=FALSE)
+print (map)
+
+# Highlight convex hulls containing groups:
+map <- bmap ()
+map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
+                       colmat=FALSE, make_hull=FALSE, borderWidth=2)
+print (map)
 }
 

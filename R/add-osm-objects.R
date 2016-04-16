@@ -4,23 +4,43 @@
 #' extract_osm_objects ()) to a graphics object initialised with
 #' plot_osm_basemap().
 #'
-#' @param obj an sp SPDF or SLDF (list of polygons or lines) returned by
-#' extract_osm_objects ()
-#' @param col colour of polygons or lines (default = 'gray40')
-#' @param border border colour of polygons
-#' @param ... other parameters to be passed to polygons (such as border),
-#' lines (such as lwd, lty), or points (such as pch, cex)
-#' @return nothing (adds to graphics.device opened with plot_osm_basemap())
+#' @param map A ggplot2 object to which the objects are to be added
+#' @param obj An sp SPDF or SLDF (spatial data frame of polygons, lines, or
+#' points) returned by extract_osm_objects ()
+#' @param col Colour of lines or points; fill colour of polygons
+#' @param border Border colour of polygons
+#' @param size Size argument passed to ggplot2 (polygon, path, point) functions:
+#' determines width of lines for (polygon, line), and sizes of points.
+#' Respective defaults are (0, 0.5, 0.5).
+#' @param shape Shape of points or lines (the latter passed as 'linetype'): see
+#' ?ggplot2::shape
+#' @return modified version of map (a ggplot object) to which objects have been
+#' added
 #' @export
 #'
 #' @examples
-#' plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
-#' add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
+#' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+#' map <- add_osm_objects (map, obj=london$dat_BNR, col="gray40", border="yellow") 
+#' map <- add_osm_objects (map, obj=london$dat_HP, col="gray80",
+#'                         size=1, shape=2)
+#' map <- add_osm_objects (map, london$dat_T, col="green", size=2, shape=1)
+#' print (map)
+#' 
+#' # Polygons with different coloured borders
+#' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+#' map <- add_osm_objects (map, obj=london$dat_HP, col="gray80")
+#' map <- add_osm_objects (map, london$dat_T, col="green")
+#' map <- add_osm_objects (map, obj=london$dat_BNR, col="gray40", border="yellow", 
+#'                         size=0.5)
+#' print (map)
 
-add_osm_objects <- function (obj, col='gray40', border=NA, ...)
+add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
+                             shape)
 {
-    if (is.null (dev.list ()))
-        stop ('add_osm_objects can only be called after plot_osm_basemap')
+    if (missing (map))
+        stop ("no map passed to add_osm_objects")
     if (missing (obj))
         stop ("no object passed to add_osm_objects")
     if (!(is.character (col) | is.numeric (col)))
@@ -31,35 +51,64 @@ add_osm_objects <- function (obj, col='gray40', border=NA, ...)
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
-        plotfunPts <- function (i, dx=dx, dy=dy, col=col, border=border, ...) 
-        {
-            xy <- slot (slot (i, 'Polygons') [[1]], 'coords')
-            if (diff (range (xy [,1])) > dx | diff (range (xy [,2])) > dy)
-                polypath (xy, col=col, border=border, ...)
-        }
-        # Find out which objects are < 1 pixel in size. NOTE this presumes
-        # standard device resolution of 72dpi. 
-        # TODO#1: Find out how to read dpi from open devices and modify
-        din <- par ("din") * 72
-        dx <- diff (par ("usr") [1:2]) / din [1]
-        dy <- diff (par ("usr") [3:4]) / din [2]
-        # NOTE dy=dx only if figures are sized automatically
-        junk <- lapply (slot (obj, 'polygons'), function (i)
-                    plotfunPts (i, dx=dx, dy=dy, col=col, border=border, ...))
+        if (missing (size))
+            size <- 0
+        xy <- lapply (slot (obj, "polygons"), function (x)
+                      slot (slot (x, "Polygons") [[1]], "coords"))
+        xy <- list2df (xy)
+        map <- map + ggplot2::geom_polygon (ggplot2::aes (group=id), 
+                                                      data=xy, size=size,
+                                                      fill=col, colour=border)
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
-        plotfunLines <- function (i, col=col, ...) 
-        {
-            xy <- slot (slot (i, 'Lines') [[1]], 'coords')
-            lines (xy, col=col, ...)
-        }
-        junk <- lapply (slot (obj, 'lines'), function (i)
-                        plotfunLines (i, col=col, ...))
+        if (missing (size))
+            size <- 0.5
+        if (missing (shape))
+            shape <- 1
+        xy <- lapply (slot (obj, 'lines'), function (x)
+                      slot (slot (x, 'Lines') [[1]], 'coords'))
+        xy <- list2df (xy, islines=TRUE)
+        map <- map + ggplot2::geom_path (data=xy,
+                                   ggplot2::aes (x=lon, y=lat), 
+                                   colour=col, size=size, linetype=shape)
     } else if (class (obj) == 'SpatialPointsDataFrame')
     {
-        xy <- slot (obj, 'coords')
-        points (xy[,1], xy[,2], col=col, ...)
+        if (missing (size))
+            size <- 0.5
+        if (missing (shape))
+            shape <- 19
+        xy <- data.frame (slot (obj, 'coords'))
+        map <- map + ggplot2::geom_point (data=xy,
+                                    ggplot2::aes (x=lon, y=lat),
+                                    col=col, size=size, shape=shape)
     } else
         stop ("obj is not a spatial class")
+
+    return (map)
 }
 
+#' list2df
+#'
+#' Converts lists of coordinates to single data frames
+#'
+#' @param xy A list of coordinates extracted from an sp object
+#' @param islines Set to TRUE for spatial lines, otherwise FALSE
+#' @return data frame
+list2df <- function (xy, islines=FALSE)
+{
+    if (islines) # lines have to be separated by NAs
+        xy <- lapply (xy, function (i) rbind (i, rep (NA, 2)))
+    else # Add id column to each:
+        for (i in seq (xy))
+            xy [[i]] <- cbind (i, xy [[i]])
+    # And rbind them to a single matrix. 
+    xy <-  do.call (rbind, xy)
+    # And then to a data.frame, for which duplicated row names flag warnings
+    # which are not relevant, so are suppressed by specifying new row names
+    xy <-  data.frame (xy, row.names=1:nrow (xy))
+    if (islines) # remove terminal row of NAs
+        xy <- xy [1:(nrow (xy) - 1),]
+    else
+        names (xy) <- c ("id", "lon", "lat")
+    return (xy)
+}

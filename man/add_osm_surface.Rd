@@ -4,11 +4,13 @@
 \alias{add_osm_surface}
 \title{add_osm_suface}
 \usage{
-add_osm_surface(obj = obj, dat = NULL, method = "idw", bg = NULL,
-  cols = terrain.colors(30), border = FALSE, verbose = FALSE, ...)
+add_osm_surface(map, obj, dat, method = "idw", grid_size = 100,
+  cols = heat.colors(30), bg, size)
 }
 \arguments{
-\item{obj}{an sp SPDF or SLDF (list of polygons or lines) returned by
+\item{map}{A ggplot2 object to which the surface are to be added}
+
+\item{obj}{an sp SPDF or SLDF (list of polygons, lines, or points) returned by
 extract_osm_objects ()}
 
 \item{dat}{A matrix or data frame of 3 columns (x, y, z), where (x, y) are
@@ -18,23 +20,22 @@ extract_osm_objects ()}
 default), otherwise uses 'Gaussian' for kernel smoothing (as
 spatstat::Smooth.ppp)}
 
-\item{bg}{If specified, OSM objects outside the convex hull surrounding 'dat'
-are plotted in this colour, otherwise they are included in the interpolation
-(which will generally be inaccurate for peripheral values)}
+\item{grid_size}{size of interpolation grid}
 
 \item{cols}{Vector of colours for shading z-values (for example,
 'terrain.colors (30)')}
 
-\item{border}{Plot border? (For SpatialPolygons only)}
+\item{bg}{If specified, OSM objects outside the convex hull surrounding 'dat'
+are plotted in this colour, otherwise they are included in the interpolation
+(which will generally be inaccurate for peripheral values)}
 
-\item{verbose}{If TRUE, provides notification of progress}
-
-\item{...}{other parameters to be passed to polygons, lines (such as lwd,
-lty), or points (such as pch, cex)}
+\item{size}{Size argument passed to ggplot2 (polygon, path, point) functions:
+determines width of lines for (polygon, line), and sizes of points.
+Respective defaults are (0, 0.5, 0.5).}
 }
 \value{
-Range of interpolated values (which may differ from range of 'dat$z'
-as submitted, and can be used to scale 'add_colourbar()')
+modified version of map (a ggplot object) to which surface has been
+added
 }
 \description{
 Adds a colour-coded surface of spatial objects (polygons, lines, or points
@@ -52,19 +53,39 @@ polygon of 'dat' will generally be unreliable. Points beyond the bounding
 polygon are only included in the interpolation if 'bg' is NA or NULL.
 }
 \examples{
-plot_osm_basemap (bbox=get_bbox (c (-0.15, 51.5, -0.1, 51.52)), col="gray20")
-add_osm_objects (london$dat_BNR, col="gray40") # non-residential buildings
-bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))
-x <- seq (bbox [1,1], bbox [1,2], length.out=dim (volcano)[1])
-y <- seq (bbox [2,1], bbox [2,2], length.out=dim (volcano)[2])
-xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
-z <- as.numeric (volcano)
-plot_osm_basemap (bbox=bbox, bg="gray20")
-# uncomment to run: can be time-consuming
-# zl <- add_osm_surface (london$dat_BNR, dat=cbind (xy, z), method="idw")
-cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20\%
-# zl <- add_osm_surface (london$dat_H, dat=cbind (xy, z), cols=cols)
-# zl <- add_osm_surface (london$dat_HP, dat=cbind (xy, z), cols=cols, lwd=2)
-# add_colourbar (cols=terrain.colors (30), side=4, zlims=zl)
+# Make a data frame of volcano data mapped onto map coordinates, and remove
+# periphery
+bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+getdat <- function (bbox)
+{
+    dims <- dim (volcano)
+    d1 <- array (seq (dims [1]) - dims[1] / 2, dim=dims)
+    d2 <- t (array (seq (dims [2]) - dims[2] / 2, dim=rev (dims)))
+    dv <- sqrt (d1 ^ 2 + d2 ^ 2) # define perhiphery as dv > 40
+
+    x <- seq (bbox [1,1], bbox [1,2], length.out=dims [1])
+    y <- seq (bbox [2,1], bbox [2,2], length.out=dims [2])
+    dat <- data.frame (
+                       x=rep (x, dims [2]),
+                       y=rep (y, each=dims [1]),
+                       z=as.numeric (volcano)
+                       )
+    dat$z [as.numeric (dv) > 40] <- NA
+    return (dat)
+}
+dat <- getdat (bbox)
+
+# Plotting order is important because each layer overlays the previous
+map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- add_osm_objects (map, london$dat_HP, col="gray70", size=1)
+cols <- heat.colors (30)
+map <- add_osm_surface (map, london$dat_BNR, dat, cols=cols, bg="gray40")
+map <- add_osm_surface (map, london$dat_H, dat,
+                        cols=adjust_colours (cols, adj=-0.2), bg="black")
+map <- add_osm_objects (map, london$dat_T, col="green")
+map <- add_axes (map)
+map <- add_colourbar (map, cols=heat.colors (100), zlims=range (volcano),
+                      barwidth=c(0.02), barlength=c(0.6,0.99), vertical=TRUE)
+print (map)
 }
 
