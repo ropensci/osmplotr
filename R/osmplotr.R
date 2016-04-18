@@ -63,11 +63,10 @@
 #' @docType package
 #' @import httr sp spatstat osmar XML ggm rgeos
 #' @importFrom igraph graph_from_edgelist shortest_paths
-#' @importFrom graphics polypath lines points locator plot.new par rect text
-#' @importFrom graphics strwidth strheight
+#' @importFrom graphics lines locator plot.new par rect text
 #' @importFrom methods slot as
-#' @importFrom grDevices dev.new dev.list dev.off dev.cur rainbow rgb col2rgb png
-#' @importFrom grDevices terrain.colors
+#' @importFrom grDevices dev.new dev.list rainbow rgb col2rgb png
+#' @importFrom grDevices terrain.colors heat.colors
 #' @importFrom utils txtProgressBar setTxtProgressBar combn tail
 #' @importFrom stats runif
 NULL
