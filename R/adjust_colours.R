@@ -13,8 +13,7 @@
 #' @export
 #'
 #' @examples
-#' library (wesanderson)
-#' cols <- adjust_colours (wes_palette ("GrandBudapest"), adj=-0.2, plot=TRUE)
+#' cols <- adjust_colours (cols=heat.colors (10), adj=-0.2, plot=TRUE)
 
 adjust_colours <- function (cols=NULL, adj=0, plot=FALSE)
 {

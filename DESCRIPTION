@@ -7,6 +7,7 @@ Description: Produces customisable images of OpenStreetMap (OSM) data and enable
 Depends: R (>= 3.2.3)
 Imports: 
     ggm,
+    ggplot2,
     igraph,
     httr,
     methods,
@@ -14,14 +15,12 @@ Imports:
     rgeos,
     sp, 
     spatstat, 
-    XML,
+    XML
 Suggests: knitr,
     roxygen2,
     rmarkdown,
     devtools,
     maptools,
-    RColorBrewer,
-    wesanderson,
     testthat
 License: GPL-3
 URL: https://github.com/mpadge/osmplotr

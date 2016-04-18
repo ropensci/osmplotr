@@ -24,7 +24,6 @@ Adjusts a given colour by lightening or darkening it by the specified amount.
 Adjustments are made in RGB space, for limitations of which see ?convertColor
 }
 \examples{
-library (wesanderson)
-cols <- adjust_colours (wes_palette ("GrandBudapest"), adj=-0.2, plot=TRUE)
+cols <- adjust_colours (cols=heat.colors (10), adj=-0.2, plot=TRUE)
 }
 
