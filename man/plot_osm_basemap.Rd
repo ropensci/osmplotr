@@ -23,10 +23,7 @@ ggplot object containing base map
 }
 \description{
 Generates a base OSM plot ready for polygon, line, and point objects to be
-overlain with add_osm_objects(). NOTE: Graphics files must be closed after
-finishing map with dev.off() or graphics.off(). Unless specified, height of
-graphics device is automatically calculated in proportion to the given width
-according to the aspect ratio of the bounding box.
+overlain with add_osm_objects().
 }
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))

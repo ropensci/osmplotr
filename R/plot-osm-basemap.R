@@ -1,10 +1,7 @@
 #' plot_osm_basemap
 #'
 #' Generates a base OSM plot ready for polygon, line, and point objects to be
-#' overlain with add_osm_objects(). NOTE: Graphics files must be closed after
-#' finishing map with dev.off() or graphics.off(). Unless specified, height of
-#' graphics device is automatically calculated in proportion to the given width
-#' according to the aspect ratio of the bounding box.
+#' overlain with add_osm_objects(). 
 #'
 #' @param bbox bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
 #' matrix of 4 elements with columns of min and max values, and rows of x and y
@@ -52,13 +49,13 @@ plot_osm_basemap <- function (bbox, structures=NULL, bg='gray20')
     new_theme$axis.ticks.length <- ggplot2::unit(0,"null")
 
     lon <- lat <- NA
-    the_plot <- ggplot2::ggplot () + new_theme +
+    map <- ggplot2::ggplot () + new_theme +
                 ggplot2::coord_cartesian (xlim=range (bbox[1,]), 
                                           ylim=range (bbox[2,])) +
                 ggplot2::aes (x=lon, y=lat) +
                 ggplot2::scale_x_continuous (expand=c(0, 0)) +
                 ggplot2::scale_y_continuous (expand=c(0, 0))
 
-    return (the_plot)
+    return (map)
 }
 

@@ -4,7 +4,7 @@
 \alias{add_osm_groups}
 \title{add_osm_groups}
 \usage{
-add_osm_groups(map, obj, groups, make_hull = FALSE, boundary = -1, cols, bg,
+add_osm_groups(map, obj, groups, cols, bg, make_hull = FALSE, boundary = -1,
   size, shape, borderWidth, colmat = TRUE, rotate, lwd = 0)
 }
 \arguments{
@@ -16,15 +16,6 @@ extract_osm_objects()}
 \item{groups}{A list of spatial points objects, each of which contains the
 coordinates of points defining one group}
 
-\item{make_hull}{Either a single boolean value or a vector of same length as
-groups specifying whether convex hulls should be constructed around all
-groups (TRUE), or whether the group already defines a hull (convex or
-otherwise; FALSE).}
-
-\item{boundary}{(negative, 0, positive) values define whether the boundary of
-groups should (exlude, bisect, include) objects which straddle the precise
-boundary. (Has no effect if 'bg' is given)}
-
 \item{cols}{Either a vector of >= 4 colours passed to colour_mat() (if
 'colmat=T') to arrange as a 2-D map of visually distinct colours (default
 uses rainbow colours), or (if 'colmat=F'), a vector of the same length as
@@ -33,6 +24,15 @@ groups specifying individual colours for each.}
 \item{bg}{If given, then any objects not within groups are coloured this
 colour, otherwise (if not given) they are assigned to nearest group and
 coloured accordingly. ('boundary' has no effect in this latter case.)}
+
+\item{make_hull}{Either a single boolean value or a vector of same length as
+groups specifying whether convex hulls should be constructed around all
+groups (TRUE), or whether the group already defines a hull (convex or
+otherwise; FALSE).}
+
+\item{boundary}{(negative, 0, positive) values define whether the boundary of
+groups should (exlude, bisect, include) objects which straddle the precise
+boundary. (Has no effect if 'bg' is given)}
 
 \item{size}{Size argument passed to ggplot2 (polygon, path, point) functions:
 determines width of lines for (polygon, line), and sizes of points.

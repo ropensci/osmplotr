@@ -17,9 +17,9 @@
 #' library (osmplotr)
 #' cm <- colour_mat (n=20, cols=rainbow(4), rotate=90, plot=TRUE)
 
-colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
+colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
 {
-    if (is.null (cols))
+    if (missing (cols))
         cols <- rainbow (4)
     else if (length (cols) < 4)
         stop ('cols must have length = 4')
@@ -28,7 +28,7 @@ colour_mat <- function (n=c(10, 10), cols=NULL, rotate=NULL, plot=FALSE)
     if (class (cols [1]) != 'matrix')
         cols <- col2rgb (cols)
 
-    if (!is.null (rotate))
+    if (!missing (rotate))
     {
         # rotation generally lowers RGB values, so they are increased following
         # rotation according to the following value:

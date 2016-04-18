@@ -12,7 +12,7 @@ R package to produce visually impressive customisable images of urban areas from
 1.  Specify the bounding box for the desired region
 
     ``` r
-    bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52))
+    bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
     ```
 
 2.  Download the desired data---in this case, all building perimeters.
@@ -24,19 +24,19 @@ R package to produce visually impressive customisable images of urban areas from
 3.  Initiate an `osm_basemap` with desired background (`bg`) colour
 
     ``` r
-    plot_osm_basemap (bbox=bbox, bg="gray20", file="map1.png")
+    map <- plot_osm_basemap (bbox=bbox, bg="gray20")
     ```
 
 4.  Overlay objects on plot in the desired colour.
 
     ``` r
-    add_osm_objects (dat_B, col="gray40")
+    map <- add_osm_objects (map, dat_B, col="gray40")
     ```
 
-5.  Close graphics device to finish
+5.  Print the map to graphics device of choice
 
     ``` r
-    graphics.off ()
+    print (map)
     ```
 
 Installation
@@ -64,12 +64,12 @@ dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)$obj
 ```
 
 ``` r
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map2.png")
-add_osm_objects (dat_B, col="gray40")
-add_osm_objects (dat_H, col="gray80")
-add_osm_objects (dat_P, col="darkseagreen")
-add_osm_objects (dat_G, col="darkseagreen1")
-graphics.off ()
+map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- add_osm_objects (map, dat_B, col="gray40")
+map <- add_osm_objects (map, dat_H, col="gray80")
+map <- add_osm_objects (map, dat_P, col="darkseagreen")
+map <- add_osm_objects (map, dat_G, col="darkseagreen1")
+print (map)
 ```
 
 ![map2](./figure/map2.png)
@@ -80,33 +80,33 @@ Highlighting selected areas
 `osmplotr` is primarily intended as a data visualisation tool, particularly through enabling selected regions to be highlighted. Regions can be defined according to simple point boundaries:
 
 ``` r
-pts <- sp::SpatialPoints (cbind (c (-0.128, -0.138, -0.138, -0.128),
-                             c (51.502, 51.502, 51.515, 51.515)))
+pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
+                             c (51.505, 51.505, 51.515, 51.515)))
 ```
 
 and OSM objects within the defined regions highlighted with different colour schemes. The `col_extra` parameter defines the colour of the remaining, background area.
 
 ``` r
-plot_osm_basemap (bbox=bbox, bg="gray20", file="map3.png")
-add_osm_groups (dat_B, groups=pts, col="orange", col_extra="gray40", 
+map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- add_osm_groups (map, dat_B, groups=pts, col="orange", bg="gray40", 
                    colmat=FALSE, boundary=1)
-add_osm_objects (london$dat_P, col="darkseagreen1")
-add_osm_groups (london$dat_P, groups=pts, col='darkseagreen1',
-                   col_extra='darkseagreen', colmat=FALSE, boundary=0)
-graphics.off ()
+map <- add_osm_objects (map, london$dat_P, col="darkseagreen1")
+map <- add_osm_groups (map, london$dat_P, groups=pts, col='darkseagreen1',
+                   bg='darkseagreen', colmat=FALSE, boundary=0)
+print (map)
 ```
 
 ![map3](./figure/map3.png)
 
-Or may highlighted in dark-on-light:
+Or maybe highlighted in dark-on-light:
 
 ``` r
-plot_osm_basemap (bbox=bbox, bg="gray95", file="map4.png")
-add_osm_groups (dat_B, groups=pts, col="gray40", col_extra="gray85",
+map <- plot_osm_basemap (bbox=bbox, bg="gray95")
+map <- add_osm_groups (map, dat_B, groups=pts, col="gray40", bg="gray85",
                    colmat=FALSE, boundary=1)
-add_osm_groups (dat_H, groups=pts, col="gray20", col_extra="gray70",
+map <- add_osm_groups (map, dat_H, groups=pts, col="gray20", bg="gray70",
                    colmat=FALSE, boundary=0)
-graphics.off ()
+print (map)
 ```
 
 ![map4](./figure/map4.png)
@@ -116,10 +116,10 @@ graphics.off ()
 `add_osm_groups` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. The argument `groups` in the following call is a list of `SpatialPoints` objects defining 12 small, spatially separated regions. Calling `add_osm_groups` with `col_extra=NA` (or `NULL`) forces all points lying outside those defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire area.
 
 ``` r
-plot_osm_basemap (bbox=bbox, bg='gray20', file='map5.png')
-add_osm_groups (dat_B, groups=groups, col_extra=NA, make_hull=FALSE,
-                   colmat=TRUE, lwd=3)
-graphics.off ()
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_groups (map, dat_B, groups=groups, make_hull=TRUE,
+                       borderWidth=3)
+print (map)
 ```
 
 ![map5](./figure/map5.png)

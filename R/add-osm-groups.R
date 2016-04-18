@@ -103,8 +103,8 @@
 #'                        colmat=FALSE, make_hull=FALSE, borderWidth=2)
 #' print (map)
 
-add_osm_groups <- function (map, obj, groups, make_hull=FALSE,
-                               boundary=-1, cols, bg, size, shape, borderWidth,
+add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
+                               boundary=-1, size, shape, borderWidth,
                                colmat=TRUE, rotate, lwd=0)
 {
     if (missing (groups))
@@ -115,7 +115,7 @@ add_osm_groups <- function (map, obj, groups, make_hull=FALSE,
             if (missing (bg))
                 stop ("either 'cols' or 'bg' must be minimally given")
             else
-            cols <- bg
+                cols <- bg
         add_osm_objects (obj, col=cols [1])
         return ()
     } else if (class (groups) != 'list')
@@ -196,7 +196,7 @@ add_osm_groups <- function (map, obj, groups, make_hull=FALSE,
     # Set up group colours
     if (!colmat)
     {
-        if (is.null (cols))
+        if (missing (cols))
             cols <- rainbow (length (groups))
         else if (length (cols) < length (groups))
             cols <- rep (cols, length.out=length (groups))
@@ -214,10 +214,15 @@ add_osm_groups <- function (map, obj, groups, make_hull=FALSE,
         }
     } else
     {
-        if (is.null (cols) | length (cols) < 4)
+        if (missing (cols)) 
+            cols <- rainbow (4)
+        else if (length (cols) < 4)
             cols <- rainbow (4)
         ncols <- 20
-        cmat <- colour_mat (ncols, cols=cols, rotate=rotate)
+        if (missing (rotate))
+            cmat <- colour_mat (ncols, cols=cols)
+        else
+            cmat <- colour_mat (ncols, cols=cols, rotate)
         cols <- rep (NA, length (groups)) 
         # cols is then a vector of colours to be filled by matching group
         # centroids to relative positions within cmat
