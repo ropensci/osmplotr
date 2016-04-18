@@ -21,7 +21,7 @@
 #' print (map)
 
 add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
-                      alpha=0.5, fontsize=3, fontface, fontfamily)
+                      alpha=0.4, fontsize=3, fontface, fontfamily)
 {
     if (missing (map))
         stop ('map must be supplied')
@@ -62,10 +62,8 @@ add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
     x0 <- xp - expand * diff (yaxs_pos)
     x1 <- xp + expand * diff (yaxs_pos)
     y <- rep (xaxs_pos [c (1, 2, 2, 1, 1)], length (xp))
-    x <- c (x0 [1], x0 [1], x1 [1], x1 [1], x0 [1],
-             x0 [2], x0 [2], x1 [2], x1 [2], x0 [2],
-             x0 [3], x0 [3], x1 [3], x1 [3], x0 [3])
-    rdat <- data.frame (cbind ("id"=rep (1:3, each=5), "lon"=x, "lat"=y))
+    x <- as.numeric (rbind (x0, x0, x1, x1, x0))
+    rdat <- data.frame (cbind ("id"=rep (seq (xp), each=5), "lon"=x, "lat"=y))
     aes2 <- ggplot2::aes (x=lon, y=lat, group=id, size=0)
     map <- map + ggplot2::geom_path (data=rdat, mapping=aes2, inherit.aes=FALSE,
                                      colour=rgb (1, 1, 1, alpha))
@@ -73,10 +71,8 @@ add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
     y0 <- yp - expand * diff (xaxs_pos)
     y1 <- yp + expand * diff (xaxs_pos)
     x <- rep (yaxs_pos [c (1, 2, 2, 1, 1)], length (yp))
-    y <- c (y0 [1], y0 [1], y1 [1], y1 [1], y0 [1],
-             y0 [2], y0 [2], y1 [2], y1 [2], y0 [2],
-             y0 [3], y0 [3], y1 [3], y1 [3], y0 [3])
-    rdat <- data.frame (cbind ("id"=rep (1:3, each=5), "lon"=x, "lat"=y))
+    y <- as.numeric (rbind (y0, y0, y1, y1, y0))
+    rdat <- data.frame (cbind ("id"=rep (seq (yp), each=5), "lon"=x, "lat"=y))
     aes2 <- ggplot2::aes (x=lon, y=lat, group=id, size=0)
     map <- map + ggplot2::geom_path (data=rdat, mapping=aes2, inherit.aes=FALSE,
                                      colour=rgb (1, 1, 1, alpha))

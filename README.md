@@ -1,18 +1,15 @@
-osmplotr
-========
+![map1](./figure/map1.png)
 
 [![Build Status](https://travis-ci.org/mpadge/osmplotr.svg?branch=master)](https://travis-ci.org/mpadge/osmplotr) [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 
 (travis broken during major upgrade---will be fixed shortly ...)
-
-![map1](./figure/map1.png)
 
 R package to produce visually impressive customisable images of urban areas from OpenStreetMap (OSM) data, using data downloaded from the [overpass api](http://overpass-api.de/). The above map shows building polygons for a small portion of central London, U.K., and was made with the following easy steps:
 
 1.  Specify the bounding box for the desired region
 
     ``` r
-    bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
+    bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
     ```
 
 2.  Download the desired data---in this case, all building perimeters.
@@ -80,7 +77,7 @@ Highlighting selected areas
 `osmplotr` is primarily intended as a data visualisation tool, particularly through enabling selected regions to be highlighted. Regions can be defined according to simple point boundaries:
 
 ``` r
-pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
+pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
                              c (51.505, 51.505, 51.515, 51.515)))
 ```
 
@@ -118,7 +115,7 @@ print (map)
 ``` r
 map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_groups (map, dat_B, groups=groups, make_hull=TRUE,
-                       borderWidth=3)
+                       borderWidth=2)
 print (map)
 ```
 
@@ -150,14 +147,14 @@ groups <- list (highways1, highways2, highways3, highways4, highways5)
 And then passing the SpatialPolygon returned by `highways2polygon` to `add_osm_groups`, this time with some Wes Anderson flair.
 
 ``` r
-plot_osm_basemap (bbox=bbox, bg='gray20', file='map6.png')
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 library (wesanderson)
 cols <- wes_palette ("Darjeeling", 5) 
-add_osm_groups (dat_B, groups=groups, boundary=1,
-                   col_extra='gray40', colmat=FALSE, col=cols)
-add_osm_groups (dat_H, groups=groups, boundary=0,
-                   col_extra='gray70', colmat=FALSE, col=cols)
-graphics.off ()
+map <- add_osm_groups (map, dat_B, groups=groups, boundary=1,
+                       cols=cols, bg='gray40', colmat=FALSE)
+map <- add_osm_groups (map, dat_H, groups=groups, boundary=0,
+                       cols=cols, bg='gray70', colmat=FALSE)
+print (map)
 ```
 
 ![map6](./figure/map6.png)
@@ -178,12 +175,14 @@ z <- as.numeric (volcano)
 `add_osm_surface` returns the limits of the *interpolated* surface. These may differ from the original limits, and should be used to scale `add_colourbar`.
 
 ``` r
-plot_osm_basemap (bbox=bbox, bg="gray20", file='map7.png')
-zl <- add_osm_surface (dat_B, dat=cbind (xy, z), cols=terrain.colors (30))
-cols <- adjust_colours (terrain.colors (30), -0.2) # Darken by ~20%
-zl <- add_osm_surface (dat_H, dat=cbind (xy, z), cols=cols)
-add_colourbar (cols=terrain.colors (30), side=4, zlims=zl)
-graphics.off ()
+map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+cols <- gray (0:50 / 50)
+map <- add_osm_surface (map, dat_B, dat=cbind (xy, z), cols=cols)
+map <- add_osm_surface (map, dat_H, dat=cbind (xy, z), 
+                        cols=adjust_colours (cols, -0.2)) # Darken cols by ~20%
+map <- add_colourbar (map, cols=cols, zlims=range (volcano))
+map <- add_axes (map)
+print (map)
 ```
 
 ![map7](./figure/map7.png)
