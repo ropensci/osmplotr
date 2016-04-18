@@ -42,7 +42,6 @@ map <- add_osm_objects (map, london$dat_T, col="green", size=2, shape=1)
 print (map)
 
 # Polygons with different coloured borders
-bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 map <- plot_osm_basemap (bbox=bbox, bg="gray20")
 map <- add_osm_objects (map, obj=london$dat_HP, col="gray80")
 map <- add_osm_objects (map, london$dat_T, col="green")

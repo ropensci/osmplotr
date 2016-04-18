@@ -23,12 +23,15 @@ be the values returned from add_osm_surface ().}
 
 \item{cols}{Vector of colours}
 
+\item{vertical}{If FALSE, colourbar is aligned horizontally instead of
+default vertical alignment}
+
 \item{alpha}{Transparency level of region immediately surrounding colourbar,
 including behind text. Lower values are more transparent.}
 
-\item{tcol}{Colour of text, tick marks, and lines on colourbar}
+\item{text_col}{Colour of text, tick marks, and lines on colourbar}
 
-\item{ps}{PointSize of text labels}
+\item{fontsize}{Size of text labels (in ggplot terms; default=3)}
 }
 \description{
 Adds a colourbar to an existing map. Intended to be used in combination with

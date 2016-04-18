@@ -54,6 +54,7 @@ add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
     y1 <- yrange [2]
     rdat <- data.frame (cbind ("lon"=c (x0, x0, x1, x1, x0), 
                                "lat"=c (y0, y1, y1, y0, y0)))
+    lon <- lat <- id <- NULL # suppress 'no visible binding' error
     aes2 <- ggplot2::aes (x=lon, y=lat, size=0)
     map <- map + ggplot2::geom_path (data=rdat, mapping=aes2, inherit.aes=FALSE,
                                      colour=rgb (1, 1, 1, alpha))
@@ -81,6 +82,7 @@ add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
     # main line 
     segdat <- data.frame (x1=yaxs_pos [1], x2=max (xrange),
                           y1=xaxs_pos [1], y2=xaxs_pos [1])
+    x2 <- y2 <- NULL
     map <- map + gs (data=segdat, colour=colour,
                             mapping=aes (x=x1, y=y1, xend=x2, yend=y2))
 

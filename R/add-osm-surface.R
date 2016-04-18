@@ -88,6 +88,7 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
             xy <- xy0 [xy0$inp > 0, ]
 
         # TODO: Add border to geom_polygon call
+        lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
         aes <- ggplot2::aes (x=lon, y=lat, group=id, fill=z) 
         map <- map + ggplot2::geom_polygon (data=xy, mapping=aes, size=1) +
                         ggplot2::scale_fill_gradientn (colours=cols) 
@@ -147,6 +148,12 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
 #' @param xy List of coordinates of spatial objects
 #' @param dat A data surface (which may be irregular) used to provide the
 #' z-values for the resultant data frame.
+#' @param bg background colour from 'add_osm_surface()', passed here only to
+#' confirm whether it is given or missing
+#' @param grid_size Size of interpolation grid as taken from 'add_osm_surface()'
+#' @param method Either 'idw' (Inverse Distance Weighting as spatstat::idw;
+#' default), otherwise uses 'Gaussian' for kernel smoothing (as
+#' spatstat::Smooth.ppp)
 #' @return A single data frame of object IDs, coordinates, and z-values
 list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
 {

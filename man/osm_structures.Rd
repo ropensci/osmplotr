@@ -30,7 +30,8 @@ automate map production.
 structures <- c ("highway", "park", "grass")
 structs <- osm_structures (structures=structures, col_scheme="light")
 # make_osm_map returns potentially modified list of data
-dat <- make_osm_map (bbox=get_bbox(c (-0.15, 51.5, -0.1, 51.52)),
-    osm_data=london, structures=structs)
+dat <- make_osm_map (osm_data=london, structures=structs)
+# map contains updated $osm_data and actual map in $map
+print (dat$map)
 }
 

@@ -15,9 +15,8 @@ library (osmplotr)
 library (maptools)
 ```
 ```{r, echo=FALSE, message=FALSE}
-require (devtools)
 setwd ("../..")
-load_all ("osmplotr")
+devtools::load_all ("osmplotr")
 setwd ("./osmplotr/vignettes")
 ```
 

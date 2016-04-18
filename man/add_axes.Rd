@@ -4,7 +4,7 @@
 \alias{add_axes}
 \title{add_axes}
 \usage{
-add_axes(map, colour = "black", axis_pos = c(0.02, 0.03), alpha = 0.5,
+add_axes(map, colour = "black", axis_pos = c(0.02, 0.03), alpha = 0.4,
   fontsize = 3, fontface, fontfamily)
 }
 \arguments{

@@ -5,8 +5,6 @@
 #' an entire map to be produced according to the graphical format specified with
 #' the `structures` argument.  
 #' 
-#' @param filename Name of plot file; default=NULL plots to screen device (low
-#' quality and likely slow)
 #' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
 #' columns of min and max values, and rows of x and y values.  If NULL, bbox is
 #' taken from the largest extent of OSM objects in osm_data.
@@ -18,22 +16,28 @@
 #' from osm_structures(), and potentially modified to alter lists of structures
 #' to be plotted, and their associated colours. Objects are overlaid on plot
 #' according to the order given in 'structures'.
-#' @param width Width of graphics device, with height calculated according to
-#' latitudinal and longitudinal proportions of 'bbox'.
 #' @param dat_prefix Prefix for data structures (default 'dat_'). Final data
 #' structures are created by appending the suffixes from osm_structures().
-#' @return list of OSM structures each as Spatial(Polygon/List)DataFrame, and
-#' appended to `osm_data` (which is NULL by default).
+#' @return List of two components: (i) List of OSM structures each as
+#' Spatial(Polygon/List)DataFrame and appended to `osm_data` (which is NULL by
+#' default), and (ii) The map as a ggplot2 object
 #' @export
 #'
 #' @section Note:
 #' If 'osm_data=NULL', then data will be downloaded, which can take some time.
 #' Progress is dumped to screen.
+#'
+#' @examples
+#' structures <- c ("highway", "park", "grass")
+#' structs <- osm_structures (structures=structures, col_scheme="light")
+#' # make_osm_map returns potentially modified list of data
+#' dat <- make_osm_map (osm_data=london, structures=structs)
+#' print (dat$map)
 
 
-make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
-                          structures=osm_structures (), width=640,
-                          dat_prefix='dat_')
+
+make_osm_map <- function (bbox=NULL, osm_data=NULL,
+                          structures=osm_structures (), dat_prefix='dat_')
 {
     if (is.null (bbox)) # get it from osm_data
     {
@@ -64,7 +68,8 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
         structs_full <- structures
         structures <- structures [structs_new,]
 
-        cat ('Downloading and extracting OSM data for', ns, 'structures ...\n')
+        cat ('Downloading and extracting OSM data for', 
+             nrow (structures), 'structures ...\n')
         pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
         t0 <- proc.time ()
         for (i in 1:nrow (structures)) {
@@ -85,15 +90,12 @@ make_osm_map <- function (filename=NULL, bbox=NULL, osm_data=NULL,
     ns <- nrow (structures) - 1 # last row is background
 
     bg <- structures$col [structures$structure == 'background']
-    plot_osm_basemap (bbox=bbox, filename=filename, bg=bg, width=width)
+    map <- plot_osm_basemap (bbox=bbox, bg=bg)
     for (i in seq (nrow (structures) - 1))
     {
         obji <- paste0 ('dat_', structures$suffix [i])
-        add_osm_objects (osm_data [[obji]], col=structures$cols [i])
+        map <- add_osm_objects (map, osm_data [[obji]], col=structures$cols [i])
     }
 
-    if (!is.null (filename)) 
-        junk <- dev.off (which=dev.cur())
-
-    return (osm_data)
+    list (osm_data=osm_data, map=map)
 }

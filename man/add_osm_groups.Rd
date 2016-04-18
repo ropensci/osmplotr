@@ -5,7 +5,7 @@
 \title{add_osm_groups}
 \usage{
 add_osm_groups(map, obj, groups, cols, bg, make_hull = FALSE, boundary = -1,
-  size, shape, borderWidth, colmat = TRUE, rotate, lwd = 0)
+  size, shape, borderWidth, colmat = TRUE, rotate)
 }
 \arguments{
 \item{map}{A ggplot2 object to which the grouped objects are to be added}
@@ -49,10 +49,6 @@ the colours of groups are specified directly by the vector of cols.}
 
 \item{rotate}{Passed to colour_mat() to rotate colours by the specified
 number of degrees clockwise.}
-
-\item{size}{Width of lines for SpatialLines objects; width of boundary lines
-for SpatialPolygon objects (in which case default = 0); or size of
-SpatialPoints.}
 }
 \value{
 Modified version of map with groups added

@@ -244,7 +244,7 @@ print (map)
 graphics.off ()
 ```
 ```{r map1-print, eval=FALSE, echo=FALSE}
-png (width=600, height=200, filename="map1.png")
+png (width=800, height=250, filename="map1.png")
 # dev.new (width=10, height=5)
 # extrafont::loadfonts ()
 dat <- data.frame (x=mean (bbox[1,]), y=mean (bbox [2,]), lab="osmplotr")
@@ -260,7 +260,7 @@ map <- add_osm_surface (map, dat_H, dat=cbind (xy, z),
 
 #map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=60, colour="white",
 #                                 family="Lato Light", nudge_y=0.0015)
-map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=40, colour="white",
+map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour="white",
                                  family="Purisa", nudge_y=0.001, fontface=2)
 print (map2)
 graphics.off ()

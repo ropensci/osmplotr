@@ -28,7 +28,6 @@
 #' print (map)
 #' 
 #' # Polygons with different coloured borders
-#' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
 #' map <- add_osm_objects (map, obj=london$dat_HP, col="gray80")
 #' map <- add_osm_objects (map, london$dat_T, col="green")
@@ -49,6 +48,7 @@ add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
         col <- as.character (col)
     }
 
+    lon <- lat <- id <- NULL # suppress 'no visible binding' error
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
         if (missing (size))

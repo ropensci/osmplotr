@@ -7,13 +7,6 @@
 #' extract_osm_objects()
 #' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group
-#' @param make_hull Either a single boolean value or a vector of same length as
-#' groups specifying whether convex hulls should be constructed around all
-#' groups (TRUE), or whether the group already defines a hull (convex or
-#' otherwise; FALSE).
-#' @param boundary (negative, 0, positive) values define whether the boundary of
-#' groups should (exlude, bisect, include) objects which straddle the precise
-#' boundary. (Has no effect if 'bg' is given)
 #' @param cols Either a vector of >= 4 colours passed to colour_mat() (if
 #' 'colmat=T') to arrange as a 2-D map of visually distinct colours (default
 #' uses rainbow colours), or (if 'colmat=F'), a vector of the same length as
@@ -21,6 +14,13 @@
 #' @param bg If given, then any objects not within groups are coloured this
 #' colour, otherwise (if not given) they are assigned to nearest group and
 #' coloured accordingly. ('boundary' has no effect in this latter case.)
+#' @param make_hull Either a single boolean value or a vector of same length as
+#' groups specifying whether convex hulls should be constructed around all
+#' groups (TRUE), or whether the group already defines a hull (convex or
+#' otherwise; FALSE).
+#' @param boundary (negative, 0, positive) values define whether the boundary of
+#' groups should (exlude, bisect, include) objects which straddle the precise
+#' boundary. (Has no effect if 'bg' is given)
 #' @param size Size argument passed to ggplot2 (polygon, path, point) functions:
 #' determines width of lines for (polygon, line), and sizes of points.
 #' Respective defaults are (0, 0.5, 0.5).
@@ -32,9 +32,6 @@
 #' the colours of groups are specified directly by the vector of cols.
 #' @param rotate Passed to colour_mat() to rotate colours by the specified
 #' number of degrees clockwise.
-#' @param size Width of lines for SpatialLines objects; width of boundary lines
-#' for SpatialPolygon objects (in which case default = 0); or size of
-#' SpatialPoints.
 #' @return Modified version of map with groups added
 #' @export
 #'
@@ -105,7 +102,7 @@
 
 add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                boundary=-1, size, shape, borderWidth,
-                               colmat=TRUE, rotate, lwd=0)
+                               colmat=TRUE, rotate)
 {
     if (missing (groups))
     {
@@ -159,16 +156,16 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         group_pairs <- combn (length (groups), 2)
         for (i in seq (ncol (group_pairs)))
         {
-            x1 <- coordinates (groups [[group_pairs [1, i] ]]) [,1]
-            y1 <- coordinates (groups [[group_pairs [1, i] ]]) [,2]
+            x1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [,1]
+            y1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [,2]
             indx <- which (!duplicated (cbind (x1, y1)))
             x1 <- x1 [indx]
             y1 <- y1 [indx]
             xy1 <- spatstat::ppp (x1, y1, xrange=range (x1), yrange=range (y1))
             ch1 <- spatstat::convexhull (xy1)
             bdry1 <- cbind (ch1$bdry[[1]]$x, ch1$bdry[[1]]$y)
-            x2 <- coordinates (groups [[group_pairs [2, i] ]]) [,1]
-            y2 <- coordinates (groups [[group_pairs [2, i] ]]) [,2]
+            x2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [,1]
+            y2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [,2]
             indx <- which (!duplicated (cbind (x2, y2)))
             x2 <- x2 [indx]
             y2 <- y2 [indx]
@@ -456,6 +453,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
     xyflat <- do.call (rbind, xym)
     if (!missing (bg))
         cols <- c (cols, bg)
+    lon <- lat <- id <- NULL # suppress 'no visible binding' error
     aes <- ggplot2::aes (x=lon, y=lat, group=id) 
 
     if (class (obj) == 'SpatialPolygonsDataFrame')

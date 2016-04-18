@@ -4,13 +4,10 @@
 \alias{make_osm_map}
 \title{make_osm_map}
 \usage{
-make_osm_map(filename = NULL, bbox = NULL, osm_data = NULL,
-  structures = osm_structures(), width = 640, dat_prefix = "dat_")
+make_osm_map(bbox = NULL, osm_data = NULL, structures = osm_structures(),
+  dat_prefix = "dat_")
 }
 \arguments{
-\item{filename}{Name of plot file; default=NULL plots to screen device (low
-quality and likely slow)}
-
 \item{bbox}{the bounding box for the map.  A 2-by-2 matrix of 4 elements with
 columns of min and max values, and rows of x and y values.  If NULL, bbox is
 taken from the largest extent of OSM objects in osm_data.}
@@ -25,15 +22,13 @@ from osm_structures(), and potentially modified to alter lists of structures
 to be plotted, and their associated colours. Objects are overlaid on plot
 according to the order given in 'structures'.}
 
-\item{width}{Width of graphics device, with height calculated according to
-latitudinal and longitudinal proportions of 'bbox'.}
-
 \item{dat_prefix}{Prefix for data structures (default 'dat_'). Final data
 structures are created by appending the suffixes from osm_structures().}
 }
 \value{
-list of OSM structures each as Spatial(Polygon/List)DataFrame, and
-appended to `osm_data` (which is NULL by default).
+List of two components: (i) List of OSM structures each as
+Spatial(Polygon/List)DataFrame and appended to `osm_data` (which is NULL by
+default), and (ii) The map as a ggplot2 object
 }
 \description{
 Makes an entire OSM map for the given bbox using the submitted data, or by
@@ -45,5 +40,12 @@ the `structures` argument.
 
 If 'osm_data=NULL', then data will be downloaded, which can take some time.
 Progress is dumped to screen.
+}
+\examples{
+structures <- c ("highway", "park", "grass")
+structs <- osm_structures (structures=structures, col_scheme="light")
+# make_osm_map returns potentially modified list of data
+dat <- make_osm_map (osm_data=london, structures=structs)
+print (dat$map)
 }
 

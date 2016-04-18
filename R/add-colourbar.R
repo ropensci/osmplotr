@@ -10,13 +10,15 @@
 #' @param barlength Relative length of the bar (parallel to its direction),
 #' either a signle number giving total length of centred bar, or two numbers
 #' giving lower/upper or left/right limits.
-#' @param cols Vector of colours
 #' @param zlims Vector of (min,max) values for scale of colourbar. These should
 #' be the values returned from add_osm_surface (). 
+#' @param cols Vector of colours
+#' @param vertical If FALSE, colourbar is aligned horizontally instead of
+#' default vertical alignment
 #' @param alpha Transparency level of region immediately surrounding colourbar,
 #' including behind text. Lower values are more transparent.
-#' @param tcol Colour of text, tick marks, and lines on colourbar
-#' @param ps PointSize of text labels
+#' @param text_col Colour of text, tick marks, and lines on colourbar
+#' @param fontsize Size of text labels (in ggplot terms; default=3)
 #' @export
 #'
 #' @examples
@@ -215,6 +217,7 @@ add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols,
     gs <- ggplot2::geom_segment
     glab <- ggplot2::geom_label
 
+    x2 <- y2 <- NULL # suppress 'no visible binding' error
     map + gs (data=segdat, colour=text_col,
                      mapping=ggplot2::aes (x=x1, y=y1, xend=x2, yend=y2)) +
                 glab (data=labdat, mapping=ggplot2::aes (x=x, y=y, label=z),
