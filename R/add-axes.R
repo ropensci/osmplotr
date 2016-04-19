@@ -19,6 +19,13 @@
 #' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
 #' map <- add_axes (map)
 #' print (map)
+#'
+#' # Map items are added sequentially, so adding axes prior to objects will
+#' # produce a different result.
+#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+#' map <- add_axes (map)
+#' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
+#' print (map)
 
 add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
                       alpha=0.4, fontsize=3, fontface, fontfamily)

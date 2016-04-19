@@ -1,21 +1,21 @@
 #' colour_mat
 #'
-#' Generates a 2D matrix of graduated colours.
+#' Generates a 2D matrix of graduated colours by interpolating between the given
+#' colours specifying the four corners.
 #'
-#' @param n number of rows and columns (default = 10; if length 2, then
-#' dimensions of rectangle). 
+#' @param n number of rows and columns of colour matrix (default = 10; if length
+#' 2, then dimensions of rectangle). 
 #' @param cols vector of length >= 4 of colors (example, default = rainbow
 #' (4), or from RColorBrewer, brewer.pal (4, 'Set1')). cols are wrapped
 #' clockwise around the corners from top left to bottom left. 
 #' @param rotate rotates the entire colour matrix by the specified angle (in
 #' degrees).
-#' @param plot plots the colour matrix (default FALSE)
+#' @param plot plots the colour matrix 
 #' @return matrix of colours
 #' @export
 #'
 #' @examples
-#' library (osmplotr)
-#' cm <- colour_mat (n=20, cols=rainbow(4), rotate=90, plot=TRUE)
+#' cm <- colour_mat (n=5, cols=rainbow(4), rotate=90, plot=TRUE)
 
 colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
 {

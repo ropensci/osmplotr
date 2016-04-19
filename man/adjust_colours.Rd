@@ -20,8 +20,9 @@ and adjusted colours}
 Corresponding vector of adjusted colours (as hexadecimal strings)
 }
 \description{
-Adjusts a given colour by lightening or darkening it by the specified amount.
-Adjustments are made in RGB space, for limitations of which see ?convertColor
+Adjusts a given colour by lightening or darkening it by the specified amount
+(relative scale of -1 to 1).  Adjustments are made in RGB space, for
+limitations of which see ?convertColor
 }
 \examples{
 cols <- adjust_colours (cols=heat.colors (10), adj=-0.2, plot=TRUE)

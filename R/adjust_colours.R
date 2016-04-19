@@ -1,7 +1,8 @@
 #' adjust_colours
 #'
-#' Adjusts a given colour by lightening or darkening it by the specified amount.
-#' Adjustments are made in RGB space, for limitations of which see ?convertColor
+#' Adjusts a given colour by lightening or darkening it by the specified amount
+#' (relative scale of -1 to 1).  Adjustments are made in RGB space, for
+#' limitations of which see ?convertColor
 #'
 #' @param cols A vector of R colours (for allowable formats of which, see
 #' ?col2rgb).
@@ -40,9 +41,9 @@ adjust_colours <- function (cols=NULL, adj=0, plot=FALSE)
             rect (i-1, 1, i, 2, col=cols_old [i], border=NA)
             rect (i-1, 0, i, 1, col=cols [i], border=NA)
         }
-        rect (0, 1.4, n, 1.6, col = rgb (1, 1, 1, 0.9), border = NA)
+        rect (0, 1.4, n, 1.6, col = rgb (1, 1, 1, 0.5), border = NA)
         text (n / 2, 1.5, labels = "old")
-        rect (0, 0.4, n, 0.6, col = rgb (1, 1, 1, 0.9), border = NA)
+        rect (0, 0.4, n, 0.6, col = rgb (1, 1, 1, 0.5), border = NA)
         text (n / 2, 0.5, labels = "new")
     }
 

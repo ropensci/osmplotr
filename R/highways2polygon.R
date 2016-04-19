@@ -1,4 +1,4 @@
-#' highways2polygon
+#' connect_highways
 #'
 #' Takes a list of highways names which must enclose an internal area, and returns
 #' a SpatialLines object containing a sequence of OSM nodes which cyclically
@@ -14,8 +14,26 @@
 #' @return A single data.frame containing the lat-lon coordinates of the cyclic
 #' line connecting all given streets.
 #' @export
+#'
+#' @examples
+#' bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52)) # Central London, U.K.
+#' highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
+#'                'Fleet.St', 'Aldwych')
+#' highways1 <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
+#' # Note that dots signify "anything", including whitespace and apostrophes
+#' highways <- c ('Queen.s.Walk', 'Blackfriars', 'Waterloo', 'The.Cut')
+#' highways2 <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
+# 'connect_highways' can not be guaranteed failsafe owing both to the inherently
+#' # unpredictable nature of OpenStreetMap, as well as to the unknown relationships
+#' # between named highways. The `plot` enable enables problematic cases to be examined and
+#' # hopefully resolved, as in the following case:
+#' highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+#'                "Fleet.St", "Aldwych")
+#' bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
+#' highway_list <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
 
-highways2polygon <- function (highways=NULL, bbox=NULL, plot=FALSE)
+
+connect_highways <- function (highways=NULL, bbox=NULL, plot=FALSE)
 {
     if (is.null (highways))
         stop ('A vector of highway names must be given')

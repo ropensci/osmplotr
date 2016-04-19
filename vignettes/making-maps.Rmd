@@ -190,7 +190,7 @@ The visualisation functions considered below enable particular regions of maps
 to be visually highlighted. While it may often be desirable to highlight regions
 according to a user's own data, `osmplotr` also enables regions to be defined by
 providing a list of the names of highways which encircle a desired region. The
-function which achieves this is `highways2polygons`, examples of which are,
+function which achieves this is `connect_highways`, examples of which are,
 ```{r, eval=FALSE}
 # These highways extend beyond the previous, smaller boox
 bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
@@ -933,9 +933,9 @@ map <- add_osm_groups (map, london$dat_HP, groups=groups, boundary=0,
 
 The extraction of bounding polygons from named highways is not failsafe, as
 demonstrated by the above error message. To understand why it may not work, it
-is usefull to examine `highways2polygons` in more detail, as follows.
+is usefull to examine `connect_highways` in more detail, as follows.
 
-### 6.2 highways2polygon in detail
+### 6.2 `connect_highways` in detail
 
 `highways2polygon` finds a sequential polygon that circularly connects the
 named highways. Cases where no circular connection is possible generate an error
@@ -959,7 +959,7 @@ sequence is `connect_highways`, which, as explained in `?connect_highways`,
 
 However, even once the highways are connected, the individual components of each
 highway may not necessarily connect in a continuous manner to complete the
-cycle. The final task, completed within the `highways2polygons` routine, is thus
+cycle. The final task, completed within the `connect_highways` routine, is thus
 ensuring that the components of each individual highway actually connect,
 through sequentially connecting the closest pair of components until a shortest
 path is possible between the two components which connect with other highways.
@@ -967,7 +967,7 @@ path is possible between the two components which connect with other highways.
 This procedure can not be guaranteed failsafe owing both to the inherently
 unpredictable nature of OpenStreetMap, as well as to the unknown relationships
 between named highways. To enable problematic cases to be examined and hopefully
-resolved, `highways2polygons` has a `plot` option:
+resolved, `connect_highways` has a `plot` option:
 ```{r highways2polygon, fig.width=4, message=FALSE, eval=FALSE}
 # TODO: Set eval=FALSE before cran re-sub!!
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",

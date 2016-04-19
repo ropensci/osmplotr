@@ -1,3 +1,15 @@
+osmplotr v0.2.0
+===============
+
+Major update with (almost) all plotting routines shifted from graphics::plot to
+ggplot2.
+
+Changes:
+
+* `click_map` removed
+* `highways2polygon` renamed `connect_highways`
+
+
 osmplotr v0.1-3
 ===============
 

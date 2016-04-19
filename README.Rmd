@@ -247,7 +247,6 @@ png (width=800, height=250, filename="map1.png")
 dat <- data.frame (x=mean (bbox[1,]), y=mean (bbox [2,]), lab="osmplotr")
 aes <- ggplot2::aes (x, y, label=lab)
 
-bbox <- get_bbox (c(-0.15,51.503,-0.10,51.513))
 bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
 map <- plot_osm_basemap (bbox=bbox, bg="gray20")
 cols <- gray (0:50 / 50)
