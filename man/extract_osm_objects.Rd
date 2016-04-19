@@ -26,11 +26,7 @@ max values, and rows of x and y values.}
 \item{verbose}{If TRUE, provides notification of progress}
 }
 \value{
-A list of 2 components:
-\enumerate{
- \item obj: A data frame of sp objects
- \item warn: Any warnings produced in downloading the data
-}
+A data frame of sp objects
 }
 \description{
 Downloads OSM XML objects and extracts 'sp' polygons or lines.  Requires

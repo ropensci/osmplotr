@@ -2,7 +2,7 @@
 
 ![map1](./figure/map1.png)
 
-R package to produce visually impressive customisable images of urban areas from OpenStreetMap (OSM) data, using data downloaded from the [overpass api](http://overpass-api.de/). Maps can be made with the following easy steps:
+R package to produce visually impressive customisable images of OpenStreetMap (OSM) data downloaded internally from the [overpass api](http://overpass-api.de/). Maps can be made with the following easy steps:
 
 1.  Specify the bounding box for the desired region
 
@@ -13,7 +13,7 @@ R package to produce visually impressive customisable images of urban areas from
 2.  Download the desired data---in this case, all building perimeters.
 
     ``` r
-    dat_B <- extract_osm_objects (key="building", bbox=bbox)$obj
+    dat_B <- extract_osm_objects (key="building", bbox=bbox)
     ```
 
 3.  Initiate an `osm_basemap` with desired background (`bg`) colour
@@ -53,9 +53,9 @@ A simple map
 Simple maps can be made by overlaying different kinds of OSM data in different colours:
 
 ``` r
-dat_H <- extract_osm_objects (key="highway", bbox=bbox)$obj
-dat_P <- extract_osm_objects (key="park", bbox=bbox)$obj
-dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)$obj
+dat_H <- extract_osm_objects (key="highway", bbox=bbox)
+dat_P <- extract_osm_objects (key="park", bbox=bbox)
+dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)
 ```
 
 ``` r

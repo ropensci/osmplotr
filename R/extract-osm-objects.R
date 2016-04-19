@@ -17,11 +17,7 @@
 #' max values, and rows of x and y values.
 #' @param verbose If TRUE, provides notification of progress
 #'
-#' @return A list of 2 components:
-#' \enumerate{
-#'  \item obj: A data frame of sp objects
-#'  \item warn: Any warnings produced in downloading the data
-#' }
+#' @return A data frame of sp objects
 #' @export
 
 extract_osm_objects <- function (key='building', value=NULL, extra_pairs=NULL, 
@@ -87,13 +83,13 @@ extract_osm_objects <- function (key='building', value=NULL, extra_pairs=NULL,
     value <- valold
     key <- keyold
 
-    warn <- obj <- NULL
+    obj <- NULL
 
     if (verbose) message ("downloading OSM data ... ")
     dat <- httr::GET (query)
     if (dat$status_code != 200)
-        warn <- httr::http_status (dat)$message
-    # Encoding must be supplied to suppress warning
+        warning (httr::http_status (dat)$message)
+    # Encoding must be supplied in the following to suppress warning
     dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
@@ -133,7 +129,7 @@ extract_osm_objects <- function (key='building', value=NULL, extra_pairs=NULL,
         pids <- lapply (pids, function (i) unique (i))
         nvalid <- sum (sapply (pids, length))
         if (nvalid <= 3) # (nodes, ways, relations)
-            warn <- paste0 ('No valid data for (', key, ', ', value, ')')
+            warning (paste0 ('No valid data for (', key, ', ', value, ')'))
         else
         {
             obj <- subset (dato, ids = pids)
@@ -146,5 +142,5 @@ extract_osm_objects <- function (key='building', value=NULL, extra_pairs=NULL,
         }
     }
 
-    return (list (obj=obj, warn=warn))
+    return (obj)
 }

@@ -27,6 +27,7 @@ a SpatialLines object containing a sequence of OSM nodes which cyclically
 connect all highways. Will fail if the streets do not form a cycle.
 }
 \examples{
+\dontrun{
 bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52)) # Central London, U.K.
 highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
                'Fleet.St', 'Aldwych')
@@ -41,5 +42,6 @@ highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
 bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
 highway_list <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
+}
 }
 

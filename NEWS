@@ -2,13 +2,17 @@ osmplotr v0.2.0
 ===============
 
 Major update with (almost) all plotting routines shifted from graphics::plot to
-ggplot2.
+ggplot2. All previous parameters specifying graphics devices (such as heights and
+widths) no longer apply.
 
 Changes:
 
 * 'click_map' removed
 * 'connect_highways' renamed 'get_highway_cycle'
 * 'highways2polygon' renamed 'connect_highways'
+* 'extract_highways' no longer exported
+* 'extract_osm_objects' now just returns objects (instead of '$obj' and
+    '$warn'), and dumps warnings direct to screen.
 
 
 osmplotr v0.1-3

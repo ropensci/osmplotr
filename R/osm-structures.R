@@ -17,6 +17,9 @@
 #' @export
 #'
 #' @examples
+#' # Default structures:
+#' osm_structures ()
+#' # user-defined structures:
 #' structures <- c ("highway", "park", "grass")
 #' structs <- osm_structures (structures=structures, col_scheme="light")
 #' # make_osm_map returns potentially modified list of data

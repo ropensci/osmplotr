@@ -18,7 +18,6 @@
 #'  \item obj: A data frame of sp objects
 #'  \item warn: Any warnings produced in downloading the data
 #' }
-#' @export
 
 extract_highways <- function (highway_names=NULL, bbox=NULL)
 {

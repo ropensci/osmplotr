@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52)) # Central London, U.K.
 #' highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
 #'                'Fleet.St', 'Aldwych')
@@ -31,6 +32,7 @@
 #'                "Fleet.St", "Aldwych")
 #' bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
 #' highway_list <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
+#' }
 
 
 connect_highways <- function (highways=NULL, bbox=NULL, plot=FALSE)
@@ -39,70 +41,6 @@ connect_highways <- function (highways=NULL, bbox=NULL, plot=FALSE)
         stop ('A vector of highway names must be given')
     if (is.null (bbox))
         stop ('A bounding box must be given')
-
-    haversand <- function (way1, way2)
-    {
-        # Returns the minimal Haversand distance between 2 ways, along with the
-        # element numbers in each way corresponding to that minimal distance
-        x1 <- array (way1 [,1], dim=c(nrow (way1), nrow (way2)))
-        y1 <- array (way1 [,2], dim=c(nrow (way1), nrow (way2)))
-        x2 <- t (array (way2 [,1], dim=c(nrow (way2), nrow (way1))))
-        y2 <- t (array (way2 [,2], dim=c(nrow (way2), nrow (way1))))
-        # Haversand distances:
-        xd <- (x2 - x1) * pi / 180
-        yd <- (y2 - y1) * pi / 180
-        d <- sin (yd / 2) * sin (yd / 2) + cos (y2 * pi / 180) *
-            cos (y1 * pi / 180) * sin (xd / 2) * sin (xd / 2)
-        d <- 2.0 * atan2 (sqrt (d), sqrt (1.0 - d))
-        d <- 6371 * d
-        i1 <- which.min (apply (d, 1, min))
-        i2 <- which.min (apply (d, 2, min))
-        c (i1, i2, min (d))
-    }
-
-    shortest_way <- function (way, node_from, node_to)
-    {
-        # way is a single highway (as a list of OSM components). shortest_way
-        # returns the shortest path between node_from and node_to (both as names
-        # of nodes), or NULL if node_from and node_to are not connected.
-        nf <- which (sapply (way, function (x) node_from %in% rownames (x)))
-        nt <- which (sapply (way, function (x) node_to %in% rownames (x)))
-        # make igraph of entire way
-        from <- unlist (lapply (way, function (x) 
-                                rownames (x) [1:(nrow (x) - 1)]))
-        to <- unlist (lapply (way, function (x) rownames (x) [2:nrow (x)]))
-        # graph_from_edgelist is @importFrom
-        #g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
-        g <- graph_from_edgelist (cbind (from, to), directed=FALSE)
-
-        from_node_list <- rep (node_from, length (node_to))
-        to_node_list <- rep (node_to, each=length (node_from))
-        maxlen <- 0
-        fromi <- toi <- NA
-        the_path <- NULL
-        for (j in seq (from_node_list))
-        {
-            # shortest_paths is @importFrom
-            #sp <- suppressWarnings (igraph::shortest_paths (g,
-            #                        from_node_list [j], to_node_list [j]))
-            sp <- suppressWarnings (shortest_paths (g,
-                                    from_node_list [j], to_node_list [j]))
-            sp <- sp$vpath [[1]]
-            if (length (sp) > maxlen)
-            {
-                maxlen <- length (sp)
-                the_path <- names (sp)
-            }
-        }
-        if (!is.null (the_path))
-        {
-            way_flat <- do.call (rbind, way)
-            indx <- match (the_path, rownames (way_flat))
-            stopifnot (all (!is.na (indx)))
-            the_path <- way_flat [indx,]
-        }
-        return (the_path)
-    }
 
     # Uses extract_highways to generate a list of highways, each component of
     # which is a spatially ordered list of distinct segments. Then uses
@@ -307,3 +245,84 @@ connect_highways <- function (highways=NULL, bbox=NULL, plot=FALSE)
     indx <- which (!duplicated (rownames (path)))
     return (sp::SpatialPoints (path [indx,]))
 }
+
+
+#' haversand
+#'
+#' Returns the minimal Haversand distance between 2 ways, along with the
+#' element numbers in each way corresponding to that minimal distance
+#'
+#' @param way1 A matrix or data frame of spatial coordinates
+#' @param way2 A matrix or data frame of spatial coordinates
+#' @return Vector of 3 elements: numbers of elements in (way1, way2)
+#' corresponding to minimal distance, and the distance itself.
+haversand <- function (way1, way2)
+{
+    x1 <- array (way1 [,1], dim=c(nrow (way1), nrow (way2)))
+    y1 <- array (way1 [,2], dim=c(nrow (way1), nrow (way2)))
+    x2 <- t (array (way2 [,1], dim=c(nrow (way2), nrow (way1))))
+    y2 <- t (array (way2 [,2], dim=c(nrow (way2), nrow (way1))))
+    # Haversand distances:
+    xd <- (x2 - x1) * pi / 180
+    yd <- (y2 - y1) * pi / 180
+    d <- sin (yd / 2) * sin (yd / 2) + cos (y2 * pi / 180) *
+    cos (y1 * pi / 180) * sin (xd / 2) * sin (xd / 2)
+    d <- 2.0 * atan2 (sqrt (d), sqrt (1.0 - d))
+    d <- 6371 * d
+    i1 <- which.min (apply (d, 1, min))
+    i2 <- which.min (apply (d, 2, min))
+    c (i1, i2, min (d))
+}
+
+#' shortest_way
+#'
+#' returns the shortest path between node_from and node_to (both as names
+#' of nodes), or NULL if node_from and node_to are not connected.
+#'
+#' @param way A single highway (as a list of OSM components)
+#' @param node_from The ID of a node in way from which to calculate the
+#' shortest_path
+#' @param node_to The ID of a node in way towards which to calculate the
+#' shortest_path
+#' @return Shortest path as list of nodal IDs (or NULL if no shortest path)
+shortest_way <- function (way, node_from, node_to)
+{
+    nf <- which (sapply (way, function (x) node_from %in% rownames (x)))
+    nt <- which (sapply (way, function (x) node_to %in% rownames (x)))
+    # make igraph of entire way
+    from <- unlist (lapply (way, function (x) 
+                            rownames (x) [1:(nrow (x) - 1)]))
+    to <- unlist (lapply (way, function (x) rownames (x) [2:nrow (x)]))
+    # graph_from_edgelist is @importFrom
+    #g <- igraph::graph_from_edgelist (cbind (from, to), directed=FALSE)
+    g <- graph_from_edgelist (cbind (from, to), directed=FALSE)
+
+    from_node_list <- rep (node_from, length (node_to))
+    to_node_list <- rep (node_to, each=length (node_from))
+    maxlen <- 0
+    fromi <- toi <- NA
+    the_path <- NULL
+    for (j in seq (from_node_list))
+    {
+        # shortest_paths is @importFrom
+        #sp <- suppressWarnings (igraph::shortest_paths (g,
+        #                        from_node_list [j], to_node_list [j]))
+        sp <- suppressWarnings (shortest_paths (g,
+                                from_node_list [j], to_node_list [j]))
+        sp <- sp$vpath [[1]]
+        if (length (sp) > maxlen)
+        {
+            maxlen <- length (sp)
+            the_path <- names (sp)
+        }
+    }
+    if (!is.null (the_path))
+    {
+        way_flat <- do.call (rbind, way)
+        indx <- match (the_path, rownames (way_flat))
+        stopifnot (all (!is.na (indx)))
+        the_path <- way_flat [indx,]
+    }
+    return (the_path)
+}
+

@@ -24,15 +24,21 @@
 #' @export
 #'
 #' @section Note:
-#' If 'osm_data=NULL', then data will be downloaded, which can take some time.
-#' Progress is dumped to screen.
+#' If 'osm_data' is not given, then data will be downloaded, which can take some
+#' time.  Progress is dumped to screen.
 #'
 #' @examples
 #' structures <- c ("highway", "park", "grass")
 #' structs <- osm_structures (structures=structures, col_scheme="light")
-#' # make_osm_map returns potentially modified list of data
+#' # make_osm_map returns potentially modified list of data using the provided
+#' 'london' data:
 #' dat <- make_osm_map (osm_data=london, structures=structs)
+#' # or download data automatically using a defined bounding boox
+#' bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+#' \dontrun{
+#' dat <- make_osm_map (bbox=bbox, structures=structs)
 #' print (dat$map)
+#' }
 
 
 
@@ -75,10 +81,8 @@ make_osm_map <- function (bbox=NULL, osm_data=NULL,
         for (i in 1:nrow (structures)) {
             dat <- extract_osm_objects (key=structures$key [i],
                                         value=structures$value [i], bbox=bbox)
-            if (!is.null (dat$warn))
-                warning (paste0 (structures$structure [i], dat$warn))
             fname <- paste0 (dat_prefix, structures$suffix [i])
-            assign (fname, dat$obj)
+            assign (fname, dat)
             osm_data [[fname]] <- get (fname)
             setTxtProgressBar(pb, i / nrow (structures))
         }
