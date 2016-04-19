@@ -197,8 +197,15 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
     xymn [,2] <- ceiling (grid_size * 
                           (xymn [,2] - map$coordinates$limits$y [1]) / 
                           diff (map$coordinates$limits$y))
-    xymn [xymn < 1] <- NA
-    xymn [xymn > grid_size] <- NA
+    if (missing (bg))
+    {
+        xymn [xymn < 1] <- 1
+        xymn [xymn > grid_size] <- grid_size
+    } else
+    {
+        xymn [xymn < 1] <- NA
+        xymn [xymn > grid_size] <- NA
+    }
 
 
     if ('polygons' %in% class (xy) | 'lines' %in% class (xy))
@@ -210,8 +217,8 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
         xy <-  do.call (rbind, xy)
     } else # can only be points
     {
-        indx <- (xymn [,2] - 1) * grid_size + xymn [,1]
-        xy <- cbind (seq (dim (xy)[1]), xy, z [indx], indx)
+        indx2 <- (xymn [,2] - 1) * grid_size + xymn [,1]
+        xy <- cbind (seq (dim (xy)[1]), xy, z [indx2], indx)
     }
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
