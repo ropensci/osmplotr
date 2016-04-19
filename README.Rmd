@@ -6,8 +6,7 @@
 
 R package to produce visually impressive customisable images of urban areas from
 OpenStreetMap (OSM) data, using data downloaded from the 
-[overpass api](http://overpass-api.de/). The above map shows building polygons
-for a small portion of central London, U.K., and was made with the following
+[overpass api](http://overpass-api.de/). Maps can be made with the following
 easy steps:
 
 ```{r, echo=FALSE, message=FALSE}
@@ -258,7 +257,10 @@ map <- add_osm_surface (map, dat_H, dat=cbind (xy, z),
 
 #map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=60, colour="white",
 #                                 family="Lato Light", nudge_y=0.0015)
-map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour="white",
+map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour="black",
+                                 family="Purisa", fontface=2,
+                                 nudge_y=0.0005, nudge_x=0.0005)
+map2 <- map2 + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour="white",
                                  family="Purisa", nudge_y=0.001, fontface=2)
 print (map2)
 graphics.off ()

@@ -2,7 +2,7 @@
 
 ![map1](./figure/map1.png)
 
-R package to produce visually impressive customisable images of urban areas from OpenStreetMap (OSM) data, using data downloaded from the [overpass api](http://overpass-api.de/). The above map shows building polygons for a small portion of central London, U.K., and was made with the following easy steps:
+R package to produce visually impressive customisable images of urban areas from OpenStreetMap (OSM) data, using data downloaded from the [overpass api](http://overpass-api.de/). Maps can be made with the following easy steps:
 
 1.  Specify the bounding box for the desired region
 
