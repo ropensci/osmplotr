@@ -79,15 +79,14 @@ pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
                              c (51.505, 51.505, 51.515, 51.515)))
 ```
 
-and OSM objects within the defined regions highlighted with different colour schemes. The `col_extra` parameter defines the colour of the remaining, background area.
+and OSM objects within the defined regions highlighted with different colour schemes. `cols` defines colours for each group (with only one here), while `bg` defines the colour of the remaining, background area.
 
 ``` r
 map <- plot_osm_basemap (bbox=bbox, bg="gray20")
-map <- add_osm_groups (map, dat_B, groups=pts, col="orange", bg="gray40", 
-                   colmat=FALSE, boundary=1)
+map <- add_osm_groups (map, dat_B, groups=pts, cols="orange", bg="gray40")
 map <- add_osm_objects (map, london$dat_P, col="darkseagreen1")
-map <- add_osm_groups (map, london$dat_P, groups=pts, col='darkseagreen1',
-                   bg='darkseagreen', colmat=FALSE, boundary=0)
+map <- add_osm_groups (map, london$dat_P, groups=pts, cols='darkseagreen1',
+                   bg='darkseagreen', boundary=0)
 print (map)
 ```
 
@@ -97,10 +96,10 @@ Or maybe highlighted in dark-on-light:
 
 ``` r
 map <- plot_osm_basemap (bbox=bbox, bg="gray95")
-map <- add_osm_groups (map, dat_B, groups=pts, col="gray40", bg="gray85",
-                   colmat=FALSE, boundary=1)
-map <- add_osm_groups (map, dat_H, groups=pts, col="gray20", bg="gray70",
-                   colmat=FALSE, boundary=0)
+map <- add_osm_groups (map, dat_B, groups=pts, cols="gray40", bg="gray85",
+                   boundary=1)
+map <- add_osm_groups (map, dat_H, groups=pts, cols="gray20", bg="gray70",
+                   boundary=0)
 print (map)
 ```
 
@@ -108,7 +107,7 @@ print (map)
 
 ### Highlighting clusters
 
-`add_osm_groups` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. The argument `groups` in the following call is a list of `SpatialPoints` objects defining 12 small, spatially separated regions. Calling `add_osm_groups` with `col_extra=NA` (or `NULL`) forces all points lying outside those defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire area.
+`add_osm_groups` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. The argument `groups` in the following call is a list of `SpatialPoints` objects defining 12 small, spatially separated regions. Calling `add_osm_groups` with no `bg` argument forces all points lying outside those defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire region.
 
 ``` r
 map <- plot_osm_basemap (bbox=bbox, bg='gray20')
