@@ -54,16 +54,36 @@ add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols,
                            vertical=TRUE, alpha=0.4,
                            text_col="black", fontsize=3)
 {
-    if (is.null (cols))
+    # ---------------  sanity checks and warnings  ---------------
+    # ---------- map
+    if (missing (map))
+        stop ('map must be supplied to add_axes')
+    if (!is (map, 'ggplot'))
+        stop ('map must be a ggplot object')
+    # ---------- barwidth
+    barwidth <- test_len2 (barwidth, 'barwidth')
+    barwidth <- test_numeric (barwidth, 'barwidth', 0.02)
+    barwidth <- test_range (barwidth, 'barwidth', c (0, 1), 0.02)
+    # ---------- barlength
+    barlength <- test_len2 (barlength, 'barlength')
+    barlength <- test_numeric (barlength, 'barlength', 0.7)
+    barlength <- test_range (barlength, 'barlength', c (0, 1), 0.7)
+    # ---------- fontsize
+    fontsize <- test_len1 (fontsize, 'fontsize')
+    fontsize <- test_numeric (fontsize, 'fontsize', 3)
+    fontsize <- test_pos (fontsize, 'fontsize', 3)
+    # ---------- vertical
+    vertical <- test_len1 (vertical, 'vertical')
+    vertical <- test_logical (vertical, 'vertical', TRUE)
+    # ---------- alpha
+    alpha <- test_len1 (alpha, 'alpha')
+    alpha <- test_numeric (alpha, 'alpha', 0.4)
+    alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
+
+    if (missing (cols))
         stop ("cols must be specified in add_colourbar")
-    # Default sanity checks
-    if (!alpha >= 0 & alpha <= 1) alpha <- 0.4
-    if (length (barwidth) == 1)
-        if (barwidth < 0 | barwidth > 0.5)
-        barwidth <- 0.02
-    if (!is.numeric (fontsize))
-        fontsize <- 3
-    if (!all (is.numeric (barlength))) barlength <- 0.7
+    
+    # ---------------  end sanity checks and warnings  ---------------
 
     barwidth <- sort (barwidth)
     barlength <- sort (barlength)

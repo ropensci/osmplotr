@@ -7,8 +7,8 @@
 #' matrix of 4 elements with columns of min and max values, and rows of x and y
 #' values.
 #' @param structures Data frame returned by osm_structures() used here to
-#' specify background colour of plot; if 'structs=NULL', the colour is specified
-#' by 'bg'
+#' specify background colour of plot; if missing, the colour is specified by
+#' 'bg'
 #' @param bg Background colour of map (default = 'gray20' only if structs not
 #' given)
 #' @return ggplot object containing base map
@@ -20,8 +20,9 @@
 #' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
 #' print (map)
 
-plot_osm_basemap <- function (bbox, structures=NULL, bg='gray20')
+plot_osm_basemap <- function (bbox, structures, bg='gray20')
 {
+    # ---------------  sanity checks and warnings  ---------------
     if (missing (bbox))
         stop ("bbox must be supplied")
     if (!is.numeric (bbox))
@@ -29,13 +30,15 @@ plot_osm_basemap <- function (bbox, structures=NULL, bg='gray20')
     if (length (bbox) < 4)
         stop ("bbox must have length = 4")
 
-    if (!is.null (structures))
+    if (!missing (structures))
         bg = structure$cols [which (structures$structure == 'background')]
     if (!(is.character (bg) | is.numeric (bg)))
     {
         warning ("bg will be coerced to character")
         bg <- as.character (bg)
     }
+    # ---------------  end sanity checks and warnings  ---------------
+
     # Because the initial plot has no data, setting these elements suffices to
     # generate a blank plot area with no margins
     new_theme <- ggplot2::theme_minimal ()

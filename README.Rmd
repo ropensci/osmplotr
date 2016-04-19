@@ -172,22 +172,22 @@ encircling desired regions.
 ```{r, eval=FALSE}
 highways <- c ('Davies.St', 'Berkeley.Sq', 'Berkeley.St', 'Piccadilly',
                'Regent.St', 'Oxford.St')
-highways1 <- highways2polygon (highways=highways, bbox=bbox)
+highways1 <- connect_highways (highways=highways, bbox=bbox)
 highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
-highways2 <- highways2polygon (highways=highways, bbox=bbox)
+highways2 <- connect_highways (highways=highways, bbox=bbox)
 highways <- c ('Piccadilly', 'Shaftesbury.Ave', 'Charing.Cross.R',
                'Saint.Martin', 'Trafalgar.Sq', 'Cockspur.St',
                'Pall.Mall', 'St.James')
-highways3 <- highways2polygon (highways=highways, bbox=bbox)
+highways3 <- connect_highways (highways=highways, bbox=bbox)
 highways <- c ('Charing.Cross', 'Duncannon.St', 'Strand', 'Aldwych',
                'Kingsway', 'High.Holborn', 'Shaftesbury.Ave')
-highways4 <- highways2polygon (highways=highways, bbox=bbox)
+highways4 <- connect_highways (highways=highways, bbox=bbox)
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
-highways5 <- highways2polygon (highways=highways, bbox=bbox)
+highways5 <- connect_highways (highways=highways, bbox=bbox)
 groups <- list (highways1, highways2, highways3, highways4, highways5)
 ```
-And then passing the SpatialPolygon returned by `highways2polygon` to
+And then passing the SpatialPolygon returned by `connect_highways` to
 `add_osm_groups`, this time with some Wes Anderson flair.
 ```{r map 6, eval=FALSE}
 map <- plot_osm_basemap (bbox=bbox, bg='gray20')

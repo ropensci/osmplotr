@@ -4,7 +4,7 @@
 \alias{plot_osm_basemap}
 \title{plot_osm_basemap}
 \usage{
-plot_osm_basemap(bbox, structures = NULL, bg = "gray20")
+plot_osm_basemap(bbox, structures, bg = "gray20")
 }
 \arguments{
 \item{bbox}{bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
@@ -12,8 +12,8 @@ matrix of 4 elements with columns of min and max values, and rows of x and y
 values.}
 
 \item{structures}{Data frame returned by osm_structures() used here to
-specify background colour of plot; if 'structs=NULL', the colour is specified
-by 'bg'}
+specify background colour of plot; if missing, the colour is specified by
+'bg'}
 
 \item{bg}{Background colour of map (default = 'gray20' only if structs not
 given)}

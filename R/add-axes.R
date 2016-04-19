@@ -30,8 +30,25 @@
 add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
                       alpha=0.4, fontsize=3, fontface, fontfamily)
 {
-    if (missing (map))
-        stop ('map must be supplied')
+    # ---------------  sanity checks and warnings  ---------------
+    # ---------- map
+    if (missing (map)) stop ('map must be supplied to add_axes')
+    if (!is (map, 'ggplot')) stop ('map must be a ggplot object')
+
+    # ---------- alpha
+    alpha <- test_len1 (alpha, 'alpha')
+    alpha <- test_numeric (alpha, 'alpha', 0.4)
+    alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
+    # ---------- axis_pos
+    axis_pos <- test_len2 (axis_pos, 'axis_pos')
+    axis_pos <- test_numeric (axis_pos, 'axis_pos', c (0.02, 0.03))
+    axis_pos <- test_range (axis_pos, 'axis_pos', c (0, 1), c (0.02, 0.03))
+    # ---------- fontsize
+    fontsize <- test_len1 (fontsize, 'fontsize')
+    fontsize <- test_numeric (fontsize, 'fontsize', 3)
+    fontsize <- test_pos (fontsize, 'fontsize', 3)
+    # ---------------  end sanity checks and warnings  ---------------
+
     # The following are defaults from ggplot2/geom-label.R
     if (missing (fontface)) fontface <- 1
     if (missing (fontfamily)) fontfamily <- ""
