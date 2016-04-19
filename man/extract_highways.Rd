@@ -28,7 +28,7 @@ A list of 2 components:
 Extracts a list of named OpenStreetMap highways. OSM data are neither
 structured nor ordered; this routine reduces data for each given highway to a
 minimal number of discrete and sequentially ordered segments. These segments
-may or may not connect, yet may be connected at their nearest points with
-connect_highways().
+may or may not connect, yet can be connected at their nearest points with
+get_highway_cycle().
 }
 

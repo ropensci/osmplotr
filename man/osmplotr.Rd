@@ -54,11 +54,10 @@ scheme\cr
 \section{Other Functions}{
 
 \tabular{ll}{
-'click_map'\tab Return lat-lon coordinates of series of clicked points\cr
-'connect_highways'\tab Connect lists of highways (used in 'highways2polygon')
+'get_highway_cycle'\tab Connect lists of highways (used in 'connect_highways')
 \cr
 'get_bbox'\tab return bounding box from input vector\cr
-'highways2polygon'\tab Return a polygonal boundary circularly connecting a
+'connect_highways'\tab Return a polygonal boundary circularly connecting a
 given series of named highways \cr
 'order_lines'\tab Spatially order highway lines in a given set of OSM data\cr
 }

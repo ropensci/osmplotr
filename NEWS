@@ -6,8 +6,9 @@ ggplot2.
 
 Changes:
 
-* `click_map` removed
-* `highways2polygon` renamed `connect_highways`
+* 'click_map' removed
+* 'connect_highways' renamed 'get_highway_cycle'
+* 'highways2polygon' renamed 'connect_highways'
 
 
 osmplotr v0.1-3

@@ -196,14 +196,14 @@ function which achieves this is `connect_highways`, examples of which are,
 bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
 highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
                'Fleet.St', 'Aldwych')
-highways1 <- highways2polygon (highways=highways, bbox=bbox_big)
+highways1 <- connect_highways (highways=highways, bbox=bbox_big)
 highways <- c ('Queen.s.Walk', 'Blackfriars', 'Waterloo', 'The.Cut')
-highways2 <- highways2polygon (highways=highways, bbox=bbox_big)
+highways2 <- connect_highways (highways=highways, bbox=bbox_big)
 highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
-highways3 <- highways2polygon (highways=highways, bbox=bbox_big)
+highways3 <- connect_highways (highways=highways, bbox=bbox_big)
 ```
 (These highways are also included in the provided `london` data.)
-`highways2polygon` returns a `SpatialPoints` object containing all OSM points
+`connect_highways` returns a `SpatialPoints` object containing all OSM points
 from those segments of the named highways which connected continuously and
 sequentially to form a single enclosed space.
 ```{r, echo=FALSE}
@@ -799,7 +799,7 @@ graphics.off ()
 
 ## 6 Bounding areas within named highways
 
-The function `highways2polygon` takes a list of OSM highway names and a bounding
+The function `connect_highways` takes a list of OSM highway names and a bounding
 box, and returns the boundary of a polygon encircling the named highways. This
 can be used to highlight selected regions simply by naming the highways which
 encircle them, producing maps which look like this:
@@ -849,15 +849,15 @@ extraction of data with a larger bounding box:
 bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) 
 ```
 
-### 6.1 The highways2polygon function
+### 6.1 The `connect_highways` function
 
 The primary function enabling the delination of groups like the above is
-`highways2polygon`, an example of which is the orange area above, the boundary
+`connect_highways`, an example of which is the orange area above, the boundary
 of which was obtained from:
 ```{r, eval=FALSE}
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
-highways1 <- highways2polygon (highways=highways, bbox=bbox)
+highways1 <- connect_highways (highways=highways, bbox=bbox)
 ```
 ```{r}
 ## Warning in connect_highways(ways): Cycle unable to be extended through all
@@ -876,9 +876,9 @@ dim (sp::coordinates (highways1))
 
 ```{r, eval=FALSE}
 highways <- c ("Queen.s.Walk", "Blackfriars", "Waterloo", "The.Cut")
-highways2 <- highways2polygon (highways=highways, bbox=bbox)
+highways2 <- connect_highways (highways=highways, bbox=bbox)
 highways <- c ("Regent.St", "Oxford.St", "Shaftesbury")
-highways3 <- highways2polygon (highways=highways, bbox=bbox)
+highways3 <- connect_highways (highways=highways, bbox=bbox)
 ```
 Multiple regions may be highlighted simply by passing a list of bounding
 polygons (each of class `SpatialPoints`) to `add_osm_groups`. 
@@ -937,7 +937,7 @@ is usefull to examine `connect_highways` in more detail, as follows.
 
 ### 6.2 `connect_highways` in detail
 
-`highways2polygon` finds a sequential polygon that circularly connects the
+`connect_highways` finds a sequential polygon that circularly connects the
 named highways. Cases where no circular connection is possible generate an error
 message. The function which actually connects the given highways into a circular
 sequence is `connect_highways`, which, as explained in `?connect_highways`,
@@ -968,12 +968,12 @@ This procedure can not be guaranteed failsafe owing both to the inherently
 unpredictable nature of OpenStreetMap, as well as to the unknown relationships
 between named highways. To enable problematic cases to be examined and hopefully
 resolved, `connect_highways` has a `plot` option:
-```{r highways2polygon, fig.width=4, message=FALSE, eval=FALSE}
+```{r connect_highways, fig.width=4, message=FALSE, eval=FALSE}
 # TODO: Set eval=FALSE before cran re-sub!!
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
 bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
-highway_list <- highways2polygon (highways=highways, bbox=bbox, plot=TRUE)
+highway_list <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
 ```
 
 The plot depicts each highway in a different colour, along with numbers at start
