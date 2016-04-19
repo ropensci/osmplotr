@@ -78,14 +78,16 @@ test_that ('vertical', {
 test_that ('alpha values', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           cols <- heat.colors (10)
+           zlims <- c (1, 10)
            # NOTE: there are grep problems in test_that for this expect_warning
            #expect_warning (add_colourbar (map, cols=cols, zlims=zlims,
            #                               alpha=-1),
            #                'alpha not in [0,1]; using default value')
-           #expect_warning (add_colourbar (map, cols=cols, zlims=zlims,
-           #                               alpha=1:2),
-           #                'Only the first element of alpha will be used')
-           #expect_warning (add_colourbar (map, cols=cols, zlims=zlims,
-           #                               alpha="a"),
-           #                'alpha must be numeric; using default value')
+           expect_warning (add_colourbar (map, cols=cols, zlims=zlims,
+                                          alpha=1:2),
+                           'Only the first element of alpha will be used')
+           expect_warning (add_colourbar (map, cols=cols, zlims=zlims,
+                                          alpha="a"),
+                           'alpha must be numeric; using default value')
 })

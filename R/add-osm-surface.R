@@ -76,6 +76,22 @@
 add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
                               cols=heat.colors (30), bg, size)
 {
+    # ---------------  sanity checks and warnings  ---------------
+    if (missing (map))
+        stop ('map must be supplied to add_osm_objects')
+    if (!is (map, 'ggplot'))
+        stop ('map must be a ggplot object')
+    if (missing (obj))
+        stop ('object must be supplied to add_osm_objects')
+    if (!inherits (obj, 'Spatial'))
+        stop ('obj must be Spatial')
+    if (!(is.character (cols) | is.numeric (cols)))
+    {
+        warning ("cols will be coerced to character")
+        cols <- as.character (cols)
+    }
+    # ---------------  end sanity checks and warnings  ---------------
+
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
         xy0 <- lapply (slot (obj, 'polygons'), function (x)

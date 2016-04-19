@@ -44,15 +44,21 @@
 add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
                              shape)
 {
+    # ---------------  sanity checks and warnings  ---------------
     if (missing (map))
-        stop ("no map passed to add_osm_objects")
+        stop ('map must be supplied to add_osm_objects')
+    if (!is (map, 'ggplot'))
+        stop ('map must be a ggplot object')
     if (missing (obj))
-        stop ("no object passed to add_osm_objects")
+        stop ('object must be supplied to add_osm_objects')
+    if (!inherits (obj, 'Spatial'))
+        stop ('obj must be Spatial')
     if (!(is.character (col) | is.numeric (col)))
     {
         warning ("col will be coerced to character")
         col <- as.character (col)
     }
+    # ---------------  end sanity checks and warnings  ---------------
 
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     if (class (obj) == 'SpatialPolygonsDataFrame')
