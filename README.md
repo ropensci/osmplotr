@@ -2,7 +2,7 @@
 
 ![map1](./figure/map1.png)
 
-R package to produce visually impressive customisable images of OpenStreetMap (OSM) data downloaded internally from the [overpass api](http://overpass-api.de/). The above map was produced directly from `osmplotr` with no further modification. But first the easy steps to map mapking:
+R package to produce visually impressive customisable images of OpenStreetMap (OSM) data downloaded internally from the [overpass api](http://overpass-api.de/). The above map was produced directly from `osmplotr` with no further modification. But first the easy steps to map making:
 
 1.  Specify the bounding box for the desired region
 
