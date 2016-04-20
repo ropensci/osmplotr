@@ -63,7 +63,7 @@
 #' @import httr sp spatstat osmar XML ggm rgeos
 #' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom graphics lines locator plot.new par rect text
-#' @importFrom methods slot as
+#' @importFrom methods slot as is
 #' @importFrom grDevices dev.new dev.list rainbow rgb col2rgb png
 #' @importFrom grDevices terrain.colors heat.colors
 #' @importFrom utils txtProgressBar setTxtProgressBar combn tail

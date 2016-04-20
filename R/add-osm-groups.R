@@ -141,54 +141,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         }
     }
 
-    if (class (obj) == 'SpatialPolygonsDataFrame')
-        objtxt <- c ('polygons', 'Polygons')
-    else if (class (obj) == 'SpatialLinesDataFrame')
-        objtxt <- c ('lines', 'Lines')
-    else
-        stop ('obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame')
-    # ... because points not yet implemented
-
-    # Determine whether any groups are holes - not implemented at present
-    if (length (groups) > 1)
-    {
-        holes <- rep (FALSE, length (groups))
-        group_pairs <- combn (length (groups), 2)
-        for (i in seq (ncol (group_pairs)))
-        {
-            x1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [,1]
-            y1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [,2]
-            indx <- which (!duplicated (cbind (x1, y1)))
-            x1 <- x1 [indx]
-            y1 <- y1 [indx]
-            xy1 <- spatstat::ppp (x1, y1, xrange=range (x1), yrange=range (y1))
-            ch1 <- spatstat::convexhull (xy1)
-            bdry1 <- cbind (ch1$bdry[[1]]$x, ch1$bdry[[1]]$y)
-            x2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [,1]
-            y2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [,2]
-            indx <- which (!duplicated (cbind (x2, y2)))
-            x2 <- x2 [indx]
-            y2 <- y2 [indx]
-            xy2 <- spatstat::ppp (x2, y2, xrange=range (x2), yrange=range (y2))
-            ch2 <- spatstat::convexhull (xy2)
-            bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
-            
-            #indx <- sapply (bdry1, function (x) 
-            #                spatialkernel::pinpoly (bdry1, bdry2))
-            indx <- sapply (bdry1, function (x) 
-                            sp::point.in.polygon (bdry2 [,1], bdry2 [,2],
-                                                  bdry1 [,1], bdry1 [,2]))
-            if (all (indx == 1))
-                holes [group_pairs [1, i]] <- TRUE
-            #indx <- sapply (bdry2, function (x) 
-            #                spatialkernel::pinpoly (bdry2, bdry1))
-            indx <- sapply (bdry2, function (x) 
-                            sp::point.in.polygon (bdry1 [,1], bdry1 [,2],
-                                                  bdry2 [,1], bdry2 [,2]))
-            if (all (indx == 1))
-                holes [group_pairs [2, i]] <- TRUE
-        }
-    }
+    if (max (sapply (groups, length)) < 3) # No groups have > 2 members
+        make_hull <- FALSE
 
     # Set up group colours
     if (!colmat)
@@ -225,6 +179,60 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         # centroids to relative positions within cmat
     }
 
+    if (class (obj) == 'SpatialPolygonsDataFrame')
+        objtxt <- c ('polygons', 'Polygons')
+    else if (class (obj) == 'SpatialLinesDataFrame')
+        objtxt <- c ('lines', 'Lines')
+    else
+        stop ('obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame')
+    # ... because points not yet implemented
+
+    # Determine whether any groups are holes - not implemented at present
+    if (length (groups) > 1)
+    {
+        holes <- rep (FALSE, length (groups))
+        group_pairs <- combn (length (groups), 2)
+        for (i in seq (ncol (group_pairs)))
+        {
+            n1 <- length (groups [[group_pairs [1, i] ]])
+            n2 <- length (groups [[group_pairs [2, i] ]])
+            if (n1 > 2 & n2 > 2) # otherwise can't be a hole
+            {
+                x1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [,1]
+                y1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [,2]
+                indx <- which (!duplicated (cbind (x1, y1)))
+                x1 <- x1 [indx]
+                y1 <- y1 [indx]
+                xy1 <- spatstat::ppp (x1, y1, xrange=range (x1), yrange=range (y1))
+                ch1 <- spatstat::convexhull (xy1)
+                bdry1 <- cbind (ch1$bdry[[1]]$x, ch1$bdry[[1]]$y)
+                x2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [,1]
+                y2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [,2]
+                indx <- which (!duplicated (cbind (x2, y2)))
+                x2 <- x2 [indx]
+                y2 <- y2 [indx]
+                xy2 <- spatstat::ppp (x2, y2, xrange=range (x2), yrange=range (y2))
+                ch2 <- spatstat::convexhull (xy2)
+                bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
+                
+                #indx <- sapply (bdry1, function (x) 
+                #                spatialkernel::pinpoly (bdry1, bdry2))
+                indx <- sapply (bdry1, function (x) 
+                                sp::point.in.polygon (bdry2 [,1], bdry2 [,2],
+                                                      bdry1 [,1], bdry1 [,2]))
+                if (all (indx == 1))
+                    holes [group_pairs [1, i]] <- TRUE
+                #indx <- sapply (bdry2, function (x) 
+                #                spatialkernel::pinpoly (bdry2, bdry1))
+                indx <- sapply (bdry2, function (x) 
+                                sp::point.in.polygon (bdry1 [,1], bdry1 [,2],
+                                                      bdry2 [,1], bdry2 [,2]))
+                if (all (indx == 1))
+                    holes [group_pairs [2, i]] <- TRUE
+            }
+        }
+    }
+
     # first extract mean coordinates for every polygon or line in obj:
     xy_mn <- lapply (slot (obj, objtxt [1]),  function (x)
                      colMeans  (slot (slot (x, objtxt [2]) [[1]], 'coords')))
@@ -248,20 +256,33 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         {
             x <- slot (groups [[i]], 'coords') [,1]
             y <- slot (groups [[i]], 'coords') [,2]
-            xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
-            ch <- spatstat::convexhull (xy)
-            bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+            if (length (x) > 2)
+            {
+                xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+                ch <- spatstat::convexhull (xy)
+                bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+            } else
+                bdry <- sp::coordinates (groups [[i]])
         }
         else
             bdry <- sp::coordinates (groups [[i]])
-        bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
-        # The next 4 lines are only used if missing (bg)
-        #indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
-        indx <- sapply (xy_mn, function (x)
-                        sp::point.in.polygon (x [1], x [2], 
-                                              bdry [,1], bdry [,2]))
-        indx <- which (indx > 0) # see below for point.in.polygon values
-        xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
+        if (nrow (bdry) > 1) # otherwise group is obvious a single point
+        {
+            bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
+            # The next 4 lines are only used if missing (bg)
+            #indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
+            indx <- sapply (xy_mn, function (x)
+                            sp::point.in.polygon (x [1], x [2], 
+                                                  bdry [,1], bdry [,2]))
+            indx <- which (indx > 0) # see below for point.in.polygon values
+            xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
+        } else
+        {
+            xy_list [[i]] <- bdry
+            # indx closest point to bdry
+            d <- sqrt ((xmn - bdry [1]) ^ 2 + (ymn - bdry [2]) ^ 2)
+            indx <- which.min (d)
+        }
 
         boundaries [[i]] <- bdry
 
@@ -280,14 +301,23 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
     # NOTE that pinpooly returns (0,1,2) for (not, on, in) boundary
     coords <- lapply (slot (obj, objtxt [1]),  function (x)
                       slot (slot (x, objtxt [2]) [[1]], 'coords'))
+    # Note also that the nrow > 2 clause ensures poin.in.polygon is only applied
+    # to groups of sufficient size
     coords <- lapply (coords, function (i)
                       {
                           pins <- lapply (boundaries, function (j)
-                                          sp::point.in.polygon (i [,1], i [,2],
-                                                                j [,1], j [,2]))
+                                          {
+                                              if (nrow (j) > 2)
+                                                  sp::point.in.polygon (
+                                                        i [,1], i [,2],
+                                                        j [,1], j [,2])
+                                              else
+                                                  rep (0, nrow (i))
+                                          })
                           pins <- do.call (cbind, pins)
                           cbind (i, pins)
                       })
+
     if (missing (bg))
     {
         # Then each component is assigned to a single group based on entire

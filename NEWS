@@ -7,12 +7,17 @@ widths) no longer apply.
 
 Changes:
 
+* vignette 'downloading-data' removed (incorporate in 'making-maps')
+* vignette 'making-maps' extended
+* vignette 'making-maps-with-data' added
 * 'click_map' removed
 * 'connect_highways' renamed 'get_highway_cycle'
 * 'highways2polygon' renamed 'connect_highways'
 * 'extract_highways' no longer exported
 * 'extract_osm_objects' now just returns objects (instead of '$obj' and
     '$warn'), and dumps warnings direct to screen.
+* 'add_osm_groups' now accepts lists of simple spatial points as groups
+* many tests added
 
 
 osmplotr v0.1-3
