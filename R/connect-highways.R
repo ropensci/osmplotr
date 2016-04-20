@@ -63,7 +63,7 @@ connect_highways <- function (highways=NULL, bbox=NULL, plot=FALSE)
     #    for (k in seq (length (i)))
     #        ways [[i [k] ]] [[j [k] ]] <- NULL
     #}
-    ways <- connect_highways (ways)
+    ways <- get_highway_cycle (ways)
 
     if (plot)
     {
