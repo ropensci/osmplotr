@@ -10,15 +10,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+**Fix TODOs!**
 
 `osmplotr` enables OpenStreetMap (OSM) data to be downloaded (using the
 [overpass API](https://overpass-api.de)) and used to produce highly customisable
 maps. This vignette demonstrates both data downloading and the creation of
-simple maps. The subsequent vignette ('making-data-maps') demonstrates how
-`osmplotr` enables user-defined data to be visualised using OSM data.
-
-This above map, and all of the following examples, represent a small portion of
-central London, U.K. 
+simple maps. The subsequent vignette ('making-maps-with-data') demonstrates how
+`osmplotr` enables user-defined data to be visualised using OSM data.  The maps
+in this vignette represent a small portion of central London, U.K. 
 
 ## 1. Introduction
 
@@ -44,7 +43,7 @@ dat_T <- london$dat_T
 ```
 1. Specify the bounding box for the desired region
 ```{r}
-bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
+bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
 ```
 2. Download the desired data---in this case, all building perimeters.
 ```{r, eval=FALSE}
@@ -64,7 +63,7 @@ print (map)
 ```
 ```{r map1-print, echo=FALSE}
 mapwd <- 500
-mapht <- mapwd * diff (bbox [,2]) / diff (bbox [,1])
+mapht <- mapwd * diff (bbox [2,]) / diff (bbox [1,])
 png (height=mapht, width=mapwd, file="map1.png")
 print (map)
 graphics.off ()
@@ -82,7 +81,7 @@ The main function for downloading OSM data from the
 particular type can be extracted by passing the apprpriate OSM `key`, as in the
 above example:
 ```{r, eval=FALSE}
-bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52))
+bbox <- get_bbox (c(-0.13,51.51,-0.11,51.52))
 dat_B <- extract_osm_objects (key="building", bbox=bbox)
 dat_H <- extract_osm_objects (key="highway", bbox=bbox)
 ```
@@ -129,16 +128,16 @@ combining both `addr:street` with `addr:housenumber`.
 
 The function `osm_structures` is an aid both for downloading of multiple OSM
 data types, and for plotting (as described below). This function returns a
-`data.frame` of OSM structures, associated `key-value` pairs, unique suffices
-which may be appended to data structures for storage purposes, and suggested
-colours.
+`data.frame` of OSM structure types, associated `key-value` pairs, unique
+suffices which may be appended to data structures for storage purposes, and
+suggested colours.
 
 ```{r}
 osm_structures ()
 ```
 
-The suffices will include as many letters as are necessary to represent all
-unique structure names.  A list of desired structures can also be passed to this
+The suffices include as many letters as are necessary to represent all unique
+structure names.  A list of desired structures can also be passed to this
 function, for example,
 ```{r}
 osm_structures (structures=c('building', 'highway'))
@@ -146,13 +145,14 @@ osm_structures (structures=c('building', 'highway'))
 Note that the resultant `data.frame` always contains an additional row used to
 specify the background colour of maps (see automating map production below).
 
-### 2.4 The `london` data of `osmplotr`
+#### 2.3.1 The `london` data of `osmplotr`
 
-`osmplotr` includes one data object, `london`, which was generated as
-follows.
+To illustrate the use of `osm_structures` to download data, this section
+reproduces the code that was used to generate the `london` data object which
+forms part of the `osmplotr` package.
 ```{r}
 structures <- c ('highway', 'highway', 'building', 'building', 'building',
-                 'amenity', 'grass', 'park', 'natural', 'tree')   
+                 'amenity', 'park', 'natural', 'tree')   
 structs <- osm_structures (structures=structures, col_scheme='dark')   
 structs$value [1] <- '!primary'   
 structs$value [2] <- 'primary'
@@ -165,9 +165,11 @@ structs$suffix [4] <- 'BR'
 structs$suffix [5] <- 'BC'
 ```
 Note that suffices are generated automatically from structure names only, not
-values, requiring the suffices for negated forms to be specified manually.  This
-`structs` data frame was then used to download the `london` data with the
-following code. 
+values, requiring the suffices for negated forms to be specified manually.  The
+`london` data was then simply downloaded by calling `extract_osm_objects` on
+each row of the `structs` data frame. The additional lines in the following code
+rename each downloaded object according to the suffices given in
+`structs$suffix`.
 ```{r, eval=FALSE}
 london <- list ()
 for (i in 1:(nrow (structs) - 1)) 
@@ -182,13 +184,13 @@ for (i in 1:(nrow (structs) - 1))
 }
 ```
 
-### 2.5 Downloading connected highways
+### 2.4 Downloading connected highways
 
 The visualisation functions considered below enable particular regions of maps
 to be highlighted. While it may often be desirable to highlight regions
 according to a user's own data, `osmplotr` also enables regions to be defined by
-providing a list of the names of highways which encircle a desired region. The
-function which achieves this is `connect_highways`, examples of which are,
+providing a list of the names of encircling highways. The function which
+achieves this is `connect_highways`, examples of which are,
 ```{r, eval=FALSE}
 # These highways extend beyond the previous, smaller bbox
 bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
@@ -211,6 +213,64 @@ highways1 <- london$highways1
 class (highways1)
 dim (coordinates (highways1))
 ```
+
+The extraction of bounding polygons from named highways is not failsafe, and
+indeed the first of the above calls (for `highways1`) generates a warning
+message that
+```{r, echo=FALSE}
+warning ("Cycle unable to be extended through all ways")
+```
+demonstrated by the above error message. To understand why it may not work, it
+is useful to examine `connect_highways` in more detail.
+
+#### 2.4.1 `connect_highways` in detail
+
+`connect_highways` finds a sequence of line segments that circularly connect the
+named highways. Cases where no circular connection is possible generate an error
+message. The function which actually connects the given highways into a circular
+sequence is `get_highway_cycle`, which,
+
+> Takes a list of OpenStreetMap highways returned by `extract_highways`
+> and sequentially connects closest nodes of adjacent highways until the set of
+> highways connects to form a cycle.
+
+`connect_highways` proceeds through the three stages of,
+
+1. Adding intersection nodes to junctions of ways where these don't already
+   exist
+
+2. Filling a connectivity matrix between the listed highways and extracting the
+   **longest** cycle connecting them all
+
+3. Inserting extra connections between highways until the length of the longest
+   cycle is equal to `length (highways)`.
+
+However, even once the highways are connected, the individual components of each
+highway may not necessarily connect in a continuous manner to complete the
+cycle. The final task, completed within the `connect_highways` routine, is thus
+ensuring that the components of each individual highway actually connect,
+through sequentially connecting the closest pair of components until a shortest
+path is possible between the two components which connect with other highways.
+
+This procedure can not be guaranteed failsafe owing both to the inherently
+unpredictable nature of OpenStreetMap, as well as to the unknown relationships
+between named highways. To enable problematic cases to be examined and hopefully
+resolved, `connect_highways` has a `plot` option:
+```{r connect_highways, fig.width=4, message=FALSE, eval=FALSE}
+# TODO: Set eval=FALSE before cran re-sub!!
+highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+               "Fleet.St", "Aldwych")
+bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
+highway_list <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
+```
+
+The plot depicts each highway in a different colour, along with numbers at start
+and end points of each segements. This plot reveals in this case that highway#6
+('Aldwych') is actually nested within two components of highway#4 ('Strand').
+`connect_highways` searches for the shortest path connecting all named highways,
+and since 'Strand' connects to both highways#1 and #5, the shortest path
+excludes #6. This exclusion of one of the named components generates the
+warning message. 
 
 
 ## 3. Producing maps
@@ -863,51 +923,3 @@ The extraction of bounding polygons from named highways is not failsafe, as
 demonstrated by the above error message. To understand why it may not work, it
 is usefull to examine `connect_highways` in more detail, as follows.
 
-### 6.2 `connect_highways` in detail
-
-`connect_highways` finds a sequential polygon that circularly connects the
-named highways. Cases where no circular connection is possible generate an error
-message. The function which actually connects the given highways into a circular
-sequence is `connect_highways`, which, as explained in `?connect_highways`,
-
-> Takes a list of OpenStreetMap highways returned by `extract_highways`
-> and sequentially connects closest nodes of adjacent highways until the set of
-> highways connects to form a cycle.
-
-`connect_highways` proceeds through the three stages of,
-
-1. Adding intersection nodes to junctions of ways where these don't already
-   exist
-
-2. Filling a connectivity matrix between the listed highways and extracting the
-   **longest** cycle connecting them all
-
-3. Inserting extra connections between highways until the length of the longest
-   cycle is equal to `length (highways)`.
-
-However, even once the highways are connected, the individual components of each
-highway may not necessarily connect in a continuous manner to complete the
-cycle. The final task, completed within the `connect_highways` routine, is thus
-ensuring that the components of each individual highway actually connect,
-through sequentially connecting the closest pair of components until a shortest
-path is possible between the two components which connect with other highways.
-
-This procedure can not be guaranteed failsafe owing both to the inherently
-unpredictable nature of OpenStreetMap, as well as to the unknown relationships
-between named highways. To enable problematic cases to be examined and hopefully
-resolved, `connect_highways` has a `plot` option:
-```{r connect_highways, fig.width=4, message=FALSE, eval=FALSE}
-# TODO: Set eval=FALSE before cran re-sub!!
-highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
-               "Fleet.St", "Aldwych")
-bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
-highway_list <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
-```
-
-The plot depicts each highway in a different colour, along with numbers at start
-and end points of each segements. This plot reveals in this case that highway#6
-('Aldwych') is actually nested within two components of highway#4 ('Strand').
-`connect_highways` searches for the shortest path connecting all named highways,
-and since 'Strand' connects to both highways#1 and #5, the shortest path
-excludes #6. This exclusion of one of the named components generates the
-warning message. 

@@ -132,21 +132,23 @@ print (map)
 An alternative way of defining highlighted groups is by naming the highways encircling desired regions.
 
 ``` r
+# These highways extend beyond the previous, smaller bbox
+bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
 highways <- c ('Davies.St', 'Berkeley.Sq', 'Berkeley.St', 'Piccadilly',
                'Regent.St', 'Oxford.St')
-highways1 <- connect_highways (highways=highways, bbox=bbox)
+highways1 <- connect_highways (highways=highways, bbox=bbox_big)
 highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
-highways2 <- connect_highways (highways=highways, bbox=bbox)
+highways2 <- connect_highways (highways=highways, bbox=bbox_big)
 highways <- c ('Piccadilly', 'Shaftesbury.Ave', 'Charing.Cross.R',
                'Saint.Martin', 'Trafalgar.Sq', 'Cockspur.St',
                'Pall.Mall', 'St.James')
-highways3 <- connect_highways (highways=highways, bbox=bbox)
+highways3 <- connect_highways (highways=highways, bbox=bbox_big)
 highways <- c ('Charing.Cross', 'Duncannon.St', 'Strand', 'Aldwych',
                'Kingsway', 'High.Holborn', 'Shaftesbury.Ave')
-highways4 <- connect_highways (highways=highways, bbox=bbox)
+highways4 <- connect_highways (highways=highways, bbox=bbox_big)
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
-highways5 <- connect_highways (highways=highways, bbox=bbox)
+highways5 <- connect_highways (highways=highways, bbox=bbox_big)
 groups <- list (highways1, highways2, highways3, highways4, highways5)
 ```
 
