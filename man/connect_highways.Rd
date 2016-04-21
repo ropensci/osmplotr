@@ -4,7 +4,7 @@
 \alias{connect_highways}
 \title{connect_highways}
 \usage{
-connect_highways(highways = NULL, bbox = NULL, plot = FALSE)
+connect_highways(highways, bbox, plot = FALSE)
 }
 \arguments{
 \item{highways}{A vector of highway names passed directly to the Overpass

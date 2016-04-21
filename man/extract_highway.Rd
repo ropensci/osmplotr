@@ -4,7 +4,7 @@
 \alias{extract_highway}
 \title{extract_highway}
 \usage{
-extract_highway(name = "", bbox = NULL)
+extract_highway(name = "", bbox)
 }
 \arguments{
 \item{name}{Name of highway. Lines components are return for *any* OSM way

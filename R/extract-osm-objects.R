@@ -20,14 +20,17 @@
 #' @return A data frame of sp objects
 #' @export
 
-extract_osm_objects <- function (key='building', value=NULL, extra_pairs=NULL, 
-                                 bbox=NULL, verbose=FALSE)
+extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
 {
+    if (missing (key))
+        stop ('key must be provided')
+    if (missing (bbox))
+        stop ('bbox must be provided')
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
 
     # make_osm_map passes empty values as '' rather than NULL:
-    if (!is.null (value))
+    if (!missing (value))
         if (nchar (value) == 0)
             value <- NULL
 
@@ -45,7 +48,7 @@ extract_osm_objects <- function (key='building', value=NULL, extra_pairs=NULL,
     # possible negation
     valold <- value
     keyold <- key
-    if (!is.null (value))
+    if (!missing (value))
     {
         if (substring (value, 1, 1) == '!')
             value <- paste0 ("['", key, "'!='", 
@@ -61,7 +64,7 @@ extract_osm_objects <- function (key='building', value=NULL, extra_pairs=NULL,
         key <- paste0 ("['", key, "']")
 
     # Then any extra key-value pairs
-    if (!is.null (extra_pairs))
+    if (!missing (extra_pairs))
     {
         if (!is.list (extra_pairs))
             extra_pairs <- list (extra_pairs)

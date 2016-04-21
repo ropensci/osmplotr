@@ -4,8 +4,7 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(key = "building", value = NULL, extra_pairs = NULL,
-  bbox = NULL, verbose = FALSE)
+extract_osm_objects(key, value, extra_pairs, bbox, verbose = FALSE)
 }
 \arguments{
 \item{key}{OSM key to search for. Useful keys include 'building',

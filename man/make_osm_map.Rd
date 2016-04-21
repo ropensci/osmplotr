@@ -4,7 +4,7 @@
 \alias{make_osm_map}
 \title{make_osm_map}
 \usage{
-make_osm_map(bbox = NULL, osm_data = NULL, structures = osm_structures(),
+make_osm_map(bbox, osm_data, structures = osm_structures(),
   dat_prefix = "dat_")
 }
 \arguments{

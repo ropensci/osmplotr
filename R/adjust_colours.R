@@ -16,8 +16,10 @@
 #' @examples
 #' cols <- adjust_colours (cols=heat.colors (10), adj=-0.2, plot=TRUE)
 
-adjust_colours <- function (cols=NULL, adj=0, plot=FALSE)
+adjust_colours <- function (cols, adj=0, plot=FALSE)
 {
+    if (missing (cols))
+        stop ('cols must be provided')
     if (class (cols [1]) != 'matrix')
         cols <- col2rgb (cols)
     stopifnot (adj > -1 & adj < 1)

@@ -35,11 +35,11 @@
 #' }
 
 
-connect_highways <- function (highways=NULL, bbox=NULL, plot=FALSE)
+connect_highways <- function (highways, bbox, plot=FALSE)
 {
-    if (is.null (highways))
+    if (missing (highways))
         stop ('A vector of highway names must be given')
-    if (is.null (bbox))
+    if (missing (bbox))
         stop ('A bounding box must be given')
 
     # Uses extract_highways to generate a list of highways, each component of

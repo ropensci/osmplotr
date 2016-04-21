@@ -42,12 +42,12 @@
 
 
 
-make_osm_map <- function (bbox=NULL, osm_data=NULL,
+make_osm_map <- function (bbox, osm_data,
                           structures=osm_structures (), dat_prefix='dat_')
 {
-    if (is.null (bbox)) # get it from osm_data
+    if (missing (bbox)) # get it from osm_data
     {
-        if (is.null (osm_data))
+        if (missing (osm_data))
             stop ('Either bounding box or osm_data must be given')
         bbox <- matrix (c (Inf, Inf, -Inf, -Inf), nrow=2, ncol=2)
         rownames (bbox) <- c ("x", "y")

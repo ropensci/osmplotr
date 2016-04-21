@@ -4,7 +4,7 @@
 \alias{get_highway_cycle}
 \title{get_highway_cycle}
 \usage{
-get_highway_cycle(highways = NULL)
+get_highway_cycle(highways)
 }
 \arguments{
 \item{highways}{A list of highways as returned by extract_highways(), each

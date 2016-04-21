@@ -19,11 +19,11 @@
 #'  \item warn: Any warnings produced in downloading the data
 #' }
 
-extract_highways <- function (highway_names=NULL, bbox=NULL)
+extract_highways <- function (highway_names, bbox)
 {
-    if (is.null (highway_names))
+    if (missing (highway_names))
         stop ('A vector of highway names must be given')
-    if (is.null (bbox))
+    if (missing (bbox))
         stop ('A bounding box must be given')
 
     # Proceeds through five stages:

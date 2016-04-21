@@ -9,7 +9,7 @@
 #' @return A modified version of highways, extended by the addition of
 #' connecting nodes.
 
-get_highway_cycle <- function (highways=NULL)
+get_highway_cycle <- function (highways)
 {
     # Proceeds through the following 3 steps:
     # ***** (1) Add intersection nodes to junctions of ways where these don't
@@ -18,7 +18,7 @@ get_highway_cycle <- function (highways=NULL)
     # *****     *longest* cycle connecting them all
     # ***** (3) Insert extra connections between highways until the longest
     # *****     cycle == length (highways). 
-    if (is.null (highways))
+    if (missing (highways))
         stop ('highways must be given')
     if (class (highways) != 'list')
         stop ('highways must be a list')

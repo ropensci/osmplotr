@@ -11,11 +11,11 @@
 #' @return SpatialLinesDataFrame containing the highway
 #' @export
 
-extract_highway <- function (name='', bbox=NULL)
+extract_highway <- function (name='', bbox)
 {
     stopifnot (nchar (name) > 0)
 
-    if (is.null (bbox))
+    if (missing (bbox))
         stop ('bbox must be provided')
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)

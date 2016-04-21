@@ -4,7 +4,7 @@
 \alias{extract_highways}
 \title{extract_highways}
 \usage{
-extract_highways(highway_names = NULL, bbox = NULL)
+extract_highways(highway_names, bbox)
 }
 \arguments{
 \item{highway_names}{A vector of highway names passed directly to the
