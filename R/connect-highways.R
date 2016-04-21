@@ -55,6 +55,7 @@ connect_highways <- function (highways=NULL, bbox=NULL, plot=FALSE)
     # Start by getting the sequentially ordered list of highways, exluding any
     # components, and connecting them:
     ways <- extract_highways (highway_names=highways, bbox=bbox)
+    p4s <- attr (ways, "crs")
     #if (!is.null (exclude))
     #{
     #    exclude <- sort (exclude, decreasing=TRUE)
@@ -243,7 +244,10 @@ connect_highways <- function (highways=NULL, bbox=NULL, plot=FALSE)
         lines (path [,1], path [,2], lwd=3, col='black', lty=2)
 
     indx <- which (!duplicated (rownames (path)))
-    return (sp::SpatialPoints (path [indx,]))
+    res <- sp::SpatialPoints (path [indx,])
+    proj4string (res) <- p4s
+
+    return (res)
 }
 
 

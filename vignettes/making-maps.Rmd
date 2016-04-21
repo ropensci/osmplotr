@@ -23,7 +23,6 @@ in this vignette represent a small portion of central London, U.K.
 
 A map can be generated using the following simple steps:
 ```{r load, message=FALSE}
-library (maptools)
 library (osmplotr)
 ```
 ```{r, echo=FALSE, message=FALSE}

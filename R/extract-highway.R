@@ -32,7 +32,7 @@ extract_highway <- function (name='', bbox=NULL)
     #dat <- XML::xmlParse (dat)
     dat <- httr::GET (query)
     if (dat$status_code != 200)
-        warn <- http_status (dat)$message
+        message (http_stats (dat)$message)
     # Encoding must be supplied to suppress warning
     dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
     dato <- osmar::as_osmar (dat)
@@ -41,10 +41,11 @@ extract_highway <- function (name='', bbox=NULL)
     pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     pids <- osmar::find_down (dato, osmar::way (pids))
     nvalid <- sum (sapply (pids, length))
+    obj <- NULL
     if (nvalid <= 3) # (nodes, ways, relations)
-        warn <- paste0 ('No valid data for name=(', name, ')')
+        warning (paste0 ('No valid data for name=(', name, ')'))
     else
         obj <- osmar::as_sp (subset (dato, ids = pids), 'lines')
 
-    return (list (obj=obj, warn=warn))
+    return (obj)
 }

@@ -52,6 +52,7 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
     max_trials <- 20
     count <- 1
     notnull <- 0
+    p4s <- NULL
     while (notnull < length (highway_names))
     {
         pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
@@ -59,11 +60,12 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
         for (i in seq (highway_names))
         {
             dat <- extract_highway (name = highway_names [i], bbox=bbox)
-            if (!is.null (dat$obj))
+            if (!is.null (dat))
+            {
                 notnull <- notnull + 1
-            else
-                warning (dat$warn)
-            assign (waynames [i], dat$obj)
+                p4s <- proj4string (dat)
+                assign (waynames [i], dat)
+            } 
             setTxtProgressBar(pb, i / length (highway_names))
         }
         rm (dat)
@@ -241,6 +243,8 @@ extract_highways <- function (highway_names=NULL, bbox=NULL)
     if (nrow (removes) > 0)
         for (i in seq (nrow (removes)))
             objs [[removes [i,1] ]] [[removes [i,2] ]] <- NULL
+
+    attr (objs, "crs") <- p4s
 
     return (objs)
 }
