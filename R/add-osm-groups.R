@@ -102,7 +102,7 @@
 
 add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                boundary=-1, size, shape, borderWidth,
-                               colmat=TRUE, rotate)
+                               colmat=FALSE, rotate)
 {
     if (missing (groups))
     {

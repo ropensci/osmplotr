@@ -5,7 +5,7 @@
 \title{add_osm_groups}
 \usage{
 add_osm_groups(map, obj, groups, cols, bg, make_hull = FALSE, boundary = -1,
-  size, shape, borderWidth, colmat = TRUE, rotate)
+  size, shape, borderWidth, colmat = FALSE, rotate)
 }
 \arguments{
 \item{map}{A ggplot2 object to which the grouped objects are to be added}

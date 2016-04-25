@@ -19,6 +19,7 @@
 #' including behind text. Lower values are more transparent.
 #' @param text_col Colour of text, tick marks, and lines on colourbar
 #' @param fontsize Size of text labels (in ggplot terms; default=3)
+#' @return Modified version of map with colourbar added
 #' @export
 #'
 #' @examples

@@ -11,6 +11,7 @@
 #' @param fontsize Size of axis font 
 #' @param fontface Fontface for axis labels (1:4=plain,bold,italic,bold-italic)
 #' @param fontfamily Family of axis font (for example, 'Times')
+#' @return Modified version of map with axes added
 #' @export
 #'
 #' @examples
