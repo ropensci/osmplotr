@@ -1,19 +1,19 @@
 MAPFILE = making-maps
-DATFILE = downloading-data
+DATFILE = making-maps-with-data
 
 #all: maps data 
-all: maps 
+all: data 
 
 maps: mapsmake mapsopen
 
 data: datamake dataopen
 
 mapsmake: $(MAPFILE).Rmd
-	#echo "rmarkdown::render('$(MAPFILE).Rmd',rmarkdown::md_document(variant='markdown_github'))" | R --no-save -q
+	echo "rmarkdown::render('$(MAPFILE).Rmd',rmarkdown::md_document(variant='markdown_github'))" | R --no-save -q
 	echo "rmarkdown::render('$(MAPFILE).Rmd',output_file='$(MAPFILE).html')" | R --no-save -q
 
 datamake: $(DATFILE).Rmd
-	echo "rmarkdown::render('$(DATFILE).Rmd',rmarkdown::md_document(variant='markdown_github'))" | R --no-save -q
+	#echo "rmarkdown::render('$(DATFILE).Rmd',rmarkdown::md_document(variant='markdown_github'))" | R --no-save -q
 	echo "rmarkdown::render('$(DATFILE).Rmd',output_file='$(DATFILE).html')" | R --no-save -q
 
 mapsopen: $(MAPFILE).html 

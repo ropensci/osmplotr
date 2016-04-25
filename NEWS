@@ -17,6 +17,7 @@ Changes:
 * 'extract_osm_objects' now just returns objects (instead of '$obj' and
     '$warn'), and dumps warnings direct to screen.
 * 'add_osm_groups' now accepts lists of simple spatial points as groups
+* Coordinate reference system properly attributed to all objects
 * many tests added
 
 
