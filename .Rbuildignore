@@ -1,7 +1,7 @@
 ^\.travis\.yml$
 ^makefile$
 ^vignettes/makefile$
-^vignettes/README\.md$
+vignettes/*.md$
 ^README\.Rmd$
 ^README\.md$
 ^README\.html$
