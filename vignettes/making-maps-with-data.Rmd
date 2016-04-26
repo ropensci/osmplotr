@@ -25,7 +25,7 @@ library (maptools) # Needed for this vignette
 ```
 ```{r, echo=FALSE, message=FALSE}
 setwd ('../..')
-devtools::load_all ('osmplotr')
+devtools::load_all ("osmplotr", export_all=FALSE)
 setwd ('./osmplotr/vignettes')
 ```
 As in the first vignette, maps produced in this vignette contain data for a
@@ -43,7 +43,6 @@ indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
 dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
 indx <- which (!london$dat_H$id %in% london$dat_HP$id)
 dat_H <- maptools::spRbind (london$dat_H [indx,], london$dat_HP)
-dat_T <- london$dat_T
 dat_HP <- london$dat_HP
 ```
 
@@ -64,6 +63,14 @@ dat_HP <- london$dat_HP
 [&nbsp;&nbsp;&nbsp;&nbsp;1.6 The Colour Matrix](#1.6 colmat)
 
 [&nbsp;&nbsp;&nbsp;&nbsp;1.7 Bounding areas within named highways](#1.7 highways)
+
+[2 Continuous data](#2 continuous-data)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;2.1 Colourbar legends for data surfaces](#2.1 colourbar-legend)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;2.2 Surfaces and data perimeters](#2.2 surface-perimeters)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;2.3 Further control of surface appearance](#2.3 surface-parameters)
 
 
 ## <a name="1 cat-data"></a>1. Categorical data: `add_osm_groups`
@@ -536,7 +543,7 @@ cols_H <- adjust_colours (cols_B, -0.2)
 bg_B <- 'gray40'
 bg_H <- 'gray60'
 ```
-
+And then plot the map.
 ```{r map15, eval=FALSE}
 map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_objects (map, dat_P, col=col_park_out)
@@ -544,6 +551,8 @@ map <- add_osm_groups (map, dat_B, groups=groups, boundary=1,
                    bg=bg_B, col=cols_B)
 map <- add_osm_groups (map, dat_H, groups=groups, boundary=1,
                    bg=bg_H, col=cols_H)
+map <- add_osm_groups (map, dat_HP, groups=groups, boundary=0,
+                   cols=cols_H, bg=bg_H, size=1)
 print (map)
 ```
 ```{r map15-print, echo=FALSE}
@@ -553,6 +562,8 @@ map <- add_osm_groups (map, dat_B, groups=groups, boundary=1,
                    cols=cols_B, bg=bg_B)
 map <- add_osm_groups (map, dat_H, groups=groups, boundary=0,
                    cols=cols_H, bg=bg_H)
+map <- add_osm_groups (map, dat_HP, groups=groups, boundary=0,
+                   cols=cols_H, bg=bg_H, size=1)
 png (height=mapht, width=mapwd, file='map_b15.png')
 print (map)
 graphics.off ()
@@ -562,3 +573,251 @@ graphics.off ()
 These encircling highways are included in the `london` data provided with
 `osmplotr`. 
 
+## <a name="2 continuous-data"></a>2. Continuous data: `add_osm_surface`
+
+The `add_osm_surface` function enables a continuous data surface to be overlaid
+on a map. User-provided data is spatially interpolated across a map region and
+OSM items coloured according to a specified continuous colour gradient. The data
+must be provided as a data frame with three columns, '(x,y,z)', where '(x,y)'
+are the coordinates of points at which data are given, and 'z' are the values to
+be spatially interpolated across the map.
+
+A simple data frame can be constructed as
+```{r}
+n <- 5
+x <- seq (bbox [1,1], bbox [1,2], length.out=n)
+y <- seq (bbox [2,1], bbox [2,2], length.out=n)
+dat <- data.frame (
+    x=as.vector (array (x, dim=c(n, n))),
+    y=as.vector (t (array (y, dim=c(n, n)))),
+    z=x * y
+    )
+head (dat)
+```
+And then passed to `add_osm_surface`
+```{r map16, eval=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+print (map)
+```
+```{r map16-print, echo=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+png (height=mapht, width=mapwd, file='map_b16.png')
+print (map)
+graphics.off ()
+```
+![map16](map_b16.png)
+
+At present, `add_osm_surface` generates an warning if it is applied more than
+once to any one kind of `Spatial` object (polygons or lines), as illustrated in
+the following code (in which both `dat_H` and `dat_HP` are of class
+`SpatialLinesDataFrame`:
+```{r, eval=TRUE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=heat.colors (30))
+map <- add_osm_surface (map, dat_H, dat=dat, cols=heat.colors (30))
+```
+This is because `add_osm_surface` creates new `ggplot` aesthetic schemes for
+each kind of object, and these schemes are not intended to be modified or
+replaced within a single plot. The above map may still be printed, but the
+warning means that the last provided colour scheme will be applied to all
+objects of that class. This means that `osmplotr` can only overlay two distinct
+colour schemes: one for all objects of class `SpatialLines`, and a potentially
+different one for all objects of class `SpatialPolygons`.
+
+Of course, any number of additional objects may be overlaid with
+`add_osm_objects`, for example,
+```{r map17, eval=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+cols_adj <- adjust_colours (heat.colors (30), -0.2)
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=cols_adj, size=1.5)
+map <- add_osm_objects (map, dat_P, col=rgb (0.1,0.3,0.1))
+map <- add_osm_objects (map, dat_H, col='gray60')
+print (map)
+```
+```{r map17-print, echo=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+cols_adj <- adjust_colours (heat.colors (30), -0.2)
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=cols_adj, size=1.5)
+map <- add_osm_objects (map, dat_P, col=rgb (0.1,0.3,0.1))
+map <- add_osm_objects (map, dat_H, col='gray60')
+png (height=mapht, width=mapwd, file='map_b17.png')
+print (map)
+graphics.off ()
+```
+![map17](map_b17.png)
+
+
+## <a name="2.1 colourbar-legend"></a>2.1 Colourbar legends for data surfaces
+
+A colourbar legend for the surface may be added with `add_colourbar`. As with
+`add_axes`, this function is provided separately to allow colourbars to be
+overlaid only after all desired map items have been added. The only parameters
+required for `add_colourbar` are the limits of the data (`zlims`) and the
+colours (along with the `map`, a modified version of which is returned).
+```{r map18, eval=FALSE}
+map <- add_colourbar (map, cols=terrain.colors (100), zlims=range (dat$z))
+print (map)
+```
+```{r map18-print, echo=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+cols_adj <- adjust_colours (heat.colors (30), -0.2)
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=cols_adj, size=1.5)
+map <- add_osm_objects (map, dat_P, col=rgb (0.1,0.3,0.1))
+map <- add_osm_objects (map, dat_H, col='gray60')
+map <- add_colourbar (map, cols=terrain.colors (100), zlims=range (dat$z))
+png (height=mapht, width=mapwd, file='map_b18.png')
+print (map)
+graphics.off ()
+```
+![map18](map_b18.png)
+
+Note that the colours submitted to `add_colourbar` need not be the same as those
+used to plot the surface. (Although using different colours is rarely likely to
+be useful.) As for `add_axes`, and explained in the vignette 'making-maps', the
+transparency of the boxes surrounding the elements of the colourbar may be
+controlled by specifying the value of `alpha`. Both alignment and position may
+also be adjusted, as illustrated in this example.
+```{r map19, eval=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+cols_adj <- adjust_colours (heat.colors (30), -0.2)
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=cols_adj, size=1.5)
+map <- add_colourbar (map, cols=heat.colors (100), zlims=range (dat$z),
+                      alpha=0.9, vertical=FALSE, 
+                      barwidth=c(0.1,0.12), barlength=c(0.5,0.9),
+                      text_col="blue", fontsize=5, fontface=3,
+                      fontfamily="Times")
+map <- add_axes (map, colour="blue", fontsize=5, fontface=3,
+                 fontfamily="Times")
+print (map)
+```
+```{r map19-print, echo=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+cols_adj <- adjust_colours (heat.colors (30), -0.2)
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=cols_adj, size=1.5)
+map <- add_colourbar (map, cols=heat.colors (100), zlims=range (dat$z),
+                      alpha=0.9, vertical=FALSE, 
+                      barwidth=c(0.1,0.12), barlength=c(0.5,0.9),
+                      text_col="blue", fontsize=5, fontface=3,
+                      fontfamily="Times")
+map <- add_axes (map, colour="blue", fontsize=5, fontface=3,
+                 fontfamily="Times")
+png (height=mapht, width=mapwd, file='map_b19.png')
+print (map)
+graphics.off ()
+```
+![map19](map_b19.png)
+
+Both `barwidth` and `barlength` can be specified in terms of one or two numbers.
+A single value for `barwidth` determines its relative width (0-1) from the
+border (the right side if `vertical=TRUE` or the top if `vertical=FALSE`), while
+two values determine the relative start and end positions of the sides of the
+bar. A single value for `barlength` produces a bar of the given length centred
+in the middle of the map, while two values determine its respective upper and
+lower points (for `vertical=TRUE`) or left and right points (for
+`vertical=FALSE`).
+
+This example also demonstrates how colours, sizes, and other font
+characteristics of text labels can be specified (with `text_col` determining the
+colour of all elements of the colourbar other than the gradient itself).
+Finally, as for `add_axes`, the text labels of colourbars are not currently able
+to be rotated because `ggplot2` does not permit rotation for the `geom_label`
+function used to produce these labels.
+
+## <a name="2.2 surface-perimeters"></a>2.1 Surfaces and data perimeters
+
+It may often be that user-provided data only extend across a portion of a map,
+leaving a perimeter beyond the data boundary for which interpolation should not
+be applied. `add_osm_surface` has a `bg` parameter specifying a background
+colour for objects beyond the perimeter of the data surface. Passing this
+parameter to `add_osm_surface` causes objects beyond the data perimeter to be
+coloured within this 'background' colour.
+
+To illustrate, trim the above data to within a circular range of the centre of
+the map.
+```{r}
+d <- sqrt ((dat$x - mean (dat$x)) ^ 2 + (dat$y - mean (dat$y)) ^ 2)
+range (d)
+```
+Remove from `dat` all rows translating to `d>0.01`:
+```{r map20, eval=FALSE}
+dat <- dat [which (d < 0.01),]
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30),
+                        bg="gray40")
+cols_adj <- adjust_colours (heat.colors (30), -0.2)
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=cols_adj, size=c (1.5, 0.5),
+                        bg="gray70")
+print (map)
+```
+```{r map20-print, echo=FALSE}
+dat <- dat [which (d < 0.01),]
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30),
+                        bg="gray40")
+cols_adj <- adjust_colours (heat.colors (30), -0.2)
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=cols_adj, size=c (1.5, 0.5),
+                        bg="gray70")
+png (height=mapht, width=mapwd, file='map_b20.png')
+print (map)
+graphics.off ()
+```
+![map20](map_b20.png)
+
+(The perimeter is irregular because of the positions of the points in `dat`.)
+
+## <a name="2.3 surface-parameters"></a>2.3 Further control of surface appearance
+
+The final `add_osm_surface` call in the above code (for `dat_HP`) illustrates
+additional parameters that may be passed for further control of map appearance.
+In this case, the two `size` parameters control the size of the lines within the
+data surface and beyond its perimeter. Single values may also be passed, in
+which case they determine the width of lines in both cases. One or two `shape`
+parameters may also be passed, with these also determining the shapes of
+`SpatialPoints`, as illustrated in the next example, which overlays trees on the
+map.
+
+Both lines and points use the same `ggplot` colour gradient, and so adding the
+second of these again generates an error and means that the actual colour scheme
+will be determined by the final call to add either lines or points.
+
+```{r, eval=FALSE}
+dat_T <- extract_osm_objects (key='tree', bbox=bbox)
+```
+```{r, echo=FALSE}
+dat_T <- london$dat_T
+```
+
+```{r map21, eval=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=terrain.colors (30), 
+                        size=c (1.5, 0.5), bg="gray70")
+map <- add_osm_surface (map, dat_H, dat=dat, cols=terrain.colors (30), 
+                        size=c (1, 0.5), bg="gray70")
+map <- add_osm_surface (map, dat_T, dat=dat, cols=heat.colors (30),
+                              bg="lawngreen", size=c(3, 2), shape=c(8, 1))
+print (map)
+```
+```{r map21-print, echo=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_surface (map, dat_HP, dat=dat, cols=terrain.colors (30), 
+                        size=c (1.5, 0.5), bg="gray70")
+map <- add_osm_surface (map, dat_H, dat=dat, cols=terrain.colors (30), 
+                        size=c (1, 0.5), bg="gray70")
+map <- add_osm_surface (map, dat_T, dat=dat, cols=heat.colors (30),
+                              bg="lawngreen", size=c(3, 2), shape=c(8, 1))
+png (height=mapht, width=mapwd, file='map_b21.png')
+print (map)
+graphics.off ()
+```
+![map21](map_b21.png)
+
+The first two colour specificiations (`terrain.colors`) have been ignored, and
+all added items are coloured according to the final value of `heat.colors (30)`.
+Other aspects such as line sizes and point shapes are nevertheless respected.

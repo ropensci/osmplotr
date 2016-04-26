@@ -25,7 +25,11 @@
 #' (which will generally be inaccurate for peripheral values)
 #' @param size Size argument passed to ggplot2 (polygon, path, point) functions:
 #' determines width of lines for (polygon, line), and sizes of points.
-#' Respective defaults are (0, 0.5, 0.5).
+#' Respective defaults are (0, 0.5, 0.5). If 'bg' is provided and 'size' has 2
+#' elements, the second determines the 'size' of the background objects.
+#' @param shape Shape of lines or points, for details of which see
+#' '?ggplot2::shape'. If 'bg' is provided and 'shape' has 2 elements, the second
+#' determines the 'shape' of the background objects.
 #' @return modified version of map (a ggplot object) to which surface has been
 #' added
 #'
@@ -74,7 +78,7 @@
 
 
 add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
-                              cols=heat.colors (30), bg, size)
+                              cols=heat.colors (30), bg, size, shape)
 {
     # ---------------  sanity checks and warnings  ---------------
     if (missing (map))
@@ -106,15 +110,19 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
         # TODO: Add border to geom_polygon call
         lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
         aes <- ggplot2::aes (x=lon, y=lat, group=id, fill=z) 
-        map <- map + ggplot2::geom_polygon (data=xy, mapping=aes, size=1) +
+        if (missing (size))
+            size <- 0
+        if (length (size) == 1)
+            size <- rep (size, 2) # else size [2] specifies bg size
+        map <- map + ggplot2::geom_polygon (data=xy, mapping=aes, size=size [1]) +
                         ggplot2::scale_fill_gradientn (colours=cols) 
 
         if (!missing (bg))
         {
             xy <- xy0 [xy0$inp == 0, ]
             aes <- ggplot2::aes (x=lon, y=lat, group=id) 
-            map <- map + ggplot2::geom_polygon (data=xy, mapping=aes, size=0.2,
-                                                          fill=bg)
+            map <- map + ggplot2::geom_polygon (data=xy, mapping=aes, 
+                                                size=size [2], fill=bg)
         }
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
@@ -127,26 +135,56 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
         else
             xy <- xy0 [xy0$inp > 0,]
 
+        if (missing (size))
+            size <- 0.5
+        if (length (size) == 1)
+            size <- rep (size, 2) # else size [2] specifies bg size
+        if (missing (shape))
+            shape <- 1
+        if (length (shape) == 1)
+            shape <- rep (shape, 2)
         aes <- ggplot2::aes (x=lon, y=lat, group=id, colour=z)
-        map <- map + ggplot2::geom_path (data=xy, mapping=aes) +
+        map <- map + ggplot2::geom_path (data=xy, mapping=aes, 
+                                         size=size [1], linetype=shape [1]) +
                         ggplot2::scale_colour_gradientn (colours=cols)
 
         if (!missing (bg))
         {
             xy <- xy0 [xy0$inp == 0, ]
             aes <- ggplot2::aes (x=lon, y=lat, group=id) 
-            map <- map + ggplot2::geom_path (data=xy, mapping=aes, size=0.5,
-                                                          col=bg)
+            map <- map + ggplot2::geom_path (data=xy, mapping=aes, col=bg,
+                                             size=size [2], linetype=shape [2])
         }
     } else if (class (obj) == 'SpatialPointsDataFrame')
     {
         xy0 <- sp::coordinates (obj)
         xy0 <- structure (xy0, class=c (class (xy0), 'points'))
-        xy <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size)
+        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size)
+        if (missing (bg))
+            xy <- xy0
+        else
+            xy <- xy0 [xy0$inp > 0,]
 
+        if (missing (size))
+            size <- 0.5
+        if (length (size) == 1)
+            size <- rep (size, 2) # else size [2] specifies bg size
+        if (missing (shape))
+            shape <- 1
+        if (length (shape) == 1)
+            shape <- rep (shape, 2)
         aes <- ggplot2::aes (x=lon, y=lat, group=id, colour=z)
-        map <- map + ggplot2::geom_point (data=xy, mapping=aes) +
+        map <- map + ggplot2::geom_point (data=xy, mapping=aes, 
+                                          size=size [1], shape=shape [1]) +
                         ggplot2::scale_colour_gradientn (colours=cols)
+
+        if (!missing (bg))
+        {
+            xy <- xy0 [xy0$inp == 0,]
+            aes <- ggplot2::aes (x=lon, y=lat, group=id)
+            map <- map + ggplot2::geom_point (data=xy, mapping=aes, col=bg,
+                                              size=size [2], shape=shape [2])
+        }
     }
 
     return (map)

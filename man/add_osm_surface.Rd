@@ -5,7 +5,7 @@
 \title{add_osm_suface}
 \usage{
 add_osm_surface(map, obj, dat, method = "idw", grid_size = 100,
-  cols = heat.colors(30), bg, size)
+  cols = heat.colors(30), bg, size, shape)
 }
 \arguments{
 \item{map}{A ggplot2 object to which the surface are to be added}
@@ -31,7 +31,12 @@ are plotted in this colour, otherwise they are included in the interpolation
 
 \item{size}{Size argument passed to ggplot2 (polygon, path, point) functions:
 determines width of lines for (polygon, line), and sizes of points.
-Respective defaults are (0, 0.5, 0.5).}
+Respective defaults are (0, 0.5, 0.5). If 'bg' is provided and 'size' has 2
+elements, the second determines the 'size' of the background objects.}
+
+\item{shape}{Shape of lines or points, for details of which see
+'?ggplot2::shape'. If 'bg' is provided and 'shape' has 2 elements, the second
+determines the 'shape' of the background objects.}
 }
 \value{
 modified version of map (a ggplot object) to which surface has been

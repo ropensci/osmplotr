@@ -19,6 +19,8 @@
 #' including behind text. Lower values are more transparent.
 #' @param text_col Colour of text, tick marks, and lines on colourbar
 #' @param fontsize Size of text labels (in ggplot terms; default=3)
+#' @param fontface Fontface for colourbar labels (1:4=plain,bold,italic,bold-italic)
+#' @param fontfamily Family of colourbar font (for example, 'Times')
 #' @return Modified version of map with colourbar added
 #' @export
 #'
@@ -53,7 +55,8 @@
 
 add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols, 
                            vertical=TRUE, alpha=0.4,
-                           text_col="black", fontsize=3)
+                           text_col="black", fontsize=3,
+                           fontface, fontfamily)
 {
     # ---------------  sanity checks and warnings  ---------------
     # ---------- map
@@ -85,6 +88,8 @@ add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols,
         stop ("cols must be specified in add_colourbar")
     
     # ---------------  end sanity checks and warnings  ---------------
+    if (missing (fontface)) fontface <- 1
+    if (missing (fontfamily)) fontfamily <- ""
 
     barwidth <- sort (barwidth)
     barlength <- sort (barlength)
@@ -210,7 +215,7 @@ add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols,
     # Note that the actual limits of geom_tile are increased by 1/2 an
     # increment, so:
     zlabs <- pretty (zlims)
-    zlabs <- zlabs [which (zlabs %in% zlims[1]:zlims[2])]
+    zlabs <- zlabs [which (zlabs > zlims[1] & zlabs < zlims[2])]
     z <- bary [1] + (zlabs - zlims [1]) * diff (bary) / diff (zlims)
 
     if (vertical)
@@ -243,6 +248,7 @@ add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols,
                      mapping=ggplot2::aes (x=x1, y=y1, xend=x2, yend=y2)) +
                 glab (data=labdat, mapping=ggplot2::aes (x=x, y=y, label=z),
                       alpha=alpha, size=fontsize, colour=text_col,
+                      fontface=fontface, family=fontfamily,
                       inherit.aes=FALSE, label.size=0,
                       nudge_x=nudge_x, nudge_y=nudge_y,
                       vjust=vjust, hjust=hjust)

@@ -29,11 +29,6 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
 
-    # make_osm_map passes empty values as '' rather than NULL:
-    if (!missing (value))
-        if (nchar (value) == 0)
-            value <- NULL
-
     if (key == 'park')
     {
         key <- 'leisure'
@@ -42,14 +37,18 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
     {
         key <- 'landuse'
         value <- 'grass'
+    } else if (key == 'tree')
+    {
+        key <- 'natural'
+        value <- 'tree'
     }
     
     # Construct the overpass query, starting with main key-value pair and
     # possible negation
-    valold <- value
     keyold <- key
     if (!missing (value))
     {
+        valold <- value
         if (substring (value, 1, 1) == '!')
             value <- paste0 ("['", key, "'!='", 
                             substring (value, 2, nchar (value)), "']")
@@ -57,7 +56,8 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
             value <- paste0 ("['", key, "'~'", value, "']")
         else
             value <- paste0 ("['", key, "'='", value, "']")
-    }
+    } else
+        value <- ''
     if (key == 'name')
         key <- ''
     else
@@ -72,7 +72,8 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
         for (i in extra_pairs)
             ep <- paste0 (ep, "['", i [1], "'~'", i [2], "']")
         extra_pairs <- ep
-    }
+    } else
+        extra_pairs <- ''
 
     bbox <- paste0 ('(', bbox [2,1], ',', bbox [1,1], ',',
                     bbox [2,2], ',', bbox [1,2], ')')
@@ -83,7 +84,10 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
                     ';rel', key, value, extra_pairs, bbox, ';')
     url_base <- 'http://overpass-api.de/api/interpreter?data='
     query <- paste0 (url_base, query, ');(._;>;);out;')
-    value <- valold
+    if (nchar (value) > 0)
+        value <- valold
+    else
+        value <- NULL
     key <- keyold
 
     obj <- NULL
@@ -109,7 +113,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
     for (i in seq (dato$relations))
         if (nrow (dato$relations [[i]]) > 0)
             dato$relations [[i]]$id <- paste0 ("r", dato$relations [[i]]$id)
-    if (!is.null (key))
+    if (nchar (key) > 0)
         pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     else if (!is.null (value))
         pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
