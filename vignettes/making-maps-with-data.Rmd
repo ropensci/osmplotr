@@ -389,6 +389,7 @@ frame of `SpatialPoints`, and the `groups` specified as a list, each item of
 which represents one cluster.  A general approach is illustrated here with
 `groups` defined by single, randomly generated points.
 ```{r}
+set.seed (2)
 ngroups <- 12
 x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
 y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
@@ -470,13 +471,12 @@ of degrees using the `rotate` argument.
 
 ```{r, fig.width=4}
 plot.new ()
-cmat <- colour_mat (n=8, rotate=90, plot=TRUE)
+cmat <- colour_mat (n=c(4,8), rotate=90, plot=TRUE)
 ```
 
 This example also illustrates that the size of colour matrices may also be
-arbitrarily specified (and need not be square if `rotate` is not desired). Using
-the `colmat` option in `add_osm_groups` enables the previous maps to be redrawn
-like this:
+arbitrarily specified. Using the `colmat` option in `add_osm_groups` enables the
+previous maps to be redrawn like this:
 ```{r map14, eval=FALSE}
 map <- plot_osm_basemap (bbox=bbox, bg='gray95')
 map <- add_osm_groups (map, dat_B, groups=groups, borderWidth=2, colmat=TRUE,
