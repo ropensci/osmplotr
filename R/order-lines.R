@@ -20,7 +20,7 @@ order_lines <- function (spLines, i0=0)
 {
     stopifnot (class (spLines) == 'SpatialLinesDataFrame')
     # Extract all coords from the SLDF and store as simple list:
-    xy <- coordinates (spLines)
+    xy <- sp::coordinates (spLines)
     xy <- lapply (xy, function (x) array (unlist (x), dim=dim(x[[1]]) ))
     # Start the ordered data.frame with the first item of xy
     xy_ord <- xy [[1]]
@@ -120,7 +120,7 @@ order_lines <- function (spLines, i0=0)
             {
                 lj <- sp::Line (xy_ord [[j]])
                 lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
-                xy <- coordinates (rgeos::gIntersection (li, lj))
+                xy <- sp::coordinates (rgeos::gIntersection (li, lj))
                 # Then distances to from xy to xy_ord [[i]], to enable the
                 # junction point to be inserted in the appropriate sequence.
                 # There may however be more than one intersection, requiring

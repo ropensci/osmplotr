@@ -46,7 +46,7 @@ get_highway_cycle <- function (highways)
                         lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
                         int <- rgeos::gIntersection (li, lj)
                         if (!is.null (int))
-                            sum (coordinates (int) %in% x)
+                            sum (sp::coordinates (int) %in% x)
                         else
                             -1
                         })
@@ -57,7 +57,7 @@ get_highway_cycle <- function (highways)
                     x <- test_flat [k] [[1]]
                     lj <- sp::Line (x)
                     lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
-                    xy <- coordinates (rgeos::gIntersection (li, lj))
+                    xy <- sp::coordinates (rgeos::gIntersection (li, lj))
                     d <- sqrt ((xy [1] - obji [[j]] [,1]) ^ 2 + 
                                (xy [2] - obji [[j]] [,2]) ^ 2)
                     di <- which.min (d)

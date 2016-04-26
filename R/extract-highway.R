@@ -32,7 +32,7 @@ extract_highway <- function (name='', bbox)
     #dat <- XML::xmlParse (dat)
     dat <- httr::GET (query)
     if (dat$status_code != 200)
-        message (http_stats (dat)$message)
+        message (httr::http_status (dat)$message)
     # Encoding must be supplied to suppress warning
     dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
     dato <- osmar::as_osmar (dat)
