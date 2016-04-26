@@ -19,7 +19,37 @@ simple maps. The subsequent vignette ('making-maps-with-data') demonstrates how
 `osmplotr` enables user-defined data to be visualised using OSM data.  The maps
 in this vignette represent a small portion of central London, U.K. 
 
-## 1. Introduction
+
+## Contents
+
+[1. Introduction](#1 intro)
+
+[2. Downloading Data](#2 downloading)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;2.1 Negation](#2.1 negation)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;2.2 Additional `key-value` pairs](#2.2 keyval-pairs)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;2.3 A note on rivers](#2.3 rivers)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;2.4 Downloading with `osm_structures` and `make_osm_map`](#2.4 downloading2)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.4.1 The `london` data of `osmplotr`](#2.4.1 london-data)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;2.5 Downloading connected highways](#2.5 highways)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.5.1 `connect_highways` in detail](#2.5.1 highways-detail)
+
+[3. Producing maps](#3 maps)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;3.1 Plotting different OSM Structures](#3.1 osm-structures)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;3.2. Automating map production](#3.2 make-osm-map)
+
+[&nbsp;&nbsp;&nbsp;&nbsp;3.3 Axes](#3.3 axes)
+
+
+## <a name="1 intro"></a>1. Introduction
 
 A map can be generated using the following simple steps:
 ```{r load, message=FALSE}
@@ -74,7 +104,7 @@ graphics.off ()
 Additional capabilities of `osmplotr` are described in the following sections,
 beginning with downloading and extraction of data.
 
-## 2. Downloading Data
+## <a name="2 downloading"></a>2. Downloading Data
 
 The main function for downloading OSM data from the 
 [overpass API](https://overpass-api.de) is `extract_osm_objects`. Data of a
@@ -102,7 +132,7 @@ length (dat_B); length (dat_H); length (dat_T)
 dat_T <- extract_osm_objects (key="natural", value="tree", bbox=bbox)
 ```
 
-### 2.1 Negation
+## <a name="2.1 negation"></a>2.1 Negation
 
 Negation can be specified by pre-pending `!` to the `value` argument so that,
 for example, all `natural` objects that are **not** trees can be extracted with
@@ -114,7 +144,7 @@ dat_NT <- extract_osm_objects (key="natural", value="!tree", bbox=bbox)
 dat_H <- extract_osm_objects (key="highway", value="!primary", bbox=bbox)
 ```
 
-### 2.2 Additional `key-value` pairs
+## <a name="2.2 keyval-pairs"></a>2.2 Additional `key-value` pairs
 
 Any number of `key-value` pairs may be passed to `extract_osm_objects`. For
 example, a named building can be extracted with
@@ -135,7 +165,7 @@ dat <- extract_osm_objects (key='building', extra_pairs=extra_pairs,
 This data is stored as `london$dat_ST`.  Note that addresses generally require
 combining both `addr:street` with `addr:housenumber`.
 
-### 2.3 A note on rivers
+## <a name="2.3 rivers"></a>2.3 A note on rivers
 
 OSM objects are extracted within `R` through using the `osmar` package which
 does not currently handle the extraction of rivers in a failsafe way. Rivers are
@@ -146,7 +176,7 @@ there is no way to know in advance whether or not that may be the case. This
 requests to download river polygons may not yield the desired results.  This
 problem will be addressed in future releases of `osmplotr`.
 
-### 2.4 Downloading with `osm_structures` and `make_osm_map`
+## <a name="2.4 downloading2"></a>2.4 Downloading with `osm_structures` and `make_osm_map`
 
 The functions `osm_structures` and `make_osm_map` aid both downloading multiple
 OSM data types and plotting (with the latter described below).  `osm_structures`
@@ -202,7 +232,7 @@ osm_structures (structures="grass")
 ```
 demonstrates the conversion of `keys` to OSM-appropriate `key-value` pairs.
 
-#### 2.4.1 The `london` data of `osmplotr`
+### <a name="2.4.1 london-data"></a>2.4.1 The `london` data of `osmplotr`
 
 To illustrate the use of `osm_structures` to download data, this section
 reproduces the code that was used to generate the `london` data object which
@@ -234,7 +264,7 @@ london <- make_osm_map (structures=structs, bbox=bbox)$osm_data
 As shown above, the requested data are contained in the `$osm_data` list item.
 The `map` item is examined below (see **3.1 Automating map production**).
 
-### 2.4 Downloading connected highways
+## <a name="2.5 highways"></a>2.5 Downloading connected highways
 
 The visualisation functions considered below enable particular regions of maps
 to be highlighted. While it may often be desirable to highlight regions
@@ -273,7 +303,7 @@ warning ("Cycle unable to be extended through all ways")
 To understand why it may not work, it is useful to examine `connect_highways` in
 more detail.
 
-#### 2.4.1 `connect_highways` in detail
+### <a name="2.5.1 highways-detail"></a>2.5.1 `connect_highways` in detail
 
 `connect_highways` finds a sequence of line segments that circularly connect the
 named highways. Cases where no circular connection is possible generate an error
@@ -322,7 +352,7 @@ excludes #6. This exclusion of one of the named components generates the
 warning message. 
 
 
-## 3. Producing maps
+## <a name="3 maps"></a>3. Producing maps
 
 Maps will generally contain multiple kinds of OSM data, for example,
 ```{r, eval=FALSE}
@@ -408,7 +438,7 @@ graphics.off ()
 ```
 
 
-### 3.1 Plotting different OSM Structures
+## <a name="3.1 osm-structures"></a>3.1 Plotting different OSM Structures
 
 The ability demonstrated above to use negation in `extract-osm-objects` allows
 different kinds of the same object to be visually contrasted, for example
@@ -471,7 +501,7 @@ graphics.off ()
 ![map7](map_a7.png)
 
 
-### 3.2. Automating map production
+## <a name="3.2 make-osm-map"></a>3.2. Automating map production
 
 As indicated above (**2.4 Downloading with `osm_structures` and
 `make_osm_map`**), the production of maps overlaying various type of OSM objects
@@ -537,7 +567,7 @@ As described above (**2.4 Downloading with `osm_structures` and
 all data will be downloading by that function and returned in the `$osm_data`
 list component.
 
-### 3.3 Axes
+## <a name="3.3 axes"></a>3.3 Axes
 
 Axes may be added to maps using the `add_axes` function. In contrast to many `R`
 packages for producing maps, maps in `osmplotr` fill the entire plotting space,

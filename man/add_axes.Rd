@@ -24,6 +24,9 @@ labels (lower values increase transparency)}
 
 \item{fontfamily}{Family of axis font (for example, 'Times')}
 }
+\value{
+Modified version of map with axes added
+}
 \description{
 Adds axes to the internal region of an OSM plot.
 }

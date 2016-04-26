@@ -33,6 +33,9 @@ including behind text. Lower values are more transparent.}
 
 \item{fontsize}{Size of text labels (in ggplot terms; default=3)}
 }
+\value{
+Modified version of map with colourbar added
+}
 \description{
 Adds a colourbar to an existing map. Intended to be used in combination with
 add_osm_surface (). At present, only plots on right side of map.

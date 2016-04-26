@@ -172,7 +172,9 @@ get_highway_cycle <- function (highways)
         indx2 <- indx [which (!is.na (ni))]
         conmat [i, indx2] <- conmat [indx2, i] <- TRUE
     }
-    cycles <- ggm::fundCycles (conmat)
+    cycles <- try (ggm::fundCycles (conmat_adj), TRUE)
+    if (is (attr (cycles, "condition"), "simpleError"))
+        cycles <- NULL
 
     # ***** (3) Insert extra connections between highways until the longest
     # *****     cycle == length (highways). 
@@ -202,7 +204,9 @@ get_highway_cycle <- function (highways)
         {
             conmat_adj [i1 [i], i2 [i]] <- TRUE
             conmat_adj [i2 [i], i1 [i]] <- TRUE
-            cycles <- ggm::fundCycles (conmat_adj)
+            cycles <- try (ggm::fundCycles (conmat_adj), TRUE)
+            if (is (attr (cycles, "condition"), "simpleError"))
+                cycles <- NULL
             if (!is.null (cycles))
                 cyc_len_i [i] <- max (sapply (cycles, nrow))
         }
@@ -210,12 +214,12 @@ get_highway_cycle <- function (highways)
         {
             warning ('No cycles can be found or made')
             break
-        } else if (max (cyc_len_i < cyc_len))
+        } else if (max (cyc_len_i, na.rm=TRUE) < cyc_len)
         {
             warning ('Cycle unable to be extended through all ways')
             break
         } else
-            cyc_len <- max (cyc_len_i)
+            cyc_len <- max (cyc_len_i, na.rm=TRUE)
 
         # Then connect the actual highways corresponding to the longest cycle
         i1 <- i1 [which.max (cyc_len_i)]

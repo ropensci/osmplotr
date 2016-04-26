@@ -26,6 +26,10 @@ Takes a list of highways names which must enclose an internal area, and returns
 a SpatialLines object containing a sequence of OSM nodes which cyclically
 connect all highways. Will fail if the streets do not form a cycle.
 }
+\note{
+This function is still experimental - please help further improvements
+by reporting any problems!
+}
 \examples{
 \dontrun{
 bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52)) # Central London, U.K.

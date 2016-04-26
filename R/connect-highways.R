@@ -15,6 +15,9 @@
 #' line connecting all given streets.
 #' @export
 #'
+#' @note This function is still experimental - please help further improvements
+#' by reporting any problems!
+#'
 #' @examples
 #' \dontrun{
 #' bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52)) # Central London, U.K.
@@ -55,6 +58,15 @@ connect_highways <- function (highways, bbox, plot=FALSE)
     # Start by getting the sequentially ordered list of highways, exluding any
     # components, and connecting them:
     ways <- extract_highways (highway_names=highways, bbox=bbox)
+    i0 <- which (sapply (ways, length) == 0)
+    if (any (i0))
+        for (i in i0)
+            warning (highways [i], ' contains no data')
+    while (any (sapply (ways, length) == 0))
+    {
+        i0 <- which (sapply (ways, length) == 0)
+        ways [[i0 [1] ]] <- NULL
+    }
     p4s <- attr (ways, "crs")
     #if (!is.null (exclude))
     #{
@@ -109,8 +121,8 @@ connect_highways <- function (highways, bbox, plot=FALSE)
         indx2 <- indx [which (!is.na (ni))]
         conmat [i, indx2] <- conmat [indx2, i] <- TRUE
     }
-    cycles <- ggm::fundCycles (conmat)
-    if (is.null (cycles))
+    cycles <- try (ggm::fundCycles (conmat), TRUE)
+    if (is (attr (cycles, "condition"), "simpleError"))
         stop ('There are no cycles in the listed highways')
     cyc <- cycles [[which.max (sapply (cycles, nrow))]]
 
@@ -151,9 +163,9 @@ connect_highways <- function (highways, bbox, plot=FALSE)
 
         sp <- shortest_way (ways [[w0]], w0f_names, w0t_names)
         # If there is no connection between the components containing w0f_names
-        # and w0t_names, then sp=0. Components are then sequentially connected
-        # by joining the two at the shortest distance and re-calculating until a
-        # shortest path is possible.
+        # and w0t_names, then sp is NULL. Components are then sequentially
+        # connected by joining the two at the shortest distance and
+        # re-calculating until a shortest path is possible.
         if (is.null (sp))
         {
             # Start by making a connection matrix between the components of w0,
@@ -217,7 +229,7 @@ connect_highways <- function (highways, bbox, plot=FALSE)
             # not connecting nodes were terminal. (Non-terminal cases will arise
             # for example for parallel lanes which do not cross, yet have very
             # low distances between them.)
-            conmat_way [i1, i2] <- conmat_way [i2, i1] <- Inf
+            #conmat_way [i1, i2] <- conmat_way [i2, i1] <- Inf
             # This stop should never happen:
             if (all (!is.finite (conmat_way)))
                 stop (paste0 ('Segments of way#', i, ' cannot be joined'))

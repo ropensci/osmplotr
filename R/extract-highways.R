@@ -227,22 +227,23 @@ extract_highways <- function (highway_names, bbox)
     } # end for i over all objs
 
     # (4) Remove any segments that do not cross or touch any others
-    removes <- NULL
-    for (i in seq (objs))
-        for (j in seq (objs [[i]]))
-        {
-            objs_temp <- objs
-            objs_temp [[i]] [[j]] <- NULL
-            objs_temp <- do.call (rbind, do.call (c, objs_temp))
-            indx <- array (objs [[i]] [[j]] %in% objs_temp,
-                           dim=dim (objs [[i]] [[j]]))
-            if (max (rowSums (indx)) < 2)
-                removes <- rbind (c (i, j), removes)
-        }
-    # removes is constructed backwards, so can be directly NULLed
-    if (nrow (removes) > 0)
-        for (i in seq (nrow (removes)))
-            objs [[removes [i,1] ]] [[removes [i,2] ]] <- NULL
+    # ---> This is actually not a good idea!
+    #removes <- NULL
+    #for (i in seq (objs))
+    #    for (j in seq (objs [[i]]))
+    #    {
+    #        objs_temp <- objs
+    #        objs_temp [[i]] [[j]] <- NULL
+    #        objs_temp <- do.call (rbind, do.call (c, objs_temp))
+    #        indx <- array (objs [[i]] [[j]] %in% objs_temp,
+    #                       dim=dim (objs [[i]] [[j]]))
+    #        if (max (rowSums (indx)) < 2)
+    #            removes <- rbind (c (i, j), removes)
+    #    }
+    ## removes is constructed backwards, so can be directly NULLed
+    #if (nrow (removes) > 0)
+    #    for (i in seq (nrow (removes)))
+    #        objs [[removes [i,1] ]] [[removes [i,2] ]] <- NULL
 
     attr (objs, "crs") <- p4s
 
