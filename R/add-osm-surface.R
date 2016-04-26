@@ -34,45 +34,68 @@
 #' added
 #'
 #' @note 
-#' Spatial smoothing is *interpolative* and so values beyond the bounding
-#' polygon of 'dat' will generally be unreliable. Points beyond the bounding
-#' polygon are only included in the interpolation if 'bg' is NA or NULL.
+#' Points beyond the spatial boundary of `dat` are included in the surface if
+#' 'bg' is not given. In such cases, values for these points may exceed the range
+#' of provided data because the surface will be extrapolated beyond its domain.
+#' Actual plotted values are therefore restricted to the range of given values,
+#' so any extrapolated points greater or less than the range of 'dat' are simply
+#' set to the respective maximum or minimum values. This allows the limits of
+#' 'dat' to be used precisely when adding colourbars with `add_colourbar`.
 #'
 #' @export
 #'
 #' @examples
-#' # Make a data frame of volcano data mapped onto map coordinates, and remove
-#' # periphery
+#' # Get some data
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' getdat <- function (bbox)
-#' {
-#'     dims <- dim (volcano)
-#'     d1 <- array (seq (dims [1]) - dims[1] / 2, dim=dims)
-#'     d2 <- t (array (seq (dims [2]) - dims[2] / 2, dim=rev (dims)))
-#'     dv <- sqrt (d1 ^ 2 + d2 ^ 2) # define perhiphery as dv > 40
+#' # dat_B <- extract_osm_objects (key='building', bbox=bbox)
+#' # These data are also provided in
+#' dat_B <- london$dat_BNR
+#' # Make a data surface across the map coordinates, and remove periphery
+#' n <- 5
+#' x <- seq (bbox [1,1], bbox [1,2], length.out=n)
+#' y <- seq (bbox [2,1], bbox [2,2], length.out=n)
+#' dat <- data.frame (
+#'     x=as.vector (array (x, dim=c(n, n))),
+#'     y=as.vector (t (array (y, dim=c(n, n)))),
+#'     z=x * y
+#'     )
+#' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+#' map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+#' print (map)
+#'
+#' # If data do not cover the entire map region, then the peripheral remainder can
+#' # be plotted by specifying the 'bg' colour. First remove periphery from
+#' # 'dat':
+#' d <- sqrt ((dat$x - mean (dat$x)) ^ 2 + (dat$y - mean (dat$y)) ^ 2)
+#' dat <- dat [which (d < 0.01),]
+#' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+#' map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30), bg='gray40')
+#' print (map)
+#'
+#' # Polygons and (lines/points) can be overlaid as data surfaces with different
+#' # colour schemes.
+#' # dat_HP <- extract_osm_objects (key='highway', value='primary', bbox=bbox)
+#' # These data are also provided in
+#' dat_HP <- london$dat_HP
+#' cols <- adjust_colours (heat.colors (30), adj=-0.2) # darken by 20%
+#' map <- add_osm_surface (map, dat_HP, dat, cols=cols, bg='gray60', size=c(1.5,0.5))
+#' print (map)
 #' 
-#'     x <- seq (bbox [1,1], bbox [1,2], length.out=dims [1])
-#'     y <- seq (bbox [2,1], bbox [2,2], length.out=dims [2])
-#'     dat <- data.frame (
-#'                        x=rep (x, dims [2]),
-#'                        y=rep (y, each=dims [1]),
-#'                        z=as.numeric (volcano)
-#'                        )
-#'     dat$z [as.numeric (dv) > 40] <- NA
-#'     return (dat)
-#' }
-#' dat <- getdat (bbox)
+#' # Adding multiple surfaces of either polygons or (lines/points) produces a
+#' # 'ggplot2' warning, and forces the colour gradient to revert to the last given
+#' # value.
+#' dat_T <- london$dat_T # trees
+#' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+#' map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30), bg='gray40')
+#' map <- add_osm_surface (map, dat_HP, dat, cols=heat.colors (30), bg='gray60', 
+#'                         size=c(1.5,0.5))
+#' map <- add_osm_surface (map, dat_T, dat, cols=topo.colors (30),
+#'                         bg='gray70', size=c(5,2), shape=c(8, 1))
+#' print (map) # 'dat_HP' is in 'topo.colors' not 'heat.colors'
 #' 
-#' # Plotting order is important because each layer overlays the previous
-#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
-#' map <- add_osm_objects (map, london$dat_HP, col="gray70", size=1)
-#' cols <- heat.colors (30)
-#' map <- add_osm_surface (map, london$dat_BNR, dat, cols=cols, bg="gray40")
-#' map <- add_osm_surface (map, london$dat_H, dat, 
-#'                         cols=adjust_colours (cols, adj=-0.2), bg="black")
-#' map <- add_osm_objects (map, london$dat_T, col="green")
+#' # Add axes and colourbar
 #' map <- add_axes (map)
-#' map <- add_colourbar (map, cols=heat.colors (100), zlims=range (volcano),
+#' map <- add_colourbar (map, cols=heat.colors (100), zlims=range (dat$z),
 #'                       barwidth=c(0.02), barlength=c(0.6,0.99), vertical=TRUE)
 #' print (map)
 

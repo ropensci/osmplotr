@@ -20,7 +20,6 @@ while continuous data may be plotted with `add_osm_surface`.
 
 
 ```{r load, message=FALSE}
-library (osmplotr)
 library (maptools) # Needed for this vignette
 ```
 ```{r, echo=FALSE, message=FALSE}
@@ -821,3 +820,4 @@ graphics.off ()
 The first two colour specificiations (`terrain.colors`) have been ignored, and
 all added items are coloured according to the final value of `heat.colors (30)`.
 Other aspects such as line sizes and point shapes are nevertheless respected.
+
