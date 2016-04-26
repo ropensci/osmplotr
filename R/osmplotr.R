@@ -6,9 +6,9 @@
 #'
 #' @section Data Functions:
 #' \tabular{ll}{
-#' 'extract_highway'\tab Download a single highway\cr
-#' 'extract_highways'\tab Download a series of named highways\cr
 #' 'extract_osm_objects'\tab Download arbitrary OSM objects\cr
+#' 'connect_highways'\tab Returns points sequentially connecting list of named
+#' highways\cr
 #' }
 #'
 #' @section Basic Plotting Functions (without data):
@@ -39,12 +39,7 @@
 #'
 #' @section Other Functions:
 #' \tabular{ll}{
-#' 'get_highway_cycle'\tab Connect lists of highways (used in 'connect_highways')
-#' \cr 
 #' 'get_bbox'\tab return bounding box from input vector\cr 
-#' 'connect_highways'\tab Return a polygonal boundary circularly connecting a
-#' given series of named highways \cr 
-#' 'order_lines'\tab Spatially order highway lines in a given set of OSM data\cr 
 #' }
 #'
 #' @section Data:
@@ -54,8 +49,12 @@
 #'
 #' @section Vignettes:
 #' \tabular{ll}{
-#' 'downloading-data'\tab Describes how 'london' data were downloaded\cr 
-#' 'making-maps'\tab Main package vignette
+#' 'making-maps'\tab Describes basics of downloading data and making custom
+#' maps\cr
+#' 'making-maps-with-data'\tab 
+#' Describes how map elements can be coloured
+#' according to user-provided data, whether 
+#' categorical or continuous.
 #' }
 #'
 #' @name osmplotr
@@ -72,33 +71,35 @@ NULL
 
 #' london 
 #'
-#' A list of SpatialPolygonsDataFrames (SPDF) and SpatialLinesDataFrames (SLDF)
-#' containing OpenStreetMap polygons and lines for various OpenStreetMap
-#' structures in a small part of central London, U.K.  (bbox = -0.15, 51.5,
-#' -0.1, 51.52). The list includes:
+#' A list of SpatialPolygonsDataFrames (SPDF), SpatialLinesDataFrames (SLDF),
+#' and SpatialPointsDataFrames (SPtDf) containing OpenStreetMap polygons and
+#' lines for various OpenStreetMap structures in a small part of central London,
+#' U.K.  (bbox = -0.15, 51.5, -0.1, 51.52). The list includes:
 #' \enumerate{
-#'  \item dat_H an SLDF of non-primary highways with 3,868 lines 
-#'  \item dat_HP an SLDF of primary highways with 659 lines 
-#'  \item dat_B an SPDF of non-commerical buildings with 6,177 polygons 
-#'  \item dat_BC an SPDF of commerical buildings with 30 polygons 
-#'  \item dat_A an SPDF of amenities with 1,157 polygons 
-#'  \item dat_G an SPDF of grassed areas with 50 polygons 
-#'  \item dat_P an SPDF of parks with 49 polygons 
-#'  \item dat_N an SPDF of natural areas with 36 polygons 
+#'  \item dat_H an SLDF of non-primary highways with 1.764 lines 
+#'  \item dat_HP an SLDF of primary highways with 378 lines 
+#'  \item dat_BNR an SPDF of non-residential buildings with 2,138 polygons 
+#'  \item dat_BR an SPDF of residential buildings with 40 polygons 
+#'  \item dat_BC an SPDF of commerical buildings with 17 polygons 
+#'  \item dat_A an SPDF of amenities with 442 polygons 
+#'  \item dat_G an SPDF of grassed areas with 23 polygons 
+#'  \item dat_P an SPDF of parks with 24 polygons 
+#'  \item dat_N an SPDF of natural areas with 18 polygons 
+#'  \item dat_T an SPtDF of trees with 1,310 points 
 #'  \item dat_RFH an SPDF containing 1 polygon representing Royal Festival Hall
 #'  \item dat_ST an SPDF containing 1 polygon representing 150 Stamford Street
-#'  \item highways1 A SpatialPoints object containing 178 points representing
-#'  the circular perimeter of ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
-#'  'Fleet.St', 'Aldwych')
-#'  \item highways2 A SpatialPoints object containing 126 points representing
-#'  the circular perimeter of ('Queen.s.Walk', 'Blackfriars', 'Waterloo', 
-#'  'The.Cut')
-#'  \item highways2 A SpatialPoints object containing 126 points representing
-#'  the circular perimeter of ('Regent.St', 'Oxford.St', 'Shaftesbury')
+#'  \item highways1 A SpatialPoints object containing 55 points representing
+#'  the circular perimeter of c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 
+#' 'Long.Acre', 'Upper.Saint.Martin')
+#'  \item highways2 A SpatialPoints object containing 47 points representing
+#'  the circular perimeter of 
+#' c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
+#'  \item highways3 A SpatialPoints object containing 55 points representing
+#'  the circular perimeter of 
+#' c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')
 #' }
 #'
-#' The vignette 'Downloading Data' contains the script used to generate these
-#' data.
+#' The vignette 'making-maps' demonstrates how these data were downloaded.
 #'
 #' @docType data
 #' @keywords datasets

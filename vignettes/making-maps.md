@@ -48,19 +48,19 @@ bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
 1.  Download the desired data---in this case, all building perimeters.
 
 ``` r
-dat_B <- extract_osm_objects (key="building", bbox=bbox)
+dat_B <- extract_osm_objects (key='building', bbox=bbox)
 ```
 
 1.  Initiate an `osm_basemap` with desired background (`bg`) colour
 
 ``` r
-map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 ```
 
 1.  Add desired plotting objects in the desired colour.
 
 ``` r
-map <- add_osm_objects (map, dat_B, col="gray40")
+map <- add_osm_objects (map, dat_B, col='gray40')
 ```
 
 1.  Print the map
@@ -80,8 +80,8 @@ The main function for downloading OSM data from the [overpass API](https://overp
 
 ``` r
 bbox <- get_bbox (c(-0.13,51.51,-0.11,51.52))
-dat_B <- extract_osm_objects (key="building", bbox=bbox)
-dat_H <- extract_osm_objects (key="highway", bbox=bbox)
+dat_B <- extract_osm_objects (key='building', bbox=bbox)
+dat_H <- extract_osm_objects (key='highway', bbox=bbox)
 ```
 
 These objects are of appropriate `Spatial` classes:
@@ -117,7 +117,7 @@ length (dat_B); length (dat_H); length (dat_T)
 ... 2,178 building polygons, 2,139 highway lines, and 1,310 trees. `extract_osm_objects` also accepts `key-value` pairs which are passed to the [overpass API](https://overpass-api.de) :
 
 ``` r
-dat_T <- extract_osm_objects (key="natural", value="tree", bbox=bbox)
+dat_T <- extract_osm_objects (key='natural', value='tree', bbox=bbox)
 ```
 
 <a name="2.1 negation"></a>2.1 Negation
@@ -126,13 +126,13 @@ dat_T <- extract_osm_objects (key="natural", value="tree", bbox=bbox)
 Negation can be specified by pre-pending `!` to the `value` argument so that, for example, all `natural` objects that are **not** trees can be extracted with
 
 ``` r
-dat_NT <- extract_osm_objects (key="natural", value="!tree", bbox=bbox)
+dat_NT <- extract_osm_objects (key='natural', value='!tree', bbox=bbox)
 ```
 
 `london$dat_H` contains all non-primary highways, and was extracted with,
 
 ``` r
-dat_H <- extract_osm_objects (key="highway", value="!primary", bbox=bbox)
+dat_H <- extract_osm_objects (key='highway', value='!primary', bbox=bbox)
 ```
 
 <a name="2.2 keyval-pairs"></a>2.2 Additional `key-value` pairs
@@ -233,7 +233,7 @@ osm_structures (structures=c('building', 'highway'))
 Passing this to `make_osm_map` will download only these two structures. Finally, note that the example of,
 
 ``` r
-osm_structures (structures="grass")
+osm_structures (structures='grass')
 ```
 
     ##    structure     key value suffix      cols
@@ -333,8 +333,8 @@ This procedure can not be guaranteed failsafe owing both to the inherently unpre
 ``` r
 # TODO: Set eval=FALSE before cran re-sub!!
 bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
-highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
-               "Fleet.St", "Aldwych")
+highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
+               'Fleet.St', 'Aldwych')
 highway_list <- connect_highways (highways=highways, bbox=bbox_big, plot=TRUE)
 ```
 
@@ -368,18 +368,18 @@ The plot depicts each highway in a different colour, along with numbers at start
 Maps will generally contain multiple kinds of OSM data, for example,
 
 ``` r
-dat_B <- extract_osm_objects (key="building", bbox=bbox)
-dat_H <- extract_osm_objects (key="highway", bbox=bbox)
-dat_T <- extract_osm_objects (key="natural", value="tree", bbox=bbox)
+dat_B <- extract_osm_objects (key='building', bbox=bbox)
+dat_H <- extract_osm_objects (key='highway', bbox=bbox)
+dat_T <- extract_osm_objects (key='natural', value='tree', bbox=bbox)
 ```
 
 As illustrated above, plotting maps requires first making a basemap with a specified background colour. Portions of maps can also be plotted by creating a `basemap` with a smaller bounding box.
 
 ``` r
 bbox_small <- get_bbox (c(-0.13,51.51,-0.11,51.52))
-map <- plot_osm_basemap (bbox=bbox_small, bg="gray20")
-map <- add_osm_objects (map, dat_H, col="gray70")
-map <- add_osm_objects (map, dat_B, col="gray40")
+map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
+map <- add_osm_objects (map, dat_H, col='gray70')
+map <- add_osm_objects (map, dat_B, col='gray40')
 ```
 
 The proportions of graphics devices should be scaled in proportion to the bounding box (although this is of course not necessary).
@@ -395,8 +395,8 @@ print (map)
 Other graphical parameters can also be passed to `add_osm_objects`, such as border colours or line widths and types. For example,
 
 ``` r
-map <- plot_osm_basemap (bbox=bbox_small, bg="gray20")
-map <- add_osm_objects (map, dat_B, col="gray40", border="orange", size=0.2)
+map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
+map <- add_osm_objects (map, dat_B, col='gray40', border='orange', size=0.2)
 print (map)
 ```
 
@@ -405,8 +405,8 @@ print (map)
 The `size` argument is passed to the corresponding `ggplot2` routine for plotting polygons, lines, or points, and respectively determines widths of lines (for polygon outlines and for lines), and sizes of points. The `col` argument determines the fill colour of polygons, or the colour of lines or points.
 
 ``` r
-map <- add_osm_objects (map, dat_H, col="gray70", size=0.7)
-map <- add_osm_objects (map, dat_T, col="green", size=2, shape=1)
+map <- add_osm_objects (map, dat_H, col='gray70', size=0.7)
+map <- add_osm_objects (map, dat_T, col='green', size=2, shape=1)
 print (map)
 ```
 
@@ -417,7 +417,7 @@ Note also that the `shape` parameter determines the point shape, for details of 
 The `osmplotr` package is intended to produce high quality graphical output written to particular graphic devices such as `png` or `jpeg` (see `?png` for a list of possible devices). `ggplot` readily enables map objects to be printed to the active device so that graphics files can be generated by, for example,
 
 ``` r
-png (height=mapht, width=mapwd, file="map.png")
+png (height=mapht, width=mapwd, file='map.png')
 print (map)
 graphics.off ()
 ```
@@ -428,14 +428,14 @@ graphics.off ()
 The ability demonstrated above to use negation in `extract-osm-objects` allows different kinds of the same object to be visually contrasted, for example primary and non-primary highways:
 
 ``` r
-dat_HP <- extract_osm_objects (key="highway", value="primary", bbox=bbox)
-dat_H <- extract_osm_objects (key="highway", value="!primary", bbox=bbox)
+dat_HP <- extract_osm_objects (key='highway', value='primary', bbox=bbox)
+dat_H <- extract_osm_objects (key='highway', value='!primary', bbox=bbox)
 ```
 
 ``` r
-map <- plot_osm_basemap (bbox=bbox_small, bg="gray20")
-map <- add_osm_objects (map, dat_H, col="gray50")
-map <- add_osm_objects (map, dat_HP, col="gray80", size=2)
+map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
+map <- add_osm_objects (map, dat_H, col='gray50')
+map <- add_osm_objects (map, dat_HP, col='gray80', size=2)
 print (map)
 ```
 
@@ -447,11 +447,11 @@ These objects can then be individually plotted with different colour schemes.
 
 ``` r
 bbox_small2 <- get_bbox (c (-0.118, 51.504, -0.110, 51.507))
-map <- plot_osm_basemap (bbox=bbox_small2, bg="gray95")
-map <- add_osm_objects (map, dat_H, col="gray80")
-map <- add_osm_objects (map, dat_HP, col="gray60", size=2)
-map <- add_osm_objects (map, dat_RFH, col="orange", border="red", size=2)
-map <- add_osm_objects (map, dat_ST, col="skyblue", border="blue", size=2)
+map <- plot_osm_basemap (bbox=bbox_small2, bg='gray95')
+map <- add_osm_objects (map, dat_H, col='gray80')
+map <- add_osm_objects (map, dat_HP, col='gray60', size=2)
+map <- add_osm_objects (map, dat_RFH, col='orange', border='red', size=2)
+map <- add_osm_objects (map, dat_ST, col='skyblue', border='blue', size=2)
 dev.new (width=8, height=8 * diff (bbox_small2 [2,]) / diff (bbox_small2 [1,]))
 print (map)
 ```
@@ -489,8 +489,8 @@ print (dat$map)
 Objects in maps are overlaid on the plot according to the order of rows in `osm_structures`, with the single exception that `background` is plotted first. This order can be readily changed or restricted simply by submitting structures in a desired order.
 
 ``` r
-structs <- c ("amenity", "building", "grass", "highway", "park")
-osm_structures (structs, col_scheme="light")
+structs <- c ('amenity', 'building', 'grass', 'highway', 'park')
+osm_structures (structs, col_scheme='light')
 ```
 
     ##    structure      key value suffix      cols
@@ -513,7 +513,7 @@ Axes added to a dark version of the previous map look like this:
 ``` r
 structures <- osm_structures (structures=structs, col_scheme='dark')   
 dat <- make_osm_map (structures=structures, osm_data=dat$osm_dat, bbox=bbox)
-map <- add_axes (dat$map, colour="black")
+map <- add_axes (dat$map, colour='black')
 ```
 
 Note that, as described above, `make_osm_map` returns a list of two items: (i) potentially modified data (in `$osm_data`) and (ii) the map object (in `$map`). All other `add_` functions take a map object as one argument and return the single value of the modified map object.
@@ -527,7 +527,7 @@ print (map)
 This map reveals that the axes and labels are printed above semi-transparent background rectangles, with transparency controlled by the `alpha` parameter. Axes are always plotted on the left and lower side, but positions can be adjusted with the `axis_pos` parameter which specifies the, &gt; axis\_pos Positions of axes and labels relative to entire plot device
 
 ``` r
-map <- add_axes (map, colour="blue", axis_pos=c(0.1,0.2))
+map <- add_axes (map, colour='blue', axis_pos=c(0.1,0.2))
 print (map)
 ```
 

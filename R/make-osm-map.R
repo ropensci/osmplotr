@@ -28,8 +28,8 @@
 #' time.  Progress is dumped to screen.
 #'
 #' @examples
-#' structures <- c ("highway", "park", "grass")
-#' structs <- osm_structures (structures=structures, col_scheme="light")
+#' structures <- c ('highway', 'park', 'grass')
+#' structs <- osm_structures (structures=structures, col_scheme='light')
 #' # make_osm_map returns potentially modified list of data using the provided
 #' # 'london' data:
 #' dat <- make_osm_map (osm_data=london, structures=structs)
@@ -50,14 +50,14 @@ make_osm_map <- function (bbox, osm_data,
         if (missing (osm_data))
             stop ('Either bounding box or osm_data must be given')
         bbox <- matrix (c (Inf, Inf, -Inf, -Inf), nrow=2, ncol=2)
-        rownames (bbox) <- c ("x", "y")
+        rownames (bbox) <- c ('x', 'y')
         classes <- c ('SpatialLinesDataFrame', 'SpatialPolygonsDataFrame',
                       'SpatialPointsDataFrame')
         for (i in osm_data)
         {
             if (class (i) %in% classes)
             {
-                bbi <- slot (i, "bbox")
+                bbi <- slot (i, 'bbox')
                 if (bbi [1,1] < bbox [1,1]) bbox [1,1] <- bbi [1,1]
                 if (bbi [2,1] < bbox [2,1]) bbox [2,1] <- bbi [2,1]
                 if (bbi [1,2] > bbox [1,2]) bbox [1,2] <- bbi [1,2]

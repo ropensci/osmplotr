@@ -19,6 +19,18 @@
 #'
 #' @return A data frame of sp objects
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
+#' dat_B <- extract_osm_objects (key='building', bbox=bbox)
+#' dat_H <- extract_osm_objects (key='highway', bbox=bbox)
+#' dat_BR <- extract_osm_objects (key='building', value='residential', bbox=bbox)
+#' dat_HP <- extract_osm_objects (key='highway', value='primary', bbox=bbox)
+#' dat_HNP <- extract_osm_objects (key='highway', value='!primary', bbox=bbox)
+#' extra_pairs <- c ('name', 'Royal.Festival.Hall')
+#' dat <- extract_osm_objects (key='building', extra_pairs=extra_pairs, bbox=bbox)
+#' }
 
 extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
 {
@@ -92,27 +104,27 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
 
     obj <- NULL
 
-    if (verbose) message ("downloading OSM data ... ")
+    if (verbose) message ('downloading OSM data ... ')
     dat <- httr::GET (query)
     if (dat$status_code != 200)
         warning (httr::http_status (dat)$message)
     # Encoding must be supplied in the following to suppress warning
-    dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
+    dat <- XML::xmlParse (httr::content (dat, 'text', encoding='UTF-8'))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
-    if (verbose) message ("converting OSM data to omsar format")
+    if (verbose) message ('converting OSM data to omsar format')
     dato <- osmar::as_osmar (dat)
     # A very important NOTE: It can arise the OSM relations have IDs which
     # duplicate IDs in OSM ways, even through the two may bear no relationship
     # at all. This causes the attempt in `osmar::as_sp` to force them to an `sp`
     # object to crash because 
     # # Error in validObject(.Object) :
-    # #   invalid class "SpatialLines" object: non-unique Lines ID of slot values
+    # #   invalid class 'SpatialLines' object: non-unique Lines ID of slot values
     # The IDs are actually neither needed not used, so the next lines simply
-    # modifies all relation IDs by pre-pending "r" to avoid such problems:
+    # modifies all relation IDs by pre-pending 'r' to avoid such problems:
     for (i in seq (dato$relations))
         if (nrow (dato$relations [[i]]) > 0)
-            dato$relations [[i]]$id <- paste0 ("r", dato$relations [[i]]$id)
+            dato$relations [[i]]$id <- paste0 ('r', dato$relations [[i]]$id)
     if (nchar (key) > 0)
         pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
     else if (!is.null (value))
@@ -125,7 +137,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
         if (value == 'tree') # no pids needed
             spts <- TRUE
 
-    if (verbose) message ("converting osmar data to sp format")
+    if (verbose) message ('converting osmar data to sp format')
     if (spts)
         obj <- osmar::as_sp (dato, 'points')
     else

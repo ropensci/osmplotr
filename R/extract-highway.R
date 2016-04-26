@@ -9,7 +9,6 @@
 #' columns of min and max values, and rows of x and y values.  
 #' @return SpatialLinesDataFrame containing the highway
 #' @return SpatialLinesDataFrame containing the highway
-#' @export
 
 extract_highway <- function (name='', bbox)
 {

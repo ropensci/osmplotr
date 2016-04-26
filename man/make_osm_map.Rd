@@ -42,8 +42,8 @@ If 'osm_data' is not given, then data will be downloaded, which can take some
 time.  Progress is dumped to screen.
 }
 \examples{
-structures <- c ("highway", "park", "grass")
-structs <- osm_structures (structures=structures, col_scheme="light")
+structures <- c ('highway', 'park', 'grass')
+structs <- osm_structures (structures=structures, col_scheme='light')
 # make_osm_map returns potentially modified list of data using the provided
 # 'london' data:
 dat <- make_osm_map (osm_data=london, structures=structs)

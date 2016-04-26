@@ -6,3 +6,4 @@ vignettes/*.md$
 ^README\.md$
 ^README\.html$
 figure/
+^CONDUCT\.md$

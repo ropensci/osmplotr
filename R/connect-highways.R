@@ -11,19 +11,23 @@
 #' columns of min and max values, and rows of x and y values.  
 #' @param plot If TRUE, then all OSM data for each highway is plotted and the
 #' final cycle overlaid.
-#' @return A single data.frame containing the lat-lon coordinates of the cyclic
-#' line connecting all given streets.
+#' @return A single set of 'SpatialPoints' containing the lat-lon coordinates of
+#' the cyclic line connecting all given streets.
 #' @export
 #'
-#' @note This function can not be guaranteed failsafe owing both to the
+#' @note \enumerate{
+#' \item 'connect_highways' is primarily intended to provide a means to define
+#' boundaries of groups which can then be highlighted using 'add_osm_groups'.
+#' \item This function can not be guaranteed failsafe owing both to the
 #' inherently unpredictable nature of OpenStreetMap, as well as to the unknown
 #' relationships between named highways. The `plot` option enables problematic
 #' cases to be examined and hopefully resolved.  The function is still
 #' experimental, so please help further improvements by reporting any problems!
+#' }
 #'
 #' @examples
 #' \dontrun{
-#' bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52)) # Central London, U.K.
+#' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
 #'                'Upper.Saint.Martin')
 #' # Note that dots signify "anything", including whitespace and apostrophes, and
@@ -33,6 +37,19 @@
 #' highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
 #' highways2 <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
 #' }
+#' # These are also part of the 'london' data provided with 'osmplotr':
+#' highways1 <- london$highways1
+#' highways2 <- london$highways2
+#'
+#' # Use of 'connect_highways' to highlight a region on a map
+#' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+#' # dat_B <- extract_osm_data (key='building', value='!residential', bbox=bbox)
+#' # Those data are part of 'osmplotr':
+#' dat_BNR <- london$dat_BNR # Non-residential buildings
+#' groups <- list (london$highways1, london$highways2)
+#' map <- add_osm_groups (map, obj=dat_BNR, groups=groups,
+#'                        cols=c('red', 'blue'), bg='gray40')
+#' print (map)
 
 
 connect_highways <- function (highways, bbox, plot=FALSE)

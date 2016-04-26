@@ -16,25 +16,25 @@
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
-#' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
+#' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+#' map <- add_osm_objects (map, london$dat_BNR, col='gray40') 
 #' print (map)
 
 plot_osm_basemap <- function (bbox, structures, bg='gray20')
 {
     # ---------------  sanity checks and warnings  ---------------
     if (missing (bbox))
-        stop ("bbox must be supplied")
+        stop ('bbox must be supplied')
     if (!is.numeric (bbox))
-        stop ("bbox is not numeric")
+        stop ('bbox is not numeric')
     if (length (bbox) < 4)
-        stop ("bbox must have length = 4")
+        stop ('bbox must have length = 4')
 
     if (!missing (structures))
         bg = structure$cols [which (structures$structure == 'background')]
     if (!(is.character (bg) | is.numeric (bg)))
     {
-        warning ("bg will be coerced to character")
+        warning ('bg will be coerced to character')
         bg <- as.character (bg)
     }
     # ---------------  end sanity checks and warnings  ---------------
@@ -46,10 +46,10 @@ plot_osm_basemap <- function (bbox, structures, bg='gray20')
     new_theme$line <- ggplot2::element_blank ()
     new_theme$axis.text <- ggplot2::element_blank ()
     new_theme$axis.title <- ggplot2::element_blank ()
-    new_theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, "null"), 4))
-    new_theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, "line"), 4))
-    new_theme$legend.position <- "none"
-    new_theme$axis.ticks.length <- ggplot2::unit(0,"null")
+    new_theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, 'null'), 4))
+    new_theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, 'line'), 4))
+    new_theme$legend.position <- 'none'
+    new_theme$axis.ticks.length <- ggplot2::unit(0,'null')
 
     lon <- lat <- NA
     map <- ggplot2::ggplot () + new_theme +

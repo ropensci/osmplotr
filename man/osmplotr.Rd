@@ -13,9 +13,9 @@ Contains the following functions, data, and vignettes.
 \section{Data Functions}{
 
 \tabular{ll}{
-'extract_highway'\tab Download a single highway\cr
-'extract_highways'\tab Download a series of named highways\cr
 'extract_osm_objects'\tab Download arbitrary OSM objects\cr
+'connect_highways'\tab Returns points sequentially connecting list of named
+highways\cr
 }
 }
 
@@ -54,12 +54,7 @@ scheme\cr
 \section{Other Functions}{
 
 \tabular{ll}{
-'get_highway_cycle'\tab Connect lists of highways (used in 'connect_highways')
-\cr
 'get_bbox'\tab return bounding box from input vector\cr
-'connect_highways'\tab Return a polygonal boundary circularly connecting a
-given series of named highways \cr
-'order_lines'\tab Spatially order highway lines in a given set of OSM data\cr
 }
 }
 
@@ -73,8 +68,12 @@ given series of named highways \cr
 \section{Vignettes}{
 
 \tabular{ll}{
-'downloading-data'\tab Describes how 'london' data were downloaded\cr
-'making-maps'\tab Main package vignette
+'making-maps'\tab Describes basics of downloading data and making custom
+maps\cr
+'making-maps-with-data'\tab
+Describes how map elements can be coloured
+according to user-provided data, whether
+categorical or continuous.
 }
 }
 
