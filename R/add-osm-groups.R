@@ -59,12 +59,14 @@
 #' # boundary (via the boundary=1 argument)
 #' pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
 #'                                  c (51.505, 51.505, 51.515, 51.515)))
+#' \dontrun{
 #' map <- bmap ()
 #' map <- add_osm_groups (map, london$dat_BNR, groups=pts, cols="gray90",
 #'                        bg="gray40", boundary=1)
 #' map <- add_osm_groups (map, london$dat_H, groups=pts, cols="gray80",
 #'                        bg="gray30", boundary=1)
 #' print (map)
+#' }
 #' 
 #' # Function to generate random regions
 #' get_groups <- function (ngroups=6)
@@ -87,6 +89,7 @@
 #' groups <- get_groups (6)
 #' map <- bmap ()
 #' cols <- rainbow (length (groups))
+#' \dontrun{
 #' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
 #'                        colmat=FALSE, make_hull=FALSE)
 #' cols <- adjust_colours (cols, -0.2)
@@ -99,6 +102,7 @@
 #' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
 #'                        colmat=FALSE, make_hull=FALSE, borderWidth=2)
 #' print (map)
+#' }
 
 add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                boundary=-1, size, shape, borderWidth,

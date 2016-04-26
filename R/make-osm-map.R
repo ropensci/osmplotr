@@ -67,7 +67,12 @@ make_osm_map <- function (bbox, osm_data,
     }
 
     sfx <- structures$suffix [1:(nrow (structures) - 1)]
-    structs_new <- which (!sapply (sfx, function (i) 
+    if (missing (osm_data))
+    {
+        structs_new <- seq (nrow (structures) - 1)
+        osm_data <- list ()
+    } else
+        structs_new <- which (!sapply (sfx, function (i) 
                            any (paste0 (dat_prefix, i) %in% names (osm_data))))
     if (length (structs_new) > 0)
     {

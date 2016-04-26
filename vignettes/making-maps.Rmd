@@ -10,8 +10,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-**Fix TODOs!**
-
 `osmplotr` enables OpenStreetMap (OSM) data to be downloaded (using the
 [overpass API](https://overpass-api.de)) and used to produce highly customisable
 maps. This vignette demonstrates both data downloading and the creation of
@@ -108,7 +106,7 @@ beginning with downloading and extraction of data.
 
 The main function for downloading OSM data from the 
 [overpass API](https://overpass-api.de) is `extract_osm_objects`. Data of a
-particular type can be extracted by passing the apprpriate OSM `key`, as in the
+particular type can be extracted by passing the appropriate OSM `key`, as in the
 above example:
 ```{r, eval=FALSE}
 bbox <- get_bbox (c(-0.13,51.51,-0.11,51.52))
@@ -258,8 +256,8 @@ each row of the `structs` data frame. The additional lines in the following code
 rename each downloaded object according to the suffices given in
 `structs$suffix`.
 ```{r, eval=FALSE}
-# TODO: Check this!!
-london <- make_osm_map (structures=structs, bbox=bbox)$osm_data
+london <- make_osm_map (structures=structs, bbox=bbox)
+london <- london$osm_data
 ```
 As shown above, the requested data are contained in the `$osm_data` list item.
 The `map` item is examined below (see **3.1 Automating map production**).
@@ -342,7 +340,7 @@ highway_list <- connect_highways (highways=highways, bbox=bbox_big, plot=TRUE)
 ```
 
 The plot depicts each highway in a different colour, along with numbers at start
-and end points of each segements. This plot reveals in this case that highway#6
+and end points of each segment. This plot reveals in this case that highway#6
 ('Aldwych') is actually nested within two components of highway#4 ('Strand').
 `connect_highways` searches for the shortest path connecting all named highways,
 and since 'Strand' connects to both highways#1 and #5, the shortest path
@@ -510,7 +508,6 @@ Producing a map with customised data is as simple as,
 ```{r map8, eval=FALSE}
 structs <- c ('highway', 'building', 'park', 'grass', 'tree')   
 structures <- osm_structures (structures=structs, col_scheme='light')   
-# TODO: Check this!!
 dat <- make_osm_map (structures=structures, bbox=bbox)
 map <- dat$map
 dev.new (width=8, height=8 * diff (bbox [2,]) / diff (bbox [1,]))
@@ -550,7 +547,7 @@ graphics.off ()
 ```
 ![map9](map_a9.png)
 
-Objects in maps are overlaid on the plot accoording to the order of rows in
+Objects in maps are overlaid on the plot according to the order of rows in
 `osm_structures`, with the single exception that `background` is plotted first.
 This order can be readily changed or restricted simply by submitting structures
 in a desired order.
