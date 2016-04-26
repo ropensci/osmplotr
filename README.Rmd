@@ -13,7 +13,7 @@ making:
 ```{r, echo=FALSE, message=FALSE}
 setwd ("..")
 devtools::load_all ("osmplotr")
-devtools::document ("osmplotr")
+#devtools::document ("osmplotr")
 setwd ("./osmplotr")
 ```
 

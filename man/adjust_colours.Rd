@@ -26,5 +26,12 @@ limitations of which see ?convertColor
 }
 \examples{
 cols <- adjust_colours (cols=heat.colors (10), adj=-0.2, plot=TRUE)
+
+# 'adjust_colours' also offers an easy way to adjust the default colour
+# schemes provided by 'osm_structures'. The following lines lighten the
+# highway colour of the 'light' colour scheme by 20\%
+structures <- osm_structures (structures=c('building', 'highway', 'park'),
+                              col_scheme='dark')
+structures$cols [2] <- adjust_colours (structures$cols [2], adj=0.2)
 }
 
