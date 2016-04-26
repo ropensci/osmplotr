@@ -38,8 +38,8 @@ experimental, so please help further improvements by reporting any problems!
 }
 }
 \examples{
-\dontrun{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+\dontrun{
 highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
                'Upper.Saint.Martin')
 # Note that dots signify "anything", including whitespace and apostrophes, and

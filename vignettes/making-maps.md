@@ -524,10 +524,10 @@ print (map)
 
 ![map10](map_a10.png)
 
-This map reveals that the axes and labels are printed above semi-transparent background rectangles, with transparency controlled by the `alpha` parameter. Axes are always plotted on the left and lower side, but positions can be adjusted with the `axis_pos` parameter which specifies the, &gt; axis\_pos Positions of axes and labels relative to entire plot device
+This map reveals that the axes and labels are printed above semi-transparent background rectangles, with transparency controlled by the `alpha` parameter. Axes are always plotted on the left and lower side, but positions can be adjusted with the `pos` parameter which specifies the, &gt; Positions of axes and labels relative to entire plot device
 
 ``` r
-map <- add_axes (map, colour='blue', axis_pos=c(0.1,0.2))
+map <- add_axes (map, colour='blue', pos=c(0.1,0.2))
 print (map)
 ```
 

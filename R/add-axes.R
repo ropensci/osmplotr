@@ -5,7 +5,7 @@
 #' @param map A ggplot2 object to which the axes are to be added
 #' @param colour Colour of axis (determines colour of all elements: lines,
 #' ticks, and labels)
-#' @param axis_pos Positions of axes and labels relative to entire plot device
+#' @param pos Positions of axes and labels relative to entire plot device
 #' @param alpha alpha value for semi-transparent background surrounding axes and
 #' labels (lower values increase transparency)
 #' @param fontsize Size of axis font 
@@ -28,7 +28,7 @@
 #' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
 #' print (map)
 
-add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
+add_axes <- function (map, colour="black", pos=c(0.02,0.03),
                       alpha=0.4, fontsize=3, fontface, fontfamily)
 {
     # ---------------  sanity checks and warnings  ---------------
@@ -40,10 +40,10 @@ add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
     alpha <- test_len1 (alpha, 'alpha')
     alpha <- test_numeric (alpha, 'alpha', 0.4)
     alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
-    # ---------- axis_pos
-    axis_pos <- test_len2 (axis_pos, 'axis_pos')
-    axis_pos <- test_numeric (axis_pos, 'axis_pos', c (0.02, 0.03))
-    axis_pos <- test_range (axis_pos, 'axis_pos', c (0, 1), c (0.02, 0.03))
+    # ---------- pos
+    pos <- test_len2 (pos, 'pos')
+    pos <- test_numeric (pos, 'pos', c (0.02, 0.03))
+    pos <- test_range (pos, 'pos', c (0, 1), c (0.02, 0.03))
     # ---------- fontsize
     fontsize <- test_len1 (fontsize, 'fontsize')
     fontsize <- test_numeric (fontsize, 'fontsize', 3)
@@ -67,9 +67,9 @@ add_axes <- function (map, colour="black", axis_pos=c(0.02,0.03),
                 max (xp) - (max (xp) - max (xrange)) / 2)
     ylims <- c (yp [1] - (yp [1] - min (yrange)) / 2,
                 max (yp) - (max (yp) - max (yrange)) / 2)
-    xaxs_pos <- min (yrange) + axis_pos * diff (yrange)
+    xaxs_pos <- min (yrange) + pos * diff (yrange)
     axis_ratio <- diff (yrange) / diff (xrange)
-    yaxs_pos <- min (xrange) + axis_pos * axis_ratio * diff (xrange)
+    yaxs_pos <- min (xrange) + pos * axis_ratio * diff (xrange)
 
     # Rectangle around axes
     expand <- 0.02

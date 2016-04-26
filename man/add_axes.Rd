@@ -4,7 +4,7 @@
 \alias{add_axes}
 \title{add_axes}
 \usage{
-add_axes(map, colour = "black", axis_pos = c(0.02, 0.03), alpha = 0.4,
+add_axes(map, colour = "black", pos = c(0.02, 0.03), alpha = 0.4,
   fontsize = 3, fontface, fontfamily)
 }
 \arguments{
@@ -13,7 +13,7 @@ add_axes(map, colour = "black", axis_pos = c(0.02, 0.03), alpha = 0.4,
 \item{colour}{Colour of axis (determines colour of all elements: lines,
 ticks, and labels)}
 
-\item{axis_pos}{Positions of axes and labels relative to entire plot device}
+\item{pos}{Positions of axes and labels relative to entire plot device}
 
 \item{alpha}{alpha value for semi-transparent background surrounding axes and
 labels (lower values increase transparency)}

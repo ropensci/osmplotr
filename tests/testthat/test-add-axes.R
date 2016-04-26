@@ -17,16 +17,16 @@ test_that ('alpha values', {
                            'alpha must be numeric; using default value')
 })
 
-test_that ('axis_pos', {
+test_that ('pos', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- plot_osm_basemap (bbox=bbox, bg="gray20")
-           expect_warning (add_axes (map, axis_pos=1:3/10),
-                           'Only the first two elements of axis_pos will be used')
-           expect_warning (add_axes (map, axis_pos="a"),
-                           'axis_pos must be numeric; using default values')
+           expect_warning (add_axes (map, pos=1:3/10),
+                           'Only the first two elements of pos will be used')
+           expect_warning (add_axes (map, pos="a"),
+                           'pos must be numeric; using default values')
            # NOTE: there are grep problems in test_that for this expect_warning
-           #expect_warning (add_axes (map, axis_pos=c(-0.1,1.2)),
-           #                'axis_pos not in [0,1]; using default values')
+           #expect_warning (add_axes (map, pos=c(-0.1,1.2)),
+           #                'pos not in [0,1]; using default values')
 })
 
 test_that ('fontsize', {
