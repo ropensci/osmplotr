@@ -28,6 +28,9 @@ colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
     if (class (cols [1]) != 'matrix')
         cols <- col2rgb (cols)
 
+    if (length (n) == 1)
+        n <- rep (n, 2)
+
     if (!missing (rotate))
     {
         # rotation generally lowers RGB values, so they are increased following
@@ -51,16 +54,13 @@ colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
         cols <- apply (cols, 2, function (x) x * max_int / max (x))
     }
 
-    if (length (n) == 1)
-        n <- rep (n, 2)
-
     tl <- cols [,1] # top left
     tr <- cols [,2] # top right
     br <- cols [,3] # bottom right
     bl <- cols [,4] # bottom left
     # Then interpolate, starting with top and bottom rows
-    ih <- t (array (seq (n [1]) - 1, dim=c (n [1], 3))) / (n [1] - 1)
-    iv <- t (array (seq (n [2]) - 1, dim=c (n [2], 3))) / (n [2] - 1)
+    ih <- t (array (seq (n [2]) - 1, dim=c (n [2], 3))) / (n [2] - 1)
+    iv <- t (array (seq (n [1]) - 1, dim=c (n [1], 3))) / (n [1] - 1)
     top <- (1 - ih) * tl + ih * tr
     bot <- (1 - ih) * bl + ih * br
     arr <- array (NA, dim=n)
@@ -71,7 +71,7 @@ colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
         col_arrs [[i]] [n [1],] <- bot [i,]
     }
     # Then fill intervening rows
-    indx <- (seq (n [2]) - 1) / (n [2] - 1)
+    indx <- (seq (n [1]) - 1) / (n [1] - 1)
     for (i in seq (3))
         col_arrs [[i]] <- apply (col_arrs [[i]], 2, function (x)
                              (1 - indx) * x [1] + indx * tail (x, 1))
@@ -82,12 +82,10 @@ colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
     if (plot) {
         plot.new ()
         par (mar=rep (0, 4))
-        plot (NULL, NULL, xlim=c(0, n[1]), ylim=c (0, n[2]))
-        for (i in 1:n [1]) {
-            for (j in 1:n [2]) {
-                rect (i - 1, j - 1, i, j, col=carr [i, j])
-            } # end for j
-        } # end for i
+        plot (NULL, NULL, xlim=c(0, n[2]), ylim=c (0, n[1]))
+        for (i in 1:n [1]) 
+            for (j in 1:n [2]) 
+                rect (j - 1, i - 1, j, i, col=carr [i, j])
     }
     return (carr)
 } # end function colour.mat
