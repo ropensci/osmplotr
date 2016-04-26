@@ -47,7 +47,6 @@ dat_T <- london$dat_T
 dat_HP <- london$dat_HP
 ```
 
---------------------
 ## Contents
 
 [1 Categorical data](#1 cat-data)
@@ -66,7 +65,6 @@ dat_HP <- london$dat_HP
 
 [&nbsp;&nbsp;&nbsp;&nbsp;1.7 Bounding areas within named highways](#1.7 highways)
 
---------------------
 
 ## <a name="1 cat-data"></a>1. Categorical data: `add_osm_groups`
 
@@ -502,145 +500,65 @@ As explained in the first vignette ('making-maps'), the function
 returns the boundary of a polygon encircling the named highways. This can be
 used to highlight selected regions simply by naming the highways which encircle
 them, producing maps which look like this:
-```{r}
+```{r connect-highways, eval=FALSE}
 highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
                'Upper.Saint.Martin')
-highways1 <- connect_highways (highways=highways, bbox=bbox, plot=T)
-```
-Note the use of the `regex` '?' denoting the previous character as optional.
-This is necessary here because there are OSM sections named both "Shorts
-Gardens" and "Short's Gardens".
-
-```{r, echo=FALSE}
-structures <- c ('amenity', 'grass', 'park', 'natural')
-structs <- osm_structures (structures=structures, col_scheme='dark')
-col_G <- structs$cols [structs$structure == 'grass']
-col_A <- structs$cols [structs$structure == 'amenity']
-
-groups <- list (london$highways1, london$highways2, london$highways3)
-bg_B <- 'gray40'
-# Then set building colours for the 3 groups, and darken them for highways
-cols_B <- c ('red', 'green', 'blue')
-cols_H <- adjust_colours (cols_B, -0.2)
-bg_H <- 'gray20'
-```
-
-```{r map19, echo=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
-map <- add_osm_objects (map, london$dat_P, col=col_G)
-map <- add_osm_objects (map, london$dat_G, col=col_G)
-map <- add_osm_objects (map, london$dat_N, col=col_G)
-map <- add_osm_objects (map, london$dat_A, col=col_A)
-map <- add_osm_groups (map, london$dat_BNR, groups=groups, boundary=0,
-                   bg=bg_B, colmat=FALSE, col=cols_B)
-map <- add_osm_groups (map, london$dat_BR, groups=groups, boundary=0,
-                   bg=bg_B, colmat=FALSE, col=cols_B)
-
-map <- add_osm_groups (map, london$dat_H, groups=groups, boundary=0,
-                   bg=bg_H, colmat=FALSE, col=cols_H)
-map <- add_osm_groups (map, london$dat_HP, groups=groups, boundary=0,
-                   bg=bg_H, colmat=FALSE, col=cols_H)
-```
-```{r map19-print, echo=FALSE}
-png (height=mapwd, width=mapwd, file='map19.png')
-print (map)
-graphics.off ()
-```
-![map19](map19.png)
-
-Note that the lists of highways were obtained using expanding bounding boxes as
-described above, and given in the `london` data provided with `osmplotr`. The
-following plots thus only include restricted portions of these entire regions,
-while the full polygons surrounding the named areas can be seen by repeating the
-extraction of data with a larger bounding box:
-```{r, eval=FALSE}
-bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) 
-```
-
-### 6.1 The `connect_highways` function
-
-The primary function enabling the delination of groups like the above is
-`connect_highways`, an example of which is the orange area above, the boundary
-of which was obtained from:
-```{r, eval=FALSE}
-highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
-               'Fleet.St', 'Aldwych')
 highways1 <- connect_highways (highways=highways, bbox=bbox)
+highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
+highways2 <- connect_highways (highways=highways, bbox=bbox, plot=T)
+highways <- c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')
+highways3 <- connect_highways (highways=highways, bbox=bbox, plot=T)
 ```
-```{r}
-## Warning in connect_highways(ways): Cycle unable to be extended through all
-## ways
-```
-The reason for the warning will be explored further below. In the meantime, note
-that,
+Note the use of the `regex` '?' in the first list of highway names, denoting the
+previous character as optional.  This is necessary here because there are OSM
+sections named both "Shorts Gardens" and "Short's Gardens".
 ```{r, echo=FALSE}
 highways1 <- london$highways1
+highways2 <- london$highways2
+highways3 <- london$highways3
 ```
 ```{r}
-class (highways1)
-head (sp::coordinates (highways1))
-dim (sp::coordinates (highways1))
+class (highways1); length (highways1); length (highways2); length (highways3)
+```
+`connect_highways` returns a list of `SpatialPoints` representing the shortest
+path that sequentially connects all of the listed highways. (Connecting all
+listed highways may not necessarily be possible, in which case warnings will be
+issued. As described in the vignette 'making-maps', `connect_highways` also has
+a `plot` option allowing problematic cases to be visually inspected and
+hopefully corrected.)
+
+These lists of highway coordinates can then be used to highlight the areas they
+encircle. First group the highways and establish a colour scheme for the map:
+```{r, echo=TRUE}
+groups <- list (london$highways1, london$highways2, london$highways3)
+cols_B <- c ('red', 'orange', 'tomato') # for the 3 groups
+cols_H <- adjust_colours (cols_B, -0.2)
+bg_B <- 'gray40'
+bg_H <- 'gray60'
 ```
 
-```{r, eval=FALSE}
-highways <- c ('Queen.s.Walk', 'Blackfriars', 'Waterloo', 'The.Cut')
-highways2 <- connect_highways (highways=highways, bbox=bbox)
-highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
-highways3 <- connect_highways (highways=highways, bbox=bbox)
+```{r map15, eval=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_objects (map, dat_P, col=col_park_out)
+map <- add_osm_groups (map, dat_B, groups=groups, boundary=1,
+                   bg=bg_B, col=cols_B)
+map <- add_osm_groups (map, dat_H, groups=groups, boundary=1,
+                   bg=bg_H, col=cols_H)
+print (map)
 ```
-Multiple regions may be highlighted simply by passing a list of bounding
-polygons (each of class `SpatialPoints`) to `add_osm_groups`. 
-```{r, eval=FALSE}
-groups <- list (highways1, highways2, highways3)
-```
-```{r, echo=FALSE}
-groups <- list (london$highways1, london$highways2, london$highways3)
-```
-Highlighted groups are then added as above using `add_osm_groups`. These are
-overlaid on top of a basemap. The following maps highlight the selected regions
-with both buildings and highways, while the remaining structures are plotted on
-the initial basemap with the following lines. (Note that `make_osm_map` returns
-`osm_data` with any additional structures not previously present added; in the
-following case, these data are not altered.)
-```{r map20, eval=TRUE}
-structures <- c ('amenity', 'grass', 'park', 'natural')
-structs <- osm_structures (structures=structures, col_scheme='dark')
-bbox <- get_bbox (c(-0.13,51.5,-0.11,51.52)) # back to smaller bbox
-dat <- make_osm_map (bbox=bbox, osm_data=london, structures=structs)
-```
-```{r, eval=FALSE}
-print (dat$map)
-```
-```{r map20-print, echo=FALSE}
-png (height=mapwd, width=mapwd, file='map20.png')
+```{r map15-print, echo=FALSE}
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_objects (map, dat_P, col=col_park_out)
+map <- add_osm_groups (map, dat_B, groups=groups, boundary=1,
+                   cols=cols_B, bg=bg_B)
+map <- add_osm_groups (map, dat_H, groups=groups, boundary=0,
+                   cols=cols_H, bg=bg_H)
+png (height=mapht, width=mapwd, file='map_b15.png')
 print (map)
 graphics.off ()
 ```
-![map20](map20.png)
+![map15](map_b15.png)
 
-The desired areas are then highlighted in the following lines using colours from
-`RColorBrewer`.  These lines also demonstrate how particular colours may be
-lightened or darkened for use as highlights. 
-```{r}
-cols <- c ('tomato', 'skyblue', 'lawngreen')
-cols_dark <- adjust_colours (cols, -0.3)
-```
-And finally add groups to plot using these colours, resulting in the plot shown
-at the start of this section.
-```{r map21}
-map <- add_osm_groups (map, london$dat_BNR, groups=groups, boundary=0,
-                   bg=bg_B, colmat=FALSE, col=cols)
-map <- add_osm_groups (map, london$dat_BR, groups=groups, boundary=0,
-                   bg=bg_B, colmat=FALSE, col=cols)
-
-map <- add_osm_groups (map, london$dat_H, groups=groups, boundary=0,
-                   bg=bg_H, colmat=FALSE, col=cols_dark)
-map <- add_osm_groups (map, london$dat_HP, groups=groups, boundary=0,
-                   bg=bg_H, colmat=FALSE, col=cols_dark)
-```
-
-The extraction of bounding polygons from named highways is not failsafe, as
-demonstrated by the above error message. To understand why it may not work, it
-is usefull to examine `connect_highways` in more detail, as follows. 
-points.
+These encircling highways are included in the `london` data provided with
+`osmplotr`. 
 

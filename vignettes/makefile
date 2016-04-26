@@ -2,7 +2,7 @@ MAPFILE = making-maps
 DATFILE = making-maps-with-data
 
 #all: mapsr mapsh datar datah 
-all: mapsh
+all: datah
 
 mapsr: mapsmaker
 

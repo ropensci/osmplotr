@@ -277,31 +277,28 @@ continuously and sequentially to form a single enclosed space. An example is,
 highways1 <- london$highways1
 ```
 ```{r, eval=FALSE}
-# These highways extend beyond the previous, smaller bbox
-bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
-highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
-               'Fleet.St', 'Aldwych')
-highways1 <- connect_highways (highways=highways, bbox=bbox_big)
+highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
+               'Upper.Saint.Martin')
+highways1 <- connect_highways (highways=highways, bbox=bbox)
 ```
+Note the use of the 'regex' character '?' which declares that the previous
+character is optional. This matches both "Shorts Gardens" and "Short's Gardens",
+both of which appear in OSM data.
 ```{r}
 class (highways1); length (highways1); head (coordinates (highways1))
 ```
 Other examples, which are also included in the provided `london` data, include:
 ```{r, eval=FALSE}
-highways <- c ('Queen.s.Walk', 'Blackfriars', 'Waterloo', 'The.Cut')
-highways2 <- connect_highways (highways=highways, bbox=bbox_big)
-highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
-highways3 <- connect_highways (highways=highways, bbox=bbox_big)
+highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
+highways2 <- connect_highways (highways=highways, bbox=bbox)
+highways <- c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')
+highways3 <- connect_highways (highways=highways, bbox=bbox)
 ```
 
-The extraction of bounding polygons from named highways is not failsafe, and
-indeed the first of the above calls (for `highways1`) generates a warning
-message that
-```{r, echo=FALSE}
-warning ("Cycle unable to be extended through all ways")
-```
-To understand why it may not work, it is useful to examine `connect_highways` in
-more detail.
+The extraction of bounding polygons from named highways is not failsafe, and may
+generate various warning messages.  To understand the kinds of conditions under
+which it may not work, it is useful to examine `connect_highways` in more
+detail.
 
 ### <a name="2.5.1 highways-detail"></a>2.5.1 `connect_highways` in detail
 
@@ -336,8 +333,9 @@ This procedure can not be guaranteed failsafe owing both to the inherently
 unpredictable nature of OpenStreetMap, as well as to the unknown relationships
 between named highways. To enable problematic cases to be examined and hopefully
 resolved, `connect_highways` has a `plot` option:
-```{r connect_highways, fig.width=4, message=FALSE, eval=FALSE}
+```{r connect_highways, fig.width=4, message=FALSE, eval=TRUE}
 # TODO: Set eval=FALSE before cran re-sub!!
+bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
 highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
                "Fleet.St", "Aldwych")
 highway_list <- connect_highways (highways=highways, bbox=bbox_big, plot=TRUE)

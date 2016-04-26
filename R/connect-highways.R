@@ -15,26 +15,23 @@
 #' line connecting all given streets.
 #' @export
 #'
-#' @note This function is still experimental - please help further improvements
-#' by reporting any problems!
+#' @note This function can not be guaranteed failsafe owing both to the
+#' inherently unpredictable nature of OpenStreetMap, as well as to the unknown
+#' relationships between named highways. The `plot` option enables problematic
+#' cases to be examined and hopefully resolved.  The function is still
+#' experimental, so please help further improvements by reporting any problems!
 #'
 #' @examples
 #' \dontrun{
 #' bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52)) # Central London, U.K.
-#' highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
-#'                'Fleet.St', 'Aldwych')
+#' highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
+#'                'Upper.Saint.Martin')
+#' # Note that dots signify "anything", including whitespace and apostrophes, and
+#' # that '?' denotes optional previous character and so here matches both 
+#' # "Shorts Gardens" and "Short's Gardens"
 #' highways1 <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
-#' # Note that dots signify "anything", including whitespace and apostrophes
-#' highways <- c ('Queen.s.Walk', 'Blackfriars', 'Waterloo', 'The.Cut')
+#' highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
 #' highways2 <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
-# 'connect_highways' can not be guaranteed failsafe owing both to the inherently
-#' # unpredictable nature of OpenStreetMap, as well as to the unknown relationships
-#' # between named highways. The `plot` enable enables problematic cases to be examined and
-#' # hopefully resolved, as in the following case:
-#' highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
-#'                "Fleet.St", "Aldwych")
-#' bbox <- get_bbox (c(-0.15,51.5,-0.1,51.52)) # need larger bbox
-#' highway_list <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
 #' }
 
 
@@ -101,7 +98,7 @@ connect_highways <- function (highways, bbox, plot=FALSE)
             }
     }
 
-    # Extract the cycle as established in connect_highways
+    # Extract the cycle as established in get_highway_cycle
     conmat <- array (FALSE, dim=rep (length (ways), 2))
     for (i in seq (ways))
     {

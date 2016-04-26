@@ -172,7 +172,7 @@ get_highway_cycle <- function (highways)
         indx2 <- indx [which (!is.na (ni))]
         conmat [i, indx2] <- conmat [indx2, i] <- TRUE
     }
-    cycles <- try (ggm::fundCycles (conmat_adj), TRUE)
+    cycles <- try (ggm::fundCycles (conmat), TRUE)
     if (is (attr (cycles, "condition"), "simpleError"))
         cycles <- NULL
 
@@ -214,7 +214,7 @@ get_highway_cycle <- function (highways)
         {
             warning ('No cycles can be found or made')
             break
-        } else if (max (cyc_len_i, na.rm=TRUE) < cyc_len)
+        } else if (max (cyc_len_i, na.rm=TRUE) <= cyc_len)
         {
             warning ('Cycle unable to be extended through all ways')
             break
