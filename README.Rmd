@@ -258,7 +258,11 @@ graphics.off ()
 ```
 ![map7](./figure/map7.png)
 
-See package vignettes ('basic-maps' and 'data-maps') for a lot more
+See package vignettes (
+[making maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps.html)
+and
+[making maps with data](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps-with-data.html)
+) for a lot more
 detail and further capabilities of `osmplotr`.  Please note that this project is
 released with a [Contributor Code of Conduct](CONDUCT.md). By participating in
 this project you agree to abide by its terms.
