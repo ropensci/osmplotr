@@ -3,20 +3,23 @@ Title: Customisable Images of OpenStreetMap Data
 Version: 0.2.0
 Date: 2016-04-18
 Authors@R: person("Mark", "Padgham", email = "mark.padgham@email.com", role = c("aut", "cre"))
-Description: Produces customisable images of OpenStreetMap (OSM) data and enables data visualisation using OSM objects.  
-Depends: R (>= 3.2.3)
-Imports: 
+Description: Produces customisable images of OpenStreetMap (OSM) data and
+    enables data visualisation using OSM objects.
+Depends:
+    R (>= 3.2.3)
+Imports:
     ggm,
     ggplot2,
     igraph,
     httr,
     methods,
-    osmar, 
+    osmar,
     rgeos,
-    sp, 
-    spatstat, 
+    sp,
+    spatstat,
     XML
-Suggests: knitr,
+Suggests:
+    knitr,
     roxygen2,
     rmarkdown,
     devtools,
@@ -26,3 +29,4 @@ License: GPL-3
 URL: https://github.com/mpadge/osmplotr
 LazyData: true
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1

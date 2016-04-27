@@ -1,9 +1,7 @@
 ^\.travis\.yml$
-^makefile$
-^vignettes/makefile$
-vignettes/*.md$
+makefile$
+\.md$
+\.html$
+^london2.rda$
 ^README\.Rmd$
-^README\.md$
-^README\.html$
 figure/
-^CONDUCT\.md$

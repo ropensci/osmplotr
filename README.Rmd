@@ -15,6 +15,7 @@ setwd ("..")
 devtools::load_all ("osmplotr", export_all=FALSE)
 #devtools::document ("osmplotr")
 #devtools::check ("osmplotr")
+#devtools::build_vignettes ()
 setwd ("./osmplotr")
 ```
 
