@@ -1,24 +1,27 @@
 osmplotr v0.2.0
 ===============
 
-Major update with (almost) all plotting routines shifted from graphics::plot to
-ggplot2. All previous parameters specifying graphics devices (such as heights and
-widths) no longer apply.
+Major update with (almost) all plotting routines shifted from 'graphics::plot'
+to 'ggplot2'. All previous parameters specifying graphics devices (such as
+heights and widths) no longer apply.
 
 Changes:
 
 * vignette 'downloading-data' removed (incorporate in 'making-maps')
 * vignette 'making-maps' extended
 * vignette 'making-maps-with-data' added
+* Extensive examples added to most functions
 * 'click_map' removed
 * 'connect_highways' renamed 'get_highway_cycle'
 * 'highways2polygon' renamed 'connect_highways'
-* 'extract_highways' no longer exported
+* 'extract_highway', 'extract_highways', 'order_lines' no longer exported
 * 'extract_osm_objects' now just returns objects (instead of '$obj' and
     '$warn'), and dumps warnings direct to screen.
 * 'add_osm_groups' now accepts lists of simple spatial points as groups
 * Coordinate reference system properly attributed to all objects
 * many tests added
+* Change to 'ggplot2' has considerably changed structure of many functions. For
+  details see function examples and vignettes
 
 
 osmplotr v0.1-3
