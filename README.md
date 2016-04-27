@@ -191,4 +191,4 @@ print (map)
 
 ![map7](./figure/map7.png)
 
-See package vignette (''Making Maps') for a lot more detail and further capabilities of `osmplotr`.
+See package vignettes ('making-maps' and 'making-maps-with-data') for a lot more detail and further capabilities of `osmplotr`. Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
