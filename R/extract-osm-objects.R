@@ -20,6 +20,8 @@
 #' @return A data frame of sp objects
 #' @export
 #'
+#' @seealso \code{\link{add_osm_objects}}.
+#'
 #' @examples
 #' \dontrun{
 #' bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))

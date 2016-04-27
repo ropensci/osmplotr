@@ -9,8 +9,8 @@ add_osm_objects(map, obj, col = "gray40", border = NA, size, shape)
 \arguments{
 \item{map}{A ggplot2 object to which the objects are to be added}
 
-\item{obj}{An sp SPDF or SLDF (spatial data frame of polygons, lines, or
-points) returned by extract_osm_objects ()}
+\item{obj}{A spatial ('sp') data frame of polygons, lines, or points,
+typically as returned by extract_osm_objects ()}
 
 \item{col}{Colour of lines or points; fill colour of polygons}
 
@@ -57,5 +57,8 @@ map <- add_osm_objects (map, london$dat_T, col="green")
 map <- add_osm_objects (map, obj=london$dat_BNR, col="gray40", border="yellow",
                         size=0.5)
 print (map)
+}
+\seealso{
+\code{\link{plot_osm_basemap}}, \code{\link{extract_osm_objects}}.
 }
 

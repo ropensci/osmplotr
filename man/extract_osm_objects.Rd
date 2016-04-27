@@ -44,4 +44,7 @@ extra_pairs <- c ('name', 'Royal.Festival.Hall')
 dat <- extract_osm_objects (key='building', extra_pairs=extra_pairs, bbox=bbox)
 }
 }
+\seealso{
+\code{\link{add_osm_objects}}.
+}
 

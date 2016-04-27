@@ -27,6 +27,8 @@
 #' If 'osm_data' is not given, then data will be downloaded, which can take some
 #' time.  Progress is dumped to screen.
 #'
+#' @seealso \code{\link{plot_osm_basemap}}, \code{\link{add_osm_objects}}.
+#'
 #' @examples
 #' structures <- c ('highway', 'park', 'grass')
 #' structs <- osm_structures (structures=structures, col_scheme='light')

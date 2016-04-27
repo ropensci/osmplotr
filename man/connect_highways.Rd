@@ -63,4 +63,7 @@ map <- add_osm_groups (map, obj=dat_BNR, groups=groups,
                        cols=c('red', 'blue'), bg='gray40')
 print (map)
 }
+\seealso{
+\code{\link{add_osm_groups}}.
+}
 

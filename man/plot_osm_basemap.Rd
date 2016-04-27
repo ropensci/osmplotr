@@ -31,4 +31,7 @@ map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_objects (map, london$dat_BNR, col='gray40')
 print (map)
 }
+\seealso{
+\code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
+}
 

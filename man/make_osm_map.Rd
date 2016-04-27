@@ -54,4 +54,7 @@ dat <- make_osm_map (bbox=bbox, structures=structs)
 print (dat$map)
 }
 }
+\seealso{
+\code{\link{plot_osm_basemap}}, \code{\link{add_osm_objects}}.
+}
 

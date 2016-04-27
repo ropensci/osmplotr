@@ -25,6 +25,8 @@
 #' experimental, so please help further improvements by reporting any problems!
 #' }
 #'
+#' @seealso \code{\link{add_osm_groups}}.
+#'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' \dontrun{

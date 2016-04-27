@@ -14,6 +14,8 @@
 #' @return ggplot object containing base map
 #' @export
 #'
+#' @seealso \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
+#'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' map <- plot_osm_basemap (bbox=bbox, bg='gray20')

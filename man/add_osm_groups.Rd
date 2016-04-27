@@ -31,7 +31,7 @@ groups (TRUE), or whether the group already defines a hull (convex or
 otherwise; FALSE).}
 
 \item{boundary}{(negative, 0, positive) values define whether the boundary of
-groups should (exlude, bisect, include) objects which straddle the precise
+groups should (exclude, bisect, include) objects which straddle the precise
 boundary. (Has no effect if 'bg' is given)}
 
 \item{size}{Size argument passed to ggplot2 (polygon, path, point) functions:
@@ -58,16 +58,10 @@ Plots spatially distinct groups of osm objects in different colours.
 }
 \section{Note}{
 
-Any group that is entire contained within any other group is assumed to
+Any group that is entirely contained within any other group is assumed to
 represent a hole, such that points internal to the smaller contained group
 are *excluded* from the group, while those outside the smaller yet inside the
 bigger group are included.
-}
-
-\section{Warning}{
-
-Bisecting objects along group boundaries ('boundary=0') can take longer than
-simple allocation of objects either side of boundary.
 }
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
@@ -128,5 +122,8 @@ map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
                        borderWidth=2)
 print (map)
 }
+}
+\seealso{
+\code{\link{colour_mat}}.
 }
 

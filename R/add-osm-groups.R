@@ -19,7 +19,7 @@
 #' groups (TRUE), or whether the group already defines a hull (convex or
 #' otherwise; FALSE).
 #' @param boundary (negative, 0, positive) values define whether the boundary of
-#' groups should (exlude, bisect, include) objects which straddle the precise
+#' groups should (exclude, bisect, include) objects which straddle the precise
 #' boundary. (Has no effect if 'bg' is given)
 #' @param size Size argument passed to ggplot2 (polygon, path, point) functions:
 #' determines width of lines for (polygon, line), and sizes of points.
@@ -36,14 +36,12 @@
 #' @export
 #'
 #' @section Note:
-#' Any group that is entire contained within any other group is assumed to
+#' Any group that is entirely contained within any other group is assumed to
 #' represent a hole, such that points internal to the smaller contained group
 #' are *excluded* from the group, while those outside the smaller yet inside the
 #' bigger group are included.
 #'
-#' @section Warning:
-#' Bisecting objects along group boundaries ('boundary=0') can take longer than
-#' simple allocation of objects either side of boundary.
+#' @seealso \code{\link{colour_mat}}.
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))

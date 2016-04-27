@@ -14,6 +14,8 @@
 #' @return matrix of colours
 #' @export
 #'
+#' @seealso \code{\link{add_osm_groups}}.
+#'
 #' @examples
 #' cm <- colour_mat (n=5, cols=rainbow(4), rotate=90, plot=TRUE)
 #'

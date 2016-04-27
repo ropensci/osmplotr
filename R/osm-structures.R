@@ -16,6 +16,8 @@
 #'
 #' @export
 #'
+#' @seealso \code{\link{make_osm_map}}.
+#'
 #' @examples
 #' # Default structures:
 #' osm_structures ()

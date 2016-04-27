@@ -74,4 +74,7 @@ map <- add_colourbar (map, zlims=range (volcano), cols=heat.colors(100),
                       barwidth=c(0.1,0.15), barlength=c(0.5, 0.9), vertical=FALSE)
 print (map)
 }
+\seealso{
+\code{\link{plot_osm_basemap}}, \code{\link{add_osm_surface}}.
+}
 

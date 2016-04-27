@@ -116,4 +116,7 @@ map <- add_colourbar (map, cols=heat.colors (100), zlims=range (dat$z),
                       barwidth=c(0.02), barlength=c(0.6,0.99), vertical=TRUE)
 print (map)
 }
+\seealso{
+\code{\link{plot_osm_basemap}}, \code{\link{add_colourbar}}.
+}
 

@@ -44,6 +44,8 @@
 #'
 #' @export
 #'
+#' @seealso \code{\link{plot_osm_basemap}}, \code{\link{add_colourbar}}.
+#'
 #' @examples
 #' # Get some data
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))

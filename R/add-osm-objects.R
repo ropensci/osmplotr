@@ -5,8 +5,8 @@
 #' plot_osm_basemap().
 #'
 #' @param map A ggplot2 object to which the objects are to be added
-#' @param obj An sp SPDF or SLDF (spatial data frame of polygons, lines, or
-#' points) returned by extract_osm_objects ()
+#' @param obj A spatial ('sp') data frame of polygons, lines, or points,
+#' typically as returned by extract_osm_objects ()
 #' @param col Colour of lines or points; fill colour of polygons
 #' @param border Border colour of polygons
 #' @param size Size argument passed to ggplot2 (polygon, path, point) functions:
@@ -17,6 +17,8 @@
 #' @return modified version of map (a ggplot object) to which objects have been
 #' added
 #' @export
+#'
+#' @seealso \code{\link{plot_osm_basemap}}, \code{\link{extract_osm_objects}}.
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))

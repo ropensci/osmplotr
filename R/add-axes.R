@@ -14,6 +14,8 @@
 #' @return Modified version of map with axes added
 #' @export
 #'
+#' @seealso \code{\link{plot_osm_basemap}}.
+#'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
