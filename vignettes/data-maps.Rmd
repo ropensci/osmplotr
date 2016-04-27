@@ -1,5 +1,5 @@
 ---
-title: "Making Maps with Data"
+title: "Data Maps"
 author: "Mark Padgham"
 date: "`r Sys.Date()`"
 #output: rmarkdown::pdf_document
@@ -10,7 +10,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette extends from the vignette 'making-maps' to demonstrate how
+This vignette extends from the vignette 'basic-maps' to demonstrate how
 user-defined data layers may be used to further customise the appearance of maps
 produced with `osmplotr`. Categorical data may be plotted by highlighting
 categorically different regions with different colours using `add_osm_groups`,
@@ -231,7 +231,7 @@ parks within the following maps were downloaded with
 ```{r, eval=FALSE}
 dat_P <- extract_osm_objects (key='park', bbox=bbox)
 ```
-(Noting that, as described in the 'making-maps' vignette, both
+(Noting that, as described in the 'basic-maps' vignette, both
 `extract_osm_objects` and `make_osm_map` convert several common keys to
 appropriate `key-value` pairs, so
 ```{r}
@@ -499,7 +499,7 @@ on to `colour_mat`.
 
 ## <a name="1.7 highways"></a>1.7 Bounding areas within named highways
 
-As explained in the first vignette ('making-maps'), the function
+As explained in the first vignette ('basic-maps'), the function
 `connect_highways` takes a list of OSM highway names and a bounding box, and
 returns the boundary of a polygon encircling the named highways. This can be
 used to highlight selected regions simply by naming the highways which encircle
@@ -527,7 +527,7 @@ class (highways1); length (highways1); length (highways2); length (highways3)
 `connect_highways` returns a list of `SpatialPoints` representing the shortest
 path that sequentially connects all of the listed highways. (Connecting all
 listed highways may not necessarily be possible, in which case warnings will be
-issued. As described in the vignette 'making-maps', `connect_highways` also has
+issued. As described in the vignette 'basic-maps', `connect_highways` also has
 a `plot` option allowing problematic cases to be visually inspected and
 hopefully corrected.)
 
@@ -675,7 +675,7 @@ graphics.off ()
 
 Note that the colours submitted to `add_colourbar` need not be the same as those
 used to plot the surface. (Although using different colours is rarely likely to
-be useful.) As for `add_axes`, and explained in the vignette 'making-maps', the
+be useful.) As for `add_axes`, and explained in the vignette 'basic-maps', the
 transparency of the boxes surrounding the elements of the colourbar may be
 controlled by specifying the value of `alpha`. Both alignment and position may
 also be adjusted, as illustrated in this example.

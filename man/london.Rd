@@ -35,7 +35,7 @@ c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')
 }
 }
 \details{
-The vignette 'making-maps' demonstrates how these data were downloaded.
+The vignette 'basic-maps' demonstrates how these data were downloaded.
 }
 \keyword{datasets}
 

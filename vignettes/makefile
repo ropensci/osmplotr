@@ -1,5 +1,5 @@
-MAPFILE = making-maps
-DATFILE = making-maps-with-data
+MAPFILE = basic-maps
+DATFILE = data-maps
 
 all: mapsh mapsr datah datar
 

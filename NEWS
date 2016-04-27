@@ -1,3 +1,9 @@
+osmplotr v0.2.1
+===============
+
+* vignette 'making-maps' renamed 'basic-maps'
+* vignette 'making-maps-with-data' renamed 'data-maps'
+
 osmplotr v0.2.0
 ===============
 

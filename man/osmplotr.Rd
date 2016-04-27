@@ -68,12 +68,11 @@ scheme\cr
 \section{Vignettes}{
 
 \tabular{ll}{
-'making-maps'\tab Describes basics of downloading data and making custom
+'basic-maps'\tab Describes basics of downloading data and making custom
 maps\cr
-'making-maps-with-data'\tab
-Describes how map elements can be coloured
-according to user-provided data, whether
-categorical or continuous.
+'data-maps'\tab
+Describes how map elements can be coloured according to user-provided data,
+whether categorical or continuous.
 }
 }
 

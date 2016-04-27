@@ -1,5 +1,5 @@
 ---
-title: "Making Maps"
+title: "Basic Maps"
 author: "Mark Padgham"
 date: "`r Sys.Date()`"
 #output: rmarkdown::pdf_document
@@ -13,7 +13,7 @@ vignette: >
 `osmplotr` enables OpenStreetMap (OSM) data to be downloaded (using the
 [overpass API](https://overpass-api.de)) and used to produce highly customisable
 maps. This vignette demonstrates both data downloading and the creation of
-simple maps. The subsequent vignette ('making-maps-with-data') demonstrates how
+simple maps. The subsequent vignette ('data-maps') demonstrates how
 `osmplotr` enables user-defined data to be visualised using OSM data.  The maps
 in this vignette represent a small portion of central London, U.K. 
 
