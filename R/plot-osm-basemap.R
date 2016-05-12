@@ -54,9 +54,11 @@ plot_osm_basemap <- function (bbox, structures, bg='gray20')
     new_theme$axis.ticks.length <- ggplot2::unit(0,'null')
 
     lon <- lat <- NA
+    # coord_map uses mapproj::mapproject, but I can't add this as a dependency
+    # because it's not explicitly called, so coord_equal is a workaround.
     map <- ggplot2::ggplot () + new_theme +
-                ggplot2::coord_cartesian (xlim=range (bbox[1,]), 
-                                          ylim=range (bbox[2,])) +
+                ggplot2::coord_equal (xlim=range (bbox[1,]), 
+                                    ylim=range (bbox[2,])) +
                 ggplot2::aes (x=lon, y=lat) +
                 ggplot2::scale_x_continuous (expand=c(0, 0)) +
                 ggplot2::scale_y_continuous (expand=c(0, 0))
