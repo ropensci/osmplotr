@@ -10,11 +10,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette extends from the vignette 'basic-maps' to demonstrate how
-user-defined data layers may be used to further customise the appearance of maps
-produced with `osmplotr`. Categorical data may be plotted by highlighting
-categorically different regions with different colours using `add_osm_groups`,
-while continuous data may be plotted with `add_osm_surface`.
+This vignette extends from the vignette 
+([Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html))
+to demonstrate how `osmplotr` enables the graphical properties of OpenStreetMap
+objects to be modified according to user-provided data.  Categorical data can be
+plotted by highlighting defined regions with different colours using
+`add_osm_groups`, while continuous data can be plotted with `add_osm_surface`.
 
 
 ```{r load, message=FALSE}
@@ -100,7 +101,7 @@ png (height=mapht, width=mapwd, file='map_b1.png')
 print (map)
 graphics.off ()
 ```
-![map1](map_b1.png)
+![](map_b1.png)
 
 Multiple groups can be defined by passing a list of `SpatialPoints` objects to
 the `groups` argument of `add_osm_groups`, and specifying corresponding colours.
@@ -123,7 +124,7 @@ png (height=mapht, width=mapwd, file='map_b2.png')
 print (map)
 graphics.off ()
 ```
-![map2](map_b2.png)
+![](map_b2.png)
 
 The `bg` argument specifies the colour of any objects lying outside the
 boundaries of the specified groups. If this argument is not given, then all
@@ -143,7 +144,7 @@ png (height=mapht, width=mapwd, file='map_b3.png')
 print (map)
 graphics.off ()
 ```
-![map3](map_b3.png)
+![](map_b3.png)
 
 ## <a name="1.1 hulls"></a>1.1 Hulls around groups
 
@@ -168,7 +169,7 @@ png (height=mapht, width=mapwd, file='map_b5.png')
 print (map)
 graphics.off ()
 ```
-![map5](map_b5.png)
+![](map_b5.png)
 
 The previous points started in the south-east and ended in the north-east, and
 thus the concave boundary extends in between the two easterly points. Setting
@@ -201,7 +202,7 @@ png (height=mapht, width=mapwd, file='map_b6.png')
 print (map)
 graphics.off ()
 ```
-![map6](map_b6.png)
+![](map_b6.png)
 
 The inclusive option (`boundary>0`) includes all objects which have any points
 lying within a boundary, meaning more objects are included resulting in larger
@@ -222,7 +223,7 @@ png (height=mapht, width=mapwd, file='map_b7.png')
 print (map)
 graphics.off ()
 ```
-![map7](map_b7.png)
+![](map_b7.png)
 
 
 The ability to combine different kinds of boundaries is particularly useful when
@@ -231,8 +232,9 @@ parks within the following maps were downloaded with
 ```{r, eval=FALSE}
 dat_P <- extract_osm_objects (key='park', bbox=bbox)
 ```
-(Noting that, as described in the 'basic-maps' vignette, both
-`extract_osm_objects` and `make_osm_map` convert several common keys to
+(Noting that, as described in the first vignette,
+[Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html),
+both `extract_osm_objects` and `make_osm_map` convert several common keys to
 appropriate `key-value` pairs, so
 ```{r}
 osm_structures (structure='park')
@@ -266,7 +268,7 @@ png (height=mapht, width=mapwd, file='map_b8.png')
 print (map)
 graphics.off ()
 ```
-![map8](map_b8.png)
+![](map_b8.png)
 
 Bisection divides single polygons to form one polygon of points lying within a
 given boundary and one polygon of points lying outside the boundary. The two
@@ -295,10 +297,10 @@ png (height=mapht, width=mapwd, file='map_b9.png')
 print (map)
 graphics.off ()
 ```
-![map9](map_b9.png)
+![](map_b9.png)
 
 Bisections with `boundary=0` will only be as accurate as the underlying OSM
-data. This example was chosen to highlight how inaccurate bisection may be if
+data. This example was chosen to highlight that bisection may be inaccurate if
 actual OSM points do not lie near to a desired bisection line. The larger a
 map, the less visually evident are likely to be any such inaccuracies. Finally,
 note that the plot order was changed to allow the building within the park to be
@@ -344,7 +346,7 @@ png (height=mapht, width=mapwd, file='map_b10.png')
 print (map)
 graphics.off ()
 ```
-![map10](map_b10.png)
+![](map_b10.png)
 
 (And of course `adjust_colours ('gray40', adj=-0.2)` is nothing other than
 'gray32', and `adj=-0.4` gives 'gray24'.)
@@ -375,7 +377,7 @@ png (height=mapht, width=mapwd, file='map_b11.png')
 print (map)
 graphics.off ()
 ```
-![map11](map_b11.png)
+![](map_b11.png)
 
 
 ## <a name="1.5 clusters"></a>1.5 Visualising clustering data
@@ -411,7 +413,7 @@ png (height=mapht, width=mapwd, file='map_b12.png')
 print (map)
 graphics.off ()
 ```
-![map12](map_b12.png)
+![](map_b12.png)
 
 Although individual groups will generally be defined by collections of multiple
 points, this example illustrates that they can also be defined by single points.
@@ -440,7 +442,7 @@ png (height=mapht, width=mapwd, file='map_b13.png')
 print (map)
 graphics.off ()
 ```
-![map13](map_b13.png)
+![](map_b13.png)
 
 Note the submitting any positive values to the additional `borderWidth` argument
 causes `add_osm_groups` to drawn convex hull borders around the different
@@ -458,7 +460,10 @@ a vector of four or more colours as input, wraps them around the four corners of
 rectangular grid, and spatially interpolates a chromatially regular grid between
 these corners. To visual different schemes, it has a `plot` argument:
 
-```{r, fig.width=4}
+```{r, eval=FALSE}
+cmat <- colour_mat (plot=TRUE)
+```
+```{r, fig.width=4, echo=FALSE}
 plot.new ()
 cmat <- colour_mat (plot=TRUE)
 ```
@@ -467,7 +472,10 @@ This grid illustrates the default colours, `rainbow (4)`. The two-dimensional
 colour field produced by `colour_mat` may also be rotated by a specified number
 of degrees using the `rotate` argument.
 
-```{r, fig.width=4}
+```{r, eval=FALSE}
+cmat <- colour_mat (n=c(4,8), rotate=90, plot=TRUE)
+```
+```{r, fig.width=4, echo=FALSE}
 plot.new ()
 cmat <- colour_mat (n=c(4,8), rotate=90, plot=TRUE)
 ```
@@ -489,7 +497,7 @@ png (height=mapht, width=mapwd, file='map_b14.png')
 print (map)
 graphics.off ()
 ```
-![map14](map_b14.png)
+![](map_b14.png)
 
 Note both that when `add_osm_groups` is called with `colmat=TRUE`, then `cols`
 need only be of length 4, to specify the four corners of the colour matrix, and
@@ -499,11 +507,12 @@ on to `colour_mat`.
 
 ## <a name="1.7 highways"></a>1.7 Bounding areas within named highways
 
-As explained in the first vignette ('basic-maps'), the function
-`connect_highways` takes a list of OSM highway names and a bounding box, and
-returns the boundary of a polygon encircling the named highways. This can be
-used to highlight selected regions simply by naming the highways which encircle
-them, producing maps which look like this:
+As explained in the first vignette,
+[Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html),
+the function `connect_highways` takes a list of OSM highway names and a bounding
+box, and returns the boundary of a polygon encircling the named highways. This
+can be used to highlight selected regions simply by naming the highways which
+encircle them, producing maps which look like this:
 ```{r connect-highways, eval=FALSE}
 highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
                'Upper.Saint.Martin')
@@ -513,9 +522,10 @@ highways2 <- connect_highways (highways=highways, bbox=bbox, plot=T)
 highways <- c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')
 highways3 <- connect_highways (highways=highways, bbox=bbox, plot=T)
 ```
-Note the use of the `regex` '?' in the first list of highway names, denoting the
-previous character as optional.  This is necessary here because there are OSM
-sections named both "Shorts Gardens" and "Short's Gardens".
+Note the use of the [regex](https://en.wikipedia.org/wiki/Regular_expression)
+character `?` in the first list of highway names, denoting the previous
+character as optional.  This is necessary here because there are OSM sections
+named both "Shorts Gardens" and "Short's Gardens".
 ```{r, echo=FALSE}
 highways1 <- london$highways1
 highways2 <- london$highways2
@@ -527,9 +537,10 @@ class (highways1); length (highways1); length (highways2); length (highways3)
 `connect_highways` returns a list of `SpatialPoints` representing the shortest
 path that sequentially connects all of the listed highways. (Connecting all
 listed highways may not necessarily be possible, in which case warnings will be
-issued. As described in the vignette 'basic-maps', `connect_highways` also has
-a `plot` option allowing problematic cases to be visually inspected and
-hopefully corrected.)
+issued. As described in the first vignette, 
+[Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html),
+`connect_highways` also has a `plot` option allowing problematic cases to be
+visually inspected and hopefully corrected.)
 
 These lists of highway coordinates can then be used to highlight the areas they
 encircle. First group the highways and establish a colour scheme for the map:
@@ -565,7 +576,7 @@ png (height=mapht, width=mapwd, file='map_b15.png')
 print (map)
 graphics.off ()
 ```
-![map15](map_b15.png)
+![](map_b15.png)
 
 These encircling highways are included in the `london` data provided with
 `osmplotr`. 
@@ -604,7 +615,7 @@ png (height=mapht, width=mapwd, file='map_b16.png')
 print (map)
 graphics.off ()
 ```
-![map16](map_b16.png)
+![](map_b16.png)
 
 At present, `add_osm_surface` generates an warning if it is applied more than
 once to any one kind of `Spatial` object (polygons or lines), as illustrated in
@@ -615,7 +626,7 @@ map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_surface (map, dat_HP, dat=dat, cols=heat.colors (30))
 map <- add_osm_surface (map, dat_H, dat=dat, cols=heat.colors (30))
 ```
-This is because `add_osm_surface` creates new `ggplot` aesthetic schemes for
+This is because `add_osm_surface` creates new `ggplot2` aesthetic schemes for
 each kind of object, and these schemes are not intended to be modified or
 replaced within a single plot. The above map may still be printed, but the
 warning means that the last provided colour scheme will be applied to all
@@ -645,7 +656,7 @@ png (height=mapht, width=mapwd, file='map_b17.png')
 print (map)
 graphics.off ()
 ```
-![map17](map_b17.png)
+![](map_b17.png)
 
 
 ## <a name="2.1 colourbar-legend"></a>2.1 Colourbar legends for data surfaces
@@ -671,12 +682,13 @@ png (height=mapht, width=mapwd, file='map_b18.png')
 print (map)
 graphics.off ()
 ```
-![map18](map_b18.png)
+![](map_b18.png)
 
 Note that the colours submitted to `add_colourbar` need not be the same as those
 used to plot the surface. (Although using different colours is rarely likely to
-be useful.) As for `add_axes`, and explained in the vignette 'basic-maps', the
-transparency of the boxes surrounding the elements of the colourbar may be
+be useful.) As for `add_axes`, and explained in the first vignette,
+[Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html),
+the transparency of the boxes surrounding the elements of the colourbar may be
 controlled by specifying the value of `alpha`. Both alignment and position may
 also be adjusted, as illustrated in this example.
 ```{r map19, eval=FALSE}
@@ -709,7 +721,7 @@ png (height=mapht, width=mapwd, file='map_b19.png')
 print (map)
 graphics.off ()
 ```
-![map19](map_b19.png)
+![](map_b19.png)
 
 Both `barwidth` and `barlength` can be specified in terms of one or two numbers.
 A single value for `barwidth` determines its relative width (0-1) from the
@@ -765,7 +777,7 @@ png (height=mapht, width=mapwd, file='map_b20.png')
 print (map)
 graphics.off ()
 ```
-![map20](map_b20.png)
+![](map_b20.png)
 
 (The perimeter is irregular because of the positions of the points in `dat`.)
 
@@ -780,7 +792,7 @@ parameters may also be passed, with these also determining the shapes of
 `SpatialPoints`, as illustrated in the next example, which overlays trees on the
 map.
 
-Both lines and points use the same `ggplot` colour gradient, and so adding the
+Both lines and points use the same `ggplot2` colour gradient, and so adding the
 second of these again generates an error and means that the actual colour scheme
 will be determined by the final call to add either lines or points.
 
@@ -813,7 +825,7 @@ png (height=mapht, width=mapwd, file='map_b21.png')
 print (map)
 graphics.off ()
 ```
-![map21](map_b21.png)
+![](map_b21.png)
 
 The first two colour specificiations (`terrain.colors`) have been ignored, and
 all added items are coloured according to the final value of `heat.colors (30)`.

@@ -30,4 +30,4 @@ dataopen: $(DATFILE).html
 	xdg-open $(DATFILE).html &
 
 clean:
-	rm -f *.png *.html
+	rm -f *.png 
