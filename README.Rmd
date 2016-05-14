@@ -61,13 +61,11 @@ dat_P <- extract_osm_objects (key="park", bbox=bbox)
 dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)
 ```
 ```{r, echo=FALSE}
-# These are for the smaller bbox
-indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
-dat_B <- maptools::spRbind (london$dat_BR [indx,], london$dat_BNR)
-indx <- which (!london$dat_H$id %in% london$dat_HP$id)
-dat_H <- maptools::spRbind (london$dat_H [indx,], london$dat_HP)
-dat_G <- london$dat_G
-dat_P <- london$dat_P
+load ("london2.rda")
+dat_B <- london2$dat_B
+dat_H <- london2$dat_H
+dat_G <- london2$dat_G
+dat_P <- london2$dat_P
 ```
 ```{r map2, eval=FALSE}
 map <- plot_osm_basemap (bbox=bbox, bg="gray20")
@@ -78,7 +76,9 @@ map <- add_osm_objects (map, dat_G, col="darkseagreen1")
 print (map)
 ```
 ```{r map2-print, eval=FALSE, echo=FALSE}
-png (width=600, height=300, filename="map2.png")
+fwd <- 600
+fht <- fwd * diff (bbox [2,]) / diff (bbox [1,])
+png (width=fwd, height=fht, filename="map2.png")
 print (map)
 graphics.off ()
 ```
@@ -107,7 +107,7 @@ map <- add_osm_groups (map, london$dat_P, groups=pts, cols='darkseagreen1',
 print (map)
 ```
 ```{r map3-print, eval=FALSE, echo=FALSE}
-png (width=600, height=300, filename="map3.png")
+png (width=fwd, height=fht, filename="map3.png")
 print (map)
 graphics.off ()
 ```
@@ -122,7 +122,7 @@ map <- add_osm_groups (map, dat_H, groups=pts, cols="gray20", bg="gray70")
 print (map)
 ```
 ```{r map4-print, eval=FALSE, echo=FALSE}
-png (width=600, height=300, filename="map4.png")
+png (width=fwd, height=fht, filename="map4.png")
 print (map)
 graphics.off ()
 ```
@@ -153,7 +153,7 @@ map <- add_osm_groups (map, dat_B, groups=groups, borderWidth=2)
 print (map)
 ```
 ```{r map5-print, eval=FALSE, echo=FALSE}
-png (width=600, height=300, filename="map5.png")
+png (width=fwd, height=fht, filename="map5.png")
 print (map)
 graphics.off ()
 ```
@@ -196,7 +196,7 @@ map <- add_osm_groups (map, dat_H, groups=groups, boundary=0,
 print (map)
 ```
 ```{r map6-print, eval=FALSE, echo=FALSE}
-png (width=600, height=300, filename="map6.png")
+png (width=fwd, height=fht, filename="map6.png")
 print (map)
 graphics.off ()
 ```
@@ -226,14 +226,16 @@ map <- add_axes (map)
 print (map)
 ```
 ```{r map7-print, eval=FALSE, echo=FALSE}
-png (width=600, height=300, filename="map7.png")
+png (width=fwd, height=fht, filename="map7.png")
 print (map)
 graphics.off ()
 ```
 
 ```{r map1-print, eval=FALSE, echo=FALSE}
 # This is map1 used as the title
-png (width=800, height=250, filename="map1.png")
+fwd <- 800
+fht <- fwd * diff (bbox [2,]) / diff (bbox [1,])
+png (width=fwd, height=fht, filename="map1.png")
 # dev.new (width=10, height=5)
 # extrafont::loadfonts ()
 dat <- data.frame (x=mean (bbox[1,]), y=mean (bbox [2,]), lab="osmplotr")
