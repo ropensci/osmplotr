@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/mpadge/osmplotr.svg?branch=master)](https://travis-ci.org/mpadge/osmplotr)
+[![Build Status](https://travis-ci.org/ropenscilabs/osmplotr.svg?branch=master)](https://travis-ci.org/ropenscilabs/osmplotr)
 [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 
-![map1](./figure/map1.png)
+![](./figure/map1.png)
 
 R package to produce visually impressive customisable images of OpenStreetMap
 (OSM) data downloaded internally from the 
@@ -48,7 +48,7 @@ install.packages ('osmplotr')
 ```
 or the development version
 ```{r, eval=FALSE}
-devtools::install_github ('mpadge/osmplotr')
+devtools::install_github ('ropenscilabs/osmplotr')
 ```
 
 ## A simple map
@@ -83,7 +83,7 @@ print (map)
 graphics.off ()
 ```
 
-![map2](./figure/map2.png)
+![](./figure/map2.png)
 
 ## Highlighting selected areas
 
@@ -111,7 +111,7 @@ png (width=600, height=300, filename="map3.png")
 print (map)
 graphics.off ()
 ```
-![map3](./figure/map3.png)
+![](./figure/map3.png)
 
 Note the `border=0` argument on the last call divides the park polygons
 precisely along the border. The same map highlighted in dark-on-light:
@@ -126,7 +126,7 @@ png (width=600, height=300, filename="map4.png")
 print (map)
 graphics.off ()
 ```
-![map4](./figure/map4.png)
+![](./figure/map4.png)
 
 ### Highlighting clusters
 
@@ -157,7 +157,7 @@ png (width=600, height=300, filename="map5.png")
 print (map)
 graphics.off ()
 ```
-![map5](./figure/map5.png)
+![](./figure/map5.png)
 
 ### Highlighting areas bounded by named highways
 
@@ -200,7 +200,7 @@ png (width=600, height=300, filename="map6.png")
 print (map)
 graphics.off ()
 ```
-![map6](./figure/map6.png)
+![](./figure/map6.png)
 
 
 ### Data surfaces
@@ -256,7 +256,7 @@ map2 <- map2 + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour="white"
 print (map2)
 graphics.off ()
 ```
-![map7](./figure/map7.png)
+![](./figure/map7.png)
 
 See package vignettes (
 [making maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps.html)
@@ -267,3 +267,6 @@ detail and further capabilities of `osmplotr`.  Please note that this project is
 released with a [Contributor Code of Conduct](CONDUCT.md). By participating in
 this project you agree to abide by its terms.
 
+--------------
+
+[![ropensci\_footer](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)

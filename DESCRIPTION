@@ -26,7 +26,8 @@ Suggests:
     maptools,
     testthat
 License: GPL-3
-URL: https://github.com/mpadge/osmplotr
+URL: https://github.com/ropenscilabs/osmplotr
+BugReports: https://github.com/ropenscilabs/osmplotr/issues
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/mpadge/osmplotr.svg?branch=master)](https://travis-ci.org/mpadge/osmplotr) [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
+[![Build Status](https://travis-ci.org/ropenscilabs/osmplotr.svg?branch=master)](https://travis-ci.org/ropenscilabs/osmplotr) [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 
-![map1](./figure/map1.png)
+![](./figure/map1.png)
 
 R package to produce visually impressive customisable images of OpenStreetMap (OSM) data downloaded internally from the [overpass api](http://overpass-api.de/). The above map was produced directly from `osmplotr` with no further modification. But first the easy steps to map making:
 
@@ -44,7 +44,7 @@ install.packages ('osmplotr')
 or the development version
 
 ``` r
-devtools::install_github ('mpadge/osmplotr')
+devtools::install_github ('ropenscilabs/osmplotr')
 ```
 
 A simple map
@@ -67,7 +67,7 @@ map <- add_osm_objects (map, dat_G, col="darkseagreen1")
 print (map)
 ```
 
-![map2](./figure/map2.png)
+![](./figure/map2.png)
 
 Highlighting selected areas
 ---------------------------
@@ -90,7 +90,7 @@ map <- add_osm_groups (map, london$dat_P, groups=pts, cols='darkseagreen1',
 print (map)
 ```
 
-![map3](./figure/map3.png)
+![](./figure/map3.png)
 
 Note the `border=0` argument on the last call divides the park polygons precisely along the border. The same map highlighted in dark-on-light:
 
@@ -101,7 +101,7 @@ map <- add_osm_groups (map, dat_H, groups=pts, cols="gray20", bg="gray70")
 print (map)
 ```
 
-![map4](./figure/map4.png)
+![](./figure/map4.png)
 
 ### Highlighting clusters
 
@@ -125,7 +125,7 @@ map <- add_osm_groups (map, dat_B, groups=groups, borderWidth=2)
 print (map)
 ```
 
-![map5](./figure/map5.png)
+![](./figure/map5.png)
 
 ### Highlighting areas bounded by named highways
 
@@ -165,7 +165,7 @@ map <- add_osm_groups (map, dat_H, groups=groups, boundary=0,
 print (map)
 ```
 
-![map6](./figure/map6.png)
+![](./figure/map6.png)
 
 ### Data surfaces
 
@@ -189,6 +189,10 @@ map <- add_axes (map)
 print (map)
 ```
 
-![map7](./figure/map7.png)
+![](./figure/map7.png)
 
 See package vignettes ( [making maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps.html) and [making maps with data](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps-with-data.html) ) for a lot more detail and further capabilities of `osmplotr`. Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+------------------------------------------------------------------------
+
+[![ropensci\_footer](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
