@@ -14,14 +14,13 @@
 #' @section Basic Plotting Functions (without data):
 #' \tabular{ll}{
 #' 'add_axes'\tab Overlay longitudinal and latitudinal axes on plot\cr 
-#' 'add_colourbar'\tab Overlay a scaled colourbar for data added with
-#' 'add_osm_surface'\cr 
 #' 'add_osm_objects'\tab Overlay arbitrary OSM objects\cr 
 #' 'make_osm_map'\tab Automate map production with structures defined in
 #' 'osm_structures'\cr 
 #' 'osm_structures'\tab Define structures and graphics schemes for automating
 #' map production \cr 
-#' 'plot_osm_basemap'\tab Initiate a plotting device for an OSM map\cr 
+#' 'plot_osm_basemap'\tab Initiate a ggplot object for an OSM map\cr 
+#' 'print_osm_map'\tab Print a map to specified graphics device
 #' } 
 #'
 #' @section Advanced Plotting Functions (with data):
@@ -29,6 +28,8 @@
 #' 'add_osm_groups'\tab Overlay groups of objects using specified colour
 #' scheme\cr 
 #' 'add_osm_surface'\tab Overlay data surface by interpolating given data \cr 
+#' 'add_colourbar'\tab Overlay a scaled colourbar for data added with
+#' 'add_osm_surface'\cr 
 #' }
 #'
 #' @section Colour Manipulation Functions:
