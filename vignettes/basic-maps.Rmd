@@ -92,20 +92,17 @@ map <- add_osm_objects (map, dat_B, col='gray40')
 ```
 5. Print the map
 ```{r, eval=FALSE}
-print (map)
+print_osm_map (map)
 ```
 ```{r map1-print, echo=FALSE}
-mapwd <- 600
-mapht <- mapwd * diff (bbox [2,]) / diff (bbox [1,])
-png (file='map_a1.png', height=mapht, width=mapwd)
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map_a1.png', width=600, units='px', dpi=72)
 ```
 ![](map_a1.png)
 
-Note that `osmplotr` maps contain no margins and fill the entire plot area.
-Additional capabilities of `osmplotr` are described in the following sections,
-beginning with downloading and extraction of data.
+The function `print_osm_map` creates a graphics device that is scaled to the
+bounding box of the map.  Note also that `osmplotr` maps contain no margins and
+fill the entire plot area.  Additional capabilities of `osmplotr` are described
+in the following sections, beginning with downloading and extraction of data.
 
 ## <a name="2 downloading"></a>2. Downloading Data
 
@@ -371,16 +368,13 @@ map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_H, col='gray70')
 map <- add_osm_objects (map, dat_B, col='gray40')
 ```
-The `ggplot2` object is scaled to the relative proportions of the bounding box,
-and so may be viewed simply by calling `map` or
+`map` is then a `ggplot2` which may be viewed simply by passing it to
+`print_osm_map`:
 ```{r, eval=FALSE}
-print (map)
+print_osm_map (map)
 ```
 ```{r map2-print, echo=FALSE}
-mapht <- mapwd * diff (bbox_small [2,]) / diff (bbox_small [1,])
-png (file='map_a2.png', height=mapht, width=mapwd)
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map_a2.png', width=600, units='px', dpi=72)
 ```
 ![](map_a2.png)
 
@@ -390,14 +384,12 @@ border colours or line widths and types. For example,
 ```{r map3, eval=FALSE}
 map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_B, col='gray40', border='orange', size=0.2)
-print (map)
+print_osm_map (map)
 ```
 ```{r map3-print, echo=FALSE}
 map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_B, col='gray40', border='orange', size=0.2)
-png (file='map_a3.png', height=mapht, width=mapwd)
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map_a3.png', width=600, units='px', dpi=72)
 ```
 ![](map_a3.png)
 
@@ -409,14 +401,12 @@ determines the fill colour of polygons, or the colour of lines or points.
 ```{r map4, eval=FALSE}
 map <- add_osm_objects (map, dat_H, col='gray70', size=0.7)
 map <- add_osm_objects (map, dat_T, col='green', size=2, shape=1)
-print (map)
+print_osm_map (map)
 ```
 ```{r map4-print, echo=FALSE}
 map <- add_osm_objects (map, dat_H, col='gray70', size=0.7)
 map <- add_osm_objects (map, dat_T, col='green', size=2, shape=1)
-png (file='map_a4.png', height=mapht, width=mapwd)
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map_a4.png', width=600, units='px', dpi=72)
 ```
 ![](map_a4.png)
 
@@ -428,23 +418,22 @@ result.
 
 ## <a name="3.1 saving-maps"></a>3.1 Saving Maps
 
-The `osmplotr` package is intended to produce high quality graphical output
-written to particular graphic devices such as `png` or `jpeg` (see `?png` for a
-list of possible devices).  Printing to a file requires manual specification of
-device dimensions:
+The function `print_osm_map()` can be used to print either to on-screen
+graphical devices or to graphics files (see, for example, `?png` for a list of
+possible graphics devices). Sizes and resolutions of devices may be
+specified with the appropriate parameters. Device dimensions are scaled by
+default to the proportions of the bounding box (although this can be
+over-ridden).
+
+A screen-based device simply requires
 ```{r, eval=FALSE}
-mapwd <- 10
-mapht <- mapwd * diff (bbox_small [2,]) / diff (bbox_small [1,])
+print_osm_map (map)
 ```
-and then using either `ggsave` 
-```{r ggsave, eval=FALSE}
-ggplot2::ggsave (filename='map.png', plot=map, width=mapwd, height=mapht, units='cm')
-```
-or by explicitly calling a desired device:
-```{r pngsave, eval=FALSE}
-png (width=mapwd, height=mapht, units='cm', res=72, file='map.png')
-print (map)
-graphics.off ()
+while examples of writing higher resolution versions to files include:
+```{r, eval=FALSE}
+print_osm_map (map, filename="map.png", width=10, units="in", dpi=72)
+print_osm_map (map, filename="map.eps", width=1000, units="px", dpi=72)
+print_osm_map (map, filename="map", device="jpeg", width=10, units="cm")
 ```
 
 ## <a name="3.2 osm-structures"></a>3.2 Plotting different OSM Structures
@@ -465,15 +454,13 @@ dat_H <- london$dat_H
 map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_H, col='gray50')
 map <- add_osm_objects (map, dat_HP, col='gray80', size=2)
-print (map)
+print_osm_map (map)
 ```
 ```{r map5-print, echo=FALSE}
 map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_H, col='gray50')
 map <- add_osm_objects (map, dat_HP, col='gray80', size=2)
-png (height=mapht, width=mapwd, file='map_a5.png')
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map_a5.png', width=600, units='px', dpi=72)
 ```
 ![](map_a5.png)
 
@@ -492,7 +479,7 @@ map <- add_osm_objects (map, dat_H, col='gray80')
 map <- add_osm_objects (map, dat_HP, col='gray60', size=2)
 map <- add_osm_objects (map, dat_RFH, col='orange', border='red', size=2)
 map <- add_osm_objects (map, dat_ST, col='skyblue', border='blue', size=2)
-print (map)
+print_osm_map (map)
 ```
 ```{r map7-print, echo=FALSE}
 bbox_small2 <- get_bbox (c (-0.118, 51.504, -0.110, 51.507))
@@ -501,10 +488,7 @@ map <- add_osm_objects (map, dat_H, col='gray80')
 map <- add_osm_objects (map, dat_HP, col='gray60', size=2)
 map <- add_osm_objects (map, dat_RFH, col='orange', border='red', size=2)
 map <- add_osm_objects (map, dat_ST, col='skyblue', border='blue', size=2)
-mapht <- mapwd * diff (bbox_small2 [2,]) / diff (bbox_small2 [1,])
-png (height=mapht, width=mapwd, file='map_a7.png')
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map_a7.png', width=600, units='px', dpi=72)
 ```
 ![](map_a7.png)
 
@@ -521,55 +505,47 @@ Producing a map with customised data is as simple as,
 ```{r map8, eval=FALSE}
 structs <- c ('highway', 'building', 'park', 'grass', 'tree')   
 structures <- osm_structures (structures=structs, col_scheme='light')   
-dat <- make_osm_map (structures=structures, bbox=bbox)
+dat <- make_osm_map (structures=structures, bbox=bbox_small)
 map <- dat$map
-print (map)
+print_osm_map (map)
 ```
-```{r map8-bbox, echo=FALSE}
-bbox <- as.vector (slot (dat_B, 'bbox'))
-bbox <- rbind (bbox, as.vector (slot (dat_H, 'bbox')))
-bbox <- rbind (bbox, as.vector (slot (london$dat_P, 'bbox')))
-bbox <- rbind (bbox, as.vector (slot (london$dat_A, 'bbox')))
-bbox <- rbind (bbox, as.vector (slot (london$dat_G, 'bbox')))
-bbox <- rbind (bbox, as.vector (slot (london$dat_T, 'bbox')))
-bbox <- osmplotr::get_bbox (c (min (bbox [,1]), min (bbox [,2]),
-                               max (bbox [,3]), max (bbox [,4])))
-mapht <- mapwd * diff (bbox [2,]) / diff (bbox [1,])
-# Then reset bbox
-bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
-```
-```{r map8-print, echo=FALSE}
-structs <- c ('highway', 'building', 'amenity', 'park', 'grass', 'tree')   
+```{r, echo=FALSE}
+structs <- c ('highway', 'building', 'park', 'grass', 'tree')   
 structures <- osm_structures (structures=structs, col_scheme='light')   
 osm_dat <- list (dat_B=dat_B, dat_H=dat_H, dat_P=london$dat_P,
                  dat_A=london$dat_A, dat_G=london$dat_G, dat_T=london$dat_T)
-dat <- make_osm_map (structures=structures, osm_data=osm_dat)
-map <- dat$map
-png (file='map_a8.png', height=mapht, width=mapwd)
-print (map)
-graphics.off ()
+dat <- make_osm_map (structures=structures, osm_data=osm_dat, bbox=bbox_small)
+print_osm_map (dat$map, filename='map_a8.png', width=600, units='px', dpi=72)
 ```
 ![](map_a8.png)
 
-Because no bounding box was passed to `make_osm_map`, a bounding box is
-extracted as the **largest** box spanning all objects in `osm_data`. These
-objects include highways which extend beyond the defining bounding box, and the
-large park in the south east.  Passing the previous bounding box to the same
-call, and using the data downloaded from that call to avoid repeating the
-download, gives:
+Calling `make_osm_map()` downloads the requested structures within the given
+`bbox` and returns a list of two components, the first of which contains the
+downloaded data:
+```{r}
+names (dat); names (dat$osm_data)
+```
+
+Pre-downloaded data may also be passed to `make_osm_map()`
 ```{r map9, eval=FALSE}
-dat <- make_osm_map (osm_data=dat$osm_data, structures=structures,
-                     bbox=bbox_small)
-print (dat$map)
+dat <- make_osm_map (structures=structures, osm_data=dat$osm_data)
+print_osm_map (dat$map)
 ```
 ```{r map9-print, echo=FALSE}
-dat <- make_osm_map (structures=structures, osm_data=osm_dat, bbox=bbox_small)
-mapht <- mapwd * diff (bbox_small [2,]) / diff (bbox_small [1,])
-png (height=mapht, width=mapwd, file='map_a9.png')
-print (dat$map)
-graphics.off ()
+dat <- make_osm_map (structures=structures, osm_data=osm_dat)
+print_osm_map (dat$map, filename='map_a9.png', width=600, units='px', dpi=72)
 ```
 ![](map_a9.png)
+
+In this case, because no bounding box was passed to `make_osm_map`, a bounding
+box is extracted as the **largest** box spanning all objects in `osm_data`.
+These objects include highways which extend beyond the defining bounding box,
+and the large park in the south east. The `bbox` argument may simply be passed
+to restore this map to the previous version:
+```{r map9b, eval=FALSE}
+dat <- make_osm_map (structures=structures, osm_data=dat$osm_data,
+                     bbox=bbox_small)
+```
 
 Objects in maps are overlaid on the plot according to the order of rows in
 `osm_structures`, with the single exception that `background` is plotted first.
@@ -581,10 +557,6 @@ structs <- c ('amenity', 'building', 'grass', 'highway', 'park')
 osm_structures (structs, col_scheme='light')
 ```
 
-As described above 
-([2.4 Downloading with `osm_structures` and `make_osm_map`](#2.4 downloading2)),
-if existing `osm_data` are not passed to `make_osm_map`, then all data will be
-downloading by that function and returned in the `$osm_data` list component.
 
 ## <a name="3.4 axes"></a>3.4 Axes
 
@@ -605,13 +577,10 @@ potentially modified data (in `$osm_data`) and (ii) the map object (in `$map`).
 All other `add_` functions take a map object as one argument and return the
 single value of the modified map object.
 ```{r, eval=FALSE}
-print (map)
+print_osm_map (map)
 ```
 ```{r map10-print, echo=FALSE}
-mapht <- mapwd * diff (bbox_small [2,]) / diff (bbox_small [1,])
-png (height=mapht, width=mapwd, file='map_a10.png')
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map_a10.png', width=600, units='px', dpi=72)
 ```
 ![](map_a10.png)
 
@@ -625,14 +594,12 @@ adjusted with the `pos` parameter which specifies the,
 ```{r map11, eval=FALSE}
 map <- add_axes (map, colour='blue', pos=c(0.1,0.2),
                       fontsize=5, fontface=3, fontfamily="Times")
-print (map)
+print_osm_map (map)
 ```
 ```{r map11-print, echo=FALSE}
 map <- add_axes (map, colour='blue', pos=c(0.1,0.2),
                       fontsize=5, fontface=3, fontfamily="Times")
-png (height=mapht, width=mapwd, file='map_a11.png')
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map_a11.png', width=600, units='px', dpi=72)
 ```
 ![](map_a11.png)
 

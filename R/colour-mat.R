@@ -34,7 +34,7 @@
 #' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
 #' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=rainbow (4),
 #'                        colmat=TRUE, rotate=90)
-#' print (map)
+#' print_osm_map (map)
 
 colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
 {

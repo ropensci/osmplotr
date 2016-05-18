@@ -34,7 +34,7 @@
 #' # These data are also included in the 'london' data of 'osmplotr'
 #' osm_data <- list (dat_B=london$dat_BNR, dat_H=london$dat_HP, dat_P=london$dat_P)
 #' dat <- make_osm_map (structures=structures, osm_data=osm_data, bbox=bbox)
-#' print (dat$map)
+#' print_osm_map (dat$map)
 
 
 adjust_colours <- function (cols, adj=0, plot=FALSE)

@@ -76,7 +76,7 @@
 #'                        bg="gray40", boundary=1)
 #' map <- add_osm_groups (map, dat_H, groups=pts, cols="gray80",
 #'                        bg="gray30", boundary=1)
-#' print (map)
+#' print_osm_map (map)
 #' }
 #' 
 #' # Generate random points to serve as group centres
@@ -94,13 +94,13 @@
 #' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols)
 #' cols <- adjust_colours (cols, -0.2)
 #' map <- add_osm_groups (map, obj=london$dat_H, groups=groups, cols=cols)
-#' print (map)
+#' print_osm_map (map)
 #' 
 #' # Highlight convex hulls containing groups:
 #' map <- bmap ()
 #' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
 #'                        borderWidth=2)
-#' print (map)
+#' print_osm_map (map)
 #' }
 
 add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,

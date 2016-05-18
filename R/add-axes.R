@@ -28,7 +28,7 @@
 #' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
 #' map <- add_axes (map)
 #' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
-#' print (map)
+#' print_osm_map (map)
 
 add_axes <- function (map, colour="black", pos=c(0.02,0.03),
                       alpha=0.4, fontsize=3, fontface, fontfamily)

@@ -45,7 +45,7 @@
 #' # passed to 'add_osm_surface'
 #' map <- add_colourbar (map, zlims=range (volcano), cols=heat.colors(100),
 #'                       text_col="black")
-#' print (map)
+#' print_osm_map (map)
 #'
 #' # Horizontal colourbar shifted away from margins:
 #' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
@@ -53,7 +53,7 @@
 #'                         cols=heat.colors (30))
 #' map <- add_colourbar (map, zlims=range (volcano), cols=heat.colors(100),
 #'                       barwidth=c(0.1,0.15), barlength=c(0.5, 0.9), vertical=FALSE)
-#' print (map)
+#' print_osm_map (map)
 
 add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols, 
                            vertical=TRUE, alpha=0.4,

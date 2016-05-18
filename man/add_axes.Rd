@@ -42,7 +42,7 @@ print (map)
 map <- plot_osm_basemap (bbox=bbox, bg="gray20")
 map <- add_axes (map)
 map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
-print (map)
+print_osm_map (map)
 }
 \seealso{
 \code{\link{plot_osm_basemap}}.

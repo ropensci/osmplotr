@@ -35,7 +35,7 @@ structs <- osm_structures (structures=structures, col_scheme='light')
 # make_osm_map returns potentially modified list of data
 dat <- make_osm_map (osm_data=london, structures=structs)
 # map contains updated $osm_data and actual map in $map
-print (dat$map)
+print_osm_map (dat$map)
 }
 \seealso{
 \code{\link{make_osm_map}}.

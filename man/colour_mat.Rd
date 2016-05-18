@@ -44,7 +44,7 @@ groups <- apply (groups, 1, function (i)
 map <- plot_osm_basemap (bbox=bbox, bg="gray20")
 map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=rainbow (4),
                        colmat=TRUE, rotate=90)
-print (map)
+print_osm_map (map)
 }
 \seealso{
 \code{\link{add_osm_groups}}.

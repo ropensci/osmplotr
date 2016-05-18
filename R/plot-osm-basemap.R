@@ -20,7 +20,7 @@
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 #' map <- add_osm_objects (map, london$dat_BNR, col='gray40') 
-#' print (map)
+#' print_osm_map (map)
 
 plot_osm_basemap <- function (bbox, structures, bg='gray20')
 {

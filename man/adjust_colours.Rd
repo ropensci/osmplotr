@@ -43,7 +43,7 @@ dat_P <- extract_osm_objects (value='park', bbox=bbox)
 # These data are also included in the 'london' data of 'osmplotr'
 osm_data <- list (dat_B=london$dat_BNR, dat_H=london$dat_HP, dat_P=london$dat_P)
 dat <- make_osm_map (structures=structures, osm_data=osm_data, bbox=bbox)
-print (dat$map)
+print_osm_map (dat$map)
 }
 \seealso{
 \code{\link{osm_structures}}, \code{link[grDevices]{col2rgb}}.

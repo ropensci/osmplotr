@@ -11,12 +11,12 @@ from `osmplotr` with no further modification. But first the easy steps to map
 making:
 
 ```{r, echo=FALSE, message=FALSE}
-setwd ("..")
-devtools::load_all ("osmplotr", export_all=FALSE)
-#devtools::document ("osmplotr")
-#devtools::check ("osmplotr")
+setwd ('..')
+devtools::load_all ('osmplotr', export_all=FALSE)
+#devtools::document ('osmplotr')
+#devtools::check ('osmplotr')
 #devtools::build_vignettes ()
-setwd ("./osmplotr")
+setwd ('./osmplotr')
 ```
 
 
@@ -26,15 +26,15 @@ setwd ("./osmplotr")
     ```
 2. Download the desired data---in this case, all building perimeters.
     ```{r, eval=FALSE}
-    dat_B <- extract_osm_objects (key="building", bbox=bbox)
+    dat_B <- extract_osm_objects (key='building', bbox=bbox)
     ```
 3. Initiate an `osm_basemap` with desired background (`bg`) colour
     ```{r map1, eval=FALSE}
-    map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+    map <- plot_osm_basemap (bbox=bbox, bg='gray20')
     ```
 4. Overlay objects on plot in the desired colour.
     ```{r, eval=FALSE}
-    map <- add_osm_objects (map, dat_B, col="gray40")
+    map <- add_osm_objects (map, dat_B, col='gray40')
     ```
 5. Print the map to graphics device of choice
     ```{r, eval=FALSE}
@@ -56,31 +56,27 @@ devtools::install_github ('ropenscilabs/osmplotr')
 Simple maps can be made by overlaying different kinds of OSM data in different
 colours:
 ```{r, eval=FALSE}
-dat_H <- extract_osm_objects (key="highway", bbox=bbox)
-dat_P <- extract_osm_objects (key="park", bbox=bbox)
-dat_G <- extract_osm_objects (key="landuse", value="grass", bbox=bbox)
+dat_H <- extract_osm_objects (key='highway', bbox=bbox)
+dat_P <- extract_osm_objects (key='park', bbox=bbox)
+dat_G <- extract_osm_objects (key='landuse', value='grass', bbox=bbox)
 ```
 ```{r, echo=FALSE}
-load ("london2.rda")
+load ('london2.rda')
 dat_B <- london2$dat_B
 dat_H <- london2$dat_H
 dat_G <- london2$dat_G
 dat_P <- london2$dat_P
 ```
 ```{r map2, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg="gray20")
-map <- add_osm_objects (map, dat_B, col="gray40")
-map <- add_osm_objects (map, dat_H, col="gray80")
-map <- add_osm_objects (map, dat_P, col="darkseagreen")
-map <- add_osm_objects (map, dat_G, col="darkseagreen1")
-print (map)
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_objects (map, dat_B, col='gray40')
+map <- add_osm_objects (map, dat_H, col='gray80')
+map <- add_osm_objects (map, dat_P, col='darkseagreen')
+map <- add_osm_objects (map, dat_G, col='darkseagreen1')
+print_osm_map (map)
 ```
 ```{r map2-print, eval=FALSE, echo=FALSE}
-fwd <- 600
-fht <- fwd * diff (bbox [2,]) / diff (bbox [1,])
-png (width=fwd, height=fht, filename="map2.png")
-print (map)
-graphics.off ()
+print_osm_map (map, file='map2.png', width=600, units='px', dpi=72)
 ```
 
 ![](./figure/map2.png)
@@ -99,32 +95,28 @@ OSM objects within the defined regions can then be highlighted with different
 colour schemes. `cols` defines colours for each group (with only one here),
 while `bg` defines the colour of the remaining, background area.
 ```{r map3, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg="gray20")
-map <- add_osm_groups (map, dat_B, groups=pts, cols="orange", bg="gray40")
-map <- add_osm_objects (map, london$dat_P, col="darkseagreen1")
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- add_osm_groups (map, dat_B, groups=pts, cols='orange', bg='gray40')
+map <- add_osm_objects (map, london$dat_P, col='darkseagreen1')
 map <- add_osm_groups (map, london$dat_P, groups=pts, cols='darkseagreen1',
                    bg='darkseagreen', boundary=0)
-print (map)
+print_osm_map (map)
 ```
 ```{r map3-print, eval=FALSE, echo=FALSE}
-png (width=fwd, height=fht, filename="map3.png")
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map3.png', width=600, units='px', dpi=72)
 ```
 ![](./figure/map3.png)
 
 Note the `border=0` argument on the last call divides the park polygons
 precisely along the border. The same map highlighted in dark-on-light:
 ```{r map4, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg="gray95")
-map <- add_osm_groups (map, dat_B, groups=pts, cols="gray40", bg="gray85")
-map <- add_osm_groups (map, dat_H, groups=pts, cols="gray20", bg="gray70")
-print (map)
+map <- plot_osm_basemap (bbox=bbox, bg='gray95')
+map <- add_osm_groups (map, dat_B, groups=pts, cols='gray40', bg='gray85')
+map <- add_osm_groups (map, dat_H, groups=pts, cols='gray20', bg='gray70')
+print_osm_map (map)
 ```
 ```{r map4-print, eval=FALSE, echo=FALSE}
-png (width=fwd, height=fht, filename="map4.png")
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map4.png', width=600, units='px', dpi=72)
 ```
 ![](./figure/map4.png)
 
@@ -150,12 +142,10 @@ inclusive grouping extending across an entire region.
 ```{r map5, eval=FALSE}
 map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_groups (map, dat_B, groups=groups, borderWidth=2)
-print (map)
+print_osm_map (map)
 ```
 ```{r map5-print, eval=FALSE, echo=FALSE}
-png (width=fwd, height=fht, filename="map5.png")
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map5.png', width=600, units='px', dpi=72)
 ```
 ![](./figure/map5.png)
 
@@ -178,8 +168,8 @@ highways3 <- connect_highways (highways=highways, bbox=bbox_big)
 highways <- c ('Charing.Cross', 'Duncannon.St', 'Strand', 'Aldwych',
                'Kingsway', 'High.Holborn', 'Shaftesbury.Ave')
 highways4 <- connect_highways (highways=highways, bbox=bbox_big)
-highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
-               "Fleet.St", "Aldwych")
+highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
+               'Fleet.St', 'Aldwych')
 highways5 <- connect_highways (highways=highways, bbox=bbox_big)
 groups <- list (highways1, highways2, highways3, highways4, highways5)
 ```
@@ -188,17 +178,15 @@ And then passing these lists of groups returned by `connect_highways` to
 ```{r map 6, eval=FALSE}
 map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 library (wesanderson)
-cols <- wes_palette ("Darjeeling", 5) 
+cols <- wes_palette ('Darjeeling', 5) 
 map <- add_osm_groups (map, dat_B, groups=groups, boundary=1,
                        cols=cols, bg='gray40', colmat=FALSE)
 map <- add_osm_groups (map, dat_H, groups=groups, boundary=0,
                        cols=cols, bg='gray70', colmat=FALSE)
-print (map)
+print_osm_map (map)
 ```
 ```{r map6-print, eval=FALSE, echo=FALSE}
-png (width=fwd, height=fht, filename="map6.png")
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map6.png', width=600, units='px', dpi=72)
 ```
 ![](./figure/map6.png)
 
@@ -216,47 +204,40 @@ xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
 z <- as.numeric (volcano)
 ```
 ```{r map7, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 cols <- gray (0:50 / 50)
 map <- add_osm_surface (map, dat_B, dat=cbind (xy, z), cols=cols)
 map <- add_osm_surface (map, dat_H, dat=cbind (xy, z), 
                         cols=adjust_colours (cols, -0.2)) # Darken cols by ~20%
 map <- add_colourbar (map, cols=cols, zlims=range (volcano))
 map <- add_axes (map)
-print (map)
+print_osm_map (map)
 ```
 ```{r map7-print, eval=FALSE, echo=FALSE}
-png (width=fwd, height=fht, filename="map7.png")
-print (map)
-graphics.off ()
+print_osm_map (map, filename='map7.png', width=600, units='px', dpi=72)
 ```
 
 ```{r map1-print, eval=FALSE, echo=FALSE}
 # This is map1 used as the title
-fwd <- 800
-fht <- fwd * diff (bbox [2,]) / diff (bbox [1,])
-png (width=fwd, height=fht, filename="map1.png")
-# dev.new (width=10, height=5)
 # extrafont::loadfonts ()
-dat <- data.frame (x=mean (bbox[1,]), y=mean (bbox [2,]), lab="osmplotr")
+dat <- data.frame (x=mean (bbox[1,]), y=mean (bbox [2,]), lab='osmplotr')
 aes <- ggplot2::aes (x, y, label=lab)
 
 bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
-map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+map <- plot_osm_basemap (bbox=bbox, bg='gray20')
 cols <- gray (0:50 / 50)
 map <- add_osm_surface (map, dat_B, dat=cbind (xy, z), cols=cols)
 map <- add_osm_surface (map, dat_H, dat=cbind (xy, z), 
                         cols=adjust_colours (cols, -0.2)) # Darken cols by ~20%
 
-#map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=60, colour="white",
-#                                 family="Lato Light", nudge_y=0.0015)
-map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour="black",
-                                 family="Purisa", fontface=2,
+#map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=60, colour='white',
+#                                 family='Lato Light', nudge_y=0.0015)
+map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour='black',
+                                 family='Purisa', fontface=2,
                                  nudge_y=0.0005, nudge_x=0.0005)
-map2 <- map2 + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour="white",
-                                 family="Purisa", nudge_y=0.001, fontface=2)
-print (map2)
-graphics.off ()
+map2 <- map2 + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour='white',
+                                 family='Purisa', nudge_y=0.001, fontface=2)
+print_osm_map (map2, filename='map1.png', width=800, units='px', dpi=72)
 ```
 ![](./figure/map7.png)
 

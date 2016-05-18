@@ -61,7 +61,7 @@ dat_BNR <- london$dat_BNR # Non-residential buildings
 groups <- list (london$highways1, london$highways2)
 map <- add_osm_groups (map, obj=dat_BNR, groups=groups,
                        cols=c('red', 'blue'), bg='gray40')
-print (map)
+print_osm_map (map)
 }
 \seealso{
 \code{\link{add_osm_groups}}.

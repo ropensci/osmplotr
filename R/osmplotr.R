@@ -62,8 +62,8 @@
 #' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom graphics lines locator plot.new par rect text
 #' @importFrom methods slot as is
-#' @importFrom grDevices dev.new dev.list rainbow rgb col2rgb png
-#' @importFrom grDevices terrain.colors heat.colors
+#' @importFrom grDevices dev.cur dev.new dev.off rainbow rgb col2rgb heat.colors
+#' @importFrom grDevices bmp jpeg pictex png postscript svg tiff 
 #' @importFrom utils txtProgressBar setTxtProgressBar combn tail
 #' @importFrom stats runif
 NULL
