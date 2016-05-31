@@ -11,6 +11,8 @@
 #' @param fontsize Size of axis font 
 #' @param fontface Fontface for axis labels (1:4=plain,bold,italic,bold-italic)
 #' @param fontfamily Family of axis font (for example, 'Times')
+#' @param ... Mechanism to allow many parameters to be passed with alternative
+#' names ('color' for 'colour', and 'xyz' for 'fontxyz').
 #' @return Modified version of map with axes added
 #' @export
 #'
@@ -31,21 +33,35 @@
 #' print_osm_map (map)
 
 add_axes <- function (map, colour="black", pos=c(0.02,0.03),
-                      alpha=0.4, fontsize=3, fontface, fontfamily)
+                      alpha=0.4, fontsize=3, fontface, fontfamily, ...)
 {
+    args <- list (...)
+    if (hasArg ("color")) colour <- args [['color']]
+    if (hasArg ("position")) pos <- args [['position']]
+    if (hasArg ("size")) fontsize <- args [['size']]
+    if (hasArg ("face")) fontface <- args [['face']]
+    if (hasArg ("family")) fontfamily <- args [['family']]
+
     # ---------------  sanity checks and warnings  ---------------
     # ---------- map
     if (missing (map)) stop ('map must be supplied to add_axes')
     if (!is (map, 'ggplot')) stop ('map must be a ggplot object')
-
-    # ---------- alpha
-    alpha <- test_len1 (alpha, 'alpha')
-    alpha <- test_numeric (alpha, 'alpha', 0.4)
-    alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
+    # ---------- colour
+    junk <- tryCatch (
+                      col2rgb (colour),
+                      error = function (e) 
+                      {
+                          e$message <-  paste0 ("Invalid colour: ", colour)
+                          stop (e)
+                      })
     # ---------- pos
     pos <- test_len2 (pos, 'pos')
     pos <- test_numeric (pos, 'pos', c (0.02, 0.03))
     pos <- test_range (pos, 'pos', c (0, 1), c (0.02, 0.03))
+    # ---------- alpha
+    alpha <- test_len1 (alpha, 'alpha')
+    alpha <- test_numeric (alpha, 'alpha', 0.4)
+    alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
     # ---------- fontsize
     fontsize <- test_len1 (fontsize, 'fontsize')
     fontsize <- test_numeric (fontsize, 'fontsize', 3)

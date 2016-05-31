@@ -5,7 +5,7 @@
 \title{add_axes}
 \usage{
 add_axes(map, colour = "black", pos = c(0.02, 0.03), alpha = 0.4,
-  fontsize = 3, fontface, fontfamily)
+  fontsize = 3, fontface, fontfamily, ...)
 }
 \arguments{
 \item{map}{A ggplot2 object to which the axes are to be added}
@@ -23,6 +23,9 @@ labels (lower values increase transparency)}
 \item{fontface}{Fontface for axis labels (1:4=plain,bold,italic,bold-italic)}
 
 \item{fontfamily}{Family of axis font (for example, 'Times')}
+
+\item{...}{Mechanism to allow many parameters to be passed with alternative
+names ('color' for 'colour', and 'xyz' for 'fontxyz').}
 }
 \value{
 Modified version of map with axes added

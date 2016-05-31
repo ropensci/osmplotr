@@ -5,6 +5,13 @@ test_that ('basemap object', {
            expect_error (add_axes (NULL), 'map must be a ggplot object')
 })
 
+test_that ('colour', {
+           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           expect_error (add_axes (map, colour="a"), "Invalid colour: a")
+           expect_silent (add_axes (map, color="red"))
+})
+
 test_that ('alpha values', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- plot_osm_basemap (bbox=bbox, bg="gray20")
@@ -24,6 +31,7 @@ test_that ('pos', {
                            'Only the first two elements of pos will be used')
            expect_warning (add_axes (map, pos="a"),
                            'pos must be numeric; using default values')
+           expect_silent (add_axes (map, position=0.1))
            # NOTE: there are grep problems in test_that for this expect_warning
            #expect_warning (add_axes (map, pos=c(-0.1,1.2)),
            #                'pos not in [0,1]; using default values')
