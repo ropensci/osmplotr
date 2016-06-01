@@ -3,10 +3,11 @@ osmplotr v0.2.1
 
 * vignette 'making-maps' renamed 'basic-maps' and tidied
 * vignette 'making-maps-with-data' renamed 'data-maps' and tidied
-* 'plot_osm_basemap' now uses 'ggplot2::coord_equal()' to ensure maps are scaled
-    to bounding boxes.
+* 'plot_osm_basemap' renamed 'osm_basemap', and now uses
+    'ggplot2::coord_equal()' to ensure maps are scaled to bounding boxes.
 * 'print_osm_map' added to enable device proportions to be automatically scaled
     to bounding boxes.
+* manual entries cleaned up to remove non-exported functions
 
 osmplotr v0.2.0
 ===============

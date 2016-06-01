@@ -19,7 +19,7 @@
 #' 'osm_structures'\cr 
 #' 'osm_structures'\tab Define structures and graphics schemes for automating
 #' map production \cr 
-#' 'plot_osm_basemap'\tab Initiate a ggplot object for an OSM map\cr 
+#' 'osm_basemap'\tab Initiate a ggplot object for an OSM map\cr 
 #' 'print_osm_map'\tab Print a map to specified graphics device
 #' } 
 #'
@@ -62,7 +62,7 @@
 #' @import httr sp spatstat osmar XML ggm rgeos
 #' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom graphics lines locator plot.new par rect text
-#' @importFrom methods slot as is
+#' @importFrom methods slot as is hasArg
 #' @importFrom grDevices dev.cur dev.new dev.off rainbow rgb col2rgb heat.colors
 #' @importFrom grDevices bmp jpeg pictex png postscript svg tiff 
 #' @importFrom utils txtProgressBar setTxtProgressBar combn tail

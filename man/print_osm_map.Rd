@@ -28,7 +28,7 @@ Prints an OSM map produced with 'osmplotr' to a specified graphics device.
 }
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_objects (map, london$dat_BNR, col='gray40') 
 print_osm_map (map, width=7) # prints to screen device
 \dontrun{
@@ -36,6 +36,6 @@ print_osm_map (map, file='map.png', width=500, units='px') # prints to file
 }
 }
 \seealso{
-\code{\link{plot_osm_basemap}}, \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
+\code{\link{osm_basemap}}, \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
 }
 

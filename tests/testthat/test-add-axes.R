@@ -8,14 +8,14 @@ test_that ('basemap object', {
 
 test_that ('colour', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            expect_error (add_axes (map, colour="a"), "Invalid colour: a")
            expect_silent (add_axes (map, color="red"))
 })
 
 test_that ('alpha values', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            # NOTE: there are grep problems in test_that for this expect_warning
            #expect_warning (add_axes (map, alpha=-1), 
            #                'alpha not in [0,1]; using default of 0.4')
@@ -27,7 +27,7 @@ test_that ('alpha values', {
 
 test_that ('pos', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            expect_warning (add_axes (map, pos=1:3/10),
                            'Only the first two elements of pos will be used')
            expect_warning (add_axes (map, pos="a"),
@@ -40,7 +40,7 @@ test_that ('pos', {
 
 test_that ('fontsize', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            expect_warning (add_axes (map, fontsize=-1), 
                            'fontsize must be positive; using default value')
            expect_warning (add_axes (map, fontsize=1:2),
@@ -58,7 +58,7 @@ test_that ('fontsize', {
 
 test_that ('other_font_properties', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            expect_silent (add_axes (map, face=1))
            expect_silent (add_axes (map, family=1))
 })

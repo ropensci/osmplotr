@@ -7,7 +7,7 @@ test_that ('basemap object', {
 
 test_that ('colourbar width', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            cols <- heat.colors (10)
            zlims <- c (1, 10)
            expect_warning (add_colourbar (map, cols=cols, zlims=zlims, 
@@ -24,7 +24,7 @@ test_that ('colourbar width', {
 
 test_that ('colourbar length', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            cols <- heat.colors (10)
            zlims <- c (1, 10)
            expect_warning (add_colourbar (map, cols=cols, zlims=zlims, 
@@ -41,14 +41,14 @@ test_that ('colourbar length', {
 
 test_that ('basemap colours', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            expect_error (add_colourbar (map), 
                          'cols must be specified in add_colourbar')
 })
 
 test_that ('fontsize', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            cols <- heat.colors (10)
            zlims <- c (1, 10)
            expect_warning (add_colourbar (map, cols=cols, zlims=zlims,
@@ -64,7 +64,7 @@ test_that ('fontsize', {
 
 test_that ('vertical', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            cols <- heat.colors (10)
            zlims <- c (1, 10)
            expect_warning (add_colourbar (map, cols=cols, zlims=zlims,
@@ -77,7 +77,7 @@ test_that ('vertical', {
 
 test_that ('alpha values', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           map <- osm_basemap (bbox=bbox, bg="gray20")
            cols <- heat.colors (10)
            zlims <- c (1, 10)
            # NOTE: there are grep problems in test_that for this expect_warning

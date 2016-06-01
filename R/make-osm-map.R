@@ -27,7 +27,7 @@
 #' If 'osm_data' is not given, then data will be downloaded, which can take some
 #' time.  Progress is dumped to screen.
 #'
-#' @seealso \code{\link{plot_osm_basemap}}, \code{\link{add_osm_objects}}.
+#' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_objects}}.
 #'
 #' @examples
 #' structures <- c ('highway', 'park', 'grass')
@@ -101,7 +101,7 @@ make_osm_map <- function (bbox, osm_data,
     ns <- nrow (structures) - 1 # last row is background
 
     bg <- structures$col [structures$structure == 'background']
-    map <- plot_osm_basemap (bbox=bbox, bg=bg)
+    map <- osm_basemap (bbox=bbox, bg=bg)
     for (i in seq (nrow (structures) - 1))
     {
         obji <- paste0 ('dat_', structures$suffix [i])

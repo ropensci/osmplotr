@@ -12,11 +12,11 @@
 #' @param dpi Resolution of graphics device (dots-per-inch)
 #' @export
 #'
-#' @seealso \code{\link{plot_osm_basemap}}, \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
+#' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+#' map <- osm_basemap (bbox=bbox, bg='gray20')
 #' map <- add_osm_objects (map, london$dat_BNR, col='gray40') 
 #' print_osm_map (map, width=7) # prints to screen device
 #' \dontrun{
@@ -30,7 +30,7 @@ print_osm_map <- function (map, width, height, filename,
     if (missing (map))
         stop ('map must be supplied')
     if (missing (width) & missing (height))
-            width <- 7
+        width <- 7
     # ---------------  end sanity checks and warnings  ---------------
 
     xlims <- map$coordinates$limits$x
@@ -50,10 +50,11 @@ print_osm_map <- function (map, width, height, filename,
         dev <- get_graphics_device (device, filename, units, dpi=dpi)
         dev (file=filename, width=width, height=height)
         print (map)
-        dev.off (which=dev.cur ())
         #ggplot2::ggsave (filename=filename, plot=map, width=width, height=height,
         #        units=units, dpi=dpi)
+        on.exit (utils::capture.output (grDevices::dev.off (which=dev.cur ())))
     }
+    invisible()
 }
 
 # code from hadley/ggplot2::save

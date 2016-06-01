@@ -30,7 +30,7 @@ setwd ('./osmplotr')
     ```
 3. Initiate an `osm_basemap` with desired background (`bg`) colour
     ```{r map1, eval=FALSE}
-    map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+    map <- osm_basemap (bbox=bbox, bg='gray20')
     ```
 4. Overlay objects on plot in the desired colour.
     ```{r, eval=FALSE}
@@ -68,7 +68,7 @@ dat_G <- london2$dat_G
 dat_P <- london2$dat_P
 ```
 ```{r map2, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_objects (map, dat_B, col='gray40')
 map <- add_osm_objects (map, dat_H, col='gray80')
 map <- add_osm_objects (map, dat_P, col='darkseagreen')
@@ -95,7 +95,7 @@ OSM objects within the defined regions can then be highlighted with different
 colour schemes. `cols` defines colours for each group (with only one here),
 while `bg` defines the colour of the remaining, background area.
 ```{r map3, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_groups (map, dat_B, groups=pts, cols='orange', bg='gray40')
 map <- add_osm_objects (map, london$dat_P, col='darkseagreen1')
 map <- add_osm_groups (map, london$dat_P, groups=pts, cols='darkseagreen1',
@@ -110,7 +110,7 @@ print_osm_map (map, filename='map3.png', width=600, units='px', dpi=72)
 Note the `border=0` argument on the last call divides the park polygons
 precisely along the border. The same map highlighted in dark-on-light:
 ```{r map4, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg='gray95')
+map <- osm_basemap (bbox=bbox, bg='gray95')
 map <- add_osm_groups (map, dat_B, groups=pts, cols='gray40', bg='gray85')
 map <- add_osm_groups (map, dat_H, groups=pts, cols='gray20', bg='gray70')
 print_osm_map (map)
@@ -140,7 +140,7 @@ those defined groups to be allocated to the nearest groups, and thus produces an
 inclusive grouping extending across an entire region.
 
 ```{r map5, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_groups (map, dat_B, groups=groups, borderWidth=2)
 print_osm_map (map)
 ```
@@ -176,7 +176,7 @@ groups <- list (highways1, highways2, highways3, highways4, highways5)
 And then passing these lists of groups returned by `connect_highways` to
 `add_osm_groups`, this time with some Wes Anderson flair.
 ```{r map 6, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- osm_basemap (bbox=bbox, bg='gray20')
 library (wesanderson)
 cols <- wes_palette ('Darjeeling', 5) 
 map <- add_osm_groups (map, dat_B, groups=groups, boundary=1,
@@ -204,7 +204,7 @@ xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
 z <- as.numeric (volcano)
 ```
 ```{r map7, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- osm_basemap (bbox=bbox, bg='gray20')
 cols <- gray (0:50 / 50)
 map <- add_osm_surface (map, dat_B, dat=cbind (xy, z), cols=cols)
 map <- add_osm_surface (map, dat_H, dat=cbind (xy, z), 
@@ -224,7 +224,7 @@ dat <- data.frame (x=mean (bbox[1,]), y=mean (bbox [2,]), lab='osmplotr')
 aes <- ggplot2::aes (x, y, label=lab)
 
 bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- osm_basemap (bbox=bbox, bg='gray20')
 cols <- gray (0:50 / 50)
 map <- add_osm_surface (map, dat_B, dat=cbind (xy, z), cols=cols)
 map <- add_osm_surface (map, dat_H, dat=cbind (xy, z), 

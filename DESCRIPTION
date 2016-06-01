@@ -1,7 +1,7 @@
 Package: osmplotr
 Title: Customisable Images of OpenStreetMap Data
 Version: 0.2.1
-Date: 2016-04-27
+Date: 2016-06-01
 Authors@R: person("Mark", "Padgham", email = "mark.padgham@email.com", role = c("aut", "cre"))
 Description: Produces customisable images of OpenStreetMap (OSM) data and
     enables data visualisation using OSM objects.

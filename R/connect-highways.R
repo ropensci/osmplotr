@@ -44,7 +44,7 @@
 #' highways2 <- london$highways2
 #'
 #' # Use of 'connect_highways' to highlight a region on a map
-#' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+#' map <- osm_basemap (bbox=bbox, bg='gray20')
 #' # dat_B <- extract_osm_data (key='building', value='!residential', bbox=bbox)
 #' # Those data are part of 'osmplotr':
 #' dat_BNR <- london$dat_BNR # Non-residential buildings

@@ -1,4 +1,4 @@
-#' plot_osm_basemap
+#' osm_basemap
 #'
 #' Generates a base OSM plot ready for polygon, line, and point objects to be
 #' overlain with add_osm_objects(). 
@@ -18,11 +18,11 @@
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+#' map <- osm_basemap (bbox=bbox, bg='gray20')
 #' map <- add_osm_objects (map, london$dat_BNR, col='gray40') 
 #' print_osm_map (map)
 
-plot_osm_basemap <- function (bbox, structures, bg='gray20')
+osm_basemap <- function (bbox, structures, bg='gray20')
 {
     # ---------------  sanity checks and warnings  ---------------
     if (missing (bbox))

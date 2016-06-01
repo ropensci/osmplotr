@@ -24,11 +24,11 @@
 #' @return Modified version of map with colourbar added
 #' @export
 #'
-#' @seealso \code{\link{plot_osm_basemap}}, \code{\link{add_osm_surface}}.
+#' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_surface}}.
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+#' map <- osm_basemap (bbox=bbox, bg="gray20")
 #' # Align volcano data to lat-lon range of bbox
 #' dv <- dim (volcano)
 #' x <- seq (bbox [1,1], bbox [1,2], length.out=dv [1])
@@ -48,7 +48,7 @@
 #' print_osm_map (map)
 #'
 #' # Horizontal colourbar shifted away from margins:
-#' map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+#' map <- osm_basemap (bbox=bbox, bg="gray20")
 #' map <- add_osm_surface (map, obj=london$dat_BNR, dat=dat,
 #'                         cols=heat.colors (30))
 #' map <- add_colourbar (map, zlims=range (volcano), cols=heat.colors(100),

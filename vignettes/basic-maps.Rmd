@@ -84,7 +84,7 @@ dat_B <- extract_osm_objects (key='building', bbox=bbox)
 ```
 3. Initiate an `osm_basemap` with desired background (`bg`) colour
 ```{r map1}
-map <- plot_osm_basemap (bbox=bbox, bg='gray20')
+map <- osm_basemap (bbox=bbox, bg='gray20')
 ```
 4. Add desired plotting objects in the desired colour.
 ```{r}
@@ -364,7 +364,7 @@ specified background colour. Portions of maps can also be plotted by creating a
 `basemap` with a smaller bounding box.
 ```{r map2}
 bbox_small <- get_bbox (c(-0.13,51.51,-0.11,51.52))
-map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
+map <- osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_H, col='gray70')
 map <- add_osm_objects (map, dat_B, col='gray40')
 ```
@@ -382,12 +382,12 @@ print_osm_map (map, filename='map_a2.png', width=600, units='px', dpi=72)
 Other graphical parameters can also be passed to `add_osm_objects`, such as
 border colours or line widths and types. For example,
 ```{r map3, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
+map <- osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_B, col='gray40', border='orange', size=0.2)
 print_osm_map (map)
 ```
 ```{r map3-print, echo=FALSE}
-map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
+map <- osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_B, col='gray40', border='orange', size=0.2)
 print_osm_map (map, filename='map_a3.png', width=600, units='px', dpi=72)
 ```
@@ -451,13 +451,13 @@ dat_HP <- london$dat_HP
 dat_H <- london$dat_H
 ```
 ```{r map5, eval=FALSE}
-map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
+map <- osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_H, col='gray50')
 map <- add_osm_objects (map, dat_HP, col='gray80', size=2)
 print_osm_map (map)
 ```
 ```{r map5-print, echo=FALSE}
-map <- plot_osm_basemap (bbox=bbox_small, bg='gray20')
+map <- osm_basemap (bbox=bbox_small, bg='gray20')
 map <- add_osm_objects (map, dat_H, col='gray50')
 map <- add_osm_objects (map, dat_HP, col='gray80', size=2)
 print_osm_map (map, filename='map_a5.png', width=600, units='px', dpi=72)
@@ -474,7 +474,7 @@ dat_ST <- london$dat_ST
 ```
 ```{r map7, eval=FALSE}
 bbox_small2 <- get_bbox (c (-0.118, 51.504, -0.110, 51.507))
-map <- plot_osm_basemap (bbox=bbox_small2, bg='gray95')
+map <- osm_basemap (bbox=bbox_small2, bg='gray95')
 map <- add_osm_objects (map, dat_H, col='gray80')
 map <- add_osm_objects (map, dat_HP, col='gray60', size=2)
 map <- add_osm_objects (map, dat_RFH, col='orange', border='red', size=2)
@@ -483,7 +483,7 @@ print_osm_map (map)
 ```
 ```{r map7-print, echo=FALSE}
 bbox_small2 <- get_bbox (c (-0.118, 51.504, -0.110, 51.507))
-map <- plot_osm_basemap (bbox=bbox_small2, bg='gray95')
+map <- osm_basemap (bbox=bbox_small2, bg='gray95')
 map <- add_osm_objects (map, dat_H, col='gray80')
 map <- add_osm_objects (map, dat_HP, col='gray60', size=2)
 map <- add_osm_objects (map, dat_RFH, col='orange', border='red', size=2)

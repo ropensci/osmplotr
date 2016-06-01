@@ -7,12 +7,12 @@ test_that ("bbox", {
 })
 
 test_that ("plot-basemap", {
-           expect_error (plot_osm_basemap (), "bbox must be supplied")
-           expect_error (plot_osm_basemap (bbox="a"), "bbox is not numeric")
-           expect_error (plot_osm_basemap (bbox=1:3), 
+           expect_error (osm_basemap (), "bbox must be supplied")
+           expect_error (osm_basemap (bbox="a"), "bbox is not numeric")
+           expect_error (osm_basemap (bbox=1:3), 
                          "bbox must have length = 4")
            bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))
-           expect_warning (plot_osm_basemap (bbox=bbox, bg=NULL),
+           expect_warning (osm_basemap (bbox=bbox, bg=NULL),
                            "bg will be coerced to character")
            graphics.off ()
 })

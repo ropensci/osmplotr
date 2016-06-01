@@ -55,6 +55,6 @@ print_osm_map (dat$map)
 }
 }
 \seealso{
-\code{\link{plot_osm_basemap}}, \code{\link{add_osm_objects}}.
+\code{\link{osm_basemap}}, \code{\link{add_osm_objects}}.
 }
 

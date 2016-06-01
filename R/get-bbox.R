@@ -1,7 +1,7 @@
 #' get_bbox
 #'
 #' Converts a string of latitudes and longitudes into a square matrix to be
-#' passed as a 'bbox' argument (to extract_osm_objects(), plot_osm_basemap (),
+#' passed as a 'bbox' argument (to extract_osm_objects(), osm_basemap (),
 #' make_osm_map (), or extract_highway ()).
 #'
 #' @param latlon A vector of (longitude, latitude, longitude, latitude) values

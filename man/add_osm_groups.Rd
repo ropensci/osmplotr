@@ -80,7 +80,7 @@ dat_BNR <- london$dat_BNR
 # Define a function to easily generate a basemap
 bmap <- function ()
 {
-    map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+    map <- osm_basemap (bbox=bbox, bg="gray20")
     map <- add_osm_objects (map, dat_HP, col="gray70", size=1)
     add_osm_objects (map, dat_T, col="green")
 }
