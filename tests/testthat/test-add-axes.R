@@ -13,18 +13,6 @@ test_that ('colour', {
            expect_silent (add_axes (map, color="red"))
 })
 
-test_that ('alpha values', {
-           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- osm_basemap (bbox=bbox, bg="gray20")
-           # NOTE: there are grep problems in test_that for this expect_warning
-           #expect_warning (add_axes (map, alpha=-1), 
-           #                'alpha not in [0,1]; using default of 0.4')
-           expect_warning (add_axes (map, alpha=1:2),
-                           'Only the first element of alpha will be used')
-           expect_warning (add_axes (map, alpha="a"), 
-                           'alpha must be numeric; using default value')
-})
-
 test_that ('pos', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox=bbox, bg="gray20")
@@ -36,6 +24,18 @@ test_that ('pos', {
            # NOTE: there are grep problems in test_that for this expect_warning
            #expect_warning (add_axes (map, pos=c(-0.1,1.2)),
            #                'pos not in [0,1]; using default values')
+})
+
+test_that ('alpha values', {
+           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+           map <- osm_basemap (bbox=bbox, bg="gray20")
+           # NOTE: there are grep problems in test_that for this expect_warning
+           #expect_warning (add_axes (map, alpha=-1), 
+           #                'alpha not in [0,1]; using default of 0.4')
+           expect_warning (add_axes (map, alpha=1:2),
+                           'Only the first element of alpha will be used')
+           expect_warning (add_axes (map, alpha="a"), 
+                           'alpha must be numeric; using default value')
 })
 
 test_that ('fontsize', {

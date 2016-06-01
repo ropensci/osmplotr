@@ -5,6 +5,17 @@ test_that ('basemap object', {
            expect_error (add_colourbar (NULL), 'map must be a ggplot object')
 })
 
+test_that ('colours', {
+           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+           map <- osm_basemap (bbox=bbox, bg="gray20")
+           cols <- heat.colors (10)
+           zlims <- c (1, 10)
+           expect_error (add_colourbar (map), 
+                         'cols must be specified in add_colourbar')
+           expect_silent (add_colourbar (map, colors=cols, zlims=zlims))
+           expect_silent (add_colourbar (map, colours=cols, zlims=zlims))
+})
+
 test_that ('colourbar width', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox=bbox, bg="gray20")
@@ -20,6 +31,7 @@ test_that ('colourbar width', {
            #expect_warning (add_colourbar (map, cols=cols, zlims=zlims, 
            #                               barwidth=-0.1),
            #        'barwidth values not in [0,1]; default values will be used')
+           expect_silent (add_colourbar (map, cols=cols, zlims=zlims, width=0.1))
 })
 
 test_that ('colourbar length', {
@@ -37,13 +49,7 @@ test_that ('colourbar length', {
            #expect_warning (add_colourbar (map, cols=cols, zlims=zlims, 
            #                               barlength=-0.1),
            #        'barlength values not in [0,1]; default values will be used')
-})
-
-test_that ('basemap colours', {
-           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-           map <- osm_basemap (bbox=bbox, bg="gray20")
-           expect_error (add_colourbar (map), 
-                         'cols must be specified in add_colourbar')
+           expect_silent (add_colourbar (map, cols=cols, zlims=zlims, length=0.1))
 })
 
 test_that ('fontsize', {
@@ -60,6 +66,7 @@ test_that ('fontsize', {
            expect_warning (add_colourbar (map, cols=cols, zlims=zlims,
                                           fontsize="a"),
                            'fontsize must be numeric; using default value')
+           expect_silent (add_colourbar (map, cols=cols, zlims=zlims, size=1))
 })
 
 test_that ('vertical', {
@@ -91,3 +98,11 @@ test_that ('alpha values', {
                                           alpha="a"),
                            'alpha must be numeric; using default value')
 })
+
+test_that ('other_font_properties', {
+           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+           map <- osm_basemap (bbox=bbox, bg="gray20")
+           expect_silent (add_colourbar (map, cols=cols, zlims=zlims, face=1))
+           expect_silent (add_colourbar (map, cols=cols, zlims=zlims, family=1))
+})
+

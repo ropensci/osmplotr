@@ -6,7 +6,7 @@
 \usage{
 add_colourbar(map, barwidth = 0.02, barlength = 0.7, zlims, cols,
   vertical = TRUE, alpha = 0.4, text_col = "black", fontsize = 3,
-  fontface, fontfamily)
+  fontface, fontfamily, ...)
 }
 \arguments{
 \item{map}{A ggplot2 object to which the colourbar is to be added}
@@ -37,6 +37,9 @@ including behind text. Lower values are more transparent.}
 \item{fontface}{Fontface for colourbar labels (1:4=plain,bold,italic,bold-italic)}
 
 \item{fontfamily}{Family of colourbar font (for example, 'Times')}
+
+\item{...}{Mechanism to allow many parameters to be passed with alternative
+names (such as 'xyz' for 'fontxyz').}
 }
 \value{
 Modified version of map with colourbar added

@@ -21,6 +21,8 @@
 #' @param fontsize Size of text labels (in ggplot terms; default=3)
 #' @param fontface Fontface for colourbar labels (1:4=plain,bold,italic,bold-italic)
 #' @param fontfamily Family of colourbar font (for example, 'Times')
+#' @param ... Mechanism to allow many parameters to be passed with alternative
+#' names (such as 'xyz' for 'fontxyz').
 #' @return Modified version of map with colourbar added
 #' @export
 #'
@@ -58,8 +60,19 @@
 add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols, 
                            vertical=TRUE, alpha=0.4,
                            text_col="black", fontsize=3,
-                           fontface, fontfamily)
+                           fontface, fontfamily, ...)
 {
+    args <- list (...)
+    if (hasArg ("width")) barwidth <- args [['width']]
+    if (hasArg ("length")) barlength <- args [['length']]
+    if (hasArg ("colors")) cols <- args [['colors']]
+    if (hasArg ("colours")) cols <- args [['colours']]
+    if (hasArg ("color")) text_col <- args [['color']]
+    if (hasArg ("colour")) text_col <- args [['colour']]
+    if (hasArg ("size")) fontsize <- args [['size']]
+    if (hasArg ("face")) fontface <- args [['face']]
+    if (hasArg ("family")) fontfamily <- args [['family']]
+
     # ---------------  sanity checks and warnings  ---------------
     # ---------- map
     if (missing (map))
