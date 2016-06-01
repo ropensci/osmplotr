@@ -1,18 +1,18 @@
 #' osm_structures
 #'
-#' For the given vector of structure types returns a 'data.frame' containing two
-#' columns of corresponding OpenStreetMap key-value pairs, one column of
-#' unambiguous suffices to be appended to the objects returned by
-#' get_osm_data(), and one column specifying colours. This data frame may be
-#' subsequently modified as desired, and ultimately passed to make_osm_map() to
-#' automate map production.
+#' For the given vector of structure types returns a \code{data.frame}
+#' containing two columns of corresponding OpenStreetMap \code{key-value} pairs,
+#' one column of unambiguous suffices to be appended to the objects returned by
+#' \code{\link{extract_osm_objects}}, and one column specifying colours. This
+#' \code{data.frame} may be subsequently modified as desired, and ultimately
+#' passed to \code{\link{make_osm_map}} to automate map production.
 #'
 #' @param structures The vector of types of structures (defaults listed in
-#' '?extract_osm_objects').  
-#' @param col_scheme Colour scheme for the plot (current options include 'dark'
-#' and 'light') 
-#' @return 'data.frame' of structures, key-value pairs, corresponding prefixes,
-#' and colours.
+#' \code{\link{extract_osm_objects}}).  
+#' @param col_scheme Colour scheme for the plot (current options include
+#' \code{dark} and \code{light}).
+#' @return \code{data.frame} of structures, \code{key-value} pairs,
+#' corresponding prefixes, and colours.
 #'
 #' @export
 #'

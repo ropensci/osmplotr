@@ -8,53 +8,56 @@ add_osm_groups(map, obj, groups, cols, bg, make_hull = FALSE, boundary = -1,
   size, shape, borderWidth, colmat = FALSE, rotate)
 }
 \arguments{
-\item{map}{A ggplot2 object to which the grouped objects are to be added}
+\item{map}{A \code{ggplot2} object to which the grouped objects are to be
+added.}
 
-\item{obj}{An sp SPDF or SLDF (list of polygons or lines) returned by
-extract_osm_objects()}
+\item{obj}{An \code{sp} \code{SpatialPolygonsDataFrame} or
+\code{SpatialLinesDataFrame} (list of polygons or lines) returned by
+\code{\link{extract_osm_objects}}.}
 
 \item{groups}{A list of spatial points objects, each of which contains the
-coordinates of points defining one group}
+coordinates of points defining one group.}
 
-\item{cols}{Either a vector of >= 4 colours passed to colour_mat() (if
-'colmat=T') to arrange as a 2-D map of visually distinct colours (default
-uses rainbow colours), or (if 'colmat=F'), a vector of the same length as
-groups specifying individual colours for each.}
+\item{cols}{Either a vector of >= 4 colours passed to \code{olour_mat} (if
+\code{colmat=T}) to arrange as a 2-D map of visually distinct colours
+(default uses \code{rainbow} colours), or (if \code{colmat=F}), a vector of
+the same length as groups specifying individual colours for each.}
 
 \item{bg}{If given, then any objects not within groups are coloured this
 colour, otherwise (if not given) they are assigned to nearest group and
-coloured accordingly. ('boundary' has no effect in this latter case.)}
+coloured accordingly (\code{boundary} has no effect in this latter case).}
 
 \item{make_hull}{Either a single boolean value or a vector of same length as
 groups specifying whether convex hulls should be constructed around all
-groups (TRUE), or whether the group already defines a hull (convex or
-otherwise; FALSE).}
+groups (\code{TRUE}), or whether the group already defines a hull (convex or
+otherwise; \code{FALSE}).}
 
 \item{boundary}{(negative, 0, positive) values define whether the boundary of
 groups should (exclude, bisect, include) objects which straddle the precise
-boundary. (Has no effect if 'bg' is given)}
+boundary. (Has no effect if \code{bg} is given).}
 
-\item{size}{Size argument passed to ggplot2 (polygon, path, point) functions:
-determines width of lines for (polygon, line), and sizes of points.
-Respective defaults are (0, 0.5, 0.5).}
+\item{size}{Size argument passed to \code{ggplot2} (polygon, path, point)
+functions: determines width of lines for (polygon, line), and sizes of
+points.  Respective defaults are (0, 0.5, 0.5).}
 
-\item{shape}{Shape of points or lines (the latter passed as 'linetype'): see
-?ggplot2::shape}
+\item{shape}{Shape of points or lines (the latter passed as \code{linetype});
+see \code{?ggplot2::shape}.}
 
 \item{borderWidth}{If given, draws convex hull borders around entire groups
-in same colours as groups (try values around 1-2)}
+in same colours as groups (try values around 1-2).}
 
-\item{colmat}{If TRUE generates colours according to colour_mat(), otherwise
-the colours of groups are specified directly by the vector of cols.}
+\item{colmat}{If \code{TRUE} generates colours according to
+\code{colour_mat}, otherwise the colours of groups are specified directly by
+the vector of \code{cols}.}
 
-\item{rotate}{Passed to colour_mat() to rotate colours by the specified
+\item{rotate}{Passed to \code{colour_mat} to rotate colours by the specified
 number of degrees clockwise.}
 }
 \value{
-Modified version of map with groups added
+Modified version of \code{map} with groups added.
 }
 \description{
-Plots spatially distinct groups of osm objects in different colours.
+Plots spatially distinct groups of OSM objects in different colours.
 }
 \section{Note}{
 

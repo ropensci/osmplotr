@@ -1,17 +1,17 @@
 #' osm_basemap
 #'
 #' Generates a base OSM plot ready for polygon, line, and point objects to be
-#' overlain with add_osm_objects(). 
+#' overlain with \code{\link{add_osm_objects}}. 
 #'
 #' @param bbox bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
 #' matrix of 4 elements with columns of min and max values, and rows of x and y
 #' values.
-#' @param structures Data frame returned by osm_structures() used here to
-#' specify background colour of plot; if missing, the colour is specified by
-#' 'bg'
-#' @param bg Background colour of map (default = 'gray20' only if structs not
-#' given)
-#' @return ggplot2 object containing base map
+#' @param structures Data frame returned by \code{\link{osm_structures}} used
+#' here to specify background colour of plot; if missing, the colour is
+#' specified by \code{bg}.
+#' @param bg Background colour of map (default = \code{gray20}) only if
+#' \code{structs} not given)
+#' @return \code{ggplot2} object containing base map
 #' @export
 #'
 #' @seealso \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.

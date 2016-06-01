@@ -4,20 +4,16 @@
 #' structured nor ordered; this routine reduces data for each given highway to a
 #' minimal number of discrete and sequentially ordered segments. These segments
 #' may or may not connect, yet can be connected at their nearest points with
-#' get_highway_cycle().
+#' \code{get_highway_cycle}.
 #'
 #' @param highway_names A vector of highway names passed directly to the
-#' Overpass API. Wildcards and whitespaces are '.'; for other options see
+#' Overpass API. Wildcards and whitespaces are `.'; for other options see
 #' overpass help.
 #' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
 #' columns of min and max values, and rows of x and y values.  
-#' @return A list of highways matching 'highway_names', each element of which is
-#' a list of distinct components for the given highway.
-#' @return A list of 2 components:
-#' \enumerate{
-#'  \item obj: A data frame of sp objects
-#'  \item warn: Any warnings produced in downloading the data
-#' }
+#' @return A list of highways matching \code{highway_names} each element of
+#' which is a list of distinct components for the given highway.
+#' @return A \code{data.frame} of \code{sp} objects
 
 extract_highways <- function (highway_names, bbox)
 {

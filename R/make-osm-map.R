@@ -3,29 +3,34 @@
 #' Makes an entire OSM map for the given bbox using the submitted data, or by
 #' downloading data if none submitted. This is a convenience function enabling
 #' an entire map to be produced according to the graphical format specified with
-#' the `structures` argument.  
+#' the \code{structures} argument.  
 #' 
-#' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
-#' columns of min and max values, and rows of x and y values.  If NULL, bbox is
-#' taken from the largest extent of OSM objects in osm_data.
-#' @param osm_data A list of OSM objects as returned from extract_osm_objects().
-#' These objects may be included in the plot without downloading. These should
-#' all be named with the stated 'dat_prefix' and have suffixes as given in
-#' 'structures'.
-#' @param structures A data.frame specifying types of OSM structures as returned
-#' from osm_structures(), and potentially modified to alter lists of structures
-#' to be plotted, and their associated colours. Objects are overlaid on plot
-#' according to the order given in 'structures'.
-#' @param dat_prefix Prefix for data structures (default 'dat_'). Final data
-#' structures are created by appending the suffixes from osm_structures().
-#' @return List of two components: (i) List of OSM structures each as
-#' Spatial(Polygon/List)DataFrame and appended to `osm_data` (which is NULL by
-#' default), and (ii) The map as a ggplot2 object
+#' @param bbox The bounding box for the map.  A 2-by-2 matrix of 4 elements with
+#' columns of min and max values, and rows of x and y values.  If \code{NULL},
+#' \code{bbox} is taken from the largest extent of OSM objects in
+#' \code{osm_data}.
+#' @param osm_data A list of OSM objects as returned from
+#' \code{\link{extract_osm_objects}}.  These objects may be included in the plot
+#' without downloading. These should all be named with the stated
+#' \code{dat_prefix} and have suffixes as given in \code{structures}.
+#' @param structures A \code{data.frame} specifying types of OSM structures as
+#' returned from \code{\link{osm_structures}}, and potentially modified to alter
+#' lists of structures to be plotted, and their associated colours. Objects are
+#' overlaid on plot according to the order given in \code{structures}.
+#' @param dat_prefix Prefix for data structures (default \code{dat_}). Final data
+#' structures are created by appending the suffixes from
+#' \code{\link{osm_structures}}.
+#' @return List of two components: 
+#' \enumerate{
+#'   \item List of OSM structures each as \code{Spatial(Polygon/List)DataFrame}
+#'   and appended to \code{osm_data} (which is \code{NULL} by default), and 
+#'   \item The \code{map} as a \code{ggplot2} object
+#' }
 #' @export
 #'
 #' @section Note:
-#' If 'osm_data' is not given, then data will be downloaded, which can take some
-#' time.  Progress is dumped to screen.
+#' If \code{osm_data} is not given, then data will be downloaded, which can take
+#' some time.  Progress is dumped to screen.
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_objects}}.
 #'

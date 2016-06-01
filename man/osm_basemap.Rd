@@ -11,19 +11,19 @@ osm_basemap(bbox, structures, bg = "gray20")
 matrix of 4 elements with columns of min and max values, and rows of x and y
 values.}
 
-\item{structures}{Data frame returned by osm_structures() used here to
-specify background colour of plot; if missing, the colour is specified by
-'bg'}
+\item{structures}{Data frame returned by \code{\link{osm_structures}} used
+here to specify background colour of plot; if missing, the colour is
+specified by \code{bg}.}
 
-\item{bg}{Background colour of map (default = 'gray20' only if structs not
-given)}
+\item{bg}{Background colour of map (default = \code{gray20}) only if
+\code{structs} not given)}
 }
 \value{
-ggplot object containing base map
+\code{ggplot2} object containing base map
 }
 \description{
 Generates a base OSM plot ready for polygon, line, and point objects to be
-overlain with add_osm_objects().
+overlain with \code{\link{add_osm_objects}}.
 }
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))

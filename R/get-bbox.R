@@ -1,10 +1,10 @@
 #' get_bbox
 #'
 #' Converts a string of latitudes and longitudes into a square matrix to be
-#' passed as a 'bbox' argument (to extract_osm_objects(), osm_basemap (),
-#' make_osm_map (), or extract_highway ()).
+#' passed as a \code{bbox} argument (to \code{\link{extract_osm_objects}},
+#' \code{\link{osm_basemap}}, or \code{\link{make_osm_map}}.
 #'
-#' @param latlon A vector of (longitude, latitude, longitude, latitude) values
+#' @param latlon A vector of (longitude, latitude, longitude, latitude) values.
 #' @return A 2-by-2 matrix of 4 elements with columns of min and max values, and
 #' rows of x and y values.  
 #' @export

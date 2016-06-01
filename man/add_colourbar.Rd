@@ -9,44 +9,45 @@ add_colourbar(map, barwidth = 0.02, barlength = 0.7, zlims, cols,
   fontface, fontfamily, ...)
 }
 \arguments{
-\item{map}{A ggplot2 object to which the colourbar is to be added}
+\item{map}{A \code{ggplot2} object to which the colourbar is to be added.}
 
 \item{barwidth}{Relative width of the bar (perpendicular to its direction),
 either a single number giving distance from right or upper margin, or two
 numbers giving left/right or lower/upper limits.}
 
 \item{barlength}{Relative length of the bar (parallel to its direction),
-either a signle number giving total length of centred bar, or two numbers
+either a single number giving total length of centred bar, or two numbers
 giving lower/upper or left/right limits.}
 
 \item{zlims}{Vector of (min,max) values for scale of colourbar. These should
-be the values returned from add_osm_surface ().}
+be the values returned from \code{\link{add_osm_surface}}.}
 
-\item{cols}{Vector of colours}
+\item{cols}{Vector of colours.}
 
-\item{vertical}{If FALSE, colourbar is aligned horizontally instead of
-default vertical alignment}
+\item{vertical}{If \code{FALSE}, colourbar is aligned horizontally instead of
+default vertical alignment.}
 
 \item{alpha}{Transparency level of region immediately surrounding colourbar,
 including behind text. Lower values are more transparent.}
 
-\item{text_col}{Colour of text, tick marks, and lines on colourbar}
+\item{text_col}{Colour of text, tick marks, and lines on colourbar.}
 
-\item{fontsize}{Size of text labels (in ggplot terms; default=3)}
+\item{fontsize}{Size of text labels (in \code{ggplot2} terms; default=3).}
 
-\item{fontface}{Fontface for colourbar labels (1:4=plain,bold,italic,bold-italic)}
+\item{fontface}{Fontface for colourbar labels
+(1:4=plain,bold,italic,bold-italic).}
 
-\item{fontfamily}{Family of colourbar font (for example, 'Times')}
+\item{fontfamily}{Family of colourbar font (for example, `\code{Times}').}
 
 \item{...}{Mechanism to allow many parameters to be passed with alternative
-names (such as 'xyz' for 'fontxyz').}
+names (such as \code{xyz} for \code{fontxyz}).}
 }
 \value{
-Modified version of map with colourbar added
+Modified version of \code{map} with colourbar added.
 }
 \description{
 Adds a colourbar to an existing map. Intended to be used in combination with
-add_osm_surface (). At present, only plots on right side of map.
+\code{\link{add_osm_surface}}. At present, only plots on right side of map.
 }
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))

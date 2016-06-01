@@ -1,28 +1,31 @@
 #' connect_highways
 #'
 #' Takes a list of highways names which must enclose an internal area, and returns
-#' a SpatialLines object containing a sequence of OSM nodes which cyclically
-#' connect all highways. Will fail if the streets do not form a cycle.
+#' a \code{SpatialLines} object containing a sequence of OSM nodes which
+#' cyclically connect all highways. Will fail if the streets do not form a
+#' cycle.
 #'
 #' @param highways A vector of highway names passed directly to the Overpass
-#' API. Wildcards and whitespaces are '.'; for other options see online help for
+#' API. Wildcards and whitespaces are `.'; for other options see online help for
 #' the overpass API.
 #' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
 #' columns of min and max values, and rows of x and y values.  
-#' @param plot If TRUE, then all OSM data for each highway is plotted and the
-#' final cycle overlaid.
-#' @return A single set of 'SpatialPoints' containing the lat-lon coordinates of
-#' the cyclic line connecting all given streets.
+#' @param plot If \code{TRUE}, then all OSM data for each highway is plotted and
+#' the final cycle overlaid.
+#' @return A single set of \code{SpatialPoints} containing the lat-lon
+#' coordinates of the cyclic line connecting all given streets.
 #' @export
 #'
 #' @note \enumerate{
-#' \item 'connect_highways' is primarily intended to provide a means to define
-#' boundaries of groups which can then be highlighted using 'add_osm_groups'.
+#' \item \code{connect_highways} is primarily intended to provide a means to
+#' define boundaries of groups which can then be highlighted using
+#' \code{\link{add_osm_groups}}.
 #' \item This function can not be guaranteed failsafe owing both to the
 #' inherently unpredictable nature of OpenStreetMap, as well as to the unknown
-#' relationships between named highways. The `plot` option enables problematic
-#' cases to be examined and hopefully resolved.  The function is still
-#' experimental, so please help further improvements by reporting any problems!
+#' relationships between named highways. The \code{plot} option enables
+#' problematic cases to be examined and hopefully resolved.  The function is
+#' still experimental, so please help further improvements by reporting any
+#' problems!
 #' }
 #'
 #' @seealso \code{\link{add_osm_groups}}.

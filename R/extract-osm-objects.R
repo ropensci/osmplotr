@@ -1,23 +1,25 @@
 #' extract_osm_objects
 #'
-#' Downloads OSM XML objects and extracts 'sp' polygons or lines.  Requires
-#' conversion to osmar object which can be quite slow, as can final conversion
-#' to sp object for large numbers of objects
+#' Downloads OSM XML objects and converts to \code{sp} objects
+#' (\code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame}, or
+#' \code{SpatialPolygonsDataFrame}).  Requires intermediate conversion to osmar
+#' object which can be quite slow, as can final conversion to \code{sp} objects
+#' for large numbers of objects
 #'
-#' @param key OSM key to search for. Useful keys include 'building',
-#' 'waterway', 'natural', 'grass', 'park', 'amenity', 'shop', 'boundary', and
-#' 'highway'. Others will be passed directly to the overpass API and may not
-#' necessarily return results.
-#' @param value OSM value to match to key. If NULL, all keys will be returned.
-#' Negation is specified by '!value'.
-#' @param extra_pairs A list of additional key-value pairs to be passed
+#' @param key OSM key to search for. Useful keys include \code{building},
+#' \code{waterway}, \code{natural}, \code{grass}, \code{park}, \code{amenity},
+#' \code{shop}, \code{boundary}, and \code{highway}. Others will be passed
+#' directly to the overpass API and may not necessarily return results.
+#' @param value OSM value to match to key. If \code{NULL}, all keys will be
+#' returned.  Negation is specified by \code{!value}.
+#' @param extra_pairs A list of additional \code{key-value} pairs to be passed
 #' to the overpass API.
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
 #' max values, and rows of x and y values.
-#' @param verbose If TRUE, provides notification of progress
+#' @param verbose If \code{TRUE}, provides notification of progress.
 #'
-#' @return A data frame of sp objects
+#' @return An \code{sp} data frame.
 #' @export
 #'
 #' @seealso \code{\link{add_osm_objects}}.

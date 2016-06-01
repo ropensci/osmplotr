@@ -1,15 +1,16 @@
 #' print_osm_map
 #'
-#' Prints an OSM map produced with 'osmplotr' to a specified graphics device.
+#' Prints an OSM map produced with \code{osmplotr} to a specified graphics device.
 #'
-#' @param map The map to be printed; a 'ggplot2' object produced by 'osmplotr'.
-#' @param width Desired width of graphics device
+#' @param map The map to be printed; a \code{ggplot2} object produced by
+#' \code{osmplotr}.
+#' @param width Desired width of graphics device.
 #' @param height Desired height of graphics device. Ignored if width specified.
-#' @param filename Name of file to which map is to be printed
+#' @param filename Name of file to which map is to be printed.
 #' @param device Type of graphics device (extracted from filename extension if
-#' not explicitly provided)
-#' @param units Units for height and width of graphics device
-#' @param dpi Resolution of graphics device (dots-per-inch)
+#' not explicitly provided).
+#' @param units Units for height and width of graphics device.
+#' @param dpi Resolution of graphics device (dots-per-inch).
 #' @export
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.

@@ -2,18 +2,18 @@
 #'
 #' Adjusts a given colour by lightening or darkening it by the specified amount
 #' (relative scale of -1 to 1).  Adjustments are made in RGB space, for
-#' limitations of which see ?convertColor
+#' limitations of which see \code{?convertColor}
 #'
-#' @param cols A vector of R colours (for allowable formats of which, see
-#' ?col2rgb).
+#' @param cols A vector of \code{R} colours (for allowable formats of which, see
+#' \code{?col2rgb}).
 #' @param adj A number between -1 and 1 determining how much to lighten
 #' (positive values) or darken (negative values) the colours.
-#' @param plot If true, generates a plot to allow visual comparison of original
-#' and adjusted colours
+#' @param plot If \code{TRUE}, generates a plot to allow visual comparison of
+#' original and adjusted colours
 #' @return Corresponding vector of adjusted colours (as hexadecimal strings)
 #' @export
 #'
-#' @seealso \code{\link{osm_structures}}, \code{link[grDevices]{col2rgb}}.
+#' @seealso \code{\link{osm_structures}}, \code{?col2rgb}.
 #' 
 #' @examples
 #' cols <- adjust_colours (cols=heat.colors (10), adj=-0.2, plot=TRUE)

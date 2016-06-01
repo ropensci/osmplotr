@@ -10,17 +10,18 @@ colour_mat(n = c(10, 10), cols, rotate, plot = FALSE)
 \item{n}{number of rows and columns of colour matrix (default = 10; if length
 2, then dimensions of rectangle).}
 
-\item{cols}{vector of length >= 4 of colors (example, default = rainbow
-(4), or from RColorBrewer, brewer.pal (4, 'Set1')). cols are wrapped
-clockwise around the corners from top left to bottom left.}
+\item{cols}{vector of length >= 4 of colors (example, default = \code{rainbow
+(4)}, or from \code{RColorBrewer}, \code{brewer.pal (4, 'Set1')}).
+\code{cols} are wrapped clockwise around the corners from top left to bottom
+left.}
 
 \item{rotate}{rotates the entire colour matrix by the specified angle (in
 degrees).}
 
-\item{plot}{plots the colour matrix}
+\item{plot}{plots the colour matrix.}
 }
 \value{
-matrix of colours
+\code{Matrix} of colours.
 }
 \description{
 Generates a 2D matrix of graduated colours by interpolating between the given

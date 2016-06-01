@@ -4,12 +4,10 @@
 #'
 #' @param name Name of highway. Lines components are return for *any* OSM way
 #' with a partially-matched. Both wildcards and whitespace should be represented
-#' by '.'. 
+#' by `.'. 
 #' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
 #' columns of min and max values, and rows of x and y values.  
-#' @return SpatialLinesDataFrame containing the highway
-#' @return SpatialLinesDataFrame containing the highway
-
+#' @return A \code{SpatialLinesDataFrame} containing the highway.
 extract_highway <- function (name='', bbox)
 {
     stopifnot (nchar (name) > 0)

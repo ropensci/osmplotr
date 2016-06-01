@@ -8,23 +8,24 @@ print_osm_map(map, width, height, filename, device, units = c("in", "cm",
   "mm", "px"), dpi = 300)
 }
 \arguments{
-\item{map}{The map to be printed; a 'ggplot2' object produced by 'osmplotr'.}
+\item{map}{The map to be printed; a \code{ggplot2} object produced by
+\code{osmplotr}.}
 
-\item{width}{Desired width of graphics device}
+\item{width}{Desired width of graphics device.}
 
 \item{height}{Desired height of graphics device. Ignored if width specified.}
 
-\item{filename}{Name of file to which map is to be printed}
+\item{filename}{Name of file to which map is to be printed.}
 
 \item{device}{Type of graphics device (extracted from filename extension if
-not explicitly provided)}
+not explicitly provided).}
 
-\item{units}{Units for height and width of graphics device}
+\item{units}{Units for height and width of graphics device.}
 
-\item{dpi}{Resolution of graphics device (dots-per-inch)}
+\item{dpi}{Resolution of graphics device (dots-per-inch).}
 }
 \description{
-Prints an OSM map produced with 'osmplotr' to a specified graphics device.
+Prints an OSM map produced with \code{osmplotr} to a specified graphics device.
 }
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))

@@ -7,7 +7,7 @@
 get_bbox(latlon)
 }
 \arguments{
-\item{latlon}{A vector of (longitude, latitude, longitude, latitude) values}
+\item{latlon}{A vector of (longitude, latitude, longitude, latitude) values.}
 }
 \value{
 A 2-by-2 matrix of 4 elements with columns of min and max values, and
@@ -15,8 +15,8 @@ rows of x and y values.
 }
 \description{
 Converts a string of latitudes and longitudes into a square matrix to be
-passed as a 'bbox' argument (to extract_osm_objects(), osm_basemap (),
-make_osm_map (), or extract_highway ()).
+passed as a \code{bbox} argument (to \code{\link{extract_osm_objects}},
+\code{\link{osm_basemap}}, or \code{\link{make_osm_map}}.
 }
 \examples{
 bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))

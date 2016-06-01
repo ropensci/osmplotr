@@ -1,20 +1,21 @@
 #' order_lines
 #'
-#' Accepts a SpatialLinesDataFrame representing an OpenStreetMap line object
-#' such as a highway. The list items of these objects are arbitrarily organised
-#' within OpenStreetMap. This function orders the components, returning a list
-#' of components each of which is ordered sequentially along the line.
-#' Points of intersection between components are also inserted where these are
-#' not explicitly present in OpenStreetMap. Nodes are also sequentially
-#' renumbered, starting at (i0+1)
+#' Accepts a \code{SpatialLinesDataFrame} representing an OpenStreetMap line
+#' object such as a highway. The list items of these objects are arbitrarily
+#' organised within OpenStreetMap. This function orders the components,
+#' returning a list of components each of which is ordered sequentially along
+#' the line.  Points of intersection between components are also inserted where
+#' these are not explicitly present in OpenStreetMap. Nodes are also
+#' sequentially renumbered, starting at \code{(i0+1)}.
 #'
-#' @param spLines A SpatialLinesDataFrame returned from extract_osm_objects()
-#' @param i0 The first node is numbered (i0+1), with other nodes (except
+#' @param spLines A \code{SpatialLinesDataFrame} returned from
+#' \code{extract_osm_objects}.
+#' @param i0 The first node is numbered \code{(i0+1)}, with other nodes (except
 #' junction nodes) numbered sequentially .
 #' @return A list of ordered line segments.
 #'
 #' @section Note:
-#' This function is primarily used in extract_highways()
+#' This function is primarily used in \code{extract_highways}.
 
 order_lines <- function (spLines, i0=0)
 {

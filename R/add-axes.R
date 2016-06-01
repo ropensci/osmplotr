@@ -2,18 +2,18 @@
 #'
 #' Adds axes to the internal region of an OSM plot.
 #'
-#' @param map A ggplot2 object to which the axes are to be added
+#' @param map A \code{ggplot2} object to which the axes are to be added.
 #' @param colour Colour of axis (determines colour of all elements: lines,
-#' ticks, and labels)
-#' @param pos Positions of axes and labels relative to entire plot device
+#' ticks, and labels).
+#' @param pos Positions of axes and labels relative to entire plot device.
 #' @param alpha alpha value for semi-transparent background surrounding axes and
-#' labels (lower values increase transparency)
-#' @param fontsize Size of axis font 
-#' @param fontface Fontface for axis labels (1:4=plain,bold,italic,bold-italic)
-#' @param fontfamily Family of axis font (for example, 'Times')
+#' labels (lower values increase transparency).
+#' @param fontsize Size of axis font (in \code{ggplot2} terms; default=3).
+#' @param fontface Fontface for axis labels (1:4=plain,bold,italic,bold-italic).
+#' @param fontfamily Family of axis font (for example, `Times').
 #' @param ... Mechanism to allow many parameters to be passed with alternative
-#' names ('color' for 'colour', and 'xyz' for 'fontxyz').
-#' @return Modified version of map with axes added
+#' names (\code{color} for \code{colour} and \code{xyz} for \code{fontxyz}.
+#' @return Modified version of \code{map} with axes added.
 #' @export
 #'
 #' @seealso \code{\link{osm_basemap}}.

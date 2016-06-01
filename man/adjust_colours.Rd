@@ -7,14 +7,14 @@
 adjust_colours(cols, adj = 0, plot = FALSE)
 }
 \arguments{
-\item{cols}{A vector of R colours (for allowable formats of which, see
-?col2rgb).}
+\item{cols}{A vector of \code{R} colours (for allowable formats of which, see
+\code{?col2rgb}).}
 
 \item{adj}{A number between -1 and 1 determining how much to lighten
 (positive values) or darken (negative values) the colours.}
 
-\item{plot}{If true, generates a plot to allow visual comparison of original
-and adjusted colours}
+\item{plot}{If \code{TRUE}, generates a plot to allow visual comparison of
+original and adjusted colours}
 }
 \value{
 Corresponding vector of adjusted colours (as hexadecimal strings)
@@ -22,7 +22,7 @@ Corresponding vector of adjusted colours (as hexadecimal strings)
 \description{
 Adjusts a given colour by lightening or darkening it by the specified amount
 (relative scale of -1 to 1).  Adjustments are made in RGB space, for
-limitations of which see ?convertColor
+limitations of which see \code{?convertColor}
 }
 \examples{
 cols <- adjust_colours (cols=heat.colors (10), adj=-0.2, plot=TRUE)
@@ -46,6 +46,6 @@ dat <- make_osm_map (structures=structures, osm_data=osm_data, bbox=bbox)
 print_osm_map (dat$map)
 }
 \seealso{
-\code{\link{osm_structures}}, \code{link[grDevices]{col2rgb}}.
+\code{\link{osm_structures}}, \code{?col2rgb}.
 }
 

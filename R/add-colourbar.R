@@ -1,29 +1,30 @@
 #' add_colorbar
 #'
 #' Adds a colourbar to an existing map. Intended to be used in combination with
-#' add_osm_surface (). At present, only plots on right side of map.
+#' \code{\link{add_osm_surface}}. At present, only plots on right side of map.
 #'
-#' @param map A ggplot2 object to which the colourbar is to be added
+#' @param map A \code{ggplot2} object to which the colourbar is to be added.
 #' @param barwidth Relative width of the bar (perpendicular to its direction),
 #' either a single number giving distance from right or upper margin, or two
 #' numbers giving left/right or lower/upper limits.
 #' @param barlength Relative length of the bar (parallel to its direction),
-#' either a signle number giving total length of centred bar, or two numbers
+#' either a single number giving total length of centred bar, or two numbers
 #' giving lower/upper or left/right limits.
 #' @param zlims Vector of (min,max) values for scale of colourbar. These should
-#' be the values returned from add_osm_surface (). 
-#' @param cols Vector of colours
-#' @param vertical If FALSE, colourbar is aligned horizontally instead of
-#' default vertical alignment
+#' be the values returned from \code{\link{add_osm_surface}}.
+#' @param cols Vector of colours.
+#' @param vertical If \code{FALSE}, colourbar is aligned horizontally instead of
+#' default vertical alignment.
 #' @param alpha Transparency level of region immediately surrounding colourbar,
 #' including behind text. Lower values are more transparent.
-#' @param text_col Colour of text, tick marks, and lines on colourbar
-#' @param fontsize Size of text labels (in ggplot terms; default=3)
-#' @param fontface Fontface for colourbar labels (1:4=plain,bold,italic,bold-italic)
-#' @param fontfamily Family of colourbar font (for example, 'Times')
+#' @param text_col Colour of text, tick marks, and lines on colourbar.
+#' @param fontsize Size of text labels (in \code{ggplot2} terms; default=3).
+#' @param fontface Fontface for colourbar labels
+#' (1:4=plain,bold,italic,bold-italic).
+#' @param fontfamily Family of colourbar font (for example, `\code{Times}').
 #' @param ... Mechanism to allow many parameters to be passed with alternative
-#' names (such as 'xyz' for 'fontxyz').
-#' @return Modified version of map with colourbar added
+#' names (such as \code{xyz} for \code{fontxyz}).
+#' @return Modified version of \code{map} with colourbar added.
 #' @export
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_surface}}.
