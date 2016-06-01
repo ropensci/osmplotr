@@ -5,60 +5,60 @@
 #' Contains the following functions, data, and vignettes.
 #'
 #' @section Data Functions:
-#' \tabular{ll}{
-#' \code{\link{extract_osm_objects}} \tab Download arbitrary OSM objects \cr
-#' \code{\link{connect_highways}} \tab Returns points sequentially connecting
-#' list of named highways \cr
+#' \itemize{
+#' \item \code{\link{extract_osm_objects}}: Download arbitrary OSM objects
+#' \item \code{\link{connect_highways}}: Returns points sequentially connecting
+#' list of named highways
 #' }
 #'
 #' @section Basic Plotting Functions (without data):
-#' \tabular{ll}{
-#' \code{\link{add_axes}} \tab Overlay longitudinal and latitudinal axes on plot \cr 
-#' \code{\link{add_osm_objects}} \tab Overlay arbitrary OSM objects \cr 
-#' \code{\link{make_osm_map}} \tab Automate map production with structures
-#' defined in \code{\link{osm_structures}} \cr 
-#' \code{\link{osm_structures}} \tab Define structures and graphics schemes for
-#' automating map production \cr 
-#' \code{\link{osm_basemap}} \tab Initiate a \code{ggplot2} object for an OSM
-#' map \cr 
-#' \code{\link{print_osm_map}} \tab Print a map to specified graphics
-#' device \cr
+#' \itemize{
+#' \item \code{\link{add_axes}}: Overlay longitudinal and latitudinal axes on plot
+#' \item \code{\link{add_osm_objects}}: Overlay arbitrary OSM objects  
+#' \item \code{\link{make_osm_map}}: Automate map production with structures
+#' defined in \code{\link{osm_structures}}  
+#' \item \code{\link{osm_structures}}: Define structures and graphics schemes for
+#' automating map production  
+#' \item \code{\link{osm_basemap}}: Initiate a \code{ggplot2} object for an OSM
+#' map  
+#' \item \code{\link{print_osm_map}}: Print a map to specified graphics
+#' device 
 #' } 
 #'
 #' @section Advanced Plotting Functions (with data):
-#' \tabular{ll}{
-#' \code{\link{add_osm_groups}} \tab Overlay groups of objects using specified
-#' colour scheme \cr 
-#' \code{\link{add_osm_surface}} \tab Overlay data surface by interpolating given
-#' data \cr 
-#' \code{\link{add_colourbar}} \tab Overlay a scaled colourbar for data added
-#' with \code{\link{add_osm_surface}} \cr 
+#' \itemize{
+#' \item \code{\link{add_osm_groups}}: Overlay groups of objects using specified
+#' colour scheme  
+#' \item \code{\link{add_osm_surface}}: Overlay data surface by interpolating
+#' given data  
+#' \item \code{\link{add_colourbar}}: Overlay a scaled colourbar for data added
+#' with \code{\link{add_osm_surface}}  
 #' }
 #'
 #' @section Colour Manipulation Functions:
-#' \tabular{ll}{
-#' \code{\link{adjust_colours}} \tab Lighted or darken given colours by specified
-#' amount \cr 
-#' \code{\link{colour_mat}} \tab Generate continuous 2D spatial matrix of
-#' colours \cr 
+#' \itemize{
+#' \item \code{\link{adjust_colours}}: Lighted or darken given colours by
+#' specified amount  
+#' \item \code{\link{colour_mat}}: Generate continuous 2D spatial matrix of
+#' colours  
 #' }
 #'
 #' @section Other Functions:
-#' \tabular{ll}{
-#' \code{\link{get_bbox}} \tab return bounding box from input vector \cr 
+#' \itemize{
+#' \item \code{\link{get_bbox}}: return bounding box from input vector  
 #' }
 #'
 #' @section Data:
-#' \tabular{ll}{
-#' \code{\link{london}} \tab OSM Data from a small portion of central London \cr 
+#' \itemize{
+#' \item \code{\link{london}}: OSM Data from a small portion of central London  
 #' }
 #'
 #' @section Vignettes:
-#' \tabular{ll}{
-#' \code{basic-maps} \tab Describes basics of downloading data and making custom
-#' maps \cr
-#' \code{data-maps} \tab Describes how map elements can be coloured according to
-#' user-provided data, whether categorical or continuous \cr
+#' \itemize{
+#' \item \code{basic-maps}: Describes basics of downloading data and making
+#' custom maps 
+#' \item \code{data-maps}: Describes how map elements can be coloured according
+#' to user-provided data, whether categorical or continuous 
 #' }
 #'
 #' @name osmplotr
