@@ -271,7 +271,7 @@ also returns a `$map` item which is described below
 ## <a name="2.5 highways"></a>2.5 Downloading connected highways
 
 The visualisation functions described in the second `osmplotr` vignette
-([Data maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/data-maps.html))
+([Data maps](https://cran.r-project.org/package=osmplotr))
 enable particular regions of maps
 to be highlighted. While it may often be desirable to highlight regions
 according to a user's own data, `osmplotr` also enables regions to be defined by
@@ -612,4 +612,4 @@ be rotated. (This is because the semi-transparent underlays are generated with
 `ggplot2::geom_label` which currently prevents rotation.)
 
 Click on the following link to proceed to the second `osmplotr` vignette:
-[Data maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/data-maps.html)
+[Data maps](https://cran.r-project.org/package=osmplotr)

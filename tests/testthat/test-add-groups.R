@@ -54,5 +54,11 @@ test_that ('make_hull', {
            obj <- london$dat_BNR
            pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
                                             c (51.505, 51.505, 51.515, 51.515)))
-           add_osm_groups (map, obj, pts, 1, make_hull = 1:2)
+           expect_warning (add_osm_groups 
+                           (map, obj, pts, 1, bg=2, make_hull = 1:2),
+                           'make_hull has length > number of groups')
+           grps <- list (pts, pts, pts)
+           expect_warning (add_osm_groups 
+                           (map, obj, grps, 1, bg=2, make_hull = 1:2),
+                           'make_hull should have length 1')
 })

@@ -11,7 +11,7 @@ vignette: >
 ---
 
 This vignette extends from the vignette 
-([Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html))
+([Basic maps](https://cran.r-project.org/package=osmplotr))
 to demonstrate how `osmplotr` enables the graphical properties of OpenStreetMap
 objects to be modified according to user-provided data.  Categorical data can be
 plotted by highlighting defined regions with different colours using
@@ -216,7 +216,7 @@ parks within the following maps were downloaded with
 dat_P <- extract_osm_objects (key='park', bbox=bbox)
 ```
 (Noting that, as described in the first vignette,
-[Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html),
+[Basic maps](https://cran.r-project.org/package=osmplotr),
 both `extract_osm_objects` and `make_osm_map` convert several common keys to
 appropriate `key-value` pairs, so
 ```{r}
@@ -477,7 +477,7 @@ on to `colour_mat`.
 ## <a name="1.7 highways"></a>1.7 Bounding areas within named highways
 
 As explained in the first vignette,
-[Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html),
+[Basic maps](https://cran.r-project.org/package=osmplotr),
 the function `connect_highways` takes a list of OSM highway names and a bounding
 box, and returns the boundary of a polygon encircling the named highways. This
 can be used to highlight selected regions simply by naming the highways which
@@ -507,7 +507,7 @@ class (highways1); length (highways1); length (highways2); length (highways3)
 path that sequentially connects all of the listed highways. (Connecting all
 listed highways may not necessarily be possible, in which case warnings will be
 issued. As described in the first vignette, 
-[Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html),
+[Basic maps](https://cran.r-project.org/package=osmplotr),
 `connect_highways` also has a `plot` option allowing problematic cases to be
 visually inspected and hopefully corrected.)
 
@@ -648,7 +648,7 @@ print_osm_map (map, filename='map_b18.png', width=600, units='px', dpi=72)
 Note that the colours submitted to `add_colourbar` need not be the same as those
 used to plot the surface. (Although using different colours is rarely likely to
 be useful.) As for `add_axes`, and explained in the first vignette,
-[Basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html),
+[Basic maps](https://cran.r-project.org/package=osmplotr),
 the transparency of the boxes surrounding the elements of the colourbar may be
 controlled by specifying the value of `alpha`. Both alignment and position may
 also be adjusted, as illustrated in this example.

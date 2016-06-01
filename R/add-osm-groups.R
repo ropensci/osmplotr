@@ -156,8 +156,16 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         }
     }
     # ---------- make_hull
-
-    stopifnot (length (make_hull) == 1 | length (make_hull) == length (groups))
+    if (length (make_hull) > length (groups))
+    {
+        warning (paste0 ('make_hull has length > number of groups'))
+        make_hull <- make_hull [seq (groups)]
+    } else if (length (make_hull) > 1 & length (make_hull) < length (groups))
+    {
+        warning (paste0 ('make_hull should have length 1 or equal to numbers ',
+                         'of groups; using first value only'))
+        make_hull <- make_hull [1]
+    }
 
     if (length (groups) == 1)
     {
