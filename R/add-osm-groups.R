@@ -543,10 +543,10 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                             fill=cols [xyflat$col], size=size)
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
-        if (missing (size) | !is.numeric (size))
-            size <- 0.5
-        if (missing (shape) | !is.numeric (shape))
-            shape <- 1
+        if (missing (size)) size <- 0.5
+        else if (!is.numeric (size)) size <- 0.5
+        if (missing (shape)) shape <- 1
+        else if (!is.numeric (shape)) shape <- 1
         map <- map + ggplot2::geom_path (data=xyflat, mapping=aes, 
                                          colour=cols [xyflat$col], 
                                          size=size, linetype=shape)
