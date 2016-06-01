@@ -6,7 +6,7 @@
 #' @param n number of rows and columns of colour matrix (default = 10; if length
 #' 2, then dimensions of rectangle). 
 #' @param cols vector of length >= 4 of colors (example, default = \code{rainbow
-#' (4)}, or from \code{RColorBrewer}, \code{brewer.pal (4, 'Set1')}).
+#' (4)}, or \code{RColorBrewer::brewer.pal (4, 'Set1')}).
 #' \code{cols} are wrapped clockwise around the corners from top left to bottom
 #' left. 
 #' @param rotate rotates the entire colour matrix by the specified angle (in

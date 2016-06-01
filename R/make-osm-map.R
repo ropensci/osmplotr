@@ -22,8 +22,9 @@
 #' \code{\link{osm_structures}}.
 #' @return List of two components: 
 #' \enumerate{
-#'   \item List of OSM structures each as \code{Spatial(Polygon/List)DataFrame}
-#'   and appended to \code{osm_data} (which is \code{NULL} by default), and 
+#'   \item List of OSM structures each as
+#'      \code{Spatial(Points/Lines/Polygons)DataFrame} and appended to
+#'      \code{osm_data} (which is \code{NULL} by default), and 
 #'   \item The \code{map} as a \code{ggplot2} object
 #' }
 #' @export

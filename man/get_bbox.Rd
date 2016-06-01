@@ -16,7 +16,7 @@ rows of x and y values.
 \description{
 Converts a string of latitudes and longitudes into a square matrix to be
 passed as a \code{bbox} argument (to \code{\link{extract_osm_objects}},
-\code{\link{osm_basemap}}, or \code{\link{make_osm_map}}.
+\code{\link{osm_basemap}}, or \code{\link{make_osm_map}}).
 }
 \examples{
 bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))

@@ -25,7 +25,8 @@ max values, and rows of x and y values.}
 \item{verbose}{If \code{TRUE}, provides notification of progress.}
 }
 \value{
-An \code{sp} data frame.
+Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
+or \code{SpatialPolygonsDataFrame}.
 }
 \description{
 Downloads OSM XML objects and converts to \code{sp} objects

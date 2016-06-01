@@ -8,37 +8,37 @@
 \description{
 A list of \code{SpatialPolygonsDataFrames} (SPDF),
 \code{SpatialLinesDataFrames} (SLDF), and \code{SpatialPointsDataFrames}
-(SPtDf) containing OpenStreetMap polygons and lines for various OpenStreetMap
-structures in a small part of central London,
+(SPtDf) objects containing OpenStreetMap polygons and lines for various
+OpenStreetMap structures in a small part of central London,
 U.K.  (\code{bbox = -0.15, 51.5, -0.1, 51.52}). The list includes:
 \enumerate{
- \item \code{dat_H} an SLDF of non-primary highways with 1.764 lines 
- \item \code{dat_HP} an SLDF of primary highways with 378 lines 
- \item \code{dat_BNR} an SPDF of non-residential buildings with 2,138 polygons 
- \item \code{dat_BR} an SPDF of residential buildings with 40 polygons 
- \item \code{dat_BC} an SPDF of commerical buildings with 17 polygons 
- \item \code{dat_A} an SPDF of amenities with 442 polygons 
- \item \code{dat_G} an SPDF of grassed areas with 23 polygons 
- \item \code{dat_P} an SPDF of parks with 24 polygons 
- \item \code{dat_N} an SPDF of natural areas with 18 polygons 
- \item \code{dat_T} an SPtDF of trees with 1,310 points 
- \item \code{dat_RFH} an SPDF containing 1 polygon representing Royal
+ \item \code{dat_H}: an SLDF of non-primary highways with 1.764 lines 
+ \item \code{dat_HP}: an SLDF of primary highways with 378 lines 
+ \item \code{dat_BNR}: an SPDF of non-residential buildings with 2,138 polygons 
+ \item \code{dat_BR}: an SPDF of residential buildings with 40 polygons 
+ \item \code{dat_BC}: an SPDF of commerical buildings with 17 polygons 
+ \item \code{dat_A}: an SPDF of amenities with 442 polygons 
+ \item \code{dat_G}: an SPDF of grassed areas with 23 polygons 
+ \item \code{dat_P}: an SPDF of parks with 24 polygons 
+ \item \code{dat_N}: an SPDF of natural areas with 18 polygons 
+ \item \code{dat_T}: an SPtDF of trees with 1,310 points 
+ \item \code{dat_RFH}: an SPDF containing 1 polygon representing Royal
      Festival Hall 
- \item \code{dat_ST} an SPDF containing 1 polygon representing
+ \item \code{dat_ST}: an SPDF containing 1 polygon representing
      150 Stamford Street
- \item \code{highways1} A \code{SpatialPoints} object containing 55 points representing
-     the circular perimeter of \code{c ('Monmouth.St', 'Short.?s.Gardens', 
-     'Endell.St', 'Long.Acre', 'Upper.Saint.Martin')}
- \item \code{highways2} A \code{SpatialPoints} object containing 47 points
+ \item \code{highways1}: A \code{SpatialPoints} object containing 55 points
+     representing the circular perimeter of \code{c ('Monmouth.St',
+     'Short.?s.Gardens', 'Endell.St', 'Long.Acre', 'Upper.Saint.Martin')}
+ \item \code{highways2}: A \code{SpatialPoints} object containing 47 points
      representing the circular perimeter of 
      \code{c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')}
- \item \code{highways3} A \code{SpatialPoints} object containing 55 points
+ \item \code{highways3}: A \code{SpatialPoints} object containing 55 points
      representing the circular perimeter of 
      \code{c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')}
 }
 }
 \details{
-The vignette 'basic-maps' demonstrates how these data were downloaded.
+The vignette \code{basic-maps} details how these data were downloaded.
 }
 \keyword{datasets}
 

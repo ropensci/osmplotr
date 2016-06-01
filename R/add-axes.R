@@ -10,7 +10,7 @@
 #' labels (lower values increase transparency).
 #' @param fontsize Size of axis font (in \code{ggplot2} terms; default=3).
 #' @param fontface Fontface for axis labels (1:4=plain,bold,italic,bold-italic).
-#' @param fontfamily Family of axis font (for example, `Times').
+#' @param fontfamily Family of axis font (for example, `\code{Times}').
 #' @param ... Mechanism to allow many parameters to be passed with alternative
 #' names (\code{color} for \code{colour} and \code{xyz} for \code{fontxyz}.
 #' @return Modified version of \code{map} with axes added.

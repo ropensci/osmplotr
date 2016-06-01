@@ -11,7 +11,7 @@ colour_mat(n = c(10, 10), cols, rotate, plot = FALSE)
 2, then dimensions of rectangle).}
 
 \item{cols}{vector of length >= 4 of colors (example, default = \code{rainbow
-(4)}, or from \code{RColorBrewer}, \code{brewer.pal (4, 'Set1')}).
+(4)}, or \code{RColorBrewer::brewer.pal (4, 'Set1')}).
 \code{cols} are wrapped clockwise around the corners from top left to bottom
 left.}
 

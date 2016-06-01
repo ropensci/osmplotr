@@ -2,7 +2,7 @@
 #'
 #' Converts a string of latitudes and longitudes into a square matrix to be
 #' passed as a \code{bbox} argument (to \code{\link{extract_osm_objects}},
-#' \code{\link{osm_basemap}}, or \code{\link{make_osm_map}}.
+#' \code{\link{osm_basemap}}, or \code{\link{make_osm_map}}).
 #'
 #' @param latlon A vector of (longitude, latitude, longitude, latitude) values.
 #' @return A 2-by-2 matrix of 4 elements with columns of min and max values, and

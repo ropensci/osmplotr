@@ -9,8 +9,8 @@
 #' @param adj A number between -1 and 1 determining how much to lighten
 #' (positive values) or darken (negative values) the colours.
 #' @param plot If \code{TRUE}, generates a plot to allow visual comparison of
-#' original and adjusted colours
-#' @return Corresponding vector of adjusted colours (as hexadecimal strings)
+#' original and adjusted colours.
+#' @return Corresponding vector of adjusted colours (as hexadecimal strings).
 #' @export
 #'
 #' @seealso \code{\link{osm_structures}}, \code{?col2rgb}.

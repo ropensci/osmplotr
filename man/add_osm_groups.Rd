@@ -11,14 +11,14 @@ add_osm_groups(map, obj, groups, cols, bg, make_hull = FALSE, boundary = -1,
 \item{map}{A \code{ggplot2} object to which the grouped objects are to be
 added.}
 
-\item{obj}{An \code{sp} \code{SpatialPolygonsDataFrame} or
-\code{SpatialLinesDataFrame} (list of polygons or lines) returned by
-\code{\link{extract_osm_objects}}.}
+\item{obj}{An \code{sp} \code{SpatialPointsDataFrame},
+\code{SpatialPolygonsDataFrame}, or \code{SpatialLinesDataFrame} (list of
+polygons or lines) returned by \code{\link{extract_osm_objects}}.}
 
 \item{groups}{A list of spatial points objects, each of which contains the
 coordinates of points defining one group.}
 
-\item{cols}{Either a vector of >= 4 colours passed to \code{olour_mat} (if
+\item{cols}{Either a vector of >= 4 colours passed to \code{colour_mat} (if
 \code{colmat=T}) to arrange as a 2-D map of visually distinct colours
 (default uses \code{rainbow} colours), or (if \code{colmat=F}), a vector of
 the same length as groups specifying individual colours for each.}
@@ -127,6 +127,6 @@ print_osm_map (map)
 }
 }
 \seealso{
-\code{\link{colour_mat}}.
+\code{\link{colour_mat}}, \code{\link{add_osm_objects}}.
 }
 

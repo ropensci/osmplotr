@@ -10,8 +10,8 @@
 #' here to specify background colour of plot; if missing, the colour is
 #' specified by \code{bg}.
 #' @param bg Background colour of map (default = \code{gray20}) only if
-#' \code{structs} not given)
-#' @return \code{ggplot2} object containing base map
+#' \code{structs} not given).
+#' @return A \code{ggplot2} object containing the base \code{map}.
 #' @export
 #'
 #' @seealso \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.

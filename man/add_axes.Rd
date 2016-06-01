@@ -22,7 +22,7 @@ labels (lower values increase transparency).}
 
 \item{fontface}{Fontface for axis labels (1:4=plain,bold,italic,bold-italic).}
 
-\item{fontfamily}{Family of axis font (for example, `Times').}
+\item{fontfamily}{Family of axis font (for example, `\code{Times}').}
 
 \item{...}{Mechanism to allow many parameters to be passed with alternative
 names (\code{color} for \code{colour} and \code{xyz} for \code{fontxyz}.}

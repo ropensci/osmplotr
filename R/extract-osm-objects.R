@@ -19,7 +19,8 @@
 #' max values, and rows of x and y values.
 #' @param verbose If \code{TRUE}, provides notification of progress.
 #'
-#' @return An \code{sp} data frame.
+#' @return Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
+#' or \code{SpatialPolygonsDataFrame}.
 #' @export
 #'
 #' @seealso \code{\link{add_osm_objects}}.

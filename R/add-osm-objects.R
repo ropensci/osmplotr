@@ -6,7 +6,7 @@
 #'
 #' @param map A \code{ggplot2} object to which the objects are to be added.
 #' @param obj A spatial (\code{sp}) data frame of polygons, lines, or points,
-#' typically as returned by \code{extract_osm_objects}.
+#' typically as returned by \code{\link{extract_osm_objects}}.
 #' @param col Colour of lines or points; fill colour of polygons.
 #' @param border Border colour of polygons.
 #' @param size Size argument passed to \code{ggplot2} (polygon, path, point)

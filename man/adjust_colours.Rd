@@ -14,10 +14,10 @@ adjust_colours(cols, adj = 0, plot = FALSE)
 (positive values) or darken (negative values) the colours.}
 
 \item{plot}{If \code{TRUE}, generates a plot to allow visual comparison of
-original and adjusted colours}
+original and adjusted colours.}
 }
 \value{
-Corresponding vector of adjusted colours (as hexadecimal strings)
+Corresponding vector of adjusted colours (as hexadecimal strings).
 }
 \description{
 Adjusts a given colour by lightening or darkening it by the specified amount

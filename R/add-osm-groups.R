@@ -4,12 +4,12 @@
 #'
 #' @param map A \code{ggplot2} object to which the grouped objects are to be
 #' added.
-#' @param obj An \code{sp} \code{SpatialPolygonsDataFrame} or
-#' \code{SpatialLinesDataFrame} (list of polygons or lines) returned by
-#' \code{\link{extract_osm_objects}}.
+#' @param obj An \code{sp} \code{SpatialPointsDataFrame},
+#' \code{SpatialPolygonsDataFrame}, or \code{SpatialLinesDataFrame} (list of
+#' polygons or lines) returned by \code{\link{extract_osm_objects}}.
 #' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group.
-#' @param cols Either a vector of >= 4 colours passed to \code{olour_mat} (if
+#' @param cols Either a vector of >= 4 colours passed to \code{colour_mat} (if
 #' \code{colmat=T}) to arrange as a 2-D map of visually distinct colours
 #' (default uses \code{rainbow} colours), or (if \code{colmat=F}), a vector of
 #' the same length as groups specifying individual colours for each.
@@ -44,7 +44,7 @@
 #' are *excluded* from the group, while those outside the smaller yet inside the
 #' bigger group are included.
 #'
-#' @seealso \code{\link{colour_mat}}.
+#' @seealso \code{\link{colour_mat}}, \code{\link{add_osm_objects}}.
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))

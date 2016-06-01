@@ -16,10 +16,10 @@ here to specify background colour of plot; if missing, the colour is
 specified by \code{bg}.}
 
 \item{bg}{Background colour of map (default = \code{gray20}) only if
-\code{structs} not given)}
+\code{structs} not given).}
 }
 \value{
-\code{ggplot2} object containing base map
+A \code{ggplot2} object containing the base \code{map}.
 }
 \description{
 Generates a base OSM plot ready for polygon, line, and point objects to be
