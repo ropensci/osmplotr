@@ -19,7 +19,7 @@
 #' 'osm_structures'\cr 
 #' 'osm_structures'\tab Define structures and graphics schemes for automating
 #' map production \cr 
-#' 'osm_basemap'\tab Initiate a ggplot object for an OSM map\cr 
+#' 'osm_basemap'\tab Initiate a ggplot2 object for an OSM map\cr 
 #' 'print_osm_map'\tab Print a map to specified graphics device
 #' } 
 #'

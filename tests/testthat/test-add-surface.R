@@ -3,7 +3,7 @@ context ("add-surface")
 test_that ('basemap', {
            expect_error (add_osm_surface (), 
                          'map must be supplied to add_osm_objects')
-           expect_error (add_osm_surface (NULL), 'map must be a ggplot object')
+           expect_error (add_osm_surface (NULL), 'map must be a ggplot2 object')
 })
 
 test_that ('obj', {

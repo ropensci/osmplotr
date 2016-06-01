@@ -30,7 +30,7 @@
 #' @param shape Shape of lines or points, for details of which see
 #' '?ggplot2::shape'. If 'bg' is provided and 'shape' has 2 elements, the second
 #' determines the 'shape' of the background objects.
-#' @return modified version of map (a ggplot object) to which surface has been
+#' @return modified version of map (a ggplot2 object) to which surface has been
 #' added
 #'
 #' @note 
@@ -109,7 +109,7 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
     if (missing (map))
         stop ('map must be supplied to add_osm_objects')
     if (!is (map, 'ggplot'))
-        stop ('map must be a ggplot object')
+        stop ('map must be a ggplot2 object')
     if (missing (obj))
         stop ('object must be supplied to add_osm_objects')
     if (!inherits (obj, 'Spatial'))

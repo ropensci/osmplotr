@@ -107,20 +107,33 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                boundary=-1, size, shape, borderWidth,
                                colmat=FALSE, rotate)
 {
+    # ---------------  sanity checks and warnings  ---------------
+    # ---------- map
+    if (missing (map))
+        stop ('map must be supplied to add_osm_groups')
+    if (!is (map, 'ggplot'))
+        stop ('map must be a ggplot2 object')
+    # ---------- map
+    if (missing (obj))
+        stop ('obj must be supplied to add_osm_groups')
+    if (!is (obj, 'Spatial'))
+        stop ('obj must be a spatial object')
+    # ---------- groups
     if (missing (groups))
     {
-        warning (paste0 ('No groups defined in add_osm_groups; ',
+        warning (paste0 ('No groups defined in add_osm_groups: ',
                          'passing to add_osm_objects'))
         if (missing (cols))
             if (missing (bg))
                 stop ("either 'cols' or 'bg' must be minimally given")
             else
                 cols <- bg
-        add_osm_objects (obj, col=cols [1])
+        add_osm_objects (map, obj, col=cols [1])
         return ()
     } else if (class (groups) != 'list')
     {
-        stopifnot (class (groups) == 'SpatialPoints')
+        if (!is (groups, 'SpatialPoints'))
+            stop ('groups must be a SpatialPoints object (or list thereof)')
         groups <- list (groups)
     } else if (!all ((lapply (groups, class)) == 'SpatialPoints'))
     {
@@ -130,6 +143,19 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                     as (x, 'SpatialPoints')),
                   finally = stop (e))
     }
+    # ---------- cols
+    if (missing (cols))
+    {
+        if (missing (bg))
+            stop ("Either 'cols' or 'bg' must be minimally given")
+        else
+        {
+            warning (paste0 ('No group colours defined in add_osm_groups: ',
+                             'passing to add_osm_objects'))
+            add_osm_objects (map, obj, col=bg)
+        }
+    }
+    # ---------- make_hull
 
     stopifnot (length (make_hull) == 1 | length (make_hull) == length (groups))
 
@@ -138,7 +164,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         colmat <- FALSE
         if (missing (bg))
         {
-            message (paste0 ('plotting one group only makes sense with bg;',
+            message (paste0 ('Plotting one group only makes sense with bg;',
                              ' defaulting to gray40'))
             bg <- 'gray40'
         }
@@ -146,6 +172,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
 
     if (max (sapply (groups, length)) < 3) # No groups have > 2 members
         make_hull <- FALSE
+    # ---------------  sanity checks and warnings  ---------------
 
     # Set up group colours
     if (!colmat)

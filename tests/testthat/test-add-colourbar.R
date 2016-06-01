@@ -2,7 +2,7 @@ context ('add-colourbar')
 
 test_that ('basemap object', {
            expect_error (add_colourbar (), 'map must be supplied to add_axes')
-           expect_error (add_colourbar (NULL), 'map must be a ggplot object')
+           expect_error (add_colourbar (NULL), 'map must be a ggplot2 object')
 })
 
 test_that ('colours', {
@@ -103,7 +103,7 @@ test_that ('other_font_properties', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox=bbox, bg="gray20")
            cols <- heat.colors (10)
+           zlims <- c (1, 10)
            expect_silent (add_colourbar (map, cols=cols, zlims=zlims, face=1))
            expect_silent (add_colourbar (map, cols=cols, zlims=zlims, family=1))
 })
-

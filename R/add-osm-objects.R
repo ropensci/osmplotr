@@ -14,7 +14,7 @@
 #' Respective defaults are (0, 0.5, 0.5).
 #' @param shape Shape of points or lines (the latter passed as 'linetype'): see
 #' ?ggplot2::shape
-#' @return modified version of map (a ggplot object) to which objects have been
+#' @return modified version of map (a ggplot2 object) to which objects have been
 #' added
 #' @export
 #'
@@ -53,7 +53,7 @@ add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
     if (missing (map))
         stop ('map must be supplied to add_osm_objects')
     if (!is (map, 'ggplot'))
-        stop ('map must be a ggplot object')
+        stop ('map must be a ggplot2 object')
     if (missing (obj))
         stop ('object must be supplied to add_osm_objects')
     if (!inherits (obj, 'Spatial'))

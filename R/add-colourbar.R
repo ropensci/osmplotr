@@ -78,7 +78,7 @@ add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols,
     if (missing (map))
         stop ('map must be supplied to add_axes')
     if (!is (map, 'ggplot'))
-        stop ('map must be a ggplot object')
+        stop ('map must be a ggplot2 object')
     # ---------- barwidth
     barwidth <- test_len2 (barwidth, 'barwidth')
     barwidth <- test_numeric (barwidth, 'barwidth', 0.02)

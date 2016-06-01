@@ -3,7 +3,7 @@ context ("add-objects")
 test_that ('basemap', {
            expect_error (add_osm_objects (), 
                          'map must be supplied to add_osm_objects')
-           expect_error (add_osm_objects (NULL), 'map must be a ggplot object')
+           expect_error (add_osm_objects (NULL), 'map must be a ggplot2 object')
 })
 
 test_that ('obj', {

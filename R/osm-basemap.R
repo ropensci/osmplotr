@@ -11,7 +11,7 @@
 #' 'bg'
 #' @param bg Background colour of map (default = 'gray20' only if structs not
 #' given)
-#' @return ggplot object containing base map
+#' @return ggplot2 object containing base map
 #' @export
 #'
 #' @seealso \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
