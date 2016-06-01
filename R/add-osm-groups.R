@@ -169,6 +169,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                          'of groups; using first value only'))
         make_hull <- make_hull [1]
     }
+    # ---------- boundary
+    if (!is.numeric (boundary)) boundary <- 0
 
     if (length (groups) == 1)
     {
@@ -180,6 +182,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
             bg <- 'gray40'
         }
     }
+    # ---------- boundary
+    if (!is.logical (colmat)) colmat <- FALSE
 
     if (max (sapply (groups, length)) < 3) # No groups have > 2 members
         make_hull <- FALSE
@@ -214,7 +218,11 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         if (missing (rotate))
             cmat <- colour_mat (ncols, cols=cols)
         else
+        {
+            if (!is.numeric (rotate))
+                rotate <- 0
             cmat <- colour_mat (ncols, cols=cols, rotate)
+        }
         cols <- rep (NA, length (groups)) 
         # cols is then a vector of colours to be filled by matching group
         # centroids to relative positions within cmat
@@ -529,15 +537,15 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
-        if (missing (size))
-            size <- 0
+        if (missing (size)) size <- 0
+        else if (!is.numeric (size)) size <- 0
         map <- map + ggplot2::geom_polygon (data=xyflat, mapping=aes, 
                                             fill=cols [xyflat$col], size=size)
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
-        if (missing (size))
+        if (missing (size) | !is.numeric (size))
             size <- 0.5
-        if (missing (shape))
+        if (missing (shape) | !is.numeric (shape))
             shape <- 1
         map <- map + ggplot2::geom_path (data=xyflat, mapping=aes, 
                                          colour=cols [xyflat$col], 
@@ -549,31 +557,34 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
 
     if (!missing (borderWidth)) # draw hulls around entire groups
     {
-        bdry <- list ()
-        for (i in seq (groups))
+        if (is.numeric (borderWidth))
         {
-            indx <- which (xyflat$col == i) # col = group membership
-            if (length (indx) > 1)
+            bdry <- list ()
+            for (i in seq (groups))
             {
-                x <- xyflat$lon [indx]
-                y <- xyflat$lat [indx]
-                indx <- which (!duplicated (cbind (x, y)))
-                x <- x [indx]
-                y <- y [indx]
-                xy2 <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
-                ch <- spatstat::convexhull (xy2)
-                bdry [[i]] <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+                indx <- which (xyflat$col == i) # col = group membership
+                if (length (indx) > 1)
+                {
+                    x <- xyflat$lon [indx]
+                    y <- xyflat$lat [indx]
+                    indx <- which (!duplicated (cbind (x, y)))
+                    x <- x [indx]
+                    y <- y [indx]
+                    xy2 <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+                    ch <- spatstat::convexhull (xy2)
+                    bdry [[i]] <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+                }
+                bdry [[i]] <- cbind (i, bdry [[i]])
             }
-            bdry [[i]] <- cbind (i, bdry [[i]])
-        }
-        bdry <- data.frame (do.call (rbind, bdry))
-        names (bdry) <- c ("id", "x", "y")
+            bdry <- data.frame (do.call (rbind, bdry))
+            names (bdry) <- c ("id", "x", "y")
 
-        aes <- ggplot2::aes (x=x, y=y, group=id) 
-        map <- map + ggplot2::geom_polygon (data=bdry, mapping=aes, 
-                                            colour=cols [bdry$id],
-                                            fill="transparent", 
-                                            size=borderWidth)
+            aes <- ggplot2::aes (x=x, y=y, group=id) 
+            map <- map + ggplot2::geom_polygon (data=bdry, mapping=aes, 
+                                                colour=cols [bdry$id],
+                                                fill="transparent", 
+                                                size=borderWidth)
+        }
     }
 
     return (map)

@@ -62,3 +62,25 @@ test_that ('make_hull', {
                            (map, obj, grps, 1, bg=2, make_hull = 1:2),
                            'make_hull should have length 1')
 })
+
+test_that ('colourmat', {
+           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+           map <- osm_basemap (bbox=bbox, bg="gray20")
+           obj <- london$dat_BNR
+           pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
+                                            c (51.505, 51.505, 51.515, 51.515)))
+           grps <- list (pts, pts, pts)
+           expect_silent (add_osm_groups (map, obj, grps, 1, 2, colmat=1))
+           expect_silent (add_osm_groups (map, obj, grps, 1, 2, colmat="abc"))
+})
+
+test_that ('rotate', {
+           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+           map <- osm_basemap (bbox=bbox, bg="gray20")
+           obj <- london$dat_BNR
+           pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
+                                            c (51.505, 51.505, 51.515, 51.515)))
+           grps <- list (pts, pts, pts)
+           expect_silent (add_osm_groups (map, obj, grps, 1, 2, rotate=1))
+           expect_silent (add_osm_groups (map, obj, grps, 1, 2, rotate="abc"))
+})
