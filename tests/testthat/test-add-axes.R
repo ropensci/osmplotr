@@ -3,6 +3,7 @@ context ('add-axes')
 test_that ('basemap object', {
            expect_error (add_axes (), 'map must be supplied to add_axes')
            expect_error (add_axes (NULL), 'map must be a ggplot object')
+           expect_error (add_axes (colour='red'), 'map must be supplied to add_axes')
 })
 
 test_that ('colour', {
@@ -46,5 +47,19 @@ test_that ('fontsize', {
                            'Only the first element of fontsize will be used')
            expect_warning (add_axes (map, fontsize="a"), 
                            'fontsize must be numeric; using default value')
+           expect_silent (add_axes (map, size=1))
+           expect_warning (add_axes (map, size=-1), 
+                           'fontsize must be positive; using default value')
+           expect_warning (add_axes (map, size=1:2),
+                           'Only the first element of fontsize will be used')
+           expect_warning (add_axes (map, size="a"), 
+                           'fontsize must be numeric; using default value')
+})
+
+test_that ('other_font_properties', {
+           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+           map <- plot_osm_basemap (bbox=bbox, bg="gray20")
+           expect_silent (add_axes (map, face=1))
+           expect_silent (add_axes (map, family=1))
 })
 
