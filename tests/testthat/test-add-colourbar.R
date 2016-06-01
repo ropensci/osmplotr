@@ -102,6 +102,7 @@ test_that ('alpha values', {
 test_that ('other_font_properties', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox=bbox, bg="gray20")
+           cols <- heat.colors (10)
            expect_silent (add_colourbar (map, cols=cols, zlims=zlims, face=1))
            expect_silent (add_colourbar (map, cols=cols, zlims=zlims, family=1))
 })
