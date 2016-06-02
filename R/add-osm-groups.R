@@ -146,6 +146,16 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                     as (x, 'SpatialPoints')),
                   finally = stop (e))
     }
+    if (length (groups) == 1)
+    {
+        colmat <- FALSE
+        if (missing (bg))
+        {
+            message (paste0 ('Plotting one group only makes sense with bg;',
+                             ' defaulting to gray40'))
+            bg <- 'gray40'
+        }
+    }
     # ---------- cols
     if (missing (cols))
     {
@@ -169,25 +179,14 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                          'of groups; using first value only'))
         make_hull <- make_hull [1]
     }
+    if (max (sapply (groups, length)) < 3) # No groups have > 2 members
+        make_hull <- FALSE
     # ---------- boundary
     if (!is.numeric (boundary)) boundary <- 0
 
-    if (length (groups) == 1)
-    {
-        colmat <- FALSE
-        if (missing (bg))
-        {
-            message (paste0 ('Plotting one group only makes sense with bg;',
-                             ' defaulting to gray40'))
-            bg <- 'gray40'
-        }
-    }
-    # ---------- boundary
+    # ---------- colmat
     if (!is.logical (colmat)) colmat <- FALSE
-
-    if (max (sapply (groups, length)) < 3) # No groups have > 2 members
-        make_hull <- FALSE
-    # ---------------  sanity checks and warnings  ---------------
+    # ---------------  end sanity checks and warnings  ---------------
 
     # Set up group colours
     if (!colmat)

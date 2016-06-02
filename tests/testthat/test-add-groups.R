@@ -48,6 +48,16 @@ test_that ('groups', {
                          'Cannot coerce groups to SpatialPoints')
 })
 
+test_that ('boundary', {
+           bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+           map <- osm_basemap (bbox=bbox, bg="gray20")
+           obj <- london$dat_BNR
+           pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
+                                            c (51.505, 51.505, 51.515, 51.515)))
+           grps <- list (pts, pts, pts)
+           expect_silent (add_osm_groups (map, obj, grps, 1, 2, boundary=NULL))
+})
+
 test_that ('make_hull', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox=bbox, bg="gray20")
