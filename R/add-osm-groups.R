@@ -198,7 +198,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         if (length (groups) == 1 & missing (bg))
         {
             warning ('There is only one group; using default bg')
-            if (is.null (cols))
+            if (missing (cols))
             {
                 cols <- 'red'
                 bg <- 'gray40'

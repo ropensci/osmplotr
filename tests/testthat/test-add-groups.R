@@ -30,7 +30,7 @@ test_that ('cols', {
            expect_warning (add_osm_groups (map, obj, groups=pts, bg=1),
                            paste0 ('No group colours defined in add_osm_groups: ',
                                    'passing to add_osm_objects'))
-           expect_message (add_osm_groups (map, obj, groups=pts, cols=1),
+           expect_message (add_osm_groups (map, obj, groups=list (pts), cols=1),
                        paste0 ('Plotting one group only makes sense with bg; ',
                                'defaulting to gray40'))
 })
@@ -45,6 +45,11 @@ test_that ('groups', {
            expect_error (capture_warnings (add_osm_groups (map, obj, NULL)),
                          'groups must be a SpatialPoints object')
            expect_error (add_osm_groups (map, obj, groups=list (london$dat_HP)),
+                         'Cannot coerce groups to SpatialPoints')
+           pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
+                                            c (51.505, 51.505, 51.515, 51.515)))
+           grps <- list (pts, pts, "a")
+           expect_error (add_osm_groups (map, obj, groups=grps),
                          'Cannot coerce groups to SpatialPoints')
 })
 
