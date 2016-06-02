@@ -7,9 +7,28 @@
 R package to produce visually impressive customisable images of OpenStreetMap
 (OSM) data downloaded internally from the 
 [overpass api](http://overpass-api.de/). The above map was produced directly
-from `osmplotr` with no further modification. But first the easy steps to map
-making:
+from `osmplotr` with no further modification. This `README` briefly demonstrates
+the following functionality:
 
+[1. Quick Introduction](#1 intro)
+
+[2. Installation](#2 installation)
+
+[3. A Simple Map](#3 simple map)
+
+[4. Highlighting Selected Areas](#4 highlighting areas)
+
+[5. Highlighting Clusters](#5 highlighting clusters)
+
+[6. Highlighting Areas Bounded by Named Highways](#6 highlighting with highways)
+
+[7. Data Surfaces](#7 data surfaces)
+
+---------------
+
+## <a name="1 intro"></a>1. Quick Introduction
+
+But first the easy steps to map making:
 ```{r, echo=FALSE, message=FALSE}
 setwd ('..')
 devtools::load_all ('osmplotr', export_all=FALSE)
@@ -41,7 +60,9 @@ setwd ('./osmplotr')
     print (map)
     ```
 
-## Installation
+---------------
+
+## <a name="2 installation"></a>2. Installation
 
 ```{r, eval=FALSE}
 install.packages ('osmplotr')
@@ -51,7 +72,9 @@ or the development version
 devtools::install_github ('ropenscilabs/osmplotr')
 ```
 
-## A simple map
+---------------
+
+## <a name="3 simple map"></a>3. A Simple Map
 
 Simple maps can be made by overlaying different kinds of OSM data in different
 colours:
@@ -81,7 +104,9 @@ print_osm_map (map, file='map2.png', width=600, units='px', dpi=72)
 
 ![](./figure/map2.png)
 
-## Highlighting selected areas
+---------------
+
+## <a name="4 highlighting areas"></a>4. Highlighting Selected Areas
 
 `osmplotr` is primarily intended as a data visualisation tool, particularly
 through enabling selected regions to be highlighted. Regions can be defined
@@ -120,7 +145,9 @@ print_osm_map (map, filename='map4.png', width=600, units='px', dpi=72)
 ```
 ![](./figure/map4.png)
 
-### Highlighting clusters
+---------------
+
+## <a name="5 highlighting clusters"></a>5. Highlighting Clusters
 
 `add_osm_groups` also enables plotting an entire region as a group of
 spatially distinct clusters of defined colours. Groups can be defined by simple
@@ -149,7 +176,9 @@ print_osm_map (map, filename='map5.png', width=600, units='px', dpi=72)
 ```
 ![](./figure/map5.png)
 
-### Highlighting areas bounded by named highways
+---------------
+
+## <a name="6 highlighting with highways"></a>6. Highlighting Areas Bounded by Named Highways
 
 An alternative way of defining highlighted groups is by naming the highways
 encircling desired regions.
@@ -191,7 +220,9 @@ print_osm_map (map, filename='map6.png', width=600, units='px', dpi=72)
 ![](./figure/map6.png)
 
 
-### Data surfaces
+---------------
+
+## <a name="7 data surfaces"></a>7. Data Surfaces
 
 Finally, `osmplotr` contains a function `add_osm_surface` that spatially
 interpolates a given set of spatial data points and colours OSM objects
@@ -241,10 +272,12 @@ print_osm_map (map2, filename='map1.png', width=800, units='px', dpi=72)
 ```
 ![](./figure/map7.png)
 
+---------------
+
 See package vignettes (
-[making maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps.html)
+[basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html)
 and
-[making maps with data](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps-with-data.html)
+[data maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/data-maps.html)
 ) for a lot more
 detail and further capabilities of `osmplotr`.  Please note that this project is
 released with a [Contributor Code of Conduct](CONDUCT.md). By participating in

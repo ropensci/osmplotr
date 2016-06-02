@@ -2,7 +2,28 @@
 
 ![](./figure/map1.png)
 
-R package to produce visually impressive customisable images of OpenStreetMap (OSM) data downloaded internally from the [overpass api](http://overpass-api.de/). The above map was produced directly from `osmplotr` with no further modification. But first the easy steps to map making:
+R package to produce visually impressive customisable images of OpenStreetMap (OSM) data downloaded internally from the [overpass api](http://overpass-api.de/). The above map was produced directly from `osmplotr` with no further modification. This `README` briefly demonstrates the following functionality:
+
+[1. Quick Introduction](#1%20intro)
+
+[2. Installation](#2%20installation)
+
+[3. A Simple Map](#3%20simple%20map)
+
+[4. Highlighting Selected Areas](#4%20highlighting%20areas)
+
+[5. Highlighting Clusters](#5%20highlighting%20clusters)
+
+[6. Highlighting Areas Bounded by Named Highways](#6%20highlighting%20with%20highways)
+
+[7. Data Surfaces](#7%20data%20surfaces)
+
+------------------------------------------------------------------------
+
+<a name="1 intro"></a>1. Quick Introduction
+-------------------------------------------
+
+But first the easy steps to map making:
 
 1.  Specify the bounding box for the desired region
 
@@ -34,8 +55,10 @@ R package to produce visually impressive customisable images of OpenStreetMap (O
     print (map)
     ```
 
-Installation
-------------
+------------------------------------------------------------------------
+
+<a name="2 installation"></a>2. Installation
+--------------------------------------------
 
 ``` r
 install.packages ('osmplotr')
@@ -47,8 +70,10 @@ or the development version
 devtools::install_github ('ropenscilabs/osmplotr')
 ```
 
-A simple map
-------------
+------------------------------------------------------------------------
+
+<a name="3 simple map"></a>3. A Simple Map
+------------------------------------------
 
 Simple maps can be made by overlaying different kinds of OSM data in different colours:
 
@@ -69,8 +94,10 @@ print_osm_map (map)
 
 ![](./figure/map2.png)
 
-Highlighting selected areas
----------------------------
+------------------------------------------------------------------------
+
+<a name="4 highlighting areas"></a>4. Highlighting Selected Areas
+-----------------------------------------------------------------
 
 `osmplotr` is primarily intended as a data visualisation tool, particularly through enabling selected regions to be highlighted. Regions can be defined according to simple point boundaries:
 
@@ -103,7 +130,10 @@ print_osm_map (map)
 
 ![](./figure/map4.png)
 
-### Highlighting clusters
+------------------------------------------------------------------------
+
+<a name="5 highlighting clusters"></a>5. Highlighting Clusters
+--------------------------------------------------------------
 
 `add_osm_groups` also enables plotting an entire region as a group of spatially distinct clusters of defined colours. Groups can be defined by simple spatial points denoting their centres:
 
@@ -127,7 +157,10 @@ print_osm_map (map)
 
 ![](./figure/map5.png)
 
-### Highlighting areas bounded by named highways
+------------------------------------------------------------------------
+
+<a name="6 highlighting with highways"></a>6. Highlighting Areas Bounded by Named Highways
+------------------------------------------------------------------------------------------
 
 An alternative way of defining highlighted groups is by naming the highways encircling desired regions.
 
@@ -167,7 +200,10 @@ print_osm_map (map)
 
 ![](./figure/map6.png)
 
-### Data surfaces
+------------------------------------------------------------------------
+
+<a name="7 data surfaces"></a>7. Data Surfaces
+----------------------------------------------
 
 Finally, `osmplotr` contains a function `add_osm_surface` that spatially interpolates a given set of spatial data points and colours OSM objects according to a specified colour gradient. This is illustrated here with the `volcano` data projected onto the `bbox`.
 
@@ -191,7 +227,9 @@ print_osm_map (map)
 
 ![](./figure/map7.png)
 
-See package vignettes ( [making maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps.html) and [making maps with data](https://cran.r-project.org/web/packages/osmplotr/vignettes/making-maps-with-data.html) ) for a lot more detail and further capabilities of `osmplotr`. Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+------------------------------------------------------------------------
+
+See package vignettes ( [basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html) and [data maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/data-maps.html) ) for a lot more detail and further capabilities of `osmplotr`. Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
 
 ------------------------------------------------------------------------
 
