@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ropenscilabs/osmplotr.svg?branch=master)](https://travis-ci.org/ropenscilabs/osmplotr) [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
+[![Build Status](https://travis-ci.org/ropenscilabs/osmplotr.svg?branch=master)](https://travis-ci.org/ropenscilabs/osmplotr) [![codecov](https://codecov.io/gh/ropenscilabs/osmplotr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropenscilabs/osmplotr) [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 
 ![](./figure/map1.png)
 
