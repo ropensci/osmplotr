@@ -108,14 +108,52 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
                               cols=heat.colors (30), bg, size, shape)
 {
     # ---------------  sanity checks and warnings  ---------------
+    # --------- map
     if (missing (map))
-        stop ('map must be supplied to add_osm_objects')
+        stop ('map must be supplied to add_osm_surface')
     if (!is (map, 'ggplot'))
         stop ('map must be a ggplot2 object')
+    # --------- obj
     if (missing (obj))
-        stop ('object must be supplied to add_osm_objects')
+        stop ('object must be supplied to add_osm_surface')
     if (!inherits (obj, 'Spatial'))
-        stop ('obj must be Spatial')
+        stop ('obj must be a spatial object')
+    # --------- dat
+    if (missing (dat))
+        stop ('dat must be supplied to add_osm_surface')
+    else if (is.null (dat))
+        stop ('dat can not be NULL')
+    if (!is.numeric (as.matrix (dat)))
+        stop ('dat must be a numeric matrix or data.frame')
+    else 
+    {
+        dat <- as.matrix (dat)
+        if (ncol (dat) < 3) stop ('dat must have at least 3 columns')
+        wtxt <- paste0 ('dat should have columns of x/y, lon/lat, or equivalent;',
+                        'presuming first 2 columns are lon, lat')
+        if (is.null (colnames (dat)))
+        {
+            warning ('dat has no column names; presming [lon, lat, z]')
+            colnames (dat) [1:3] <- c ('lon', 'lat', 'z')
+        } else
+        {
+            n2 <- sort (colnames (dat) [1:2])
+            if (!(n2 [1] == 'x' | n2 [1] == 'lat') ||
+                !(n2 [2] == 'y' | n2 [2] == 'lon'))
+            {
+                warning ('dat should have columns of x/y, lon/lat, or equivalent;',
+                         ' presuming first 2 columns are lon, lat')
+                colnames (dat) [1:2] <- c ('x', 'y')
+            }
+            if (!'z' %in% colnames (dat))
+            {
+                warning ('dat should have column named z; ',
+                         'presuming that to be 3rd column')
+                colnames (dat) [3] <- 'z'
+            }
+        }
+    }
+    # --------- cols
     if (!(is.character (cols) | is.numeric (cols)))
     {
         warning ("cols will be coerced to character")
@@ -227,8 +265,8 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
 #'
 #' @param map A ggplot2 object (used only to obtain plot limits)
 #' @param xy List of coordinates of spatial objects
-#' @param dat A data surface (which may be irregular) used to provide the
-#' z-values for the resultant data frame.
+#' @param dat A Matrix representing the data surface (which may be irregular)
+#' used to provide the z-values for the resultant data frame.
 #' @param bg background colour from 'add_osm_surface()', passed here only to
 #' confirm whether it is given or missing
 #' @param grid_size Size of interpolation grid as taken from 'add_osm_surface()'
@@ -238,10 +276,22 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
 #' @return A single data frame of object IDs, coordinates, and z-values
 list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
 {
-    indx <- which (!is.na (dat [,3]))
-    x <- dat [indx,1]
-    y <- dat [indx,2]
-    marks <- dat [indx,3]
+    if ('z' %in% colnames (dat))
+        z <- dat [,'z']
+    else
+        z <- dat [,3]
+    if ('x' %in% colnames (dat))
+        x <- dat [,'x']
+    else
+        x <- dat [,pmatch ('lon', colnames (dat))]
+    if ('y' %in% colnames (dat))
+        y <- dat [,'y']
+    else
+        y <- dat [,pmatch ('lat', colnames (dat))]
+    indx <- which (!is.na (z))
+    x <- x [indx]
+    y <- y [indx]
+    marks <- z [indx]
     xyp <- spatstat::ppp (x, y, xrange=range (x), yrange=range(y), marks=marks)
     if (method == 'idw')
         z <- spatstat::idw (xyp, at="pixels", dimyx=grid_size)$v
