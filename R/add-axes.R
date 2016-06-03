@@ -47,13 +47,13 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
     if (missing (map)) stop ('map must be supplied to add_axes')
     if (!is (map, 'ggplot')) stop ('map must be a ggplot2 object')
     # ---------- colour
-    junk <- tryCatch (
-                      col2rgb (colour),
-                      error = function (e) 
-                      {
-                          e$message <-  paste0 ("Invalid colour: ", colour)
-                          stop (e)
-                      })
+    tryCatch (
+              col2rgb (colour),
+              error = function (e) 
+              {
+                  e$message <-  paste0 ("Invalid colour: ", colour)
+                  stop (e)
+              })
     # ---------- pos
     pos <- test_len2 (pos, 'pos')
     pos <- test_numeric (pos, 'pos', c (0.02, 0.03))

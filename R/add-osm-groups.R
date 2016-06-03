@@ -314,7 +314,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         }
         else
             bdry <- sp::coordinates (groups [[i]])
-        if (nrow (bdry) > 1) # otherwise group is obvious a single point
+        if (nrow (bdry) > 1) # otherwise group is obviously a single point
         {
             bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
             # The next 4 lines are only used if missing (bg)

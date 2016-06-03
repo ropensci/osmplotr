@@ -56,19 +56,58 @@ add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
     if (missing (obj))
         stop ('object must be supplied to add_osm_objects')
     if (!inherits (obj, 'Spatial'))
-        stop ('obj must be Spatial')
-    if (!(is.character (col) | is.numeric (col)))
+        stop ('obj must be a spatial object')
+    if (is.null (col)) stop ('col is NULL')
+    tryCatch (
+              col2rgb (col),
+              error = function (e) 
+              {
+                  e$message <-  paste0 ("Invalid colour: ", col)
+                  stop (e)
+              })
+    tryCatch (
+              col2rgb (border),
+              error = function (e) 
+              {
+                  e$message <-  paste0 ("Invalid border colour: ", border)
+                  stop (e)
+              })
+    # ------- size & shape
+    if (class (obj) == 'SpatialPolygonsDataFrame')
+        size_default <- 0
+    else
     {
-        warning ("col will be coerced to character")
-        col <- as.character (col)
+        size_default <- 0.5
+        if (class (obj) == 'SpatialLinesDataFrame')
+            shape_default <- 1
+        else if (class (obj) == 'SpatialPointsDataFrame')
+            shape_default <- 19
+        if (missing (shape)) shape <- shape_default
+        else if (!is.numeric (shape))
+        {
+            warning ("shape should be numeric; defaulting to ", shape_default)
+            shape <- shape_default
+        } else if (shape < 0)
+        {
+            warning ("shape should be positive; defaulting to ", shape_default)
+            shape <- shape_default
+        }
+    }
+    if (missing (size)) size <- size_default
+    else if (!is.numeric (size))
+    {
+        warning ("size should be numeric; defaulting to ", size_default)
+        size <- size_default
+    } else if (size < 0)
+    {
+        warning ("size should be positive; defaulting to ", size_default)
+        size <- size_default
     }
     # ---------------  end sanity checks and warnings  ---------------
 
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
-        if (missing (size))
-            size <- 0
         xy <- lapply (slot (obj, "polygons"), function (x)
                       slot (slot (x, "Polygons") [[1]], "coords"))
         xy <- list2df (xy)
@@ -77,10 +116,6 @@ add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
                                                       fill=col, colour=border)
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
-        if (missing (size))
-            size <- 0.5
-        if (missing (shape))
-            shape <- 1
         xy <- lapply (slot (obj, 'lines'), function (x)
                       slot (slot (x, 'Lines') [[1]], 'coords'))
         xy <- list2df (xy, islines=TRUE)
@@ -89,10 +124,6 @@ add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
                                    colour=col, size=size, linetype=shape)
     } else if (class (obj) == 'SpatialPointsDataFrame')
     {
-        if (missing (size))
-            size <- 0.5
-        if (missing (shape))
-            shape <- 19
         xy <- data.frame (slot (obj, 'coords'))
         map <- map + ggplot2::geom_point (data=xy,
                                     ggplot2::aes (x=lon, y=lat),
