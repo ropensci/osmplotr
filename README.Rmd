@@ -169,7 +169,8 @@ inclusive grouping extending across an entire region.
 
 ```{r map5, eval=FALSE}
 map <- osm_basemap (bbox=bbox, bg='gray20')
-map <- add_osm_groups (map, dat_B, groups=groups, borderWidth=2)
+map <- add_osm_groups (map, dat_B, groups=groups, 
+                       cols=rainbow (length (groups)), borderWidth=2)
 print_osm_map (map)
 ```
 ```{r map5-print, eval=FALSE, echo=FALSE}
@@ -234,12 +235,13 @@ x <- seq (bbox [1,1], bbox [1,2], length.out=dim (volcano)[1])
 y <- seq (bbox [2,1], bbox [2,2], length.out=dim (volcano)[2])
 xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
 z <- as.numeric (volcano)
+dat <- data.frame (x=xy [,1], y=xy [,2], z=z)
 ```
 ```{r map7, eval=FALSE}
 map <- osm_basemap (bbox=bbox, bg='gray20')
 cols <- gray (0:50 / 50)
-map <- add_osm_surface (map, dat_B, dat=cbind (xy, z), cols=cols)
-map <- add_osm_surface (map, dat_H, dat=cbind (xy, z), 
+map <- add_osm_surface (map, dat_B, dat=dat, cols=cols)
+map <- add_osm_surface (map, dat_H, dat=dat,
                         cols=adjust_colours (cols, -0.2)) # Darken cols by ~20%
 map <- add_colourbar (map, cols=cols, zlims=range (volcano))
 map <- add_axes (map)
@@ -252,22 +254,21 @@ print_osm_map (map, filename='map7.png', width=600, units='px', dpi=72)
 ```{r map1-print, eval=FALSE, echo=FALSE}
 # This is map1 used as the title
 # extrafont::loadfonts ()
-dat <- data.frame (x=mean (bbox[1,]), y=mean (bbox [2,]), lab='osmplotr')
+lab_dat <- data.frame (x=mean (bbox[1,]), y=mean (bbox [2,]), lab='osmplotr')
 aes <- ggplot2::aes (x, y, label=lab)
 
 bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
 map <- osm_basemap (bbox=bbox, bg='gray20')
 cols <- gray (0:50 / 50)
-map <- add_osm_surface (map, dat_B, dat=cbind (xy, z), cols=cols)
-map <- add_osm_surface (map, dat_H, dat=cbind (xy, z), 
-                        cols=adjust_colours (cols, -0.2)) # Darken cols by ~20%
+map <- add_osm_surface (map, dat_B, dat=dat, cols=cols)
+map <- add_osm_surface (map, dat_H, dat=dat, cols=adjust_colours (cols, -0.2))
 
 #map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=60, colour='white',
 #                                 family='Lato Light', nudge_y=0.0015)
-map2 <- map + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour='black',
+map2 <- map + ggplot2::geom_text (dat=lab_dat, mapping=aes, size=45, colour='black',
                                  family='Purisa', fontface=2,
                                  nudge_y=0.0005, nudge_x=0.0005)
-map2 <- map2 + ggplot2::geom_text (dat=dat, mapping=aes, size=45, colour='white',
+map2 <- map2 + ggplot2::geom_text (dat=lab_dat, mapping=aes, size=45, colour='white',
                                  family='Purisa', nudge_y=0.001, fontface=2)
 print_osm_map (map2, filename='map1.png', width=800, units='px', dpi=72)
 ```

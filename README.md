@@ -151,7 +151,8 @@ Calling `add_osm_groups` with no `bg` argument forces all points lying outside t
 
 ``` r
 map <- osm_basemap (bbox=bbox, bg='gray20')
-map <- add_osm_groups (map, dat_B, groups=groups, borderWidth=2)
+map <- add_osm_groups (map, dat_B, groups=groups, 
+                       cols=rainbow (length (groups)), borderWidth=2)
 print_osm_map (map)
 ```
 
@@ -212,13 +213,14 @@ x <- seq (bbox [1,1], bbox [1,2], length.out=dim (volcano)[1])
 y <- seq (bbox [2,1], bbox [2,2], length.out=dim (volcano)[2])
 xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each=dim (volcano) [1]))
 z <- as.numeric (volcano)
+dat <- data.frame (x=xy [,1], y=xy [,2], z=z)
 ```
 
 ``` r
 map <- osm_basemap (bbox=bbox, bg='gray20')
 cols <- gray (0:50 / 50)
-map <- add_osm_surface (map, dat_B, dat=cbind (xy, z), cols=cols)
-map <- add_osm_surface (map, dat_H, dat=cbind (xy, z), 
+map <- add_osm_surface (map, dat_B, dat=dat, cols=cols)
+map <- add_osm_surface (map, dat_H, dat=dat,
                         cols=adjust_colours (cols, -0.2)) # Darken cols by ~20%
 map <- add_colourbar (map, cols=cols, zlims=range (volcano))
 map <- add_axes (map)
