@@ -39,11 +39,45 @@
 
 adjust_colours <- function (cols, adj=0, plot=FALSE)
 {
-    if (missing (cols))
-        stop ('cols must be provided')
+    # ---------------  sanity checks and warnings  ---------------
+    # ---------- cols
+    if (missing (cols)) stop ('cols must be provided')
+    if (is.null (cols)) return (NULL)
+    if (any (is.na (cols))) stop ('One or more cols is NA')
+    tryCatch (
+              col2rgb (cols),
+              error = function (e) 
+              {
+                  e$message <-  paste0 ('Invalid colours: ', cols)
+                  stop (e)
+              })
     if (class (cols [1]) != 'matrix')
         cols <- col2rgb (cols)
-    stopifnot (adj > -1 & adj < 1)
+    # ---------- cols
+    if (is.null (adj)) return (NULL)
+    else if (is.na (adj)) stop ('adj is NA')
+    adj <- tryCatch (
+                     as.numeric (adj),
+                     warning = function (w) 
+                     {
+                         w$message <- 'adj can not be coerced to numeric'
+                     })
+    if (!is.numeric (adj)) stop (adj)
+    if (adj < -1 | adj > 1)
+        stop ('adj must be between -1 and 1')
+    # ---------- plot
+    if (is.null (plot)) return (NULL)
+    else if (is.na (plot)) stop ('plot is NA')
+    plot <- tryCatch (
+                     as.logical (plot),
+                     warning = function (w) 
+                     {
+                         w$message <- 'plot is not logical'
+                     })
+    if (!is.logical (plot)) stop (plot)
+    if (is.na (plot)) stop ('plot can not be coerced to logical')
+    # ---------------  end sanity checks and warnings  ---------------
+
     n <- ncol (cols)
     cols_old <- apply (cols, 2, function (x)
                        rgb (x[1], x[2], x[3], maxColorValue=255))
@@ -58,16 +92,16 @@ adjust_colours <- function (cols, adj=0, plot=FALSE)
     if (plot) {
         plot.new ()
         par (mar=rep (0, 4))
-        plot (NULL, NULL, xlim=c(0, n), ylim=c (0, 2), xaxs="i", yaxs="i")
+        plot (NULL, NULL, xlim=c(0, n), ylim=c (0, 2), xaxs='i', yaxs='i')
         for (i in seq (n))
         {
             rect (i-1, 1, i, 2, col=cols_old [i], border=NA)
             rect (i-1, 0, i, 1, col=cols [i], border=NA)
         }
         rect (0, 1.4, n, 1.6, col = rgb (1, 1, 1, 0.5), border = NA)
-        text (n / 2, 1.5, labels = "old")
+        text (n / 2, 1.5, labels = 'old')
         rect (0, 0.4, n, 0.6, col = rgb (1, 1, 1, 0.5), border = NA)
-        text (n / 2, 0.5, labels = "new")
+        text (n / 2, 0.5, labels = 'new')
     }
 
     return (cols)
