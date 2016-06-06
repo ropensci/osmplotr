@@ -3,12 +3,12 @@
 #' Generates a 2D matrix of graduated colours by interpolating between the given
 #' colours specifying the four corners.
 #'
-#' @param n number of rows and columns of colour matrix (default = 10; if length
-#' 2, then dimensions of rectangle). 
 #' @param cols vector of length >= 4 of colors (example, default = \code{rainbow
 #' (4)}, or \code{RColorBrewer::brewer.pal (4, 'Set1')}).
 #' \code{cols} are wrapped clockwise around the corners from top left to bottom
 #' left. 
+#' @param n number of rows and columns of colour matrix (default = 10; if length
+#' 2, then dimensions of rectangle). 
 #' @param rotate rotates the entire colour matrix by the specified angle (in
 #' degrees).
 #' @param plot plots the colour matrix.
@@ -37,7 +37,7 @@
 #'                        colmat=TRUE, rotate=90)
 #' print_osm_map (map)
 
-colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
+colour_mat <- function (cols, n=c(10, 10), rotate, plot=FALSE)
 {
     # ---------------  sanity checks and warnings  ---------------
     # ---------- cols
@@ -45,19 +45,22 @@ colour_mat <- function (n=c(10, 10), cols, rotate, plot=FALSE)
     if (is.null (cols)) return (NULL)
     else if (length (cols) < 4) stop ('cols must have length >= 4')
     if (any (is.na (cols))) stop ('One or more cols is NA')
-    cols <- sapply (cols, function (i) {
-                    tryCatch (
-                              col2rgb (i),
-                              error = function (e) 
-                              {
-                                  e$message <-  paste0 ('Invalid colours: ', i)
-                              })
-                })
+    if (class (cols) != 'matrix')
+    {
+        cols <- sapply (cols, function (i) {
+                        tryCatch (
+                                  col2rgb (i),
+                                  error = function (e) 
+                                  {
+                                      e$message <-  paste0 ('Invalid colours: ', i)
+                                  })
+                    })
+    } else if (rownames (cols) != c ('red', 'green', 'blue'))
+        stop ('Colour matrix has unknown format')
     if (any (grep ('Invalid colours', cols)))
         stop (cols [grep ('Invalid colours', cols) [1]])
 
-    if (class (cols) != 'matrix') cols <- col2rgb (cols)
-    indx <- floor (0:3 * ncol (cols) / 3)
+    indx <- floor (1:4 * ncol (cols) / 4)
     indx [1] <- 1
     cols <- cols [, indx]
     # ---------- n

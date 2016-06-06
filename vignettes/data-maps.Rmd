@@ -432,11 +432,11 @@ rectangular grid, and spatially interpolates a chromatially regular grid between
 these corners. To visual different schemes, it has a `plot` argument:
 
 ```{r, eval=FALSE}
-cmat <- colour_mat (plot=TRUE)
+cmat <- colour_mat (rainbow (4), plot=TRUE)
 ```
 ```{r, fig.width=4, echo=FALSE}
 plot.new ()
-cmat <- colour_mat (plot=TRUE)
+cmat <- colour_mat (rainbow (4), plot=TRUE)
 ```
 
 This grid illustrates the default colours, `rainbow (4)`. The two-dimensional
@@ -444,11 +444,11 @@ colour field produced by `colour_mat` may also be rotated by a specified number
 of degrees using the `rotate` argument.
 
 ```{r, eval=FALSE}
-cmat <- colour_mat (n=c(4,8), rotate=90, plot=TRUE)
+cmat <- colour_mat (rainbow (4), n=c(4,8), rotate=90, plot=TRUE)
 ```
 ```{r, fig.width=4, echo=FALSE}
 plot.new ()
-cmat <- colour_mat (n=c(4,8), rotate=90, plot=TRUE)
+cmat <- colour_mat (rainbow (4), n=c(4,8), rotate=90, plot=TRUE)
 ```
 
 This example also illustrates that the size of colour matrices may also be
