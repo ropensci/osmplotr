@@ -53,7 +53,7 @@ adjust_colours <- function (cols, adj=0, plot=FALSE)
               })
     if (class (cols [1]) != 'matrix')
         cols <- col2rgb (cols)
-    # ---------- cols
+    # ---------- adj
     if (is.null (adj)) return (NULL)
     else if (is.na (adj)) stop ('adj is NA')
     adj <- tryCatch (
