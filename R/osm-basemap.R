@@ -25,20 +25,43 @@
 osm_basemap <- function (bbox, structures, bg='gray20')
 {
     # ---------------  sanity checks and warnings  ---------------
+    # ------- bbox
     if (missing (bbox))
         stop ('bbox must be supplied')
     if (!is.numeric (bbox))
         stop ('bbox is not numeric')
     if (length (bbox) < 4)
         stop ('bbox must have length = 4')
-
-    if (!missing (structures))
-        bg = structure$cols [which (structures$structure == 'background')]
-    if (!(is.character (bg) | is.numeric (bg)))
+    if (length (bbox) > 4)
     {
-        warning ('bg will be coerced to character')
-        bg <- as.character (bg)
+        warning ('bbox has length > 4; only first 4 elements will be used')
+        bbox <- matrix (bbox [1:4], 2, 2)
     }
+    # ------- structures
+    if (!missing (structures))
+    {
+        if (!is.data.frame (structures))
+            stop ('structures must be a data frame')
+        ns <- c ('structure', 'key', 'value', 'suffix', 'cols')
+        if (!all (names (structures) == ns))
+            stop ('structures not in recognised format')
+        bg = structure$cols [which (structures$structure == 'background')]
+    }
+    # ------- structures
+    if (is.null (bg)) stop ('Invalid bg')
+    if (length (bg) > 1)
+    {
+        warning ('bg has length > 1; only first element will be used')
+        bg <- bg [1]
+    }
+    if (is.na (bg)) stop ('Invalid bg')
+    tryCatch (
+              col2rgb (bg),
+              error = function (e) 
+              {
+                  e$message <-  paste0 ('Invalid bg: ', bg)
+                  stop (e)
+              })
     # ---------------  end sanity checks and warnings  ---------------
 
     # Because the initial plot has no data, setting these elements suffices to
