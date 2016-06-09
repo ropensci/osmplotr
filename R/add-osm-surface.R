@@ -16,8 +16,10 @@
 #' @param dat A matrix or data frame of 3 columns (x, y, z), where (x, y) are
 #' (longitude, latitude), and z are the values to be interpolated
 #' @param method Either \code{idw} (Inverse Distance Weighting as
-#' \code{spatstat::idw}; default), otherwise uses \code{Gaussian} for kernel
-#' smoothing (as \code{spatstat::Smooth.ppp})
+#' \code{spatstat::idw}; default), \code{Gaussian} for kernel
+#' smoothing (as \code{spatstat::Smooth.ppp}), or any other value to avoid
+#' interpolation. In this case, \code{dat} must be regularly spaced in \code{x}
+#' and \code{y}.
 #' @param grid_size size of interpolation grid 
 #' @param cols Vector of colours for shading z-values (for example,
 #' \code{terrain.colors (30)})
@@ -295,8 +297,14 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
     xyp <- spatstat::ppp (x, y, xrange=range (x), yrange=range(y), marks=marks)
     if (method == 'idw')
         z <- spatstat::idw (xyp, at="pixels", dimyx=grid_size)$v
-    else
+    else if (method == 'smooth')
         z <- spatstat::Smooth (xyp, at="pixels", dimyx=grid_size, diggle=TRUE)$v
+    else
+        z <- array (marks, dim=rep (sqrt (length (z)), 2))
+    # TODO: Insert condition for no method for when this transpose is
+    # appropriate, and also check spatstat code to see why and when it
+    # (apparently) transposes the matrices
+    z <- t (z)
 
     # Get mean coordinates of each object in xy. 
     # TODO: Colour lines continuously according to the coordinates of each
@@ -320,6 +328,17 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
                    sp::point.in.polygon (x [1], x [2], bdry [,1], bdry [,2]))
         # indx = 0 for outside polygon
     } 
+
+    # Include only those objects within the limits of the map
+    indx_xy <- which (xymn [,1] >= map$coordinates$limits$x [1] &
+                      xymn [,1] <= map$coordinates$limits$x [2] &
+                      xymn [,2] >= map$coordinates$limits$y [1] &
+                      xymn [,2] <= map$coordinates$limits$y [2])
+    xymn <- xymn [indx_xy,]
+    # And reduce xy to that index
+    c2 <- class (xy) [2]
+    xy <- xy [indx_xy]
+    xy <- structure (xy, class=c (class (xy), c2))
 
     # Then convert to integer indices into z
     xymn [,1] <- ceiling (grid_size * 

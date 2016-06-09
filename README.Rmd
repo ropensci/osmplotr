@@ -58,7 +58,7 @@ setwd ('./osmplotr')
     ```
 5. Print the map to graphics device of choice
     ```{r, eval=FALSE}
-    print (map)
+    print_osm_map (map)
     ```
 
 ---------------

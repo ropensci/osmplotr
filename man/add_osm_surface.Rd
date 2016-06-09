@@ -18,8 +18,10 @@ add_osm_surface(map, obj, dat, method = "idw", grid_size = 100,
 (longitude, latitude), and z are the values to be interpolated}
 
 \item{method}{Either \code{idw} (Inverse Distance Weighting as
-\code{spatstat::idw}; default), otherwise uses \code{Gaussian} for kernel
-smoothing (as \code{spatstat::Smooth.ppp})}
+\code{spatstat::idw}; default), \code{Gaussian} for kernel
+smoothing (as \code{spatstat::Smooth.ppp}), or any other value to avoid
+interpolation. In this case, \code{dat} must be regularly spaced in \code{x}
+and \code{y}.}
 
 \item{grid_size}{size of interpolation grid}
 

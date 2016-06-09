@@ -52,7 +52,7 @@ But first the easy steps to map making:
 5.  Print the map to graphics device of choice
 
     ``` r
-    print (map)
+    print_osm_map (map)
     ```
 
 ------------------------------------------------------------------------
