@@ -168,7 +168,8 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
         xy0 <- lapply (slot (obj, 'polygons'), function (x)
                         slot (slot (x, 'Polygons') [[1]], 'coords'))
         xy0 <- structure (xy0, class=c (class (xy0), 'polygons'))
-        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size)
+        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size,
+                                  method=method)
         if (missing (bg))
             xy <- xy0
         else
@@ -196,7 +197,8 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
         xy0 <- lapply (slot (obj, 'lines'), function (x)
                         slot (slot (x, 'Lines') [[1]], 'coords'))
         xy0 <- structure (xy0, class=c (class (xy0), 'lines'))
-        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size)
+        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size,
+                                  method=method)
         if (missing (bg))
             xy <- xy0
         else
@@ -226,7 +228,8 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
     {
         xy0 <- sp::coordinates (obj)
         xy0 <- structure (xy0, class=c (class (xy0), 'points'))
-        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size)
+        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size,
+                                  method=method)
         if (missing (bg))
             xy <- xy0
         else
@@ -290,6 +293,8 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
         y <- dat [,'y']
     else
         y <- dat [,pmatch ('lat', colnames (dat))]
+    xlims <- range (x) # used below to convert to indices into z-matrix
+    ylims <- range (y)
     indx <- which (!is.na (z))
     x <- x [indx]
     y <- y [indx]
@@ -337,16 +342,17 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
     xymn <- xymn [indx_xy,]
     # And reduce xy to that index
     c2 <- class (xy) [2]
-    xy <- xy [indx_xy]
+    if ('points' %in% class (xy))
+        xy <- xy [indx_xy,]
+    else
+        xy <- xy [indx_xy]
     xy <- structure (xy, class=c (class (xy), c2))
 
-    # Then convert to integer indices into z
-    xymn [,1] <- ceiling (grid_size * 
-                          (xymn [,1] - map$coordinates$limits$x [1]) / 
-                          diff (map$coordinates$limits$x))
-    xymn [,2] <- ceiling (grid_size * 
-                          (xymn [,2] - map$coordinates$limits$y [1]) / 
-                          diff (map$coordinates$limits$y))
+    # Convert to integer indices into z. z spans the range of data, not
+    # necessarily the bbox
+    xymn [,1] <- ceiling (grid_size * (xymn [,1] - xlims [1]) / diff (xlims))
+    xymn [,2] <- ceiling (grid_size * (xymn [,2] - ylims [1]) / diff (ylims))
+
     if (missing (bg))
     {
         xymn [xymn < 1] <- 1
@@ -372,13 +378,12 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
     }
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
-    xy <-  data.frame (
-                       id=xy [,1],
-                       lon=xy [,2],
-                       lat=xy [,3],
-                       z=xy [,4], 
-                       inp=xy [,5],
-                       row.names=1:nrow (xy)
-                       )
-    return (xy)
+    data.frame (
+                id=xy [,1],
+                lon=xy [,2],
+                lat=xy [,3],
+                z=xy [,4], 
+                inp=xy [,5],
+                row.names=1:nrow (xy)
+                )
 }
