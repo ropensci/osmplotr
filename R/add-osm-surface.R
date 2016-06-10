@@ -305,10 +305,20 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
     else if (method == 'smooth')
         z <- spatstat::Smooth (xyp, at="pixels", dimyx=grid_size, diggle=TRUE)$v
     else
-        z <- array (marks, dim=rep (sqrt (length (z)), 2))
-    # TODO: Insert condition for no method for when this transpose is
-    # appropriate, and also check spatstat code to see why and when it
-    # (apparently) transposes the matrices
+    {
+        # x and y might not necessarily be regular, so grid has to be manually
+        # filled with z-values
+        nx <- length (unique (x))
+        ny <- length (unique (y))
+        arr <- array (NA, dim=c (nx, ny))
+        indx_x <- as.numeric (cut (x, nx))
+        indx_y <- as.numeric (cut (y, ny))
+        arr [(indx_y - 1) * nx + indx_x] <- z
+        z <- t (arr )
+        # z here, as for interp methods above, has
+        # (rows,cols)=(vert,horizont)=c(y,x) so is indexed (x, y). To yield a
+        # figure with horizontal x-axis, this is transformed below.
+    }
     z <- t (z)
 
     # Get mean coordinates of each object in xy. 
@@ -340,6 +350,7 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
                       xymn [,2] >= map$coordinates$limits$y [1] &
                       xymn [,2] <= map$coordinates$limits$y [2])
     xymn <- xymn [indx_xy,]
+    indx <- indx [indx_xy]
     # And reduce xy to that index
     c2 <- class (xy) [2]
     if ('points' %in% class (xy))
@@ -350,19 +361,24 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
 
     # Convert to integer indices into z. z spans the range of data, not
     # necessarily the bbox
-    xymn [,1] <- ceiling (grid_size * (xymn [,1] - xlims [1]) / diff (xlims))
-    xymn [,2] <- ceiling (grid_size * (xymn [,2] - ylims [1]) / diff (ylims))
+    if (method == 'idw' | method == 'smooth')
+        nx <- ny <- grid_size
+    xymn [,1] <- ceiling (nx * (xymn [,1] - xlims [1]) / diff (xlims))
+    xymn [,2] <- ceiling (ny * (xymn [,2] - ylims [1]) / diff (ylims))
 
     if (missing (bg))
     {
-        xymn [xymn < 1] <- 1
-        xymn [xymn > grid_size] <- grid_size
+        xymn [,1] [xymn [,1] < 1] <- 1
+        xymn [,1] [xymn [,1] > nx] <- nx
+        xymn [,2] [xymn [,2] < 1] <- 1
+        xymn [,2] [xymn [,2] > ny] <- ny
     } else
     {
-        xymn [xymn < 1] <- NA
-        xymn [xymn > grid_size] <- NA
+        xymn [,1] [xymn [,1] < 1] <- NA
+        xymn [,1] [xymn [,1] > nx] <- NA
+        xymn [,2] [xymn [,2] < 1] <- NA
+        xymn [,2] [xymn [,2] > ny] <- NA
     }
-
 
     if ('polygons' %in% class (xy) | 'lines' %in% class (xy))
     {

@@ -525,9 +525,9 @@ And then plot the map.
 map <- osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_objects (map, dat_P, col=col_park_out)
 map <- add_osm_groups (map, dat_B, groups=groups, boundary=1,
-                   bg=bg_B, col=cols_B)
+                   bg=bg_B, cols=cols_B)
 map <- add_osm_groups (map, dat_H, groups=groups, boundary=1,
-                   bg=bg_H, col=cols_H)
+                   bg=bg_H, cols=cols_H)
 map <- add_osm_groups (map, dat_HP, groups=groups, boundary=0,
                    cols=cols_H, bg=bg_H, size=1)
 print_osm_map (map)
