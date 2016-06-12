@@ -19,11 +19,11 @@
 #' @seealso \code{\link{osm_basemap}}.
 #'
 #' @examples
-#' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- osm_basemap (bbox=bbox, bg="gray20")
-#' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
-#' map <- add_axes (map)
-#' print (map)
+bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+map <- osm_basemap (bbox=bbox, bg="gray20")
+map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
+map <- add_axes (map)
+print (map)
 #'
 #' # Map items are added sequentially, so adding axes prior to objects will
 #' # produce a different result.
@@ -99,9 +99,8 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
                                "lat"=c (y0, y1, y1, y0, y0)))
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     aes2 <- ggplot2::aes (x=lon, y=lat, size=0)
-    map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     fill=rgb (1, 1, 1, alpha),
-                                     colour='transparent')
+    map <- map + ggplot2::geom_path (data=rdat, mapping=aes2, inherit.aes=FALSE,
+                                     colour=rgb (1, 1, 1, alpha))
 
     # And rectangles around tick marks, starting with horiztonal
     x0 <- xp - expand * diff (yaxs_pos)
@@ -111,7 +110,7 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
     rdat <- data.frame (cbind ("id"=rep (seq (xp), each=5), "lon"=x, "lat"=y))
     aes2 <- ggplot2::aes (x=lon, y=lat, group=id, size=0)
     map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     colour=rgb (1, 1, 1, alpha),
+                                     fill=rgb (1, 1, 1, alpha),
                                      colour='transparent')
     # Then rectangles around vertical tick marks
     y0 <- yp - expand * diff (xaxs_pos)
@@ -121,7 +120,7 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
     rdat <- data.frame (cbind ("id"=rep (seq (yp), each=5), "lon"=x, "lat"=y))
     aes2 <- ggplot2::aes (x=lon, y=lat, group=id, size=0)
     map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     colour=rgb (1, 1, 1, alpha),
+                                     fill=rgb (1, 1, 1, alpha),
                                      colour='transparent')
 
     # ------------- horiztonal axis
