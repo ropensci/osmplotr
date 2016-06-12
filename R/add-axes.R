@@ -99,8 +99,9 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
                                "lat"=c (y0, y1, y1, y0, y0)))
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     aes2 <- ggplot2::aes (x=lon, y=lat, size=0)
-    map <- map + ggplot2::geom_path (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     colour=rgb (1, 1, 1, alpha))
+    map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
+                                     fill=rgb (1, 1, 1, alpha),
+                                     colour='transparent')
 
     # And rectangles around tick marks, starting with horiztonal
     x0 <- xp - expand * diff (yaxs_pos)
@@ -109,8 +110,9 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
     x <- as.numeric (rbind (x0, x0, x1, x1, x0))
     rdat <- data.frame (cbind ("id"=rep (seq (xp), each=5), "lon"=x, "lat"=y))
     aes2 <- ggplot2::aes (x=lon, y=lat, group=id, size=0)
-    map <- map + ggplot2::geom_path (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     colour=rgb (1, 1, 1, alpha))
+    map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
+                                     colour=rgb (1, 1, 1, alpha),
+                                     colour='transparent')
     # Then rectangles around vertical tick marks
     y0 <- yp - expand * diff (xaxs_pos)
     y1 <- yp + expand * diff (xaxs_pos)
@@ -118,8 +120,9 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
     y <- as.numeric (rbind (y0, y0, y1, y1, y0))
     rdat <- data.frame (cbind ("id"=rep (seq (yp), each=5), "lon"=x, "lat"=y))
     aes2 <- ggplot2::aes (x=lon, y=lat, group=id, size=0)
-    map <- map + ggplot2::geom_path (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     colour=rgb (1, 1, 1, alpha))
+    map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
+                                     colour=rgb (1, 1, 1, alpha),
+                                     colour='transparent')
 
     # ------------- horiztonal axis
     # main line 
