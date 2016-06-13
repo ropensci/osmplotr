@@ -19,11 +19,11 @@
 #' @seealso \code{\link{osm_basemap}}.
 #'
 #' @examples
-bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-map <- osm_basemap (bbox=bbox, bg="gray20")
-map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
-map <- add_axes (map)
-print (map)
+#' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
+#' map <- osm_basemap (bbox=bbox, bg="gray20")
+#' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
+#' map <- add_axes (map)
+#' print (map)
 #'
 #' # Map items are added sequentially, so adding axes prior to objects will
 #' # produce a different result.
@@ -85,22 +85,33 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
                 max (xp) - (max (xp) - max (xrange)) / 2)
     ylims <- c (yp [1] - (yp [1] - min (yrange)) / 2,
                 max (yp) - (max (yp) - max (yrange)) / 2)
+    # change notation so xaxs_pos are y-coordinates of the x-axis
     xaxs_pos <- min (yrange) + pos * diff (yrange)
     axis_ratio <- diff (yrange) / diff (xrange)
     yaxs_pos <- min (xrange) + pos * axis_ratio * diff (xrange)
 
     # Rectangle around axes
-    expand <- 0.02
-    x0 <- yaxs_pos [1] - expand * diff (yaxs_pos)
-    x1 <- xrange [2]
-    y0 <- xaxs_pos [1] - expand * diff (xaxs_pos)
-    y1 <- yrange [2]
-    rdat <- data.frame (cbind ("lon"=c (x0, x0, x1, x1, x0), 
-                               "lat"=c (y0, y1, y1, y0, y0)))
+    expand <- 1.0
+    xr <- c (yaxs_pos [1] + c(-1, 1) * expand * diff (yaxs_pos), xrange [2])
+    yr <- c (xaxs_pos [1] + c(-1, 1) * expand * diff (xaxs_pos), yrange [2])
+    #
+    #  (x1,y3)---(x2,y3)
+    #     |         |
+    #     |         |
+    #     |         |
+    #  (x1,y2)---(x2,y2)----------------------------(x3,y2)
+    #     |         |                                  |
+    #  (x1,y1)---(x2,y1)----------------------------(x3,y1)
+    #
+    rdat <- data.frame (cbind ("lon"=c(xr[1], xr[1], xr[3], xr[3],
+                                       xr[2], xr[2], xr[1]),
+                               "lat"=c(yr[3], yr[1], yr[1], yr[2],
+                                       yr[2], yr[3], yr[3])))
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     aes2 <- ggplot2::aes (x=lon, y=lat, size=0)
-    map <- map + ggplot2::geom_path (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     colour=rgb (1, 1, 1, alpha))
+    map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
+                                        fill=rgb (1, 1, 1, alpha),
+                                        colour='transparent')
 
     # And rectangles around tick marks, starting with horiztonal
     x0 <- xp - expand * diff (yaxs_pos)
