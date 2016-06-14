@@ -193,8 +193,8 @@ add_colourbar <- function (map, barwidth=0.02, barlength=0.7, zlims, cols,
                         )
     aes <- ggplot2::aes (x=x, y=y, size=0)
     pcol <- rgb (1, 1, 1, alpha)
-    # geom_path rounded corners, geom_poly does not, and size=5 *should* ensure
-    # it covers the inside of most bars
+    # geom_path has rounded corners, geom_poly does not, and size=5 *should*
+    # ensure it covers the inside of most bars
     map <- map + ggplot2::geom_path (data=rdat, mapping=aes, inherit.aes=FALSE,
                                      colour=pcol, size=5)
 
