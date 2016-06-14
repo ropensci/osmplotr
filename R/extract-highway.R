@@ -39,9 +39,7 @@ extract_highway <- function (name='', bbox)
     pids <- osmar::find_down (dato, osmar::way (pids))
     nvalid <- sum (sapply (pids, length))
     obj <- NULL
-    if (nvalid <= 3) # (nodes, ways, relations)
-        warning (paste0 ('No valid data for name=(', name, ')'))
-    else
+    if (nvalid > 3) # (nodes, ways, relations)
         obj <- osmar::as_sp (subset (dato, ids = pids), 'lines')
 
     return (obj)

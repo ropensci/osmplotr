@@ -35,8 +35,10 @@ setwd ('..')
 devtools::load_all ('osmplotr', export_all=FALSE)
 #devtools::document ('osmplotr')
 #devtools::check ('osmplotr')
+#testthat::test_package ('osmplotr')
 setwd ('./osmplotr')
 #devtools::build_vignettes ()
+#testthat::test_package ('osmplotr')
 ```
 
 

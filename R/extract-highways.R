@@ -56,14 +56,13 @@ extract_highways <- function (highway_names, bbox)
         for (i in seq (highway_names))
         {
             dat <- extract_highway (name = highway_names [i], bbox=bbox)
-            if (!is.null (dat))
-            {
-                notnull <- notnull + 1
-                p4s <- proj4string (dat)
-                assign (waynames [i], dat)
-            } 
+            assign (waynames [i], dat)
             setTxtProgressBar(pb, i / length (highway_names))
         }
+        lens <- sapply (waynames, function (i) length (get (i)))
+        if (sum (lens) == 0)
+            stop ('No data able to be extracted')
+        p4s <- proj4string (get (waynames [which (lens > 0)[1]]))
         rm (dat)
         close (pb)
         if (notnull < length (highway_names))
