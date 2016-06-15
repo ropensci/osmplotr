@@ -45,14 +45,14 @@ extract_highways <- function (highway_names, bbox)
 
     cat ('Downloading OSM data ...\n')
     dat <- NULL
-    max_trials <- 20
-    count <- 1
-    notnull <- 0
     p4s <- NULL
-    while (notnull < length (highway_names))
+    lens_old <- length (highway_names)
+    lens <- 0
+    # in case download does not work, this will try again until same data are
+    # returned twice in a row
+    while (lens != lens_old)
     {
         pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
-        notnull <- 0
         for (i in seq (highway_names))
         {
             dat <- extract_highway (name = highway_names [i], bbox=bbox)
@@ -60,20 +60,17 @@ extract_highways <- function (highway_names, bbox)
             setTxtProgressBar(pb, i / length (highway_names))
         }
         lens <- sapply (waynames, function (i) length (get (i)))
-        if (sum (lens) == 0)
-            stop ('No data able to be extracted')
-        p4s <- proj4string (get (waynames [which (lens > 0)[1]]))
+        lens <- sum (which (lens > 0)) # total number returning data
+        if (lens > 0)
+            p4s <- proj4string (get (waynames [which (lens > 0)[1]]))
         rm (dat)
         close (pb)
-        if (notnull < length (highway_names))
-            cat ('Failed to download all data, trying again (#', count,
-                 '/', max_trials, ') ...\n', sep='')
-        count <- count + 1
-        if (count > max_trials)
-            break
+        lens_old <- lens
     }
-    if (notnull < length (highway_names))
-        stop ('Unable to download all requested data.')
+    if (sum (lens) == 0)
+        stop ('No data able to be extracted')
+    if (sum (which (lens > 0)) < length (highway_names))
+        message ('Unable to download all requested data.')
 
     # ***** (2) Order the individual OSM objects into a minimal number of
     # *****     discrete sequences

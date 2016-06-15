@@ -40,6 +40,7 @@ setwd ('./osmplotr')
 #devtools::build_vignettes ()
 #testthat::test_package ('osmplotr')
 ```
+           connect_highways ('aaa', bbox)
 
 
 1. Specify the bounding box for the desired region
