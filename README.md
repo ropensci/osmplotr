@@ -18,6 +18,8 @@ R package to produce visually impressive customisable images of OpenStreetMap (O
 
 [7. Data Surfaces](#7%20data%20surfaces)
 
+[8. Gallery](#8%20gallery)
+
 ------------------------------------------------------------------------
 
 <a name="1 intro"></a>1. Quick Introduction
@@ -228,6 +230,19 @@ print_osm_map (map)
 ```
 
 ![](./figure/map7.png)
+
+------------------------------------------------------------------------
+
+<a name="8 gallery"></a>8. Gallery
+----------------------------------
+
+Got a nice `osmplotr` map? Please contribute in one of the following ways:
+
+1.  Fork repo, add link to `README.md/.Rdm`, and send pull request; or
+
+2.  Open issue with details; or
+
+3.  Send email to address in [`DESCRIPTION`](https://github.com/ropenscilabs/osmplotr/blob/master/DESCRIPTION).
 
 ------------------------------------------------------------------------
 
