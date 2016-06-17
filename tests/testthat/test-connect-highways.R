@@ -20,3 +20,11 @@ test_that ('highways do not connect', {
            expect_warning (connect_highways (highways=highways, bbox=bbox_big),
                            'Cycle unable to be extended through all ways')
 })
+
+test_that ('plot', {
+    bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+    highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
+    expect_message (connect_highways (highways=highways, bbox=bbox_big,
+                                      plot=TRUE),
+                    'Unable to download all requested data')
+})
