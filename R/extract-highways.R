@@ -60,16 +60,16 @@ extract_highways <- function (highway_names, bbox)
             setTxtProgressBar(pb, i / length (highway_names))
         }
         lens <- sapply (waynames, function (i) length (get (i)))
-        lens <- sum (which (lens > 0)) # total number returning data
+        lens <- length (which (lens > 0)) # total number returning data
         if (lens > 0)
             p4s <- proj4string (get (waynames [which (lens > 0)[1]]))
         rm (dat)
         close (pb)
         lens_old <- lens
     }
-    if (sum (lens) == 0)
+    if (lens == 0)
         stop ('No data able to be extracted')
-    if (sum (which (lens > 0)) < length (highway_names))
+    if (lens < length (highway_names))
         message ('Unable to download all requested data.')
 
     # ***** (2) Order the individual OSM objects into a minimal number of
