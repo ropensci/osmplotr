@@ -70,7 +70,13 @@ extract_highways <- function (highway_names, bbox)
     if (lens == 0)
         stop ('No data able to be extracted')
     if (lens < length (highway_names))
+    {
         message ('Unable to download all requested data.')
+        indx <- as.numeric (which (sapply (waynames, function (i) 
+                                           length (get (i))) > 0))
+        waynames <- waynames [indx]
+        highway_names <- highway_names [indx]
+    }
 
     # ***** (2) Order the individual OSM objects into a minimal number of
     # *****     discrete sequences
