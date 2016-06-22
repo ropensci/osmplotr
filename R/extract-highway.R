@@ -28,19 +28,31 @@ extract_highway <- function (name='', bbox)
     #dat <- RCurl::getURL (query)
     #dat <- XML::xmlParse (dat)
     dat <- httr::GET (query)
+    count <- 1
+    # code#429 = "Too Many Requests (RFC 6585)"
+    while (dat$status_code == 429 && count < 10)
+    {
+        dat <- httr::GET (query)
+        count <- count + 1
+    }
     if (dat$status_code != 200)
-        message (httr::http_status (dat)$message)
-    # Encoding must be supplied to suppress warning
-    dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
-    dato <- osmar::as_osmar (dat)
-    key <- 'highway'
-    k <- NULL # supress 'no visible binding' note from R CMD check
-    pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
-    pids <- osmar::find_down (dato, osmar::way (pids))
-    nvalid <- sum (sapply (pids, length))
-    obj <- NULL
-    if (nvalid > 3) # (nodes, ways, relations)
-        obj <- osmar::as_sp (subset (dato, ids = pids), 'lines')
+    {
+        #message (httr::http_status (dat)$message)
+        obj <- httr::http_status (dat)
+    } else
+    {
+        # Encoding must be supplied to suppress warning
+        dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
+        dato <- osmar::as_osmar (dat)
+        key <- 'highway'
+        k <- NULL # supress 'no visible binding' note from R CMD check
+        pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
+        pids <- osmar::find_down (dato, osmar::way (pids))
+        nvalid <- sum (sapply (pids, length))
+        obj <- NULL
+        if (nvalid > 3) # (nodes, ways, relations)
+            obj <- osmar::as_sp (subset (dato, ids = pids), 'lines')
+    }
 
     return (obj)
 }

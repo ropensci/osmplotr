@@ -52,17 +52,23 @@ extract_highways <- function (highway_names, bbox)
     # returned twice in a row
     while (lens != lens_old)
     {
+        indx <- NULL
         pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
         for (i in seq (highway_names))
         {
             dat <- extract_highway (name = highway_names [i], bbox=bbox)
-            assign (waynames [i], dat)
+            if (is (dat, 'Spatial'))
+            {
+                assign (waynames [i], dat)
+                indx <- c (indx, i)
+            } else
+                message (dat$message)
             setTxtProgressBar(pb, i / length (highway_names))
         }
-        lens <- sapply (waynames, function (i) length (get (i)))
+        lens <- sapply (waynames [indx], function (i) length (get (i)))
         lens <- length (which (lens > 0)) # total number returning data
         if (lens > 0)
-            p4s <- proj4string (get (waynames [which (lens > 0)[1]]))
+            p4s <- proj4string (get (waynames [indx] [which (lens > 0)[1]]))
         rm (dat)
         close (pb)
         lens_old <- lens
@@ -72,8 +78,6 @@ extract_highways <- function (highway_names, bbox)
     if (lens < length (highway_names))
     {
         message ('Unable to download all requested data.')
-        indx <- as.numeric (which (sapply (waynames, function (i) 
-                                           length (get (i))) > 0))
         waynames <- waynames [indx]
         highway_names <- highway_names [indx]
     }
