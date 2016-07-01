@@ -281,15 +281,26 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         }
     }
 
-    # first extract mean coordinates for every polygon or line in obj:
+    # Trim obj down to only those items within the limits of the map
+    xrange <- map$coordinates$limits$x
+    yrange <- map$coordinates$limits$y
+    xylims <- lapply (slot (obj, objtxt [1]), function (i)
+                      {
+                          xyi <- slot (slot (i, objtxt [2]) [[1]], 'coords')
+                          c (apply (xyi, 2, min), apply (xyi, 2, max))
+                      })
+    xylims <- do.call (rbind, xylims)
+    indx <- which (xylims [,1] > xrange [1] & xylims [,2] > yrange [1] &
+                   xylims [,3] < xrange [2] & xylims [,4] < yrange [2])
+    obj <- obj [indx,]
+
+    # then extract mean coordinates for every polygon or line in obj:
     xy_mn <- lapply (slot (obj, objtxt [1]),  function (x)
                      colMeans  (slot (slot (x, objtxt [2]) [[1]], 'coords')))
     xmn <- sapply (xy_mn, function (x) x [1])
     ymn <- sapply (xy_mn, function (x) x [2])
 
     #usr <- par ('usr')
-    xrange <- map$coordinates$limits$x
-    yrange <- map$coordinates$limits$y
     boundaries <- list ()
     xy_list <- list () 
     # The following loop constructs:

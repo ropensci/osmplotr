@@ -164,17 +164,39 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
     # ---------------  end sanity checks and warnings  ---------------
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
+        objtxt <- c ('polygons', 'Polygons')
+    else if (class (obj) == 'SpatialLinesDataFrame')
+        objtxt <- c ('lines', 'Lines')
+    else if (class (obj) == 'SpatialPointsDataFrame')
+        objtxt <- c ('points', '')
+    if (class (obj) == 'SpatialPointsDataFrame')
     {
-        xy0 <- lapply (slot (obj, 'polygons'), function (x)
-                        slot (slot (x, 'Polygons') [[1]], 'coords'))
-        xy0 <- structure (xy0, class=c (class (xy0), 'polygons'))
-        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size,
-                                  method=method)
-        if (missing (bg))
-            xy <- xy0
-        else
-            xy <- xy0 [xy0$inp > 0, ]
+        xy0 <- sp::coordinates (obj)
+    } else
+    {
+        xylims <- lapply (slot (obj, objtxt [1]), function (i)
+                          {
+                              xyi <- slot (slot (i, objtxt [2]) [[1]], 'coords')
+                              c (apply (xyi, 2, min), apply (xyi, 2, max))
+                          })
+        xylims <- do.call (rbind, xylims)
+        indx <- which (xylims [,1] > xrange [1] & xylims [,2] > yrange [1] &
+                       xylims [,3] < xrange [2] & xylims [,4] < yrange [2])
+        obj <- obj [indx,]
+        xy0 <- lapply (slot (obj, objtxt [1]), function (x)
+                        slot (slot (x, objtxt [2]) [[1]], 'coords'))
+    }
+    xy0 <- structure (xy0, class=c (class (xy0), objtxt [1]))
+    xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size,
+                              method=method)
+    if (missing (bg))
+        xy <- xy0
+    else
+        xy <- xy0 [xy0$inp > 0, ]
 
+
+    if (class (obj) == 'SpatialPolygonsDataFrame')
+    {
         # TODO: Add border to geom_polygon call
         lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
         aes <- ggplot2::aes (x=lon, y=lat, group=id, fill=z) 
@@ -194,16 +216,6 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
         }
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
-        xy0 <- lapply (slot (obj, 'lines'), function (x)
-                        slot (slot (x, 'Lines') [[1]], 'coords'))
-        xy0 <- structure (xy0, class=c (class (xy0), 'lines'))
-        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size,
-                                  method=method)
-        if (missing (bg))
-            xy <- xy0
-        else
-            xy <- xy0 [xy0$inp > 0,]
-
         if (missing (size))
             size <- 0.5
         if (length (size) == 1)
@@ -226,15 +238,6 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
         }
     } else if (class (obj) == 'SpatialPointsDataFrame')
     {
-        xy0 <- sp::coordinates (obj)
-        xy0 <- structure (xy0, class=c (class (xy0), 'points'))
-        xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size,
-                                  method=method)
-        if (missing (bg))
-            xy <- xy0
-        else
-            xy <- xy0 [xy0$inp > 0,]
-
         if (missing (size))
             size <- 0.5
         if (length (size) == 1)
