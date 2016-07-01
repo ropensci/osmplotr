@@ -3,6 +3,7 @@ osmplotr v0.2.2
 
 * 'add_osm_surface' did not previously work properly for different bboxes
     (and so zooming was not possible). Now fixed.
+* both 'add_osm_surface' and 'add_osm_groups' now enable maps to be zoomed
 
 osmplotr v0.2.1
 ===============

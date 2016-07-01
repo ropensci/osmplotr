@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 #output: rmarkdown::pdf_document
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Making Maps}
+  %\VignetteIndexEntry{Basic Maps}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

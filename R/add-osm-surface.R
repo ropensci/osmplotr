@@ -169,6 +169,10 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
         objtxt <- c ('lines', 'Lines')
     else if (class (obj) == 'SpatialPointsDataFrame')
         objtxt <- c ('points', '')
+
+    xrange <- map$coordinates$limits$x
+    yrange <- map$coordinates$limits$y
+
     if (class (obj) == 'SpatialPointsDataFrame')
     {
         xy0 <- sp::coordinates (obj)
