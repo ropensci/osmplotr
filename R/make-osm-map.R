@@ -91,20 +91,28 @@ make_osm_map <- function (bbox, osm_data,
              nrow (structures), 'structures ...\n')
         pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
         t0 <- proc.time ()
+        indx <- NULL
         for (i in 1:nrow (structures)) {
             dat <- extract_osm_objects (key=structures$key [i],
                                         value=structures$value [i], bbox=bbox)
-            fname <- paste0 (dat_prefix, structures$suffix [i])
-            assign (fname, dat)
-            osm_data [[fname]] <- get (fname)
+            if (is (dat, 'Spatial'))
+            {
+                fname <- paste0 (dat_prefix, structures$suffix [i])
+                assign (fname, dat)
+                osm_data [[fname]] <- get (fname)
+                indx <- c (indx, i)
+            } 
             setTxtProgressBar(pb, i / nrow (structures))
         }
         close (pb)
         cat ('That took ', (proc.time () - t0)[3], 's\n', sep='')
 
-        structures <- structs_full
+        indx <- c (indx, nrow (structs_full))
+        structures <- structs_full [indx,]
     }
     ns <- nrow (structures) - 1 # last row is background
+    if (ns == 0)
+        stop ('Downloads contain no data')
 
     bg <- structures$col [structures$structure == 'background']
     map <- osm_basemap (bbox=bbox, bg=bg)
