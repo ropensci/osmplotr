@@ -4,4 +4,12 @@ makefile$
 ^london2.rda$
 ^README\.Rmd$
 ^README\.html$
+^man/extract_highway.Rd$
+^man/extract_highways.Rd$
+^man/get_highway_cycle.Rd$
+^man/haversine.Rd$
+^man/list2df.Rd$
+^man/list2df_with_data.Rd$
+^man/order_lines.Rd$
+^man/shortest_way.Rd$
 figure/

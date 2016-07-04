@@ -201,7 +201,7 @@ connect_highways <- function (highways, bbox, plot=FALSE)
                 shared_nodes <- which (rowSums (shared_nodes) == 2)
                 if (length (shared_nodes) == 0)
                 {
-                    hs <- haversand (way1, way2)
+                    hs <- haversine (way1, way2)
                     conmat_way [combs [1, j], combs [2, j]] <- 
                         conmat_way [combs [2, j], combs [1, j]] <- hs [3]
                     nodes [combs [1, j], combs [2, j]] <- hs [1]
@@ -217,7 +217,7 @@ connect_highways <- function (highways, bbox, plot=FALSE)
             i2 <- which.min (conmat_way [i1, ])
             way1 <- ways [[w0]] [[i1]]
             way2 <- ways [[w0]] [[i2]]
-            hs <- haversand (way1, way2)
+            hs <- haversine (way1, way2)
             xy1 <- way1 [hs [1],]
             xy2 <- way2 [hs [2],]
             # Only connect components at terminal nodes:
@@ -282,22 +282,22 @@ connect_highways <- function (highways, bbox, plot=FALSE)
 }
 
 
-#' haversand
+#' haversine
 #'
-#' Returns the minimal Haversand distance between 2 ways, along with the
+#' Returns the minimal haversine distance between 2 ways, along with the
 #' element numbers in each way corresponding to that minimal distance
 #'
 #' @param way1 A matrix or data frame of spatial coordinates
 #' @param way2 A matrix or data frame of spatial coordinates
 #' @return Vector of 3 elements: numbers of elements in (way1, way2)
 #' corresponding to minimal distance, and the distance itself.
-haversand <- function (way1, way2)
+haversine <- function (way1, way2)
 {
     x1 <- array (way1 [,1], dim=c(nrow (way1), nrow (way2)))
     y1 <- array (way1 [,2], dim=c(nrow (way1), nrow (way2)))
     x2 <- t (array (way2 [,1], dim=c(nrow (way2), nrow (way1))))
     y2 <- t (array (way2 [,2], dim=c(nrow (way2), nrow (way1))))
-    # Haversand distances:
+    # haversine distances:
     xd <- (x2 - x1) * pi / 180
     yd <- (y2 - y1) * pi / 180
     d <- sin (yd / 2) * sin (yd / 2) + cos (y2 * pi / 180) *
