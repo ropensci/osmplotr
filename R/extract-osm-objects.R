@@ -41,10 +41,14 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
 {
     if (missing (key))
         stop ('key must be provided')
+    if (nchar (key) < 1)
+        stop ('key must be provided')
     if (missing (bbox))
         stop ('bbox must be provided')
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
+    if (!missing (value) & missing (key))
+        stop ('key must be provided for value')
 
     if (key == 'park')
     {
@@ -63,16 +67,19 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
     # Construct the overpass query, starting with main key-value pair and
     # possible negation
     keyold <- key
-    if (!missing (value) & value != '')
+    if (!missing (value))
     {
-        valold <- value
-        if (substring (value, 1, 1) == '!')
-            value <- paste0 ("['", key, "'!='", 
-                            substring (value, 2, nchar (value)), "']")
-        else if (key == 'name')
-            value <- paste0 ("['", key, "'~'", value, "']")
-        else
-            value <- paste0 ("['", key, "'='", value, "']")
+        if (value != '')
+        {
+            valold <- value
+            if (substring (value, 1, 1) == '!')
+                value <- paste0 ("['", key, "'!='", 
+                                substring (value, 2, nchar (value)), "']")
+            else if (key == 'name')
+                value <- paste0 ("['", key, "'~'", value, "']")
+            else
+                value <- paste0 ("['", key, "'='", value, "']")
+        }
     } else
         value <- ''
     if (key == 'name')
