@@ -64,6 +64,7 @@ But first the easy steps to map making:
 
 ``` r
 install.packages ('osmplotr')
+library(osmplotr)
 ```
 
 or the development version
