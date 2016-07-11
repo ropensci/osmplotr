@@ -57,12 +57,12 @@ extract_highways <- function (highway_names, bbox)
         for (i in seq (highway_names))
         {
             dat <- extract_highway (name = highway_names [i], bbox=bbox)
-            if (is (dat, 'Spatial'))
+            if (!is.null (dat))
             {
+                stopifnot (is (dat, 'Spatial')) # should never happen
                 assign (waynames [i], dat)
                 indx <- c (indx, i)
-            } else
-                message (dat$message)
+            } 
             setTxtProgressBar(pb, i / length (highway_names))
         }
         lens <- sapply (waynames [indx], function (i) length (get (i)))

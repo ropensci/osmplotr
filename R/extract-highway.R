@@ -19,12 +19,16 @@ extract_highway <- function (name='', bbox)
     bbox <- paste0 ('(', bbox [2,1], ',', bbox [1,1], ',',
                     bbox [2,2], ',', bbox [1,2], ')')
 
-    obj <- warn <- NULL
+    obj <- NULL
+
+    if (!curl::has_internet ())
+        stop ('Error: No internet connection')
 
     query <- paste0 ("way['name'~'", name, "']", bbox)
     query <- paste0 (query, ';(._;>;);out;')
     url_base <- 'http://overpass-api.de/api/interpreter?data='
     query <- paste0 (url_base, query)
+
     #dat <- RCurl::getURL (query)
     #dat <- XML::xmlParse (dat)
     dat <- httr::GET (query)
@@ -35,24 +39,24 @@ extract_highway <- function (name='', bbox)
         dat <- httr::GET (query)
         count <- count + 1
     }
+
     if (dat$status_code != 200)
     {
-        #message (httr::http_status (dat)$message)
-        obj <- httr::http_status (dat)
-    } else
-    {
-        # Encoding must be supplied to suppress warning
-        dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
-        dato <- osmar::as_osmar (dat)
-        key <- 'highway'
-        k <- NULL # supress 'no visible binding' note from R CMD check
-        pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
-        pids <- osmar::find_down (dato, osmar::way (pids))
-        nvalid <- sum (sapply (pids, length))
-        obj <- NULL
-        if (nvalid > 3) # (nodes, ways, relations)
-            obj <- osmar::as_sp (subset (dato, ids = pids), 'lines')
+        warning (httr::http_status (dat)$message)
+        return (NULL)
     }
+
+    # Encoding must be supplied to suppress warning
+    dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
+    dato <- osmar::as_osmar (dat)
+    key <- 'highway'
+    k <- NULL # supress 'no visible binding' note from R CMD check
+    pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
+    pids <- osmar::find_down (dato, osmar::way (pids))
+    nvalid <- sum (sapply (pids, length))
+    obj <- NULL
+    if (nvalid > 3) # (nodes, ways, relations)
+        obj <- osmar::as_sp (subset (dato, ids = pids), 'lines')
 
     return (obj)
 }

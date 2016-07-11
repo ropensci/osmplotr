@@ -114,12 +114,28 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
         value <- NULL
     key <- keyold
 
-    obj <- NULL
+    obj <- msg <- NULL
 
+    if (!curl::has_internet ())
+        stop ('Error: No internet connection')
+
+    # TODO: use curl::has_internet?
     if (verbose) message ('downloading OSM data ... ')
     dat <- httr::GET (query)
+    count <- 1
+    # code#429 = "Too Many Requests (RFC 6585)"
+    while (dat$status_code == 429 && count < 10)
+    {
+        dat <- httr::GET (query)
+        count <- count + 1
+    }
+
     if (dat$status_code != 200)
+    {
         warning (httr::http_status (dat)$message)
+        return (NULL)
+    }
+
     # Encoding must be supplied in the following to suppress warning
     dat <- XML::xmlParse (httr::content (dat, 'text', encoding='UTF-8'))
 
@@ -128,51 +144,52 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
     dato <- osmar::as_osmar (dat)
     nvalid <- sum (summary (dato)$n)
     if (nvalid <= 3)
+    {
         warning (paste0 ('No valid data for (', key, ', ', value, ')'))
+        return (NULL)
+    }
+
+    # A very important NOTE: It can arise the OSM relations have IDs which
+    # duplicate IDs in OSM ways, even through the two may bear no relationship
+    # at all. This causes the attempt in `osmar::as_sp` to force them to an `sp`
+    # object to crash because 
+    # # Error in validObject(.Object) :
+    # #   invalid class 'SpatialLines' object: non-unique Lines ID of slot values
+    # The IDs are actually neither needed not used, so the next lines simply
+    # modifies all relation IDs by pre-pending 'r' to avoid such problems:
+    for (i in seq (dato$relations))
+        if (nrow (dato$relations [[i]]) > 0)
+            dato$relations [[i]]$id <- paste0 ('r', dato$relations [[i]]$id)
+    if (nchar (key) > 0)
+        pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
+    else if (!is.null (value))
+        pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
+            
+    # spts converts to SpatialPoints, currently only for trees but easily
+    # extended
+    spts <- FALSE
+    if (!is.null (value))
+        if (value == 'tree') # no pids needed
+            spts <- TRUE
+
+    if (verbose) message ('converting osmar data to sp format')
+    if (spts)
+        obj <- osmar::as_sp (dato, 'points')
     else
     {
-        # A very important NOTE: It can arise the OSM relations have IDs which
-        # duplicate IDs in OSM ways, even through the two may bear no relationship
-        # at all. This causes the attempt in `osmar::as_sp` to force them to an `sp`
-        # object to crash because 
-        # # Error in validObject(.Object) :
-        # #   invalid class 'SpatialLines' object: non-unique Lines ID of slot values
-        # The IDs are actually neither needed not used, so the next lines simply
-        # modifies all relation IDs by pre-pending 'r' to avoid such problems:
-        for (i in seq (dato$relations))
-            if (nrow (dato$relations [[i]]) > 0)
-                dato$relations [[i]]$id <- paste0 ('r', dato$relations [[i]]$id)
-        if (nchar (key) > 0)
-            pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
-        else if (!is.null (value))
-            pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
-        
-        # spts converts to SpatialPoints, currently only for trees but easily
-        # extended
-        spts <- FALSE
-        if (!is.null (value))
-            if (value == 'tree') # no pids needed
-                spts <- TRUE
+        pids1 <- osmar::find_down (dato, osmar::way (pids))
+        pids2 <- osmar::find_up (dato, osmar::way (pids))
+        pids <- mapply (c, pids1, pids2, simplify=FALSE)
+        pids <- lapply (pids, function (i) unique (i))
 
-        if (verbose) message ('converting osmar data to sp format')
-        if (spts)
-            obj <- osmar::as_sp (dato, 'points')
-        else
-        {
-            pids1 <- osmar::find_down (dato, osmar::way (pids))
-            pids2 <- osmar::find_up (dato, osmar::way (pids))
-            pids <- mapply (c, pids1, pids2, simplify=FALSE)
-            pids <- lapply (pids, function (i) unique (i))
+        obj <- subset (dato, ids = pids)
+        # TODO: Extract names of objects (at least for streets, buildings)
 
-            obj <- subset (dato, ids = pids)
-            # TODO: Extract names of objects (at least for streets, buildings)
-
-            if (key=='boundary' | key == 'highway' | key == 'waterway') 
-                obj <- osmar::as_sp (obj, 'lines')
-            else 
-                obj <- osmar::as_sp (obj, 'polygons')
-        }
-    } # end if nvalid <= 3
+        if (key=='boundary' | key == 'highway' | key == 'waterway') 
+            obj <- osmar::as_sp (obj, 'lines')
+        else 
+            obj <- osmar::as_sp (obj, 'polygons')
+    }
 
     return (obj)
 }

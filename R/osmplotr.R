@@ -64,6 +64,7 @@
 #' @name osmplotr
 #' @docType package
 #' @import httr sp spatstat osmar XML ggm rgeos
+#' @importFrom curl has_internet
 #' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom graphics lines locator plot.new par rect text
 #' @importFrom methods slot as is hasArg
