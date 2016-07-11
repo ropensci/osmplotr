@@ -12,25 +12,23 @@ test_that ('key missing', {
            expect_error (extract_osm_objects (bbox=bbox), 'key must be provided')
 })
 
-test_that ('invalid key', {
-           bbox <- get_bbox (c (-0.12, 51.51, -0.11, 51.52))
-           if (curl::has_internet ()) # otherwise it'll be an error
-           {
+if (curl::has_internet ()) # otherwise all of these return errors not warnings
+{
+    test_that ('invalid key', {
+               bbox <- get_bbox (c (-0.12, 51.51, -0.11, 51.52))
                # No warning specified here because different warnings will be
                # given if download fails
                expect_warning (dat <- extract_osm_objects (bbox=bbox,
                                                            key='aaa'))
-           }
-})
+               expect_null (dat)
+    })
 
-test_that ('valid key', {
-           bbox <- get_bbox (c (-0.12, 51.515, -0.115, 51.52))
-           if (curl::has_internet ()) # otherwise it'll be an error
-           {
+    test_that ('valid key', {
+               bbox <- get_bbox (c (-0.12, 51.515, -0.115, 51.52))
                dat <- extract_osm_objects (bbox=bbox, key='building')
-               # Will return NULL if any warnings are generated
+               # Will return NULL if any warnings are generated (such as by
+               # download fail)
                if (!is.null (dat))
                    expect_is (dat, 'SpatialPolygonsDataFrame')
-           }
-})
-
+    })
+} # end if has_internet
