@@ -8,6 +8,7 @@ Description: Customisable images of OpenStreetMap (OSM) data and
 Depends:
     R (>= 3.2.3)
 Imports:
+    curl,
     ggm,
     ggplot2,
     igraph,
