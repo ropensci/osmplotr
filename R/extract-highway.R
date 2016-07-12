@@ -34,7 +34,9 @@ extract_highway <- function (name='', bbox)
     dat <- httr::GET (query)
     count <- 1
     # code#429 = "Too Many Requests (RFC 6585)"
-    while (dat$status_code == 429 && count < 10)
+    # code#504 = "Gateway Timeout"
+    codes <- c (429, 504)
+    while (dat$status_code %in% codes && count < 10)
     {
         dat <- httr::GET (query)
         count <- count + 1

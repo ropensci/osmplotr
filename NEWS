@@ -1,6 +1,8 @@
 osmplotr v0.2.3
 ===============
 
+* add 'return_type' argument to 'extract_osm_objects' to enable explicit
+    specificiation of return type (points, lines, polygons)
 * fix tests so they pass even if download fails
 
 osmplotr v0.2.2

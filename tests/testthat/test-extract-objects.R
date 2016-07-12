@@ -31,4 +31,19 @@ if (curl::has_internet ()) # otherwise all of these return errors not warnings
                if (!is.null (dat))
                    expect_is (dat, 'SpatialPolygonsDataFrame')
     })
+
+    test_that ('return_type', {
+            key <- 'route'
+            value <- 'bicycle'
+            extra_pairs <- c ('name', 'London.Cycle.Network.Route.9')
+            bbox <- get_bbox (c (-0.26,51.47,0.11,51.67))
+            # This can't be run because any downloading issues generate
+            # warnings. Only if downloading succeeds will the message be
+            # generated ('Cannot determine return_type, maybe specify
+            # explicitly?')
+            #expect_message (dat <- extract_osm_objects (bbox=bbox, key=key,
+            #                                            value=value,
+            #                                            extra_pairs=extra_pairs))
+    })
+
 } # end if has_internet

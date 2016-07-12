@@ -4,7 +4,8 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(key, value, extra_pairs, bbox, verbose = FALSE)
+extract_osm_objects(key, value, extra_pairs, bbox, return_type,
+  verbose = FALSE)
 }
 \arguments{
 \item{key}{OSM key to search for. Useful keys include \code{building},
@@ -21,6 +22,12 @@ to the overpass API.}
 \item{bbox}{the bounding box within which all key-value objects should be
 downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
 max values, and rows of x and y values.}
+
+\item{return_type}{If specified, force return of spatial (\code{point},
+\code{line}, \code{polygon}) objects. \code{return_type='line'} will, for
+example, always return a SpatialLinesDataFrame. If not specified, defaults to
+'sensible' values (for example, \code{lines} for highways, \code{points} for
+trees, \code{polygons} for bulidings).}
 
 \item{verbose}{If \code{TRUE}, provides notification of progress.}
 }

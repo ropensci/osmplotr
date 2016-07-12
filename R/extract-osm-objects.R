@@ -17,6 +17,11 @@
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
 #' max values, and rows of x and y values.
+#' @param return_type If specified, force return of spatial (\code{point},
+#' \code{line}, \code{polygon}) objects. \code{return_type='line'} will, for
+#' example, always return a SpatialLinesDataFrame. If not specified, defaults to
+#' 'sensible' values (for example, \code{lines} for highways, \code{points} for
+#' trees, \code{polygons} for bulidings).
 #' @param verbose If \code{TRUE}, provides notification of progress.
 #'
 #' @return Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
@@ -37,7 +42,8 @@
 #' dat <- extract_osm_objects (key='building', extra_pairs=extra_pairs, bbox=bbox)
 #' }
 
-extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
+extract_osm_objects <- function (key, value, extra_pairs, bbox, 
+                                 return_type, verbose=FALSE)
 {
     if (missing (key))
         stop ('key must be provided')
@@ -124,7 +130,9 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
     dat <- httr::GET (query)
     count <- 1
     # code#429 = "Too Many Requests (RFC 6585)"
-    while (dat$status_code == 429 && count < 10)
+    # code#504 = "Gateway Timeout"
+    codes <- c (429, 504)
+    while (dat$status_code %in% codes && count < 10)
     {
         dat <- httr::GET (query)
         count <- count + 1
@@ -160,36 +168,58 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox, verbose=FALSE)
     for (i in seq (dato$relations))
         if (nrow (dato$relations [[i]]) > 0)
             dato$relations [[i]]$id <- paste0 ('r', dato$relations [[i]]$id)
-    if (nchar (key) > 0)
-        pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
-    else if (!is.null (value))
-        pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
             
-    # spts converts to SpatialPoints, currently only for trees but easily
-    # extended
-    spts <- FALSE
-    if (!is.null (value))
-        if (value == 'tree') # no pids needed
-            spts <- TRUE
+    if (!missing (return_type))
+    {
+        return_type <- tolower (return_type)
+        if (substring (return_type, 1, 3) == 'poi')
+            return_type <- 'points'
+        else if (substring (return_type, 1, 1) == 'l')
+            return_type <- 'lines'
+        else
+            return_type <- 'polygons'
+    } else
+    {
+        if (key=='boundary' | key == 'highway' | key == 'waterway') 
+            return_type <- 'lines'
+        else if (!is.null (value))
+        {
+            if (value == 'tree')
+                return_type <- 'points'
+            else
+            {
+                message (paste0 ('Cannot determine return_type;',
+                                 ' maybe specify explicitly?'))
+                return_type <- 'lines'
+            }
+        } else
+            return_type <- 'polygons'
+        
+    }
 
     if (verbose) message ('converting osmar data to sp format')
-    if (spts)
-        obj <- osmar::as_sp (dato, 'points')
-    else
+
+    if (summary (dato)$n ['relations'] > 0)
     {
+        pids <- osmar::find (dato, osmar::relation (osmar::tags(k == key)))
+        pids1 <- osmar::find_down (dato, osmar::relation (pids))
+        pids2 <- osmar::find_up (dato, osmar::relation (pids))
+    } else
+    {
+        if (nchar (key) > 0)
+            pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
+        else if (!is.null (value))
+            pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
         pids1 <- osmar::find_down (dato, osmar::way (pids))
         pids2 <- osmar::find_up (dato, osmar::way (pids))
-        pids <- mapply (c, pids1, pids2, simplify=FALSE)
-        pids <- lapply (pids, function (i) unique (i))
-
-        obj <- subset (dato, ids = pids)
-        # TODO: Extract names of objects (at least for streets, buildings)
-
-        if (key=='boundary' | key == 'highway' | key == 'waterway') 
-            obj <- osmar::as_sp (obj, 'lines')
-        else 
-            obj <- osmar::as_sp (obj, 'polygons')
     }
+    pids <- mapply (c, pids1, pids2, simplify=FALSE)
+    pids <- lapply (pids, function (i) unique (i))
+
+    obj <- subset (dato, ids = pids)
+    # TODO: Extract names of objects (at least for streets, buildings)
+
+    obj <- osmar::as_sp (obj, return_type)
 
     return (obj)
 }
