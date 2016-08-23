@@ -31,20 +31,35 @@ extract_highway <- function (name='', bbox)
 
     #dat <- RCurl::getURL (query)
     #dat <- XML::xmlParse (dat)
-    dat <- httr::GET (query)
+    #dat <- httr::GET (query, timeout=1)
+    # httr::GET sometimes errors with 'Error in curl::curl_fetch_memory (url,
+    #       handle=handle) : Timeout was reached'. The current tryCatch catches
+    #       this error only.
+    dat <- tryCatch (
+        httr::GET (query, timeout=60),
+        error=function (err) {
+            message ('error in httr::GET - most likely Timeout')
+            return (list (status_code=504))
+        })
     count <- 1
     # code#429 = "Too Many Requests (RFC 6585)"
     # code#504 = "Gateway Timeout"
     codes <- c (429, 504)
     while (dat$status_code %in% codes && count < 10)
     {
-        dat <- httr::GET (query)
+        dat <- tryCatch (
+            httr::GET (query, timeout=60),
+            error=function (err) {
+                message ('error in httr::GET - most likely Timeout')
+                return (list (status_code=504))
+            })
         count <- count + 1
     }
 
     if (dat$status_code != 200)
     {
-        warning (httr::http_status (dat)$message)
+        warning (paste0 (httr::http_status (dat)$message, ' (status ',
+                        dat$status_code, ')'))
         return (NULL)
     }
 

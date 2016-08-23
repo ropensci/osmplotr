@@ -127,14 +127,30 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
 
     # TODO: use curl::has_internet?
     if (verbose) message ('downloading OSM data ... ')
-    dat <- httr::GET (query)
+    #dat <- httr::GET (query)
+    # httr::GET sometimes errors with 'Error in curl::curl_fetch_memory (url,
+    #       handle=handle) : Timeout was reached'. The current tryCatch catches
+    #       this error only.
+    dat <- tryCatch (
+        httr::GET (query, timeout=60),
+        error=function (err) {
+            message ('error in httr::GET - most likely Timeout')
+            return (list (status_code=504))
+        })
     count <- 1
     # code#429 = "Too Many Requests (RFC 6585)"
     # code#504 = "Gateway Timeout"
     codes <- c (429, 504)
     while (dat$status_code %in% codes && count < 10)
+    while (dat$status_code == 429 && count < 10)
     {
-        dat <- httr::GET (query)
+        #dat <- httr::GET (query)
+        dat <- tryCatch (
+            httr::GET (query, timeout=60),
+            error=function (err) {
+                message ('error in httr::GET - most likely Timeout')
+                return (list (status_code=504))
+            })
         count <- count + 1
     }
 

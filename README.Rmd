@@ -33,7 +33,7 @@ the following functionality:
 
 But first the easy steps to map making:
 ```{r, echo=FALSE, message=FALSE}
-setwd ('..')
+while (length (grep ('osmplotr', getwd ())) > 0) setwd ("..")
 devtools::load_all ('osmplotr', export_all=FALSE)
 #devtools::document ('osmplotr')
 #devtools::check ('osmplotr')
