@@ -341,6 +341,10 @@ highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
                'Fleet.St', 'Aldwych')
 highway_list <- connect_highways (highways=highways, bbox=bbox_big, plot=TRUE)
 ```
+```{r, eval=FALSE}
+## Warning message:
+## In get_highway_cycles(ways) : Cycle unable to be extended through all ways
+```
 ```{r highway-coordindates, echo=FALSE}
 # The above lines can not be run because the httr calls can not be guaranteed to
 # always work, which may break the package. The raw data are thus manually
@@ -659,7 +663,7 @@ y <- c (51.51719, 51.51716, 51.51716, 51.51715, 51.51707, 51.51703, 51.51700,
         51.51609, 51.51619, 51.51639, 51.51662, 51.51691, 51.51697)
 xy <- cbind (x, y)
 ```
-```{r connect-highways-manual-plot, fig.width=4}
+```{r connect-highways-manual-plot, fig.width=4, echo=FALSE}
 # Then the plot routines copied from connect_highways
 xlims <- range (sapply (ways, function (i) 
                     range (sapply (i, function (j) range (j [,1])))))
