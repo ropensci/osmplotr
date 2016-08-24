@@ -3,6 +3,7 @@ warnings_are_errors: true
 sudo: required
 
 r:
+    - release
     - devel
 
 r_github_packages:
