@@ -164,7 +164,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
     dat <- XML::xmlParse (httr::content (dat, 'text', encoding='UTF-8'))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
-    if (verbose) message ('converting OSM data to omsar format')
+    if (verbose) message ('converting OSM data to osmar format')
     dato <- osmar::as_osmar (dat)
     nvalid <- sum (summary (dato)$n)
     if (nvalid <= 3)
