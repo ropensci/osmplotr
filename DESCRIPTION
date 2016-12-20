@@ -1,7 +1,6 @@
 Package: osmplotr
 Title: Customisable Images of OpenStreetMap Data
 Version: 0.2.4
-Date: 2016-08-23
 Authors@R: person("Mark", "Padgham", email = "mark.padgham@email.com", role = c("aut", "cre"))
 Description: Customisable images of OpenStreetMap (OSM) data and
     data visualisation using OSM objects.
@@ -27,8 +26,8 @@ Suggests:
     maptools,
     testthat
 License: GPL-3
-URL: https://github.com/ropenscilabs/osmplotr
-BugReports: https://github.com/ropenscilabs/osmplotr/issues
+URL: https://github.com/ropensci/osmplotr
+BugReports: https://github.com/ropensci/osmplotr/issues
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

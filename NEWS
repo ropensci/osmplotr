@@ -2,6 +2,7 @@ osmplotr v0.2.4
 ===============
 
 * Better control of timeout errors when calling the overpass API
+* Git host transferred from ropenscilabs to ropensci
 
 osmplotr v0.2.3
 ===============

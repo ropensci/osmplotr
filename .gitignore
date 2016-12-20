@@ -1,6 +1,5 @@
-# Example code in package build process
-*-Ex.R
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
-inst/doc
+makefile
+
+# vim files
+.*.un~
+.*.swp

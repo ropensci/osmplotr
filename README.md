@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ropenscilabs/osmplotr.svg?branch=master)](https://travis-ci.org/ropenscilabs/osmplotr) [![codecov](https://codecov.io/gh/ropenscilabs/osmplotr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropenscilabs/osmplotr) [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
+[![Build Status](https://travis-ci.org/ropensci/osmplotr.svg?branch=master)](https://travis-ci.org/ropensci/osmplotr) [![codecov](https://codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/osmplotr) [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 
 ![](./figure/map1.png)
 
@@ -64,13 +64,12 @@ But first the easy steps to map making:
 
 ``` r
 install.packages ('osmplotr')
-library(osmplotr)
 ```
 
 or the development version
 
 ``` r
-devtools::install_github ('ropenscilabs/osmplotr')
+devtools::install_github ('ropensci/osmplotr')
 ```
 
 ------------------------------------------------------------------------
@@ -243,7 +242,7 @@ Got a nice `osmplotr` map? Please contribute in one of the following ways:
 
 2.  Open issue with details; or
 
-3.  Send email to address in [`DESCRIPTION`](https://github.com/ropenscilabs/osmplotr/blob/master/DESCRIPTION).
+3.  Send email to address in [`DESCRIPTION`](https://github.com/ropensci/osmplotr/blob/master/DESCRIPTION).
 
 ------------------------------------------------------------------------
 
