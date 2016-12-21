@@ -2,10 +2,10 @@ language: r
 warnings_are_errors: true
 sudo: false
 
-addons:
-    apt:
-        packages:
-            - libgeos++-dev
+#addons:
+#    apt:
+#        packages:
+#            - libgeos++-dev
 
 matrix:
     include:
@@ -21,12 +21,15 @@ matrix:
         - r: oldrel
           env: DEPS=cran
           os: osx
-        - r: devel
-          env: DEPS=cran
-          os: linux
-        - r: devel
-          env: DEPS=cran
-          os: osx
+          #- r: devel
+          #env: DEPS=cran
+          #os: linux
+          #- r: devel
+          #env: DEPS=cran
+          #os: osx
+
+r_binary_packages:
+    - rgeos
 
 notifications:
   email:
