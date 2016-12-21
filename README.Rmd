@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/ropensci/osmplotr.svg?branch=master)](https://travis-ci.org/ropensci/osmplotr)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/ropensci/osmplotr?svg=true)](https://ci.appveyor.com/project/ropensci/osmplotr)
 [![codecov](https://codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/osmplotr)
 [![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
@@ -33,13 +34,11 @@ the following functionality:
 
 But first the easy steps to map making:
 ```{r, echo=FALSE, message=FALSE}
-while (length (grep ('osmplotr', getwd ())) > 0) setwd ("..")
-devtools::load_all ('osmplotr', export_all=FALSE)
-#devtools::document ('osmplotr')
-#devtools::check ('osmplotr')
-setwd ('./osmplotr')
+devtools::load_all ('.', export_all=FALSE)
+#devtools::document ('.')
+#devtools::check ('.')
 #devtools::build_vignettes ()
-#testthat::test_package ('osmplotr')
+#testthat::test_package ('.')
 ```
 
 
@@ -63,6 +62,22 @@ setwd ('./osmplotr')
     ```{r, eval=FALSE}
     print_osm_map (map)
     ```
+
+```{r london2, echo=FALSE, eval=FALSE}
+devtools::load_all ("../osmdata", export_all=FALSE)
+bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+q0 <- opq (bbox)
+q1 <- add_feature (q0, key="building")
+dat_B <- osmdata_sp (q1, quiet=FALSE)$osm_polygons
+q1 <- add_feature (q0, key="highway")
+dat_H <- osmdata_sp (q1, quiet=FALSE)$osm_lines
+q1 <- add_feature (q0, key="leisure", value="park")
+dat_P <- osmdata_sp (q1, quiet=FALSE)$osm_polygons
+q1 <- add_feature (q0, key="landuse", value="grass")
+dat_G <- osmdata_sp (q1, quiet=FALSE)$osm_polygons
+london2 <- list (dat_B=dat_B, dat_H=dat_H, dat_P=dat_P, dat_G=dat_G)
+save (london2, file="london2.rda")
+```
 
 ---------------
 
