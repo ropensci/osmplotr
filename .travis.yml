@@ -1,9 +1,11 @@
 language: r
 warnings_are_errors: true
-sudo: required
+sudo: false
 
-before_install:
-    - sudo apt-get libgeos++-dev
+addons:
+    apt:
+        packages:
+            - libgeos++-dev
 
 matrix:
     include:
