@@ -1,12 +1,15 @@
 language: r
 warnings_are_errors: true
-sudo: false
+sudo: required
 
-addons:
-    apt:
-        packages:
-            - libgeos-dev
+#addons:
+#    apt:
+#        packages:
+#            - libgeos-dev
 # NOTE: libgeo++-dev not on current travis-ci white list for container-based
+
+before_install:
+    - sudo apt-get install libgeos++-dev
 
 matrix:
     include:
