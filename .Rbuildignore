@@ -1,4 +1,5 @@
 ^\.travis\.yml$
+^appveyor\.yml$
 makefile$
 \.md$
 ^london2.rda$
