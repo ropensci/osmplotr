@@ -39,4 +39,3 @@ print_osm_map (map, file='map.png', width=500, units='px') # prints to file
 \seealso{
 \code{\link{osm_basemap}}, \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
 }
-

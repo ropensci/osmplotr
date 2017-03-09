@@ -66,6 +66,7 @@ represent a hole, such that points internal to the smaller contained group
 are *excluded* from the group, while those outside the smaller yet inside the
 bigger group are included.
 }
+
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 # Download data using 'extract_osm_objects'
@@ -129,4 +130,3 @@ print_osm_map (map)
 \seealso{
 \code{\link{colour_mat}}, \code{\link{add_osm_objects}}.
 }
-

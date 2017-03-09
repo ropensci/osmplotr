@@ -40,4 +40,3 @@ print_osm_map (dat$map)
 \seealso{
 \code{\link{make_osm_map}}.
 }
-

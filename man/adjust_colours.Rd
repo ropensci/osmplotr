@@ -48,4 +48,3 @@ print_osm_map (dat$map)
 \seealso{
 \code{\link{osm_structures}}, \code{?col2rgb}.
 }
-

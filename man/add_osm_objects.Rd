@@ -60,4 +60,3 @@ print_osm_map (map)
 \seealso{
 \code{\link{osm_basemap}}, \code{\link{extract_osm_objects}}.
 }
-

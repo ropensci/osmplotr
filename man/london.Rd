@@ -41,4 +41,3 @@ U.K.  (\code{bbox = -0.15, 51.5, -0.1, 51.52}). The list includes:
 The vignette \code{basic-maps} details how these data were downloaded.
 }
 \keyword{datasets}
-

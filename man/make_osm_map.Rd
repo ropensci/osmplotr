@@ -47,6 +47,7 @@ the \code{structures} argument.
 If \code{osm_data} is not given, then data will be downloaded, which can take
 some time.  Progress is dumped to screen.
 }
+
 \examples{
 structures <- c ('highway', 'park', 'grass')
 structs <- osm_structures (structures=structures, col_scheme='light')
@@ -63,4 +64,3 @@ print_osm_map (dat$map)
 \seealso{
 \code{\link{osm_basemap}}, \code{\link{add_osm_objects}}.
 }
-

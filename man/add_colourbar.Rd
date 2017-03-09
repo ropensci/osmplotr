@@ -81,4 +81,3 @@ print_osm_map (map)
 \seealso{
 \code{\link{osm_basemap}}, \code{\link{add_osm_surface}}.
 }
-

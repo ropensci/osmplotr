@@ -63,15 +63,20 @@
 #'
 #' @name osmplotr
 #' @docType package
-#' @import httr sp spatstat osmar XML ggm rgeos
+#' @import sp osmar 
 #' @importFrom curl has_internet
-#' @importFrom igraph graph_from_edgelist shortest_paths
+#' @importFrom ggm fundCycles
 #' @importFrom graphics lines locator plot.new par rect text
-#' @importFrom methods slot as is hasArg
 #' @importFrom grDevices dev.cur dev.new dev.off rainbow rgb col2rgb heat.colors
 #' @importFrom grDevices bmp jpeg pictex png postscript svg tiff 
-#' @importFrom utils txtProgressBar setTxtProgressBar combn tail
+#' @importFrom httr content GET http_status
+#' @importFrom igraph graph_from_edgelist shortest_paths
+#' @importFrom methods slot as is hasArg
+#' @importFrom rgeos gIntersection
+#' @importFrom spatstat convexhull idw ppp Smooth
 #' @importFrom stats runif
+#' @importFrom utils txtProgressBar setTxtProgressBar combn tail
+#' @importFrom XML xmlParse
 NULL
 
 #' london 

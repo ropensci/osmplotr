@@ -34,4 +34,3 @@ print_osm_map (map)
 \seealso{
 \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
 }
-

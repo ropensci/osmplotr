@@ -69,4 +69,3 @@ print_osm_map (map)
 \seealso{
 \code{\link{add_osm_groups}}.
 }
-
