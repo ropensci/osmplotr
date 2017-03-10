@@ -16,9 +16,9 @@ matrix:
         - r: release
           env: DEPS=cran
           os: osx
-        - r: oldrel
-          env: DEPS=cran
-          os: linux
+          #- r: oldrel
+          #env: DEPS=cran
+          #os: linux
         - r: oldrel
           env: DEPS=cran
           os: osx
