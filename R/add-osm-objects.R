@@ -21,31 +21,31 @@
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- osm_basemap (bbox=bbox, bg="gray20")
+#' map <- osm_basemap (bbox = bbox, bg = "gray20")
 #'
 #' \dontrun{
 #' # The 'london' data used below were downloaded as:
-#' dat_BNR <- extract_osm_objects (bbox=bbox, key='building',
-#'                                 value='!residential')
-#' dat_HP <- extract_osm_objects (bbox=bbox, key='highway',
-#'                                value='primary')
-#' dat_T <- extract_osm_objects (bbox=bbox, key='tree')
+#' dat_BNR <- extract_osm_objects (bbox = bbox, key = 'building',
+#'                                 value = '!residential')
+#' dat_HP <- extract_osm_objects (bbox = bbox, key = 'highway',
+#'                                value = 'primary')
+#' dat_T <- extract_osm_objects (bbox = bbox, key = 'tree')
 #' }
-#' map <- add_osm_objects (map, obj=london$dat_BNR, col="gray40", border="yellow") 
-#' map <- add_osm_objects (map, obj=london$dat_HP, col="gray80",
-#'                         size=1, shape=2)
-#' map <- add_osm_objects (map, london$dat_T, col="green", size=2, shape=1)
+#' map <- add_osm_objects (map, obj = london$dat_BNR, col = "gray40", border = "yellow") 
+#' map <- add_osm_objects (map, obj = london$dat_HP, col = "gray80",
+#'                         size = 1, shape = 2)
+#' map <- add_osm_objects (map, london$dat_T, col = "green", size = 2, shape = 1)
 #' print_osm_map (map)
 #' 
 #' # Polygons with different coloured borders
-#' map <- osm_basemap (bbox=bbox, bg="gray20")
-#' map <- add_osm_objects (map, obj=london$dat_HP, col="gray80")
-#' map <- add_osm_objects (map, london$dat_T, col="green")
-#' map <- add_osm_objects (map, obj=london$dat_BNR, col="gray40", border="yellow", 
-#'                         size=0.5)
+#' map <- osm_basemap (bbox = bbox, bg = "gray20")
+#' map <- add_osm_objects (map, obj = london$dat_HP, col = "gray80")
+#' map <- add_osm_objects (map, london$dat_T, col = "green")
+#' map <- add_osm_objects (map, obj = london$dat_BNR, col = "gray40", border = "yellow", 
+#'                         size = 0.5)
 #' print_osm_map (map)
 
-add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
+add_osm_objects <- function (map, obj, col = 'gray40', border = NA, size,
                              shape)
 {
     # ---------------  sanity checks and warnings  ---------------
@@ -60,14 +60,14 @@ add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
     if (is.null (col)) stop ('col is NULL')
     tryCatch (
               col2rgb (col),
-              error = function (e) 
+              error = function (e)
               {
                   e$message <-  paste0 ("Invalid colour: ", col)
                   stop (e)
               })
     tryCatch (
               col2rgb (border),
-              error = function (e) 
+              error = function (e)
               {
                   e$message <-  paste0 ("Invalid border colour: ", border)
                   stop (e)
@@ -111,23 +111,24 @@ add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
         xy <- lapply (slot (obj, "polygons"), function (x)
                       slot (slot (x, "Polygons") [[1]], "coords"))
         xy <- list2df (xy)
-        map <- map + ggplot2::geom_polygon (ggplot2::aes (group=id), 
-                                                      data=xy, size=size,
-                                                      fill=col, colour=border)
+        map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
+                                                      data = xy, size = size,
+                                                      fill = col,
+                                                      colour = border)
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
         xy <- lapply (slot (obj, 'lines'), function (x)
                       slot (slot (x, 'Lines') [[1]], 'coords'))
-        xy <- list2df (xy, islines=TRUE)
-        map <- map + ggplot2::geom_path (data=xy,
-                                   ggplot2::aes (x=lon, y=lat), 
-                                   colour=col, size=size, linetype=shape)
+        xy <- list2df (xy, islines = TRUE)
+        map <- map + ggplot2::geom_path (data = xy,
+                                   ggplot2::aes (x = lon, y = lat),
+                                   colour = col, size = size, linetype = shape)
     } else if (class (obj) == 'SpatialPointsDataFrame')
     {
         xy <- data.frame (slot (obj, 'coords'))
-        map <- map + ggplot2::geom_point (data=xy,
-                                    ggplot2::aes (x=lon, y=lat),
-                                    col=col, size=size, shape=shape)
+        map <- map + ggplot2::geom_point (data = xy,
+                                    ggplot2::aes (x = lon, y = lat),
+                                    col = col, size = size, shape = shape)
     } else
         stop ("obj is not a spatial class")
 
@@ -141,20 +142,20 @@ add_osm_objects <- function (map, obj, col='gray40', border=NA, size,
 #' @param xy A list of coordinates extracted from an sp object
 #' @param islines Set to TRUE for spatial lines, otherwise FALSE
 #' @return data frame
-list2df <- function (xy, islines=FALSE)
+list2df <- function (xy, islines = FALSE)
 {
     if (islines) # lines have to be separated by NAs
         xy <- lapply (xy, function (i) rbind (i, rep (NA, 2)))
     else # Add id column to each:
         for (i in seq (xy))
             xy [[i]] <- cbind (i, xy [[i]])
-    # And rbind them to a single matrix. 
+    # And rbind them to a single matrix.
     xy <-  do.call (rbind, xy)
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
-    xy <-  data.frame (xy, row.names=1:nrow (xy))
+    xy <-  data.frame (xy, row.names = 1:nrow (xy))
     if (islines) # remove terminal row of NAs
-        xy <- xy [1:(nrow (xy) - 1),]
+        xy <- xy [1:(nrow (xy) - 1), ]
     else
         names (xy) <- c ("id", "lon", "lat")
     return (xy)

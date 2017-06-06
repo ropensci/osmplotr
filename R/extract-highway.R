@@ -8,7 +8,7 @@
 #' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
 #' columns of min and max values, and rows of x and y values.  
 #' @return A \code{SpatialLinesDataFrame} containing the highway.
-extract_highway <- function (name='', bbox)
+extract_highway <- function (name = '', bbox)
 {
     stopifnot (nchar (name) > 0)
 
@@ -16,8 +16,8 @@ extract_highway <- function (name='', bbox)
         stop ('bbox must be provided')
     stopifnot (is.numeric (bbox))
     stopifnot (length (bbox) == 4)
-    bbox <- paste0 ('(', bbox [2,1], ',', bbox [1,1], ',',
-                    bbox [2,2], ',', bbox [1,2], ')')
+    bbox <- paste0 ('(', bbox [2, 1], ',', bbox [1, 1], ',',
+                    bbox [2, 2], ',', bbox [1, 2], ')')
 
     obj <- NULL
 
@@ -31,15 +31,15 @@ extract_highway <- function (name='', bbox)
 
     #dat <- RCurl::getURL (query)
     #dat <- XML::xmlParse (dat)
-    #dat <- httr::GET (query, timeout=1)
+    #dat <- httr::GET (query, timeout = 1)
     # httr::GET sometimes errors with 'Error in curl::curl_fetch_memory (url,
-    #       handle=handle) : Timeout was reached'. The current tryCatch catches
-    #       this error only.
+    #       handle = handle) : Timeout was reached'. The current tryCatch
+    #       catches this error only.
     dat <- tryCatch (
-        httr::GET (query, timeout=60),
-        error=function (err) {
+        httr::GET (query, timeout = 60),
+        error = function (err) {
             message ('error in httr::GET - most likely Timeout')
-            return (list (status_code=504))
+            return (list (status_code = 504))
         })
     count <- 1
     # code#429 = "Too Many Requests (RFC 6585)"
@@ -48,10 +48,10 @@ extract_highway <- function (name='', bbox)
     while (dat$status_code %in% codes && count < 10)
     {
         dat <- tryCatch (
-            httr::GET (query, timeout=60),
-            error=function (err) {
+            httr::GET (query, timeout = 60),
+            error = function (err) {
                 message ('error in httr::GET - most likely Timeout')
-                return (list (status_code=504))
+                return (list (status_code = 504))
             })
         count <- count + 1
     }
@@ -64,7 +64,7 @@ extract_highway <- function (name='', bbox)
     }
 
     # Encoding must be supplied to suppress warning
-    dat <- XML::xmlParse (httr::content (dat, "text", encoding='UTF-8'))
+    dat <- XML::xmlParse (httr::content (dat, "text", encoding = 'UTF-8'))
     dato <- osmar::as_osmar (dat)
     key <- 'highway'
     k <- NULL # supress 'no visible binding' note from R CMD check

@@ -24,7 +24,7 @@ downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
 max values, and rows of x and y values.}
 
 \item{return_type}{If specified, force return of spatial (\code{point},
-\code{line}, \code{polygon}) objects. \code{return_type='line'} will, for
+\code{line}, \code{polygon}) objects. \code{return_type = 'line'} will, for
 example, always return a SpatialLinesDataFrame. If not specified, defaults to
 'sensible' values (for example, \code{lines} for highways, \code{points} for
 trees, \code{polygons} for bulidings).}
@@ -45,13 +45,15 @@ for large numbers of objects
 \examples{
 \dontrun{
 bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
-dat_B <- extract_osm_objects (key='building', bbox=bbox)
-dat_H <- extract_osm_objects (key='highway', bbox=bbox)
-dat_BR <- extract_osm_objects (key='building', value='residential', bbox=bbox)
-dat_HP <- extract_osm_objects (key='highway', value='primary', bbox=bbox)
-dat_HNP <- extract_osm_objects (key='highway', value='!primary', bbox=bbox)
+dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
+dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
+dat_BR <- extract_osm_objects (key = 'building', value = 'residential',
+                               bbox = bbox)
+dat_HP <- extract_osm_objects (key = 'highway', value = 'primary', bbox = bbox)
+dat_HNP <- extract_osm_objects (key = 'highway', value = '!primary', bbox = bbox)
 extra_pairs <- c ('name', 'Royal.Festival.Hall')
-dat <- extract_osm_objects (key='building', extra_pairs=extra_pairs, bbox=bbox)
+dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
+                            bbox = bbox)
 }
 }
 \seealso{

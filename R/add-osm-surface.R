@@ -53,20 +53,20 @@
 #' @examples
 #' # Get some data
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' # dat_B <- extract_osm_objects (key='building', bbox=bbox)
+#' # dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
 #' # These data are also provided in
 #' dat_B <- london$dat_BNR
 #' # Make a data surface across the map coordinates, and remove periphery
 #' n <- 5
-#' x <- seq (bbox [1,1], bbox [1,2], length.out=n)
-#' y <- seq (bbox [2,1], bbox [2,2], length.out=n)
+#' x <- seq (bbox [1,1], bbox [1,2], length.out = n)
+#' y <- seq (bbox [2,1], bbox [2,2], length.out = n)
 #' dat <- data.frame (
-#'     x=as.vector (array (x, dim=c(n, n))),
-#'     y=as.vector (t (array (y, dim=c(n, n)))),
-#'     z=x * y
+#'     x = as.vector (array (x, dim = c(n, n))),
+#'     y = as.vector (t (array (y, dim = c(n, n)))),
+#'     z = x * y
 #'     )
-#' map <- osm_basemap (bbox=bbox, bg='gray20')
-#' map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30))
+#' map <- osm_basemap (bbox = bbox, bg = 'gray20')
+#' map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
 #' print_osm_map (map)
 #'
 #' # If data do not cover the entire map region, then the peripheral remainder can
@@ -74,40 +74,40 @@
 #' # 'dat':
 #' d <- sqrt ((dat$x - mean (dat$x)) ^ 2 + (dat$y - mean (dat$y)) ^ 2)
 #' dat <- dat [which (d < 0.01),]
-#' map <- osm_basemap (bbox=bbox, bg='gray20')
-#' map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30), bg='gray40')
+#' map <- osm_basemap (bbox = bbox, bg = 'gray20')
+#' map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30), bg = 'gray40')
 #' print_osm_map (map)
 #'
 #' # Polygons and (lines/points) can be overlaid as data surfaces with different
 #' # colour schemes.
-#' # dat_HP <- extract_osm_objects (key='highway', value='primary', bbox=bbox)
+#' # dat_HP <- extract_osm_objects (key = 'highway', value = 'primary', bbox = bbox)
 #' # These data are also provided in
 #' dat_HP <- london$dat_HP
-#' cols <- adjust_colours (heat.colors (30), adj=-0.2) # darken by 20%
-#' map <- add_osm_surface (map, dat_HP, dat, cols=cols, bg='gray60', size=c(1.5,0.5))
+#' cols <- adjust_colours (heat.colors (30), adj = -0.2) # darken by 20%
+#' map <- add_osm_surface (map, dat_HP, dat, cols = cols, bg = 'gray60', size = c(1.5,0.5))
 #' print_osm_map (map)
 #' 
 #' # Adding multiple surfaces of either polygons or (lines/points) produces a
 #' # 'ggplot2' warning, and forces the colour gradient to revert to the last given
 #' # value.
 #' dat_T <- london$dat_T # trees
-#' map <- osm_basemap (bbox=bbox, bg='gray20')
-#' map <- add_osm_surface (map, dat_B, dat=dat, cols=heat.colors (30), bg='gray40')
-#' map <- add_osm_surface (map, dat_HP, dat, cols=heat.colors (30), bg='gray60', 
-#'                         size=c(1.5,0.5))
-#' map <- add_osm_surface (map, dat_T, dat, cols=topo.colors (30),
-#'                         bg='gray70', size=c(5,2), shape=c(8, 1))
+#' map <- osm_basemap (bbox = bbox, bg = 'gray20')
+#' map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30), bg = 'gray40')
+#' map <- add_osm_surface (map, dat_HP, dat, cols = heat.colors (30), bg = 'gray60', 
+#'                         size = c(1.5,0.5))
+#' map <- add_osm_surface (map, dat_T, dat, cols = topo.colors (30),
+#'                         bg = 'gray70', size = c(5,2), shape = c(8, 1))
 #' print_osm_map (map) # 'dat_HP' is in 'topo.colors' not 'heat.colors'
 #' 
 #' # Add axes and colourbar
 #' map <- add_axes (map)
-#' map <- add_colourbar (map, cols=heat.colors (100), zlims=range (dat$z),
-#'                       barwidth=c(0.02), barlength=c(0.6,0.99), vertical=TRUE)
+#' map <- add_colourbar (map, cols = heat.colors (100), zlims = range (dat$z),
+#'                       barwidth = c(0.02), barlength = c(0.6,0.99), vertical = TRUE)
 #' print_osm_map (map)
 
 
-add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
-                              cols=heat.colors (30), bg, size, shape)
+add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
+                              cols = heat.colors (30), bg, size, shape)
 {
     # ---------------  sanity checks and warnings  ---------------
     # --------- map
@@ -127,11 +127,12 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
         stop ('dat can not be NULL')
     if (!is.numeric (as.matrix (dat)))
         stop ('dat must be a numeric matrix or data.frame')
-    else 
+    else
     {
         dat <- as.matrix (dat)
         if (ncol (dat) < 3) stop ('dat must have at least 3 columns')
-        wtxt <- paste0 ('dat should have columns of x/y, lon/lat, or equivalent;',
+        wtxt <- paste0 ('dat should have columns of x/y, lon/lat, ',
+                        'or equivalent;',
                         'presuming first 2 columns are lon, lat')
         if (is.null (colnames (dat)))
         {
@@ -143,7 +144,8 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
             if (!(n2 [1] == 'x' | n2 [1] == 'lat') ||
                 !(n2 [2] == 'y' | n2 [2] == 'lon'))
             {
-                warning ('dat should have columns of x/y, lon/lat, or equivalent;',
+                warning ('dat should have columns of x/y, lon/lat, ',
+                         'or equivalent;',
                          ' presuming first 2 columns are lon, lat')
                 colnames (dat) [1:2] <- c ('x', 'y')
             }
@@ -184,15 +186,15 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
                               c (apply (xyi, 2, min), apply (xyi, 2, max))
                           })
         xylims <- do.call (rbind, xylims)
-        indx <- which (xylims [,1] > xrange [1] & xylims [,2] > yrange [1] &
-                       xylims [,3] < xrange [2] & xylims [,4] < yrange [2])
-        obj <- obj [indx,]
+        indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
+                       xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
+        obj <- obj [indx, ]
         xy0 <- lapply (slot (obj, objtxt [1]), function (x)
                         slot (slot (x, objtxt [2]) [[1]], 'coords'))
     }
-    xy0 <- structure (xy0, class=c (class (xy0), objtxt [1]))
-    xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size=grid_size,
-                              method=method)
+    xy0 <- structure (xy0, class = c (class (xy0), objtxt [1]))
+    xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size = grid_size,
+                              method = method)
     if (missing (bg))
         xy <- xy0
     else
@@ -203,20 +205,21 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
     {
         # TODO: Add border to geom_polygon call
         lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-        aes <- ggplot2::aes (x=lon, y=lat, group=id, fill=z) 
+        aes <- ggplot2::aes (x = lon, y = lat, group = id, fill = z)
         if (missing (size))
             size <- 0
         if (length (size) == 1)
             size <- rep (size, 2) # else size [2] specifies bg size
-        map <- map + ggplot2::geom_polygon (data=xy, mapping=aes, size=size [1]) +
-                        ggplot2::scale_fill_gradientn (colours=cols) 
+        map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
+                                            size = size [1]) +
+                        ggplot2::scale_fill_gradientn (colours = cols)
 
         if (!missing (bg))
         {
             xy <- xy0 [xy0$inp == 0, ]
-            aes <- ggplot2::aes (x=lon, y=lat, group=id) 
-            map <- map + ggplot2::geom_polygon (data=xy, mapping=aes, 
-                                                size=size [2], fill=bg)
+            aes <- ggplot2::aes (x = lon, y = lat, group = id)
+            map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
+                                                size = size [2], fill = bg)
         }
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
@@ -228,17 +231,19 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
             shape <- 1
         if (length (shape) == 1)
             shape <- rep (shape, 2)
-        aes <- ggplot2::aes (x=lon, y=lat, group=id, colour=z)
-        map <- map + ggplot2::geom_path (data=xy, mapping=aes, 
-                                         size=size [1], linetype=shape [1]) +
-                        ggplot2::scale_colour_gradientn (colours=cols)
+        aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
+        map <- map + ggplot2::geom_path (data = xy, mapping = aes,
+                                         size = size [1],
+                                         linetype = shape [1]) +
+                        ggplot2::scale_colour_gradientn (colours = cols)
 
         if (!missing (bg))
         {
             xy <- xy0 [xy0$inp == 0, ]
-            aes <- ggplot2::aes (x=lon, y=lat, group=id) 
-            map <- map + ggplot2::geom_path (data=xy, mapping=aes, col=bg,
-                                             size=size [2], linetype=shape [2])
+            aes <- ggplot2::aes (x = lon, y = lat, group = id)
+            map <- map + ggplot2::geom_path (data = xy, mapping = aes, col = bg,
+                                             size = size [2],
+                                             linetype = shape [2])
         }
     } else if (class (obj) == 'SpatialPointsDataFrame')
     {
@@ -250,17 +255,18 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
             shape <- 1
         if (length (shape) == 1)
             shape <- rep (shape, 2)
-        aes <- ggplot2::aes (x=lon, y=lat, group=id, colour=z)
-        map <- map + ggplot2::geom_point (data=xy, mapping=aes, 
-                                          size=size [1], shape=shape [1]) +
-                        ggplot2::scale_colour_gradientn (colours=cols)
+        aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
+        map <- map + ggplot2::geom_point (data = xy, mapping = aes,
+                                          size = size [1], shape = shape [1]) +
+                        ggplot2::scale_colour_gradientn (colours = cols)
 
         if (!missing (bg))
         {
-            xy <- xy0 [xy0$inp == 0,]
-            aes <- ggplot2::aes (x=lon, y=lat, group=id)
-            map <- map + ggplot2::geom_point (data=xy, mapping=aes, col=bg,
-                                              size=size [2], shape=shape [2])
+            xy <- xy0 [xy0$inp == 0, ]
+            aes <- ggplot2::aes (x = lon, y = lat, group = id)
+            map <- map + ggplot2::geom_point (data = xy, mapping = aes,
+                                              col = bg, size = size [2],
+                                              shape = shape [2])
         }
     }
 
@@ -286,49 +292,52 @@ add_osm_surface <- function (map, obj, dat, method="idw", grid_size=100,
 #' default), otherwise uses 'Gaussian' for kernel smoothing (as
 #' spatstat::Smooth.ppp)
 #' @return A single data frame of object IDs, coordinates, and z-values
-list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
+list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
+                               method = "idw")
 {
     if ('z' %in% colnames (dat))
-        z <- dat [,'z']
+        z <- dat [, 'z']
     else
-        z <- dat [,3]
+        z <- dat [, 3]
     if ('x' %in% colnames (dat))
-        x <- dat [,'x']
+        x <- dat [, 'x']
     else
-        x <- dat [,pmatch ('lon', colnames (dat))]
+        x <- dat [, pmatch ('lon', colnames (dat))]
     if ('y' %in% colnames (dat))
-        y <- dat [,'y']
+        y <- dat [, 'y']
     else
-        y <- dat [,pmatch ('lat', colnames (dat))]
+        y <- dat [, pmatch ('lat', colnames (dat))]
     xlims <- range (x) # used below to convert to indices into z-matrix
     ylims <- range (y)
     indx <- which (!is.na (z))
     x <- x [indx]
     y <- y [indx]
     marks <- z [indx]
-    xyp <- spatstat::ppp (x, y, xrange=range (x), yrange=range(y), marks=marks)
+    xyp <- spatstat::ppp (x, y, xrange = range (x), yrange = range(y),
+                          marks = marks)
     if (method == 'idw')
-        z <- spatstat::idw (xyp, at="pixels", dimyx=grid_size)$v
+        z <- spatstat::idw (xyp, at = "pixels", dimyx = grid_size)$v
     else if (method == 'smooth')
-        z <- spatstat::Smooth (xyp, at="pixels", dimyx=grid_size, diggle=TRUE)$v
+        z <- spatstat::Smooth (xyp, at = "pixels", dimyx = grid_size,
+                               diggle = TRUE)$v
     else
     {
         # x and y might not necessarily be regular, so grid has to be manually
         # filled with z-values
         nx <- length (unique (x))
         ny <- length (unique (y))
-        arr <- array (NA, dim=c (nx, ny))
+        arr <- array (NA, dim = c (nx, ny))
         indx_x <- as.numeric (cut (x, nx))
         indx_y <- as.numeric (cut (y, ny))
         arr [(indx_y - 1) * nx + indx_x] <- z
         z <- t (arr )
         # z here, as for interp methods above, has
-        # (rows,cols)=(vert,horizont)=c(y,x) so is indexed (x, y). To yield a
-        # figure with horizontal x-axis, this is transformed below.
+        # (rows,cols) = (vert,horizont) = c(y,x) so is indexed (x, y). To yield
+        # a figure with horizontal x-axis, this is transformed below.
     }
     z <- t (z)
 
-    # Get mean coordinates of each object in xy. 
+    # Get mean coordinates of each object in xy.
     # TODO: Colour lines continuously according to the coordinates of each
     # segment?
     if ('polygons' %in% class (xy) | 'lines' %in% class (xy))
@@ -342,49 +351,49 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
     indx <- rep (NA, length (xy))
     if (!missing (bg))
     {
-        xyh <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+        xyh <- spatstat::ppp (x, y, xrange = range (x), yrange = range (y))
         ch <- spatstat::convexhull (xyh)
         bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
 
         indx <- apply (xymn, 1, function (x)
-                   sp::point.in.polygon (x [1], x [2], bdry [,1], bdry [,2]))
+                   sp::point.in.polygon (x [1], x [2], bdry [, 1], bdry [, 2]))
         # indx = 0 for outside polygon
-    } 
+    }
 
     # Include only those objects within the limits of the map
-    indx_xy <- which (xymn [,1] >= map$coordinates$limits$x [1] &
-                      xymn [,1] <= map$coordinates$limits$x [2] &
-                      xymn [,2] >= map$coordinates$limits$y [1] &
-                      xymn [,2] <= map$coordinates$limits$y [2])
-    xymn <- xymn [indx_xy,]
+    indx_xy <- which (xymn [, 1] >= map$coordinates$limits$x [1] &
+                      xymn [, 1] <= map$coordinates$limits$x [2] &
+                      xymn [, 2] >= map$coordinates$limits$y [1] &
+                      xymn [, 2] <= map$coordinates$limits$y [2])
+    xymn <- xymn [indx_xy, ]
     indx <- indx [indx_xy]
     # And reduce xy to that index
     c2 <- class (xy) [2]
     if ('points' %in% class (xy))
-        xy <- xy [indx_xy,]
+        xy <- xy [indx_xy, ]
     else
         xy <- xy [indx_xy]
-    xy <- structure (xy, class=c (class (xy), c2))
+    xy <- structure (xy, class = c (class (xy), c2))
 
     # Convert to integer indices into z. z spans the range of data, not
     # necessarily the bbox
     if (method == 'idw' | method == 'smooth')
         nx <- ny <- grid_size
-    xymn [,1] <- ceiling (nx * (xymn [,1] - xlims [1]) / diff (xlims))
-    xymn [,2] <- ceiling (ny * (xymn [,2] - ylims [1]) / diff (ylims))
+    xymn [, 1] <- ceiling (nx * (xymn [, 1] - xlims [1]) / diff (xlims))
+    xymn [, 2] <- ceiling (ny * (xymn [, 2] - ylims [1]) / diff (ylims))
 
     if (missing (bg))
     {
-        xymn [,1] [xymn [,1] < 1] <- 1
-        xymn [,1] [xymn [,1] > nx] <- nx
-        xymn [,2] [xymn [,2] < 1] <- 1
-        xymn [,2] [xymn [,2] > ny] <- ny
+        xymn [, 1] [xymn [, 1] < 1] <- 1
+        xymn [, 1] [xymn [, 1] > nx] <- nx
+        xymn [, 2] [xymn [, 2] < 1] <- 1
+        xymn [, 2] [xymn [, 2] > ny] <- ny
     } else
     {
-        xymn [,1] [xymn [,1] < 1] <- NA
-        xymn [,1] [xymn [,1] > nx] <- NA
-        xymn [,2] [xymn [,2] < 1] <- NA
-        xymn [,2] [xymn [,2] > ny] <- NA
+        xymn [, 1] [xymn [, 1] < 1] <- NA
+        xymn [, 1] [xymn [, 1] > nx] <- NA
+        xymn [, 2] [xymn [, 2] < 1] <- NA
+        xymn [, 2] [xymn [, 2] > ny] <- NA
     }
 
     if ('polygons' %in% class (xy) | 'lines' %in% class (xy))
@@ -392,21 +401,21 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size=100, method="idw")
         for (i in seq (xy))
             xy [[i]] <- cbind (i, xy [[i]], z [xymn [i, 1], xymn [i, 2]],
                                indx [i])
-        # And rbind them to a single matrix. 
+        # And rbind them to a single matrix.
         xy <-  do.call (rbind, xy)
     } else # can only be points
     {
-        indx2 <- (xymn [,2] - 1) * grid_size + xymn [,1]
+        indx2 <- (xymn [, 2] - 1) * grid_size + xymn [, 1]
         xy <- cbind (seq (dim (xy)[1]), xy, z [indx2], indx)
     }
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
     data.frame (
-                id=xy [,1],
-                lon=xy [,2],
-                lat=xy [,3],
-                z=xy [,4], 
-                inp=xy [,5],
-                row.names=1:nrow (xy)
+                id = xy [, 1],
+                lon = xy [, 2],
+                lat = xy [, 3],
+                z = xy [, 4],
+                inp = xy [, 5],
+                row.names = 1:nrow (xy)
                 )
 }

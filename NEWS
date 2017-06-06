@@ -4,6 +4,7 @@ osmplotr v0.2.4
 * Better control of timeout errors when calling the overpass API
 * Git host transferred from ropenscilabs to ropensci
 * Acknowledge OSM contributors on startup
+* Rename 'borderWidth' parameter of 'add_osm_groups' to 'border_width'
 
 osmplotr v0.2.3
 ===============

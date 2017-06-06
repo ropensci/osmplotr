@@ -17,7 +17,7 @@ get_highway_cycle <- function (highways)
     # ***** (2) Fill a connectivity matrix between all highways and extract the
     # *****     *longest* cycle connecting them all
     # ***** (3) Insert extra connections between highways until the longest
-    # *****     cycle == length (highways). 
+    # *****     cycle == length (highways).
     if (missing (highways))
         stop ('highways must be given')
     if (class (highways) != 'list')
@@ -37,13 +37,14 @@ get_highway_cycle <- function (highways)
         for (j in seq (obji))
         {
             li <- sp::Line (obji [[j]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID='a'))) 
+            li <- sp::SpatialLines (list (Lines (list (li), ID = 'a')))
             # The following function returns default of -1 for no geometric
             # intersection; 0 where intersections exists but area *NOT* vertices
             # of li, and 2 where intersections are vertices of li.
             intersections <- sapply (test_flat, function (x) {
                         lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
+                        lj <- sp::SpatialLines (list (Lines (list (lj),
+                                                             ID = 'a')))
                         int <- rgeos::gIntersection (li, lj)
                         if (!is.null (int))
                             sum (sp::coordinates (int) %in% x)
@@ -53,13 +54,13 @@ get_highway_cycle <- function (highways)
             if (any (intersections == 0))
                 for (k in which (intersections == 0))
                 {
-                    # Then they have to be added to highways [[i]] [[j]]. 
+                    # Then they have to be added to highways [[i]] [[j]].
                     x <- test_flat [k] [[1]]
                     lj <- sp::Line (x)
-                    lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
+                    lj <- sp::SpatialLines (list (Lines (list (lj), ID = 'a')))
                     xy <- sp::coordinates (rgeos::gIntersection (li, lj))
-                    d <- sqrt ((xy [1] - obji [[j]] [,1]) ^ 2 + 
-                               (xy [2] - obji [[j]] [,2]) ^ 2)
+                    d <- sqrt ( (xy [1] - obji [[j]] [, 1]) ^ 2 +
+                               (xy [2] - obji [[j]] [, 2]) ^ 2)
                     di <- which.min (d)
                     n <- nrow (obji [[j]])
                     rnames <- rownames (obji [[j]])
@@ -69,26 +70,27 @@ get_highway_cycle <- function (highways)
                     # A. implies that |xy,d2|<|d1,d2|, and B vice-versa
                     if (di == 1)
                     {
-                        d12 <- sqrt (diff (obji [[j]] [1:2,1]) ^ 2 +
-                                     diff (obji [[j]] [1:2,2]) ^ 2)
+                        d12 <- sqrt (diff (obji [[j]] [1:2, 1]) ^ 2 +
+                                     diff (obji [[j]] [1:2, 2]) ^ 2)
                         if (d12 < d [2])
                             indx <- list (NULL, 1:n)
                         else
                             indx <- list (1, 2:n)
                     } else if (di == n)
                     {
-                        d12 <- sqrt (diff (obji [[j]] [(n-1:n),1]) ^ 2 +
-                                     diff (obji [[j]] [(n-1:n),2]) ^ 2)
-                        if (d12 < d [n-1])
+                        d12 <- sqrt (diff (obji [[j]] [(n - 1:n), 1]) ^ 2 +
+                                     diff (obji [[j]] [(n - 1:n), 2]) ^ 2)
+                        if (d12 < d [n - 1])
                             indx <- list (1:n, NULL)
                         else
-                            indx <- list (1:(n-1), n)
+                            indx <- list (1:(n - 1), n)
                     } else if (d [di - 1] < d [di + 1])
-                        indx <- list (1:(di-1), di:n)
+                        indx <- list (1:(di - 1), di:n)
                     else
-                        indx <- list (1:di, (di+1):n)
-                    highways [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ], xy,
-                                               obji [[j]] [indx [[2]], ])
+                        indx <- list (1:di, (di + 1):n)
+                    highways [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ],
+                                                   xy,
+                                                   obji [[j]] [indx [[2]], ])
                     rownames (highways [[i]] [[j]]) <- c (rnames [indx [[1]]],
                                                       maxvert,
                                                       rnames [indx [[2]]])
@@ -109,34 +111,35 @@ get_highway_cycle <- function (highways)
                     # Then ni needs to point into the full highways instead of
                     # test
                     ni <- seq (highways) [!seq (highways) %in% i] [ni]
-                    temp <- highways [[ni]] [[nj]] 
+                    temp <- highways [[ni]] [[nj]]
                     # Then insert xy into temp
-                    d <- sqrt ((xy [1] - temp [,1]) ^ 2 + (xy [2] - temp [,2]) ^ 2)
+                    d <- sqrt ( (xy [1] - temp [, 1]) ^ 2 +
+                               (xy [2] - temp [, 2]) ^ 2)
                     di <- which.min (d)
                     n <- nrow (temp)
                     rnames <- rownames (temp)
 
                     if (di == 1)
                     {
-                        d12 <- sqrt (diff (obji [[j]] [1:2,1]) ^ 2 +
-                                     diff (obji [[j]] [1:2,2]) ^ 2)
+                        d12 <- sqrt (diff (obji [[j]] [1:2, 1]) ^ 2 +
+                                     diff (obji [[j]] [1:2, 2]) ^ 2)
                         if (d12 < d [2])
                             indx <- list (NULL, 1:n)
                         else
                             indx <- list (1, 2:n)
                     } else if (di == n)
                     {
-                        d12 <- sqrt (diff (obji [[j]] [(n-1:n),1]) ^ 2 +
-                                     diff (obji [[j]] [(n-1:n),2]) ^ 2)
-                        if (d12 < d [n-1])
+                        d12 <- sqrt (diff (obji [[j]] [(n - 1:n), 1]) ^ 2 +
+                                     diff (obji [[j]] [(n - 1:n), 2]) ^ 2)
+                        if (d12 < d [n - 1])
                             indx <- list (1:n, NULL)
                         else
-                            indx <- list (1:(n-1), n)
+                            indx <- list (1:(n - 1), n)
                     } else if (d [di - 1] < d [di + 1])
-                        indx <- list (1:(di-1), di:n)
+                        indx <- list (1:(di - 1), di:n)
                     else
-                        indx <- list (1:di, (di+1):n)
-                    temp <- rbind (temp [indx [[1]],], xy, temp [indx [[2]],])
+                        indx <- list (1:di, (di + 1):n)
+                    temp <- rbind (temp [indx [[1]], ], xy, temp [indx [[2]], ])
                     rownames (temp) <- c (rnames [indx [[1]]], maxvert,
                                                 rnames [indx [[2]]])
                     highways [[ni]] [[nj]] <- unique (temp)
@@ -153,7 +156,7 @@ get_highway_cycle <- function (highways)
 
     # ***** (2) Fill a connectivity matrix between all highways and extract the
     # *****     *longest* cycle connecting them all
-    conmat <- array (FALSE, dim=rep (length (highways), 2))
+    conmat <- array (FALSE, dim = rep (length (highways), 2))
     for (i in seq (highways))
     {
         test <- do.call (rbind, highways [[i]])
@@ -163,7 +166,7 @@ get_highway_cycle <- function (highways)
         # Then find which lines from ref intersect with test:
         ni <- unlist (lapply (ref, function (x) {
                       xflat <- do.call (rbind, x)
-                      n <- array (xflat %in% test, dim=dim (xflat))
+                      n <- array (xflat %in% test, dim = dim (xflat))
                       # NOTE: If there is more than one common vertex, only the
                       # first is taken. TODO: Check alternatives!
                       n <- which (rowSums (n) == 2) [1]
@@ -177,13 +180,13 @@ get_highway_cycle <- function (highways)
         cycles <- NULL
 
     # ***** (3) Insert extra connections between highways until the longest
-    # *****     cycle == length (highways). 
+    # *****     cycle == length (highways).
     conmat_adj <- conmat
     cyc_len <- 0
     if (!is.null (cycles))
         cyc_len <- max (sapply (cycles, nrow))
     n <- length (highways)
-    i1_ref <- array (1:n, dim=c(n, n))
+    i1_ref <- array (1:n, dim = c(n, n))
     i2_ref <- t (i1_ref)
     i1_ref <- i1_ref [upper.tri (i1_ref)]
     i2_ref <- i2_ref [upper.tri (i2_ref)]
@@ -214,39 +217,39 @@ get_highway_cycle <- function (highways)
         {
             warning ('No cycles can be found or made')
             break
-        } else if (max (cyc_len_i, na.rm=TRUE) <= cyc_len)
+        } else if (max (cyc_len_i, na.rm = TRUE) <= cyc_len)
         {
             warning ('Cycle unable to be extended through all ways')
             break
         } else
-            cyc_len <- max (cyc_len_i, na.rm=TRUE)
+            cyc_len <- max (cyc_len_i, na.rm = TRUE)
 
         # Then connect the actual highways corresponding to the longest cycle
         i1 <- i1 [which.max (cyc_len_i)]
         i2 <- i2 [which.max (cyc_len_i)]
         h1 <- do.call (rbind, highways [[i1]])
         h2 <- do.call (rbind, highways [[i2]])
-        h1x <- array (h1 [,1], dim=c(nrow (h1), nrow (h2)))
-        h1y <- array (h1 [,2], dim=c(nrow (h1), nrow (h2)))
-        h2x <- t (array (h2 [,1], dim=c(nrow (h2), nrow (h1))))
-        h2y <- t (array (h2 [,2], dim=c(nrow (h2), nrow (h1))))
-        d <- sqrt ((h1x - h2x) ^ 2 + (h1y - h2y) ^ 2)
+        h1x <- array (h1 [, 1], dim = c(nrow (h1), nrow (h2)))
+        h1y <- array (h1 [, 2], dim = c(nrow (h1), nrow (h2)))
+        h2x <- t (array (h2 [, 1], dim = c(nrow (h2), nrow (h1))))
+        h2y <- t (array (h2 [, 2], dim = c(nrow (h2), nrow (h1))))
+        d <- sqrt ( (h1x - h2x) ^ 2 + (h1y - h2y) ^ 2)
         di1 <- which.min (apply (d, 1, min))
         di2 <- which.min (apply (d, 2, min))
         node1 <- rownames (h1) [di1]
-        xy1 <- h1 [di1,]
+        xy1 <- h1 [di1, ]
         node2 <- rownames (h2) [di2]
-        xy2 <- h2 [di2,]
+        xy2 <- h2 [di2, ]
         # Then insert these nodes in the respective highways, but only in cases
         # where the joining node is terminal.  Joining nodes can't be
         # non-terminal in both ways, because then they would cross and already
         # have had a crossing-node inserted above. This insertion thus add to
         # the terminal node of one way an additional node that will generally
-        # lie in the middle of some other way, thereby connecting the two. 
+        # lie in the middle of some other way, thereby connecting the two.
         ni1 <- sapply (highways [[i1]], function (x)
                        max (c (-1, which (rownames (x) == node1))))
         # ni1 = -1 where node1 not found, otherwise it's the position of
-        # node1 in highways [[i1]] 
+        # node1 in highways [[i1]]
         ni2 <- which.max (ni1)
         if (max (ni1) == 1)
         {

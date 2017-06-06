@@ -29,7 +29,7 @@ get_bbox <- function (latlon)
     if (latlon [1] > latlon [3]) latlon [c (1, 3)] <- latlon [c (3, 1)]
     if (latlon [2] > latlon [4]) latlon [c (2, 4)] <- latlon [c (4, 2)]
 
-    bbox <- matrix (latlon, nrow=2, ncol=2)
+    bbox <- matrix (latlon, nrow = 2, ncol = 2)
     rownames (bbox) <- c ("x", "y")
     bbox <- data.frame (bbox)
     names (bbox) <- c ("min", "max")

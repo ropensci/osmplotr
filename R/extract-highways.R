@@ -23,23 +23,23 @@ extract_highways <- function (highway_names, bbox)
         stop ('A bounding box must be given')
 
     # Proceeds through five stages:
-    # (1) Download OSM data for highways 
+    # (1) Download OSM data for highways
     # (2) Order the individual OSM objects into a minimal number of discrete
     # sequences
     # (3) If they don't exist, add juction points to lines which geographically
-    # cross. 
+    # cross.
     # (4) Remove any segments that do not cross or touch any others
 
-    # **** (1) Download OSM data for highways 
+    # **** (1) Download OSM data for highways
     #
     # Start by getting 2-letter abbreviations for each highway
     nletters <- 2
-    waynames <- sapply (highway_names, function (x) 
+    waynames <- sapply (highway_names, function (x)
                       tolower (substring (x, 1, nletters)))
     while (any (duplicated (waynames)))
     {
         nletters <- nletters + 1
-        waynames <- sapply (highway_names, function (x) 
+        waynames <- sapply (highway_names, function (x)
                           tolower (substring (x, 1, nletters)))
     }
 
@@ -53,16 +53,17 @@ extract_highways <- function (highway_names, bbox)
     while (lens != lens_old)
     {
         indx <- NULL
-        pb <- txtProgressBar (max=1, style = 3) # shows start and end positions
+        pb <- txtProgressBar (max = 1, style = 3)
+        # style = 3 shows start and end positions
         for (i in seq (highway_names))
         {
-            dat <- extract_highway (name = highway_names [i], bbox=bbox)
+            dat <- extract_highway (name = highway_names [i], bbox = bbox)
             if (!is.null (dat))
             {
                 stopifnot (is (dat, 'Spatial')) # should never happen
                 assign (waynames [i], dat)
                 indx <- c (indx, i)
-            } 
+            }
             setTxtProgressBar(pb, i / length (highway_names))
         }
         lens <- sapply (waynames [indx], function (i) length (get (i)))
@@ -87,13 +88,14 @@ extract_highways <- function (highway_names, bbox)
     i0 <- 0 # Nodes in ordered lines are numbered sequentially from (i0+1)
     for (i in seq (highway_names))
     {
-        dat <- order_lines (get (waynames [i]), i0=i0)
+        dat <- order_lines (get (waynames [i]), i0 = i0)
         assign (paste0 (waynames [i], 'o'), dat)
-        i0 <- max (unlist (lapply (dat, function (x) as.numeric (rownames (x)))))
+        i0 <- max (unlist (lapply (dat, function (x)
+                                   as.numeric (rownames (x)))))
     }
 
     # ***** (3) If they don't exist, add juction points to lines which
-    # *****     geographically cross. 
+    # *****     geographically cross.
     #
     # Start by constructing list of all street objects, and also get the maximum
     # vertex number, so new junction vertices can be numbered above that. objs
@@ -122,13 +124,14 @@ extract_highways <- function (highway_names, bbox)
         for (j in seq (obji))
         {
             li <- sp::Line (obji [[j]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID='a'))) 
+            li <- sp::SpatialLines (list (Lines (list (li), ID = 'a')))
             # The following function returns default of -1 for no geometric
             # intersection; 0 where intersections exists but area *NOT* vertices
             # of li, and 2 where intersections are vertices of li.
             intersections <- sapply (test_flat, function (x) {
                         lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
+                        lj <- sp::SpatialLines (list (Lines (list (lj),
+                                                             ID = 'a')))
                         int <- rgeos::gIntersection (li, lj)
                         if (!is.null (int))
                             sum (sp::coordinates (int) %in% x)
@@ -138,13 +141,13 @@ extract_highways <- function (highway_names, bbox)
             if (any (intersections == 0))
                 for (k in which (intersections == 0))
                 {
-                    # Then they have to be added to objs [[i]] [[j]]. 
+                    # Then they have to be added to objs [[i]] [[j]].
                     x <- test_flat [k] [[1]]
                     lj <- sp::Line (x)
-                    lj <- sp::SpatialLines (list (Lines (list (lj), ID='a'))) 
+                    lj <- sp::SpatialLines (list (Lines (list (lj), ID = 'a')))
                     xy <- sp::coordinates (rgeos::gIntersection (li, lj))
-                    d <- sqrt ((xy [1] - obji [[j]] [,1]) ^ 2 + 
-                               (xy [2] - obji [[j]] [,2]) ^ 2)
+                    d <- sqrt ( (xy [1] - obji [[j]] [, 1]) ^ 2 +
+                               (xy [2] - obji [[j]] [, 2]) ^ 2)
                     di <- which.min (d)
                     n <- nrow (obji [[j]])
                     rnames <- rownames (obji [[j]])
@@ -154,24 +157,24 @@ extract_highways <- function (highway_names, bbox)
                     # A. implies that |xy,d2|<|d1,d2|, and B vice-versa
                     if (di == 1)
                     {
-                        d12 <- sqrt (diff (obji [[j]] [1:2,1]) ^ 2 +
-                                     diff (obji [[j]] [1:2,2]) ^ 2)
+                        d12 <- sqrt (diff (obji [[j]] [1:2, 1]) ^ 2 +
+                                     diff (obji [[j]] [1:2, 2]) ^ 2)
                         if (d12 < d [2])
                             indx <- list (NULL, 1:n)
                         else
                             indx <- list (1, 2:n)
                     } else if (di == n)
                     {
-                        d12 <- sqrt (diff (obji [[j]] [(n-1:n),1]) ^ 2 +
-                                     diff (obji [[j]] [(n-1:n),2]) ^ 2)
-                        if (d12 < d [n-1])
+                        d12 <- sqrt (diff (obji [[j]] [(n - 1:n), 1]) ^ 2 +
+                                     diff (obji [[j]] [(n - 1:n), 2]) ^ 2)
+                        if (d12 < d [n - 1])
                             indx <- list (1:n, NULL)
                         else
-                            indx <- list (1:(n-1), n)
+                            indx <- list (1:(n - 1), n)
                     } else if (d [di - 1] < d [di + 1])
-                        indx <- list (1:(di-1), di:n)
+                        indx <- list (1:(di - 1), di:n)
                     else
-                        indx <- list (1:di, (di+1):n)
+                        indx <- list (1:di, (di + 1):n)
                     objs [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ], xy,
                                                obji [[j]] [indx [[2]], ])
                     rownames (objs [[i]] [[j]]) <- c (rnames [indx [[1]]],
@@ -179,8 +182,9 @@ extract_highways <- function (highway_names, bbox)
                                                       rnames [indx [[2]]])
                     objs [[i]] [[j]] <- unique (objs [[i]] [[j]])
 
-                    # Then add same vertex into the other elements, which requires
-                    # first making an index into the list of lists that is objs
+                    # Then add same vertex into the other elements, which
+                    # requires first making an index into the list of lists that
+                    # is objs
                     lens <- cumsum (sapply (test, length))
                     if (k < lens [1])
                     {
@@ -193,34 +197,35 @@ extract_highways <- function (highway_names, bbox)
                     }
                     # Then ni needs to point into the full objs instead of test
                     ni <- seq (objs) [!seq (objs) %in% i] [ni]
-                    temp <- objs [[ni]] [[nj]] 
+                    temp <- objs [[ni]] [[nj]]
                     # Then insert xy into temp
-                    d <- sqrt ((xy [1] - temp [,1]) ^ 2 + (xy [2] - temp [,2]) ^ 2)
+                    d <- sqrt ( (xy [1] - temp [, 1]) ^ 2 +
+                               (xy [2] - temp [, 2]) ^ 2)
                     di <- which.min (d)
                     n <- nrow (temp)
                     rnames <- rownames (temp)
 
                     if (di == 1)
                     {
-                        d12 <- sqrt (diff (obji [[j]] [1:2,1]) ^ 2 +
-                                     diff (obji [[j]] [1:2,2]) ^ 2)
+                        d12 <- sqrt (diff (obji [[j]] [1:2, 1]) ^ 2 +
+                                     diff (obji [[j]] [1:2, 2]) ^ 2)
                         if (d12 < d [2])
                             indx <- list (NULL, 1:n)
                         else
                             indx <- list (1, 2:n)
                     } else if (di == n)
                     {
-                        d12 <- sqrt (diff (obji [[j]] [(n-1:n),1]) ^ 2 +
-                                     diff (obji [[j]] [(n-1:n),2]) ^ 2)
-                        if (d12 < d [n-1])
+                        d12 <- sqrt (diff (obji [[j]] [(n - 1:n), 1]) ^ 2 +
+                                     diff (obji [[j]] [(n - 1:n), 2]) ^ 2)
+                        if (d12 < d [n - 1])
                             indx <- list (1:n, NULL)
                         else
-                            indx <- list (1:(n-1), n)
+                            indx <- list (1:(n - 1), n)
                     } else if (d [di - 1] < d [di + 1])
-                        indx <- list (1:(di-1), di:n)
+                        indx <- list (1:(di - 1), di:n)
                     else
-                        indx <- list (1:di, (di+1):n)
-                    temp <- rbind (temp [indx [[1]],], xy, temp [indx [[2]],])
+                        indx <- list (1:di, (di + 1):n)
+                    temp <- rbind (temp [indx [[1]], ], xy, temp [indx [[2]], ])
                     rownames (temp) <- c (rnames [indx [[1]]], maxvert,
                                                 rnames [indx [[2]]])
                     objs [[ni]] [[nj]] <- unique (temp)
@@ -238,7 +243,7 @@ extract_highways <- function (highway_names, bbox)
     #        objs_temp [[i]] [[j]] <- NULL
     #        objs_temp <- do.call (rbind, do.call (c, objs_temp))
     #        indx <- array (objs [[i]] [[j]] %in% objs_temp,
-    #                       dim=dim (objs [[i]] [[j]]))
+    #                       dim = dim (objs [[i]] [[j]]))
     #        if (max (rowSums (indx)) < 2)
     #            removes <- rbind (c (i, j), removes)
     #    }

@@ -20,20 +20,20 @@
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- osm_basemap (bbox=bbox, bg="gray20")
-#' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
+#' map <- osm_basemap (bbox = bbox, bg = "gray20")
+#' map <- add_osm_objects (map, london$dat_BNR, col = "gray40") 
 #' map <- add_axes (map)
 #' print (map)
 #'
 #' # Map items are added sequentially, so adding axes prior to objects will
 #' # produce a different result.
-#' map <- osm_basemap (bbox=bbox, bg="gray20")
+#' map <- osm_basemap (bbox = bbox, bg = "gray20")
 #' map <- add_axes (map)
-#' map <- add_osm_objects (map, london$dat_BNR, col="gray40") 
+#' map <- add_osm_objects (map, london$dat_BNR, col = "gray40") 
 #' print_osm_map (map)
 
-add_axes <- function (map, colour="black", pos=c(0.02,0.03),
-                      alpha=0.4, fontsize=3, fontface, fontfamily, ...)
+add_axes <- function (map, colour = "black", pos = c(0.02, 0.03),
+                      alpha = 0.4, fontsize = 3, fontface, fontfamily, ...)
 {
     args <- list (...)
     if (hasArg ("color")) colour <- args [['color']]
@@ -49,7 +49,7 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
     # ---------- colour
     tryCatch (
               col2rgb (colour),
-              error = function (e) 
+              error = function (e)
               {
                   e$message <-  paste0 ("Invalid colour: ", colour)
                   stop (e)
@@ -79,8 +79,8 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
     xrange <- map$coordinates$limits$x
     yrange <- map$coordinates$limits$y
 
-    xp <- pretty (xrange) [2:(length (pretty (xrange))-1)]
-    yp <- pretty (yrange) [2:(length (pretty (yrange))-1)]
+    xp <- pretty (xrange) [2:(length (pretty (xrange)) - 1)]
+    yp <- pretty (yrange) [2:(length (pretty (yrange)) - 1)]
     xlims <- c (xp [1] - (xp [1] - min (xrange)) / 2,
                 max (xp) - (max (xp) - max (xrange)) / 2)
     ylims <- c (yp [1] - (yp [1] - min (yrange)) / 2,
@@ -103,73 +103,81 @@ add_axes <- function (map, colour="black", pos=c(0.02,0.03),
     #     |         |                                  |
     #  (x1,y1)---(x2,y1)----------------------------(x3,y1)
     #
-    rdat <- data.frame (cbind ("lon"=c(xr[1], xr[1], xr[3], xr[3],
+    rdat <- data.frame (cbind ("lon" = c(xr[1], xr[1], xr[3], xr[3],
                                        xr[2], xr[2], xr[1]),
-                               "lat"=c(yr[3], yr[1], yr[1], yr[2],
+                               "lat" = c(yr[3], yr[1], yr[1], yr[2],
                                        yr[2], yr[3], yr[3])))
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
-    aes2 <- ggplot2::aes (x=lon, y=lat, size=0)
-    map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                        fill=rgb (1, 1, 1, alpha),
-                                        colour='transparent')
+    aes2 <- ggplot2::aes (x = lon, y = lat, size = 0)
+    map <- map + ggplot2::geom_polygon (data = rdat, mapping = aes2,
+                                        inherit.aes = FALSE,
+                                        fill = rgb (1, 1, 1, alpha),
+                                        colour = 'transparent')
 
     # And rectangles around tick marks, starting with horiztonal
     x0 <- xp - expand * diff (yaxs_pos)
     x1 <- xp + expand * diff (yaxs_pos)
     y <- rep (xaxs_pos [c (1, 2, 2, 1, 1)], length (xp))
     x <- as.numeric (rbind (x0, x0, x1, x1, x0))
-    rdat <- data.frame (cbind ("id"=rep (seq (xp), each=5), "lon"=x, "lat"=y))
-    aes2 <- ggplot2::aes (x=lon, y=lat, group=id, size=0)
-    map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     fill=rgb (1, 1, 1, alpha),
-                                     colour='transparent')
+    rdat <- data.frame (cbind ("id" = rep (seq (xp), each = 5),
+                               "lon" = x, "lat" = y))
+    aes2 <- ggplot2::aes (x = lon, y = lat, group = id, size = 0)
+    map <- map + ggplot2::geom_polygon (data = rdat, mapping = aes2,
+                                        inherit.aes = FALSE,
+                                        fill = rgb (1, 1, 1, alpha),
+                                        colour = 'transparent')
     # Then rectangles around vertical tick marks
     y0 <- yp - expand * diff (xaxs_pos)
     y1 <- yp + expand * diff (xaxs_pos)
     x <- rep (yaxs_pos [c (1, 2, 2, 1, 1)], length (yp))
     y <- as.numeric (rbind (y0, y0, y1, y1, y0))
-    rdat <- data.frame (cbind ("id"=rep (seq (yp), each=5), "lon"=x, "lat"=y))
-    aes2 <- ggplot2::aes (x=lon, y=lat, group=id, size=0)
-    map <- map + ggplot2::geom_polygon (data=rdat, mapping=aes2, inherit.aes=FALSE,
-                                     fill=rgb (1, 1, 1, alpha),
-                                     colour='transparent')
+    rdat <- data.frame (cbind ("id" = rep (seq (yp), each = 5),
+                               "lon" = x, "lat" = y))
+    aes2 <- ggplot2::aes (x = lon, y = lat, group = id, size = 0)
+    map <- map + ggplot2::geom_polygon (data = rdat, mapping = aes2,
+                                        inherit.aes = FALSE,
+                                        fill = rgb (1, 1, 1, alpha),
+                                        colour = 'transparent')
 
     # ------------- horiztonal axis
-    # main line 
-    segdat <- data.frame (x1=yaxs_pos [1], x2=max (xrange),
-                          y1=xaxs_pos [1], y2=xaxs_pos [1])
+    # main line
+    segdat <- data.frame (x1 = yaxs_pos [1], x2 = max (xrange),
+                          y1 = xaxs_pos [1], y2 = xaxs_pos [1])
     x2 <- y2 <- NULL
-    map <- map + gs (data=segdat, colour=colour,
-                            mapping=aes (x=x1, y=y1, xend=x2, yend=y2))
+    map <- map + gs (data = segdat, colour = colour,
+                            mapping = aes (x = x1, y = y1,
+                                           xend = x2, yend = y2))
 
     # ticks and labels
-    segdat <- data.frame (x1=xp, x2=xp,
-                          y1=xaxs_pos [1], y2=xaxs_pos [2])
-    labdat <- data.frame (x=xp, y=xaxs_pos [2])
-    map <- map + gs (data=segdat, colour=colour,
-                     mapping=ggplot2::aes (x=x1, y=y1, xend=x2, yend=y2)) +
-                glab (data=labdat, mapping=ggplot2::aes (x=x, y=y, label=x),
-                      alpha=alpha, size=fontsize, colour=colour,
-                      inherit.aes=FALSE, label.size=0, vjust="inward",
-                      fontface=fontface, family=fontfamily)
+    segdat <- data.frame (x1 = xp, x2 = xp,
+                          y1 = xaxs_pos [1], y2 = xaxs_pos [2])
+    labdat <- data.frame (x = xp, y = xaxs_pos [2])
+    map <- map + gs (data = segdat, colour = colour,
+                     mapping = ggplot2::aes (x = x1, y = y1,
+                                             xend = x2, yend = y2)) +
+                glab (data = labdat, mapping = ggplot2::aes (x = x, y = y,
+                                                             label = x),
+                      alpha = alpha, size = fontsize, colour = colour,
+                      inherit.aes = FALSE, label.size = 0, vjust = "inward",
+                      fontface = fontface, family = fontfamily)
 
     # ------------- vertical axis
-    # main line 
-    segdat <- data.frame (x1=yaxs_pos [1], x2=yaxs_pos [1],
-                          y1=xaxs_pos [1], y2=max (yrange))
-    map <- map + gs (data=segdat, colour=colour,
-                            mapping=aes (x=x1, y=y1, xend=x2, yend=y2))
+    # main line
+    segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [1],
+                          y1 = xaxs_pos [1], y2 = max (yrange))
+    map <- map + gs (data = segdat, colour = colour,
+                            mapping = aes (x = x1, y = y1,
+                                           xend = x2, yend = y2))
     # ticks and labels
-    segdat <- data.frame (x1=yaxs_pos [1], x2=yaxs_pos [2],
-                          y1=yp, y2=yp)
-    labdat <- data.frame (x=yaxs_pos [2], y=yp)
-    map <- map + gs (data=segdat, colour=colour,
-                     mapping=aes (x=x1, y=y1, xend=x2, yend=y2)) +
-                glab (data=labdat, mapping=aes (x=x, y=y, label=y),
-                      alpha=alpha, size=fontsize, colour=colour,
-                      inherit.aes=FALSE, label.size=0, hjust="inward",
-                      fontface=fontface, family=fontfamily)
+    segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [2],
+                          y1 = yp, y2 = yp)
+    labdat <- data.frame (x = yaxs_pos [2], y = yp)
+    map <- map + gs (data = segdat, colour = colour,
+                     mapping = aes (x = x1, y = y1, xend = x2, yend = y2)) +
+                glab (data = labdat, mapping = aes (x = x, y = y, label = y),
+                      alpha = alpha, size = fontsize, colour = colour,
+                      inherit.aes = FALSE, label.size = 0, hjust = "inward",
+                      fontface = fontface, family = fontfamily)
 
     return (map)
 }
-

@@ -10,9 +10,9 @@
 #' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group.
 #' @param cols Either a vector of >= 4 colours passed to \code{colour_mat} (if
-#' \code{colmat=T}) to arrange as a 2-D map of visually distinct colours
-#' (default uses \code{rainbow} colours), or (if \code{colmat=F}), a vector of
-#' the same length as groups specifying individual colours for each.
+#' \code{colmat = TRUE}) to arrange as a 2-D map of visually distinct colours
+#' (default uses \code{rainbow} colours), or (if \code{colmat = FALSE}), a
+#' vector of the same length as groups specifying individual colours for each.
 #' @param bg If given, then any objects not within groups are coloured this
 #' colour, otherwise (if not given) they are assigned to nearest group and
 #' coloured accordingly (\code{boundary} has no effect in this latter case).
@@ -28,7 +28,7 @@
 #' points.  Respective defaults are (0, 0.5, 0.5).
 #' @param shape Shape of points or lines (the latter passed as \code{linetype});
 #' see \code{?ggplot2::shape}.
-#' @param borderWidth If given, draws convex hull borders around entire groups
+#' @param border_width If given, draws convex hull borders around entire groups
 #' in same colours as groups (try values around 1-2).
 #' @param colmat If \code{TRUE} generates colours according to
 #' \code{colour_mat}, otherwise the colours of groups are specified directly by
@@ -50,10 +50,10 @@
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' # Download data using 'extract_osm_objects'
 #' \dontrun{
-#' dat_HP <- extract_osm_objects (key='highway', value='primary', bbox=bbox)
-#' dat_T <- extract_osm_objects (key='tree', bbox=bbox)
-#' dat_BNR <- extract_osm_objects (key='building', value='!residential',
-#' bbox=bbox)
+#' dat_HP <- extract_osm_objects (key = 'highway', value = 'primary', bbox = bbox)
+#' dat_T <- extract_osm_objects (key = 'tree', bbox = bbox)
+#' dat_BNR <- extract_osm_objects (key = 'building', value = '!residential',
+#' bbox = bbox)
 #' }
 #' # These data are also provided in
 #' dat_HP <- london$dat_HP
@@ -63,22 +63,22 @@
 #' # Define a function to easily generate a basemap
 #' bmap <- function ()
 #' {
-#'     map <- osm_basemap (bbox=bbox, bg="gray20")
-#'     map <- add_osm_objects (map, dat_HP, col="gray70", size=1)
-#'     add_osm_objects (map, dat_T, col="green")
+#'     map <- osm_basemap (bbox = bbox, bg = "gray20")
+#'     map <- add_osm_objects (map, dat_HP, col = "gray70", size = 1)
+#'     add_osm_objects (map, dat_T, col = "green")
 #' }
 #' 
 #' # Highlight a single region using all objects lying partially inside the
-#' # boundary (via the boundary=1 argument)
+#' # boundary (via the boundary = 1 argument)
 #' pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
 #'                                  c (51.505, 51.505, 51.515, 51.515)))
 #' \dontrun{
-#' dat_H <- extract_osm_objects (key='highway', bbox=bbox) # all highways
+#' dat_H <- extract_osm_objects (key = 'highway', bbox = bbox) # all highways
 #' map <- bmap ()
-#' map <- add_osm_groups (map, dat_BNR, groups=pts, cols="gray90",
-#'                        bg="gray40", boundary=1)
-#' map <- add_osm_groups (map, dat_H, groups=pts, cols="gray80",
-#'                        bg="gray30", boundary=1)
+#' map <- add_osm_groups (map, dat_BNR, groups = pts, cols = "gray90",
+#'                        bg = "gray40", boundary = 1)
+#' map <- add_osm_groups (map, dat_H, groups = pts, cols = "gray80",
+#'                        bg = "gray30", boundary = 1)
 #' print_osm_map (map)
 #' }
 #' 
@@ -89,26 +89,26 @@
 #' y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
 #' groups <- cbind (x, y)
 #' groups <- apply (groups, 1, function (i) 
-#'               sp::SpatialPoints (matrix (i, nrow=1, ncol=2)))
+#'               sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
 #' # plot a basemap and add groups
 #' map <- bmap ()
 #' cols <- rainbow (length (groups))
 #' \dontrun{
-#' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols)
+#' map <- add_osm_groups (map, obj = london$dat_BNR, group = groups, cols = cols)
 #' cols <- adjust_colours (cols, -0.2)
-#' map <- add_osm_groups (map, obj=london$dat_H, groups=groups, cols=cols)
+#' map <- add_osm_groups (map, obj = london$dat_H, groups = groups, cols = cols)
 #' print_osm_map (map)
 #' 
 #' # Highlight convex hulls containing groups:
 #' map <- bmap ()
-#' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
-#'                        borderWidth=2)
+#' map <- add_osm_groups (map, obj = london$dat_BNR, group = groups, cols = cols,
+#'                        border_width = 2)
 #' print_osm_map (map)
 #' }
 
-add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
-                               boundary=-1, size, shape, borderWidth,
-                               colmat=FALSE, rotate)
+add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
+                               boundary = -1, size, shape, border_width,
+                               colmat = FALSE, rotate)
 {
     # ---------------  sanity checks and warnings  ---------------
     # ---------- map
@@ -131,18 +131,18 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                 stop ("either 'cols' or 'bg' must be minimally given")
             else
                 cols <- bg
-        add_osm_objects (map, obj, col=cols [1])
+        add_osm_objects (map, obj, col = cols [1])
         return ()
     } else if (class (groups) != 'list')
     {
         if (!is (groups, 'SpatialPoints'))
             stop ('groups must be a SpatialPoints object (or list thereof)')
         groups <- list (groups)
-    } else if (!all ((lapply (groups, class)) == 'SpatialPoints'))
+    } else if (!all( (lapply (groups, class)) == 'SpatialPoints'))
     {
         e <- simpleError ('Cannot coerce groups to SpatialPoints')
         tryCatch (
-                  groups <- lapply (groups, function (x) 
+                  groups <- lapply (groups, function (x)
                                     as (x, 'SpatialPoints')),
                   finally = stop (e))
     }
@@ -165,7 +165,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         {
             warning (paste0 ('No group colours defined in add_osm_groups: ',
                              'passing to add_osm_objects'))
-            add_osm_objects (map, obj, col=bg)
+            add_osm_objects (map, obj, col = bg)
         }
     }
     # ---------- make_hull
@@ -194,7 +194,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         if (missing (cols))
             cols <- rainbow (length (groups))
         else if (length (cols) < length (groups))
-            cols <- rep (cols, length.out=length (groups))
+            cols <- rep (cols, length.out = length (groups))
         if (length (groups) == 1 & missing (bg))
         {
             warning ('There is only one group; using default bg')
@@ -209,20 +209,20 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         }
     } else
     {
-        if (missing (cols)) 
+        if (missing (cols))
             cols <- rainbow (4)
         else if (length (cols) < 4)
             cols <- rainbow (4)
         ncols <- 20
         if (missing (rotate))
-            cmat <- colour_mat (ncols, cols=cols)
+            cmat <- colour_mat (ncols, cols = cols)
         else
         {
             if (!is.numeric (rotate))
                 rotate <- 0
-            cmat <- colour_mat (ncols, cols=cols, rotate)
+            cmat <- colour_mat (ncols, cols = cols, rotate)
         }
-        cols <- rep (NA, length (groups)) 
+        cols <- rep (NA, length (groups))
         # cols is then a vector of colours to be filled by matching group
         # centroids to relative positions within cmat
     }
@@ -246,35 +246,37 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
             n2 <- length (groups [[group_pairs [2, i] ]])
             if (n1 > 2 & n2 > 2) # otherwise can't be a hole
             {
-                x1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [,1]
-                y1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [,2]
+                x1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [, 1]
+                y1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [, 2]
                 indx <- which (!duplicated (cbind (x1, y1)))
                 x1 <- x1 [indx]
                 y1 <- y1 [indx]
-                xy1 <- spatstat::ppp (x1, y1, xrange=range (x1), yrange=range (y1))
+                xy1 <- spatstat::ppp (x1, y1,
+                                      xrange = range (x1), yrange = range (y1))
                 ch1 <- spatstat::convexhull (xy1)
                 bdry1 <- cbind (ch1$bdry[[1]]$x, ch1$bdry[[1]]$y)
-                x2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [,1]
-                y2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [,2]
+                x2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [, 1]
+                y2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [, 2]
                 indx <- which (!duplicated (cbind (x2, y2)))
                 x2 <- x2 [indx]
                 y2 <- y2 [indx]
-                xy2 <- spatstat::ppp (x2, y2, xrange=range (x2), yrange=range (y2))
+                xy2 <- spatstat::ppp (x2, y2,
+                                      xrange = range (x2), yrange = range (y2))
                 ch2 <- spatstat::convexhull (xy2)
                 bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
-                
-                #indx <- sapply (bdry1, function (x) 
+
+                #indx <- sapply (bdry1, function (x)
                 #                spatialkernel::pinpoly (bdry1, bdry2))
-                indx <- sapply (bdry1, function (x) 
-                                sp::point.in.polygon (bdry2 [,1], bdry2 [,2],
-                                                      bdry1 [,1], bdry1 [,2]))
+                indx <- sapply (bdry1, function (x)
+                                sp::point.in.polygon (bdry2 [, 1], bdry2 [, 2],
+                                                      bdry1 [, 1], bdry1 [, 2]))
                 if (all (indx == 1))
                     holes [group_pairs [1, i]] <- TRUE
-                #indx <- sapply (bdry2, function (x) 
+                #indx <- sapply (bdry2, function (x)
                 #                spatialkernel::pinpoly (bdry2, bdry1))
-                indx <- sapply (bdry2, function (x) 
-                                sp::point.in.polygon (bdry1 [,1], bdry1 [,2],
-                                                      bdry2 [,1], bdry2 [,2]))
+                indx <- sapply (bdry2, function (x)
+                                sp::point.in.polygon (bdry1 [, 1], bdry1 [, 2],
+                                                      bdry2 [, 1], bdry2 [, 2]))
                 if (all (indx == 1))
                     holes [group_pairs [2, i]] <- TRUE
             }
@@ -290,9 +292,9 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                           c (apply (xyi, 2, min), apply (xyi, 2, max))
                       })
     xylims <- do.call (rbind, xylims)
-    indx <- which (xylims [,1] > xrange [1] & xylims [,2] > yrange [1] &
-                   xylims [,3] < xrange [2] & xylims [,4] < yrange [2])
-    obj <- obj [indx,]
+    indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
+                   xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
+    obj <- obj [indx, ]
 
     # then extract mean coordinates for every polygon or line in obj:
     xy_mn <- lapply (slot (obj, objtxt [1]),  function (x)
@@ -302,7 +304,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
 
     #usr <- par ('usr')
     boundaries <- list ()
-    xy_list <- list () 
+    xy_list <- list ()
     # The following loop constructs:
     # 1.  xy_list list for centroids of each object in each group; used to
     # reallocate stray objects if missing (bg)
@@ -310,14 +312,15 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
     # necessary.
     for (i in seq (groups))
     {
-        if ((length (make_hull) == 1 & make_hull) |
+        if ( (length (make_hull) == 1 & make_hull) |
             (length (make_hull) > 1 & make_hull [i]))
         {
-            x <- slot (groups [[i]], 'coords') [,1]
-            y <- slot (groups [[i]], 'coords') [,2]
+            x <- slot (groups [[i]], 'coords') [, 1]
+            y <- slot (groups [[i]], 'coords') [, 2]
             if (length (x) > 2)
             {
-                xy <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+                xy <- spatstat::ppp (x, y,
+                                     xrange = range (x), yrange = range (y))
                 ch <- spatstat::convexhull (xy)
                 bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
             } else
@@ -327,19 +330,20 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
             bdry <- sp::coordinates (groups [[i]])
         if (nrow (bdry) > 1) # otherwise group is obviously a single point
         {
-            bdry <- rbind (bdry, bdry [1,]) #enclose bdry back to 1st point
+            bdry <- rbind (bdry, bdry [1, ]) #enclose bdry back to 1st point
             # The next 4 lines are only used if missing (bg)
-            #indx <- sapply (xy_mn, function (x) spatialkernel::pinpoly (bdry, x))
+            #indx <- sapply (xy_mn, function (x)
+            #                spatialkernel::pinpoly (bdry, x))
             indx <- sapply (xy_mn, function (x)
-                            sp::point.in.polygon (x [1], x [2], 
-                                                  bdry [,1], bdry [,2]))
+                            sp::point.in.polygon (x [1], x [2],
+                                                  bdry [, 1], bdry [, 2]))
             indx <- which (indx > 0) # see below for point.in.polygon values
             xy_list [[i]] <- cbind (xmn [indx], ymn [indx])
         } else
         {
             xy_list [[i]] <- bdry
             # indx closest point to bdry
-            d <- sqrt ((xmn - bdry [1]) ^ 2 + (ymn - bdry [2]) ^ 2)
+            d <- sqrt ( (xmn - bdry [1]) ^ 2 + (ymn - bdry [2]) ^ 2)
             indx <- which.min (d)
         }
 
@@ -368,8 +372,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                           {
                                               if (nrow (j) > 2)
                                                   sp::point.in.polygon (
-                                                        i [,1], i [,2],
-                                                        j [,1], j [,2])
+                                                        i [, 1], i [, 2],
+                                                        j [, 1], j [, 2])
                                               else
                                                   rep (0, nrow (i))
                                           })
@@ -384,10 +388,10 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         # distributed between 2 groups, one of these is *randomly* selected.
         membs <- sapply (coords, function (i)
                          {
-                             temp <- i [,3:ncol (i)]
+                             temp <- i [, 3:ncol (i)]
                              if (!is.matrix (temp))
-                                 temp <- matrix (temp, ncol=1, 
-                                                 nrow=length (temp))
+                                 temp <- matrix (temp, ncol = 1,
+                                                 nrow = length (temp))
                              temp [temp > 1] <- 1
                              n <- colSums (temp)
                              if (max (n) < 3) # must have > 2 elements in group
@@ -402,39 +406,41 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
         indx <- which (membs == 0)
         x0 <- xmn [indx]
         y0 <- ymn [indx]
-        dists <- array (NA, dim=c (length (indx), length (groups)))
+        dists <- array (NA, dim = c (length (indx), length (groups)))
         for (i in seq (groups))
         {
             ng <- dim (xy_list [[i]]) [1]
             if (ng > 0)
             {
-                x0mat <- array (x0, dim=c(length (x0), ng))
-                y0mat <- array (y0, dim=c(length (y0), ng))
-                xmat <- t (array (xy_list [[i]] [,1], dim=c(ng, length (x0))))
-                ymat <- t (array (xy_list [[i]] [,2], dim=c(ng, length (x0))))
-                dg <- sqrt ((xmat - x0mat) ^ 2 + (ymat - y0mat) ^ 2)
-                # Then the minimum distance for each stray object to any object in
-                # group [i]:
+                x0mat <- array (x0, dim = c(length (x0), ng))
+                y0mat <- array (y0, dim = c(length (y0), ng))
+                xmat <- t (array (xy_list [[i]] [, 1],
+                                  dim = c(ng, length (x0))))
+                ymat <- t (array (xy_list [[i]] [, 2],
+                                  dim = c(ng, length (x0))))
+                dg <- sqrt ( (xmat - x0mat) ^ 2 + (ymat - y0mat) ^ 2)
+                # Then the minimum distance for each stray object to any object
+                # in group [i]:
                 dists [, i] <- apply (dg, 1, min)
             } else
                 dists [, i] <- Inf
         }
         # Then simply extract the group holding the overall minimum dist:
         membs [indx] <- apply (dists, 1, which.min)
-        xy <- lapply (coords, function (i) i [,1:2])
+        xy <- lapply (coords, function (i) i [, 1:2])
     } else
     {
         # Allocate objects within boundaries to groups, and all remaining
         # objects to group#0
         if (boundary != 0)
         {
-            xy <- lapply (coords, function (i) i [,1:2])
+            xy <- lapply (coords, function (i) i [, 1:2])
             membs <- lapply (coords, function (i)
                              {
-                                 temp <- i [,3:ncol (i)]
+                                 temp <- i [, 3:ncol (i)]
                                  if (!is.matrix (temp))
-                                     temp <- matrix (temp, ncol=1, 
-                                                     nrow=length (temp))
+                                     temp <- matrix (temp, ncol = 1,
+                                                     nrow = length (temp))
                                  temp [temp > 1] <- 1
                                  n <- colSums (temp)
                                  if (boundary < 0)
@@ -450,15 +456,15 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                                  return (n)
                              })
         } else
-        { 
-            # potentially split objects across boundaries, thereby extending coords
-            # and thus requiring an explicit loop. TODO: Rcpp this?
+        {
+            # potentially split objects across boundaries, thereby extending
+            # coords and thus requiring an explicit loop. TODO: Rcpp this?
             split_objs <- sapply (coords, function (i)
                                   {
-                                      temp <- i [,3:ncol (i)]
+                                      temp <- i [, 3:ncol (i)]
                                       if (!is.matrix (temp))
-                                          temp <- matrix (temp, ncol=1, 
-                                                          nrow=length (temp))
+                                          temp <- matrix (temp, ncol = 1,
+                                                          nrow = length (temp))
                                       temp [temp > 1] <- 1
                                       n <- colSums (temp)
                                       if (max (n) > 0 & max (n) < nrow (temp))
@@ -475,32 +481,32 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
             # Then make new lists of xy and memberships by spliiting objects in
             # coords_split. These lists are of unknown length, requiring an
             # unsightly double loop.
-            xy <- list () 
+            xy <- list ()
             membs <- NULL
             for (i in coords_split)
             {
-                temp <- i [,3:ncol (i)]
+                temp <- i [, 3:ncol (i)]
                 temp [temp > 1] <- 1
                 if (!is.matrix (temp))
-                    temp <- matrix (temp, ncol=1, nrow=length (temp))
+                    temp <- matrix (temp, ncol = 1, nrow = length (temp))
                 n <- colSums (temp)
                 if (max (n) < 3)
                 {
-                    xy [[length (xy) + 1]] <- i [,1:2]
+                    xy [[length (xy) + 1]] <- i [, 1:2]
                     membs <- c (membs, 0)
-                } else 
+                } else
                 {
                     # Allow for multiple group memberships
                     indx_i <- which (n > 2)
                     for (j in indx_i)
                     {
-                        indx_j <- which (temp [,j] == 1)
+                        indx_j <- which (temp [, j] == 1)
                         if (length (indx_j) > 2)
                         {
                             xy [[length (xy) + 1]] <- i [indx_j, 1:2]
                             membs <- c (membs, j)
                         }
-                        indx_j <- which (temp [,j] == 0)
+                        indx_j <- which (temp [, j] == 0)
                         if (length (indx_j) > 2)
                         {
                             xy [[length (xy) + 1]] <- i [indx_j, 1:2]
@@ -510,13 +516,13 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                 } # end else !(max (n) < 3)
             } # end for i
             # Then add the non-split groups
-            xy <- c (xy, lapply (coords, function (i) i [,1:2]))
+            xy <- c (xy, lapply (coords, function (i) i [, 1:2]))
             membs2 <- sapply (coords, function (i)
                               {
-                                  temp <- i [,3:ncol (i)]
+                                  temp <- i [, 3:ncol (i)]
                                   if (!is.matrix (temp))
-                                      temp <- matrix (temp, ncol=1, 
-                                                      nrow=length (temp))
+                                      temp <- matrix (temp, ncol = 1,
+                                                      nrow = length (temp))
                                   temp [temp > 1] <- 1
                                   n <- colSums (temp)
                                   if (max (n) < nrow (temp))
@@ -543,31 +549,32 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
     if (!missing (bg))
         cols <- c (cols, bg)
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x=lon, y=lat, group=id) 
+    aes <- ggplot2::aes (x = lon, y = lat, group = id)
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
     {
         if (missing (size)) size <- 0
         else if (!is.numeric (size)) size <- 0
-        map <- map + ggplot2::geom_polygon (data=xyflat, mapping=aes, 
-                                            fill=cols [xyflat$col], size=size)
+        map <- map + ggplot2::geom_polygon (data = xyflat, mapping = aes,
+                                            fill = cols [xyflat$col],
+                                            size = size)
     } else if (class (obj) == 'SpatialLinesDataFrame')
     {
         if (missing (size)) size <- 0.5
         else if (!is.numeric (size)) size <- 0.5
         if (missing (shape)) shape <- 1
         else if (!is.numeric (shape)) shape <- 1
-        map <- map + ggplot2::geom_path (data=xyflat, mapping=aes, 
-                                         colour=cols [xyflat$col], 
-                                         size=size, linetype=shape)
+        map <- map + ggplot2::geom_path (data = xyflat, mapping = aes,
+                                         colour = cols [xyflat$col],
+                                         size = size, linetype = shape)
     } else if (class (obj) == 'SpatialPointsDataFrame')
     {
         # Not implemented yet
     }
 
-    if (!missing (borderWidth)) # draw hulls around entire groups
+    if (!missing (border_width)) # draw hulls around entire groups
     {
-        if (is.numeric (borderWidth))
+        if (is.numeric (border_width))
         {
             bdry <- list ()
             for (i in seq (groups))
@@ -580,7 +587,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
                     indx <- which (!duplicated (cbind (x, y)))
                     x <- x [indx]
                     y <- y [indx]
-                    xy2 <- spatstat::ppp (x, y, xrange=range (x), yrange=range (y))
+                    xy2 <- spatstat::ppp (x, y, xrange = range (x),
+                                          yrange = range (y))
                     ch <- spatstat::convexhull (xy2)
                     bdry [[i]] <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
                 }
@@ -589,11 +597,11 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull=FALSE,
             bdry <- data.frame (do.call (rbind, bdry))
             names (bdry) <- c ("id", "x", "y")
 
-            aes <- ggplot2::aes (x=x, y=y, group=id) 
-            map <- map + ggplot2::geom_polygon (data=bdry, mapping=aes, 
-                                                colour=cols [bdry$id],
-                                                fill="transparent", 
-                                                size=borderWidth)
+            aes <- ggplot2::aes (x = x, y = y, group = id)
+            map <- map + ggplot2::geom_polygon (data = bdry, mapping = aes,
+                                                colour = cols [bdry$id],
+                                                fill = "transparent",
+                                                size = border_width)
         }
     }
 

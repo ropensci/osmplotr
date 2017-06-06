@@ -18,10 +18,10 @@
 #' @seealso \code{\link{add_osm_groups}}.
 #'
 #' @examples
-#' cm <- colour_mat (n=5, cols=rainbow(4), rotate=90, plot=TRUE)
+#' cm <- colour_mat (n = 5, cols = rainbow(4), rotate = 90, plot = TRUE)
 #'
 #' # 'colour_mat' is intended primarily for use in colouring groups added with
-#' # 'add_osm_groups' using the 'colmat=TRUE' option:
+#' # 'add_osm_groups' using the 'colmat = TRUE' option:
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' # Generate random points to serve as group centres
 #' set.seed (2)
@@ -30,14 +30,14 @@
 #' y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
 #' groups <- cbind (x, y)
 #' groups <- apply (groups, 1, function (i) 
-#'                  sp::SpatialPoints (matrix (i, nrow=1, ncol=2)))
+#'                  sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
 #' # plot a basemap and add groups
-#' map <- osm_basemap (bbox=bbox, bg="gray20")
-#' map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=rainbow (4),
-#'                        colmat=TRUE, rotate=90)
+#' map <- osm_basemap (bbox = bbox, bg = "gray20")
+#' map <- add_osm_groups (map, obj = london$dat_BNR, group = groups, cols = rainbow (4),
+#'                        colmat = TRUE, rotate = 90)
 #' print_osm_map (map)
 
-colour_mat <- function (cols, n=c(10, 10), rotate, plot=FALSE)
+colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE)
 {
     # ---------------  sanity checks and warnings  ---------------
     # ---------- cols
@@ -49,11 +49,11 @@ colour_mat <- function (cols, n=c(10, 10), rotate, plot=FALSE)
     {
         cols <- sapply (cols, function (i) {
                         tryCatch (
-                                  col2rgb (i),
-                                  error = function (e) 
-                                  {
-                                      e$message <-  paste0 ('Invalid colours: ', i)
-                                  })
+                              col2rgb (i),
+                              error = function (e)
+                              {
+                                  e$message <-  paste0 ('Invalid colours: ', i)
+                             })
                     })
     } else if (rownames (cols) != c ('red', 'green', 'blue'))
         stop ('Colour matrix has unknown format')
@@ -100,29 +100,29 @@ colour_mat <- function (cols, n=c(10, 10), rotate, plot=FALSE)
             i1 <- i1 + 4
         i2 <- i1 + 1
         x <- (rotate %% 90) / 360
-        cols <- (1 - x) * cols [,i1] + x * cols [,i2]
-        cols <- apply (cols, 2, function (x) 
+        cols <- (1 - x) * cols [, i1] + x * cols [, i2]
+        cols <- apply (cols, 2, function (x)
                        {
                            if (max (x) == 0) rep (0, 3)
                            else x * max_int / max (x)
                        })
     }
 
-    tl <- cols [,1] # top left
-    tr <- cols [,2] # top right
-    br <- cols [,3] # bottom right
-    bl <- cols [,4] # bottom left
+    tl <- cols [, 1] # top left
+    tr <- cols [, 2] # top right
+    br <- cols [, 3] # bottom right
+    bl <- cols [, 4] # bottom left
     # Then interpolate, starting with top and bottom rows
-    ih <- t (array (seq (n [2]) - 1, dim=c (n [2], 3))) / (n [2] - 1)
-    iv <- t (array (seq (n [1]) - 1, dim=c (n [1], 3))) / (n [1] - 1)
+    ih <- t (array (seq (n [2]) - 1, dim = c (n [2], 3))) / (n [2] - 1)
+    iv <- t (array (seq (n [1]) - 1, dim = c (n [1], 3))) / (n [1] - 1)
     top <- (1 - ih) * tl + ih * tr
     bot <- (1 - ih) * bl + ih * br
-    arr <- array (NA, dim=n)
-    col_arrs <- list (r=arr, g=arr, b=arr)
+    arr <- array (NA, dim = n)
+    col_arrs <- list (r = arr, g = arr, b = arr)
     for (i in seq (3))
     {
-        col_arrs [[i]] [1,] <- top [i,]
-        col_arrs [[i]] [n [1],] <- bot [i,]
+        col_arrs [[i]] [1, ] <- top [i, ]
+        col_arrs [[i]] [n [1], ] <- bot [i, ]
     }
     # Then fill intervening rows
     indx <- (seq (n [1]) - 1) / (n [1] - 1)
@@ -130,16 +130,16 @@ colour_mat <- function (cols, n=c(10, 10), rotate, plot=FALSE)
         col_arrs [[i]] <- apply (col_arrs [[i]], 2, function (x)
                              (1 - indx) * x [1] + indx * tail (x, 1))
     # Then fill the actual colourmat with RGB colours composed of the 3 indices:
-    carr <- array (rgb (col_arrs [[1]], col_arrs [[2]], col_arrs [[3]], 
-                        maxColorValue=255), dim=n)
+    carr <- array (rgb (col_arrs [[1]], col_arrs [[2]], col_arrs [[3]],
+                        maxColorValue = 255), dim = n)
 
     if (plot) {
         plot.new ()
-        par (mar=rep (0, 4))
-        plot (NULL, NULL, xlim=c(0, n[2]), ylim=c (0, n[1]))
-        for (i in 1:n [1]) 
-            for (j in 1:n [2]) 
-                rect (j - 1, i - 1, j, i, col=carr [i, j])
+        par (mar = rep (0, 4))
+        plot (NULL, NULL, xlim = c(0, n[2]), ylim = c (0, n[1]))
+        for (i in 1:n [1])
+            for (j in 1:n [2])
+                rect (j - 1, i - 1, j, i, col = carr [i, j])
     }
     return (carr)
 } # end function colour.mat

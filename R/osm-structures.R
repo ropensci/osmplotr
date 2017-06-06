@@ -23,15 +23,15 @@
 #' osm_structures ()
 #' # user-defined structures:
 #' structures <- c ('highway', 'park', 'grass')
-#' structs <- osm_structures (structures=structures, col_scheme='light')
+#' structs <- osm_structures (structures = structures, col_scheme = 'light')
 #' # make_osm_map returns potentially modified list of data
-#' dat <- make_osm_map (osm_data=london, structures=structs)
+#' dat <- make_osm_map (osm_data = london, structures = structs)
 #' # map contains updated $osm_data and actual map in $map
 #' print_osm_map (dat$map)
 
 osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
                          'grass', 'natural', 'park', 'highway', 'boundary',
-                         'tree'), col_scheme='dark')
+                         'tree'), col_scheme = 'dark')
 {
     # Set up key-value pairs:
     keys <- structures
@@ -61,12 +61,13 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
     # sufficiently many letters are included for entries to become unique.
     indx_in <- which (!duplicated (structures))
     indx_out <- which (duplicated (structures))
-    lettrs <- sapply (structures [indx_in], function (x) 
+    lettrs <- sapply (structures [indx_in], function (x)
                       toupper (substr (x, 1, 1)))
     matches <- sapply (lettrs, function (x) which (lettrs %in% x))
     # matches returns a list of matches for each letter
     nletts <- rep (2, length (matches))
-    # This while loop will always stop because it is only applied to unique values
+    # This while loop will always stop because it is only applied to unique
+    # values
     while (max (sapply (matches, length)) > 1)
     {
         # The list of matches is then reduced to unique values. This is done
@@ -74,13 +75,13 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
         # only those containing unique values.
         matches_red <- list ()
         for (i in seq (matches))
-            if (length (matches [[i]]) > 1 & 
+            if (length (matches [[i]]) > 1 &
                 !all (matches [[i]] %in% unlist (matches_red)))
                 matches_red [[length (matches_red) + 1]] <- matches [[i]]
         for (i in seq (matches_red))
         {
             repls <- structures [indx_in] [matches_red [[i]] ]
-            lettrs [matches_red [[i]] ] <- toupper (substr (repls, 1, 
+            lettrs [matches_red [[i]] ] <- toupper (substr (repls, 1,
                                                 nletts [matches_red [[i]] ]))
             nletts [matches_red [[i]] ] <- nletts [matches_red [[i]] ] + 1
         }
@@ -89,8 +90,8 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
     # lettrs then has unique suffixes for all unique (structures). These values
     # then have be extended to the full structures with duplicates. This is a
     # bit tricky, and is done by first creating an index of all duplicates:
-    indx <- which (duplicated (structures) | 
-                   duplicated (structures, fromLast=TRUE))
+    indx <- which (duplicated (structures) |
+                   duplicated (structures, fromLast = TRUE))
     # Then the values of that indx that are not in indx_out
     indx <- indx [!indx %in% indx_out]
     # And those two can be matched for the desired replacement
@@ -106,13 +107,13 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
     if (col_scheme == 'dark')
     {
         col_bg <- 'gray20'
-        col_green <- rgb (100, 120, 100, 255, maxColorValue=255)
-        col_green_bright <- rgb (100, 160, 100, 255, maxColorValue=255)
-        col_blue <- rgb (100, 100, 120, 255, maxColorValue=255)
-        col_gray1 <- rgb (100, 100, 100, 255, maxColorValue=255)
-        col_gray2 <- rgb (120, 120, 120, 255, maxColorValue=255)
-        col_white <- rgb (200, 200, 200, 255, maxColorValue=255)
-        col_black <- rgb (0, 0, 0, 255, maxColorValue=255)
+        col_green <- rgb (100, 120, 100, 255, maxColorValue = 255)
+        col_green_bright <- rgb (100, 160, 100, 255, maxColorValue = 255)
+        col_blue <- rgb (100, 100, 120, 255, maxColorValue = 255)
+        col_gray1 <- rgb (100, 100, 100, 255, maxColorValue = 255)
+        col_gray2 <- rgb (120, 120, 120, 255, maxColorValue = 255)
+        col_white <- rgb (200, 200, 200, 255, maxColorValue = 255)
+        col_black <- rgb (0, 0, 0, 255, maxColorValue = 255)
         cols <- rep (col_bg, length (structures))
         cols [structures == 'building'] <- col_gray1
         cols [structures == 'amenity'] <- col_gray2
@@ -126,13 +127,13 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
     } else if (col_scheme == 'light')
     {
         col_bg <- 'gray95'
-        col_green <- rgb (200, 220, 200, 255, maxColorValue=255)
-        col_green_bright <- rgb (200, 255, 200, 255, maxColorValue=255)
-        col_blue <- rgb (200, 200, 220, 255, maxColorValue=255)
-        col_gray1 <- rgb (200, 200, 200, 255, maxColorValue=255)
-        col_gray2 <- rgb (220, 220, 220, 255, maxColorValue=255)
-        col_white <- rgb (255, 255, 255, 255, maxColorValue=255)
-        col_black <- rgb (150, 150, 150, 255, maxColorValue=255)
+        col_green <- rgb (200, 220, 200, 255, maxColorValue = 255)
+        col_green_bright <- rgb (200, 255, 200, 255, maxColorValue = 255)
+        col_blue <- rgb (200, 200, 220, 255, maxColorValue = 255)
+        col_gray1 <- rgb (200, 200, 200, 255, maxColorValue = 255)
+        col_gray2 <- rgb (220, 220, 220, 255, maxColorValue = 255)
+        col_white <- rgb (255, 255, 255, 255, maxColorValue = 255)
+        col_black <- rgb (150, 150, 150, 255, maxColorValue = 255)
         cols <- rep (col_bg, length (structures))
         cols [structures == 'building'] <- col_gray1
         cols [structures == 'amenity'] <- col_gray2
@@ -151,10 +152,10 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
     values <- c (values, '')
     suffixes <- c (suffixes, '')
     cols <- c (cols, col_bg)
-    
+
     dat <- data.frame (cbind (structures, keys, values, suffixes, cols),
-                       stringsAsFactors=FALSE, row.names=seq (length (keys)))
+                       stringsAsFactors = FALSE,
+                       row.names = seq (length (keys)))
     names (dat) <- c ('structure', 'key', 'value', 'suffix', 'cols')
     return (dat)
 }
-

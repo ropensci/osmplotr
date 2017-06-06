@@ -18,11 +18,11 @@
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- osm_basemap (bbox=bbox, bg='gray20')
-#' map <- add_osm_objects (map, london$dat_BNR, col='gray40') 
+#' map <- osm_basemap (bbox = bbox, bg = 'gray20')
+#' map <- add_osm_objects (map, london$dat_BNR, col = 'gray40') 
 #' print_osm_map (map)
 
-osm_basemap <- function (bbox, structures, bg='gray20')
+osm_basemap <- function (bbox, structures, bg = 'gray20')
 {
     # ---------------  sanity checks and warnings  ---------------
     # ------- bbox
@@ -45,7 +45,7 @@ osm_basemap <- function (bbox, structures, bg='gray20')
         ns <- c ('structure', 'key', 'value', 'suffix', 'cols')
         if (!all (names (structures) == ns))
             stop ('structures not in recognised format')
-        bg = structure$cols [which (structures$structure == 'background')]
+        bg <- structure$cols [which (structures$structure == 'background')]
     }
     # ------- structures
     if (is.null (bg)) stop ('Invalid bg')
@@ -57,7 +57,7 @@ osm_basemap <- function (bbox, structures, bg='gray20')
     if (is.na (bg)) stop ('Invalid bg')
     tryCatch (
               col2rgb (bg),
-              error = function (e) 
+              error = function (e)
               {
                   e$message <-  paste0 ('Invalid bg: ', bg)
                   stop (e)
@@ -67,25 +67,26 @@ osm_basemap <- function (bbox, structures, bg='gray20')
     # Because the initial plot has no data, setting these elements suffices to
     # generate a blank plot area with no margins
     new_theme <- ggplot2::theme_minimal ()
-    new_theme$panel.background <- ggplot2::element_rect (fill = bg, size=0)
+    new_theme$panel.background <- ggplot2::element_rect (fill = bg, size = 0)
     new_theme$line <- ggplot2::element_blank ()
     new_theme$axis.text <- ggplot2::element_blank ()
     new_theme$axis.title <- ggplot2::element_blank ()
-    new_theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, 'null'), 4))
-    new_theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, 'line'), 4))
+    new_theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, 'null'),
+                                                   4))
+    new_theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, 'line'),
+                                                   4))
     new_theme$legend.position <- 'none'
-    new_theme$axis.ticks.length <- ggplot2::unit(0,'null')
+    new_theme$axis.ticks.length <- ggplot2::unit(0, 'null') #nolint
 
     lon <- lat <- NA
     # coord_map uses mapproj::mapproject, but I can't add this as a dependency
     # because it's not explicitly called, so coord_equal is a workaround.
     map <- ggplot2::ggplot () + new_theme +
-                ggplot2::coord_equal (xlim=range (bbox[1,]), 
-                                    ylim=range (bbox[2,])) +
-                ggplot2::aes (x=lon, y=lat) +
-                ggplot2::scale_x_continuous (expand=c(0, 0)) +
-                ggplot2::scale_y_continuous (expand=c(0, 0))
+                ggplot2::coord_equal (xlim = range (bbox[1, ]),
+                                    ylim = range (bbox[2, ])) +
+                ggplot2::aes (x = lon, y = lat) +
+                ggplot2::scale_x_continuous (expand = c(0, 0)) +
+                ggplot2::scale_y_continuous (expand = c(0, 0))
 
     return (map)
 }
-

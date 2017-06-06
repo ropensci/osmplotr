@@ -5,7 +5,7 @@
 \title{add_osm_groups}
 \usage{
 add_osm_groups(map, obj, groups, cols, bg, make_hull = FALSE, boundary = -1,
-  size, shape, borderWidth, colmat = FALSE, rotate)
+  size, shape, border_width, colmat = FALSE, rotate)
 }
 \arguments{
 \item{map}{A \code{ggplot2} object to which the grouped objects are to be
@@ -19,9 +19,9 @@ polygons or lines) returned by \code{\link{extract_osm_objects}}.}
 coordinates of points defining one group.}
 
 \item{cols}{Either a vector of >= 4 colours passed to \code{colour_mat} (if
-\code{colmat=T}) to arrange as a 2-D map of visually distinct colours
-(default uses \code{rainbow} colours), or (if \code{colmat=F}), a vector of
-the same length as groups specifying individual colours for each.}
+\code{colmat = TRUE}) to arrange as a 2-D map of visually distinct colours
+(default uses \code{rainbow} colours), or (if \code{colmat = FALSE}), a
+vector of the same length as groups specifying individual colours for each.}
 
 \item{bg}{If given, then any objects not within groups are coloured this
 colour, otherwise (if not given) they are assigned to nearest group and
@@ -43,7 +43,7 @@ points.  Respective defaults are (0, 0.5, 0.5).}
 \item{shape}{Shape of points or lines (the latter passed as \code{linetype});
 see \code{?ggplot2::shape}.}
 
-\item{borderWidth}{If given, draws convex hull borders around entire groups
+\item{border_width}{If given, draws convex hull borders around entire groups
 in same colours as groups (try values around 1-2).}
 
 \item{colmat}{If \code{TRUE} generates colours according to
@@ -71,10 +71,10 @@ bigger group are included.
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 # Download data using 'extract_osm_objects'
 \dontrun{
-dat_HP <- extract_osm_objects (key='highway', value='primary', bbox=bbox)
-dat_T <- extract_osm_objects (key='tree', bbox=bbox)
-dat_BNR <- extract_osm_objects (key='building', value='!residential',
-bbox=bbox)
+dat_HP <- extract_osm_objects (key = 'highway', value = 'primary', bbox = bbox)
+dat_T <- extract_osm_objects (key = 'tree', bbox = bbox)
+dat_BNR <- extract_osm_objects (key = 'building', value = '!residential',
+bbox = bbox)
 }
 # These data are also provided in
 dat_HP <- london$dat_HP
@@ -84,22 +84,22 @@ dat_BNR <- london$dat_BNR
 # Define a function to easily generate a basemap
 bmap <- function ()
 {
-    map <- osm_basemap (bbox=bbox, bg="gray20")
-    map <- add_osm_objects (map, dat_HP, col="gray70", size=1)
-    add_osm_objects (map, dat_T, col="green")
+    map <- osm_basemap (bbox = bbox, bg = "gray20")
+    map <- add_osm_objects (map, dat_HP, col = "gray70", size = 1)
+    add_osm_objects (map, dat_T, col = "green")
 }
 
 # Highlight a single region using all objects lying partially inside the
-# boundary (via the boundary=1 argument)
+# boundary (via the boundary = 1 argument)
 pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
                                  c (51.505, 51.505, 51.515, 51.515)))
 \dontrun{
-dat_H <- extract_osm_objects (key='highway', bbox=bbox) # all highways
+dat_H <- extract_osm_objects (key = 'highway', bbox = bbox) # all highways
 map <- bmap ()
-map <- add_osm_groups (map, dat_BNR, groups=pts, cols="gray90",
-                       bg="gray40", boundary=1)
-map <- add_osm_groups (map, dat_H, groups=pts, cols="gray80",
-                       bg="gray30", boundary=1)
+map <- add_osm_groups (map, dat_BNR, groups = pts, cols = "gray90",
+                       bg = "gray40", boundary = 1)
+map <- add_osm_groups (map, dat_H, groups = pts, cols = "gray80",
+                       bg = "gray30", boundary = 1)
 print_osm_map (map)
 }
 
@@ -110,20 +110,20 @@ x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
 y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
 groups <- cbind (x, y)
 groups <- apply (groups, 1, function (i) 
-              sp::SpatialPoints (matrix (i, nrow=1, ncol=2)))
+              sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
 # plot a basemap and add groups
 map <- bmap ()
 cols <- rainbow (length (groups))
 \dontrun{
-map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols)
+map <- add_osm_groups (map, obj = london$dat_BNR, group = groups, cols = cols)
 cols <- adjust_colours (cols, -0.2)
-map <- add_osm_groups (map, obj=london$dat_H, groups=groups, cols=cols)
+map <- add_osm_groups (map, obj = london$dat_H, groups = groups, cols = cols)
 print_osm_map (map)
 
 # Highlight convex hulls containing groups:
 map <- bmap ()
-map <- add_osm_groups (map, obj=london$dat_BNR, group=groups, cols=cols,
-                       borderWidth=2)
+map <- add_osm_groups (map, obj = london$dat_BNR, group = groups, cols = cols,
+                       border_width = 2)
 print_osm_map (map)
 }
 }

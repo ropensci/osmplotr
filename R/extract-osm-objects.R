@@ -18,7 +18,7 @@
 #' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
 #' max values, and rows of x and y values.
 #' @param return_type If specified, force return of spatial (\code{point},
-#' \code{line}, \code{polygon}) objects. \code{return_type='line'} will, for
+#' \code{line}, \code{polygon}) objects. \code{return_type = 'line'} will, for
 #' example, always return a SpatialLinesDataFrame. If not specified, defaults to
 #' 'sensible' values (for example, \code{lines} for highways, \code{points} for
 #' trees, \code{polygons} for bulidings).
@@ -33,17 +33,19 @@
 #' @examples
 #' \dontrun{
 #' bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
-#' dat_B <- extract_osm_objects (key='building', bbox=bbox)
-#' dat_H <- extract_osm_objects (key='highway', bbox=bbox)
-#' dat_BR <- extract_osm_objects (key='building', value='residential', bbox=bbox)
-#' dat_HP <- extract_osm_objects (key='highway', value='primary', bbox=bbox)
-#' dat_HNP <- extract_osm_objects (key='highway', value='!primary', bbox=bbox)
+#' dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
+#' dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
+#' dat_BR <- extract_osm_objects (key = 'building', value = 'residential',
+#'                                bbox = bbox)
+#' dat_HP <- extract_osm_objects (key = 'highway', value = 'primary', bbox = bbox)
+#' dat_HNP <- extract_osm_objects (key = 'highway', value = '!primary', bbox = bbox)
 #' extra_pairs <- c ('name', 'Royal.Festival.Hall')
-#' dat <- extract_osm_objects (key='building', extra_pairs=extra_pairs, bbox=bbox)
+#' dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
+#'                             bbox = bbox)
 #' }
 
-extract_osm_objects <- function (key, value, extra_pairs, bbox, 
-                                 return_type, verbose=FALSE)
+extract_osm_objects <- function (key, value, extra_pairs, bbox,
+                                 return_type, verbose = FALSE)
 {
     if (missing (key))
         stop ('key must be provided')
@@ -69,7 +71,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
         key <- 'natural'
         value <- 'tree'
     }
-    
+
     # Construct the overpass query, starting with main key-value pair and
     # possible negation
     keyold <- key
@@ -79,7 +81,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
         {
             valold <- value
             if (substring (value, 1, 1) == '!')
-                value <- paste0 ("['", key, "'!='", 
+                value <- paste0 ("['", key, "'!='",
                                 substring (value, 2, nchar (value)), "']")
             else if (key == 'name')
                 value <- paste0 ("['", key, "'~'", value, "']")
@@ -105,8 +107,8 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
     } else
         extra_pairs <- ''
 
-    bbox <- paste0 ('(', bbox [2,1], ',', bbox [1,1], ',',
-                    bbox [2,2], ',', bbox [1,2], ')')
+    bbox <- paste0 ('(', bbox [2, 1], ',', bbox [1, 1], ',',
+                    bbox [2, 2], ',', bbox [1, 2], ')')
 
 
     query <- paste0 ('(node', key, value, extra_pairs, bbox,
@@ -120,7 +122,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
         value <- NULL
     key <- keyold
 
-    obj <- msg <- NULL
+    obj <- NULL
 
     if (!curl::has_internet ())
         stop ('Error: No internet connection')
@@ -129,13 +131,13 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
     if (verbose) message ('downloading OSM data ... ')
     #dat <- httr::GET (query)
     # httr::GET sometimes errors with 'Error in curl::curl_fetch_memory (url,
-    #       handle=handle) : Timeout was reached'. The current tryCatch catches
-    #       this error only.
+    #       handle = handle) : Timeout was reached'. The current tryCatch
+    #       catches this error only.
     dat <- tryCatch (
-        httr::GET (query, timeout=60),
-        error=function (err) {
+        httr::GET (query, timeout = 60),
+        error = function (err) {
             message ('error in httr::GET - most likely Timeout')
-            return (list (status_code=504))
+            return (list (status_code = 504))
         })
     count <- 1
     # code#429 = "Too Many Requests (RFC 6585)"
@@ -146,10 +148,10 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
     {
         #dat <- httr::GET (query)
         dat <- tryCatch (
-            httr::GET (query, timeout=60),
-            error=function (err) {
+            httr::GET (query, timeout = 60),
+            error = function (err) {
                 message ('error in httr::GET - most likely Timeout')
-                return (list (status_code=504))
+                return (list (status_code = 504))
             })
         count <- count + 1
     }
@@ -161,7 +163,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
     }
 
     # Encoding must be supplied in the following to suppress warning
-    dat <- XML::xmlParse (httr::content (dat, 'text', encoding='UTF-8'))
+    dat <- XML::xmlParse (httr::content (dat, 'text', encoding = 'UTF-8'))
 
     k <- v <- NULL # supress 'no visible binding' note from R CMD check
     if (verbose) message ('converting OSM data to omsar format')
@@ -176,15 +178,16 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
     # A very important NOTE: It can arise the OSM relations have IDs which
     # duplicate IDs in OSM ways, even through the two may bear no relationship
     # at all. This causes the attempt in `osmar::as_sp` to force them to an `sp`
-    # object to crash because 
+    # object to crash because
     # # Error in validObject(.Object) :
-    # #   invalid class 'SpatialLines' object: non-unique Lines ID of slot values
+    # #   invalid class 'SpatialLines' object: non-unique Lines ID of
+    # #   slot values
     # The IDs are actually neither needed not used, so the next lines simply
     # modifies all relation IDs by pre-pending 'r' to avoid such problems:
     for (i in seq (dato$relations))
         if (nrow (dato$relations [[i]]) > 0)
             dato$relations [[i]]$id <- paste0 ('r', dato$relations [[i]]$id)
-            
+
     if (!missing (return_type))
     {
         return_type <- tolower (return_type)
@@ -196,7 +199,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
             return_type <- 'polygons'
     } else
     {
-        if (key=='boundary' | key == 'highway' | key == 'waterway') 
+        if (key == 'boundary' | key == 'highway' | key == 'waterway')
             return_type <- 'lines'
         else if (!is.null (value))
         {
@@ -210,7 +213,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
             }
         } else
             return_type <- 'polygons'
-        
+
     }
 
     if (verbose) message ('converting osmar data to sp format')
@@ -229,7 +232,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
         pids1 <- osmar::find_down (dato, osmar::way (pids))
         pids2 <- osmar::find_up (dato, osmar::way (pids))
     }
-    pids <- mapply (c, pids1, pids2, simplify=FALSE)
+    pids <- mapply (c, pids1, pids2, simplify = FALSE)
     pids <- lapply (pids, function (i) unique (i))
 
     obj <- subset (dato, ids = pids)

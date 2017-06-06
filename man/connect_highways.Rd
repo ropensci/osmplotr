@@ -48,22 +48,22 @@ highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
 # Note that dots signify "anything", including whitespace and apostrophes, and
 # that '?' denotes optional previous character and so here matches both 
 # "Shorts Gardens" and "Short's Gardens"
-highways1 <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
+highways1 <- connect_highways (highways = highways, bbox = bbox, plot = TRUE)
 highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
-highways2 <- connect_highways (highways=highways, bbox=bbox, plot=TRUE)
+highways2 <- connect_highways (highways = highways, bbox = bbox, plot = TRUE)
 }
 # These are also part of the 'london' data provided with 'osmplotr':
 highways1 <- london$highways1
 highways2 <- london$highways2
 
 # Use of 'connect_highways' to highlight a region on a map
-map <- osm_basemap (bbox=bbox, bg='gray20')
-# dat_B <- extract_osm_data (key='building', value='!residential', bbox=bbox)
+map <- osm_basemap (bbox = bbox, bg = 'gray20')
+# dat_B <- extract_osm_data (key = 'building', value = '!residential', bbox = bbox)
 # Those data are part of 'osmplotr':
 dat_BNR <- london$dat_BNR # Non-residential buildings
 groups <- list (london$highways1, london$highways2)
-map <- add_osm_groups (map, obj=dat_BNR, groups=groups,
-                       cols=c('red', 'blue'), bg='gray40')
+map <- add_osm_groups (map, obj = dat_BNR, groups = groups,
+                       cols = c('red', 'blue'), bg = 'gray40')
 print_osm_map (map)
 }
 \seealso{
