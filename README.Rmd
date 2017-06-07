@@ -217,7 +217,7 @@ inclusive grouping extending across an entire region.
 ```{r map5, eval = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = groups, 
-                       cols = rainbow (length (groups)), borderWidth = 2)
+                       cols = rainbow (length (groups)), border_width = 2)
 print_osm_map (map)
 ```
 ```{r map5-print, eval = FALSE, echo = FALSE}

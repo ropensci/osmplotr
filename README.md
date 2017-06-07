@@ -154,7 +154,7 @@ Calling `add_osm_groups` with no `bg` argument forces all points lying outside t
 ``` r
 map <- osm_basemap (bbox=bbox, bg='gray20')
 map <- add_osm_groups (map, dat_B, groups=groups, 
-                       cols=rainbow (length (groups)), borderWidth=2)
+                       cols=rainbow (length (groups)), border_width=2)
 print_osm_map (map)
 ```
 
