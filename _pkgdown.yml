@@ -1,0 +1,58 @@
+title: osmplotr
+
+templates:
+  params:
+    bootswatch: cerulean
+
+reference:
+  - title: Package doc and class
+    contents:
+    - osmplotr-package
+  - title: Data extraction
+    contents:
+    - get_bbox
+    - extract_osm_objects
+    - connect_highways
+  - title: Map construction
+    contents:
+    - osm_basemap
+    - make_osm_map
+    - add_osm_objects
+    - osm_structures
+    - print_osm_map
+  - title: Additional map elements
+    contents:
+    - add_axes
+    - add_colourbar
+  - title: Maps with data
+    contents:
+    - add_osm_groups
+    - add_osm_surface
+  - title: Colours
+    contents:
+    - adjust_colours
+    - colour_mat
+  - title: Package data
+    contents:
+    - london
+
+    
+articles:
+  - title: The osmplotr package
+    contents:
+    - basic-maps
+    - data-maps
+
+navbar:
+  title: osmplotr
+  type: default
+  left:
+  - text: Home
+    href: index.html
+  - text: Vignettes
+    href: articles/index.html
+  - text: Functions
+    href: reference/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/ropensci/osmplotr

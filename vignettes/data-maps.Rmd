@@ -19,12 +19,8 @@ plotted by highlighting defined regions with different colours using
 
 
 ```{r load, message = FALSE}
+library (osmplotr)
 library (maptools) # Needed for this vignette
-```
-```{r, echo = FALSE, message = FALSE}
-setwd ('../..')
-devtools::load_all ("osmplotr", export_all = FALSE)
-setwd ('./osmplotr/vignettes')
 ```
 As in the first vignette, maps produced in this vignette contain data for a
 small portion of central London, U.K.
@@ -430,20 +426,20 @@ impractical for larger numbers of groups.
 
 ```{r map13, eval = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
+map <- add_osm_groups (map, dat_B, groups = groups, borderWidth = 2,
                        cols = heat.colors (length (groups)))
 print_osm_map (map)
 ```
 ```{r map13-print, echo = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
+map <- add_osm_groups (map, dat_B, groups = groups, borderWidth = 2,
                        cols = heat.colors (length (groups)))
 print_osm_map (map, filename = 'map_b13.png', width = 600,
                units = 'px', dpi = 72)
 ```
 ![](map_b13.png)
 
-Note the submitting any positive values to the additional `border_width` argument
+Note the submitting any positive values to the additional `borderWidth` argument
 causes `add_osm_groups` to drawn convex hull borders around the different
 groups. Even this is not sufficient, however, to render the result particularly
 visually pleasing or intelligible. To overcome this, `add_osm_groups` includes
@@ -484,14 +480,14 @@ arbitrarily specified. Using the `colmat` option in `add_osm_groups` enables the
 previous maps to be redrawn like this:
 ```{r map14, eval = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
+map <- add_osm_groups (map, dat_B, groups = groups, borderWidth = 2,
                        colmat = TRUE,
                        cols = c('red', 'green', 'yellow', 'blue'), rotate = 180)
 print_osm_map (map)
 ```
 ```{r map14-print, echo = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
+map <- add_osm_groups (map, dat_B, groups = groups, borderWidth = 2,
                        colmat = TRUE,
                        cols = c('red', 'green', 'yellow', 'blue'), rotate = 180)
 print_osm_map (map, filename = 'map_b14.png', width = 600,
