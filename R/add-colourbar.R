@@ -79,49 +79,18 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
     # ---------- map
     if (missing (map))
         stop ('map must be supplied to add_axes')
-    if (!is (map, 'ggplot'))
-        stop ('map must be a ggplot2 object')
-    # ---------- barwidth
-    barwidth <- test_len2 (barwidth, 'barwidth')
-    barwidth <- test_numeric (barwidth, 'barwidth', 0.02)
-    barwidth <- test_range (barwidth, 'barwidth', c (0, 1), 0.02)
-    # ---------- barlength
-    barlength <- test_len2 (barlength, 'barlength')
-    barlength <- test_numeric (barlength, 'barlength', 0.7)
-    barlength <- test_range (barlength, 'barlength', c (0, 1), 0.7)
-    # ---------- fontsize
-    fontsize <- test_len1 (fontsize, 'fontsize')
-    fontsize <- test_numeric (fontsize, 'fontsize', 3)
-    fontsize <- test_pos (fontsize, 'fontsize', 3)
-    # ---------- vertical
-    vertical <- test_len1 (vertical, 'vertical')
-    vertical <- test_logical (vertical, 'vertical', TRUE)
-    # ---------- alpha
-    alpha <- test_len1 (alpha, 'alpha')
-    alpha <- test_numeric (alpha, 'alpha', 0.4)
-    alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
-
     if (missing (cols))
         stop ("cols must be specified in add_colourbar")
-
-    # ---------------  end sanity checks and warnings  ---------------
+    check_map_arg (map)
+    barwidth <- check_barwidth_arg (barwidth)
+    barlength <- check_barlength_arg (barlength)
+    fontsize <- check_fontsize_arg (fontsize)
+    vertical <- check_vertical_arg (vertical)
+    alpha <- check_alpha_arg (alpha)
     if (missing (fontface)) fontface <- 1
     if (missing (fontfamily)) fontfamily <- ""
+    # ---------------  end sanity checks and warnings  ---------------
 
-    barwidth <- sort (barwidth)
-    barlength <- sort (barlength)
-
-    # This function adds five distinct layers to map. These layers could be
-    # constructed as separate functions, with calls as
-    # map <- map + layer1 ()
-    # but the five can not be combined in a single function:
-    # layers <- layer1 () + layer2 () + ...
-    # and so would have to remain as five separate functions, and a colourbar
-    # would have be assembled by calling:
-    # map <- map + layer1() + layer2() + ...,
-    # ultimately requiring map to be submitted to the colourbar construction
-    # function anyway, which is then functionally no different from having all
-    # five within a single function as done here.
 
     # ---------- Initial data setup
     xrange <- map$coordinates$limits$x
@@ -273,4 +242,49 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
                       inherit.aes = FALSE, label.size = 0,
                       nudge_x = nudge_x, nudge_y = nudge_y,
                       vjust = vjust, hjust = hjust)
+}
+
+
+check_barwidth_arg <- function (barwidth)
+{
+    barwidth <- test_len2 (barwidth, 'barwidth')
+    barwidth <- test_numeric (barwidth, 'barwidth', 0.02)
+    barwidth <- test_range (barwidth, 'barwidth', c (0, 1), 0.02)
+
+    return (sort (barwidth))
+}
+
+check_barlength_arg <- function (barlength)
+{
+    barlength <- test_len2 (barlength, 'barlength')
+    barlength <- test_numeric (barlength, 'barlength', 0.7)
+    barlength <- test_range (barlength, 'barlength', c (0, 1), 0.7)
+
+    return (sort (barlength))
+}
+
+check_fontsize_arg <- function (fontsize)
+{
+    fontsize <- test_len1 (fontsize, 'fontsize')
+    fontsize <- test_numeric (fontsize, 'fontsize', 3)
+    fontsize <- test_pos (fontsize, 'fontsize', 3)
+
+    return (fontsize)
+}
+
+check_vertical_arg <- function (vertical)
+{
+    vertical <- test_len1 (vertical, 'vertical')
+    vertical <- test_logical (vertical, 'vertical', TRUE)
+
+    return (vertical)
+}
+
+check_alpha_arg <- function (alpha)
+{
+    alpha <- test_len1 (alpha, 'alpha')
+    alpha <- test_numeric (alpha, 'alpha', 0.4)
+    alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
+
+    return (alpha)
 }

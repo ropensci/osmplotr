@@ -1,8 +1,8 @@
 context ('add-colourbar')
 
 test_that ('basemap object', {
-           expect_error (add_colourbar (), 'map must be supplied to add_axes')
-           expect_error (add_colourbar (NULL), 'map must be a ggplot2 object')
+           expect_error (add_colourbar (), 'map must be supplied')
+           expect_error (add_colourbar (NULL), 'cols must be specified')
 })
 
 test_that ('colours', {
