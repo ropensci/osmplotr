@@ -55,8 +55,6 @@
 #' map <- add_osm_groups (map, obj = dat_BNR, groups = groups,
 #'                        cols = c('red', 'blue'), bg = 'gray40')
 #' print_osm_map (map)
-
-
 connect_highways <- function (highways, bbox, plot = FALSE)
 {
     if (missing (highways))
@@ -292,6 +290,8 @@ connect_highways <- function (highways, bbox, plot = FALSE)
 #' @param way2 A matrix or data frame of spatial coordinates
 #' @return Vector of 3 elements: numbers of elements in (way1, way2)
 #' corresponding to minimal distance, and the distance itself.
+#'
+#' @noRd
 haversine <- function (way1, way2)
 {
     x1 <- array (way1 [, 1], dim = c(nrow (way1), nrow (way2)))
@@ -321,6 +321,8 @@ haversine <- function (way1, way2)
 #' @param node_to The ID of a node in way towards which to calculate the
 #' shortest_path
 #' @return Shortest path as list of nodal IDs (or NULL if no shortest path)
+#'
+#' @noRd
 shortest_way <- function (way, node_from, node_to)
 {
     # make igraph of entire way

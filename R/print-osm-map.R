@@ -23,7 +23,6 @@
 #' \dontrun{
 #' print_osm_map (map, file = 'map.png', width = 500, units = 'px') # prints to file
 #' }
-
 print_osm_map <- function (map, width, height, filename,
                            device, units = c('in', 'cm', 'mm', 'px'), dpi = 300)
 {

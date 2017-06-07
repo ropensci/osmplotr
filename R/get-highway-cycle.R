@@ -9,6 +9,8 @@
 #' segments for a particular OSM highway.
 #' @return A modified version of highways, extended by the addition of
 #' connecting nodes.
+#'
+#' @noRd
 get_highway_cycle <- function (highways)
 {
     # Proceeds through the following 3 steps:

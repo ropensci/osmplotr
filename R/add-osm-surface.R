@@ -292,6 +292,8 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
 #' default), otherwise uses 'Gaussian' for kernel smoothing (as
 #' spatstat::Smooth.ppp)
 #' @return A single data frame of object IDs, coordinates, and z-values
+#'
+#' @noRd
 list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
                                method = "idw")
 {

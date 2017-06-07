@@ -14,7 +14,8 @@
 #' @return A list of highways matching \code{highway_names} each element of
 #' which is a list of distinct components for the given highway.
 #' @return A \code{data.frame} of \code{sp} objects
-
+#'
+#' @noRd
 extract_highways <- function (highway_names, bbox)
 {
     if (missing (highway_names))

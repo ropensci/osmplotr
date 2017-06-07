@@ -16,7 +16,8 @@
 #'
 #' @section Note:
 #' This function is primarily used in \code{extract_highways}.
-
+#'
+#' @noRd
 order_lines <- function (sp_lines, i0 = 0)
 {
     stopifnot (class (sp_lines) == 'SpatialLinesDataFrame')

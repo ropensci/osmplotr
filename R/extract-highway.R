@@ -8,6 +8,8 @@
 #' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
 #' columns of min and max values, and rows of x and y values.  
 #' @return A \code{SpatialLinesDataFrame} containing the highway.
+#'
+#' @noRd
 extract_highway <- function (name = '', bbox)
 {
     stopifnot (nchar (name) > 0)

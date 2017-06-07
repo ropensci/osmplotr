@@ -43,7 +43,6 @@
 #' dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
 #'                             bbox = bbox)
 #' }
-
 extract_osm_objects <- function (key, value, extra_pairs, bbox,
                                  return_type, verbose = FALSE)
 {

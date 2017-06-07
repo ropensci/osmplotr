@@ -142,6 +142,8 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, size,
 #' @param xy A list of coordinates extracted from an sp object
 #' @param islines Set to TRUE for spatial lines, otherwise FALSE
 #' @return data frame
+#'
+#' @noRd
 list2df <- function (xy, islines = FALSE)
 {
     if (islines) # lines have to be separated by NAs

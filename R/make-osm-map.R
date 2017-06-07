@@ -47,9 +47,6 @@
 #' dat <- make_osm_map (bbox = bbox, structures = structs)
 #' print_osm_map (dat$map)
 #' }
-
-
-
 make_osm_map <- function (bbox, osm_data,
                           structures = osm_structures (), dat_prefix = 'dat_')
 {
