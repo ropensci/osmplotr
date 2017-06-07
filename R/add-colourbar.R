@@ -92,7 +92,7 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
     # ---------------  end sanity checks and warnings  ---------------
 
     # suppress 'no visible binding' warnings
-    x <- y <- x2 <- y2 <- NULL
+    x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
 
     # ---------- Initial data setup
     # expand is for semi-transparent underlay, done for direction parallel to

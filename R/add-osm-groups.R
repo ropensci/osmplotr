@@ -106,16 +106,15 @@
 #' print_osm_map (map)
 #' }
 
-add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
-                               boundary = -1, size, shape, border_width,
-                               colmat = FALSE, rotate)
+add_osm_groups <- function (map, obj, groups, cols = NULL, bg = NULL,
+                            make_hull = FALSE, boundary = -1, size, shape,
+                            border_width, colmat = FALSE, rotate = NULL)
 {
     # ---------------  sanity checks and warnings  ---------------
     # ---------- map
     if (missing (map))
         stop ('map must be supplied to add_osm_groups')
-    if (!is (map, 'ggplot'))
-        stop ('map must be a ggplot2 object')
+    check_map_arg (map)
     # ---------- map
     if (missing (obj))
         stop ('obj must be supplied to add_osm_groups')
@@ -123,33 +122,12 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         stop ('obj must be a spatial object')
     # ---------- groups
     if (missing (groups))
-    {
-        warning (paste0 ('No groups defined in add_osm_groups: ',
-                         'passing to add_osm_objects'))
-        if (missing (cols))
-            if (missing (bg))
-                stop ("either 'cols' or 'bg' must be minimally given")
-            else
-                cols <- bg
-        add_osm_objects (map, obj, col = cols [1])
-        return ()
-    } else if (class (groups) != 'list')
-    {
-        if (!is (groups, 'SpatialPoints'))
-            stop ('groups must be a SpatialPoints object (or list thereof)')
-        groups <- list (groups)
-    } else if (!all( (lapply (groups, class)) == 'SpatialPoints'))
-    {
-        e <- simpleError ('Cannot coerce groups to SpatialPoints')
-        tryCatch (
-                  groups <- lapply (groups, function (x)
-                                    as (x, 'SpatialPoints')),
-                  finally = stop (e))
-    }
+        stop ('groups must be provided')
+    groups <- check_groups_arg (groups)
     if (length (groups) == 1)
     {
         colmat <- FALSE
-        if (missing (bg))
+        if (is.null (bg))
         {
             message (paste0 ('Plotting one group only makes sense with bg;',
                              ' defaulting to gray40'))
@@ -157,9 +135,9 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         }
     }
     # ---------- cols
-    if (missing (cols))
+    if (is.null (cols))
     {
-        if (missing (bg))
+        if (is.null (bg))
             stop ("Either 'cols' or 'bg' must be minimally given")
         else
         {
@@ -168,63 +146,25 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
             add_osm_objects (map, obj, col = bg)
         }
     }
-    # ---------- make_hull
-    if (length (make_hull) > length (groups))
-    {
-        warning (paste0 ('make_hull has length > number of groups'))
-        make_hull <- make_hull [seq (groups)]
-    } else if (length (make_hull) > 1 & length (make_hull) < length (groups))
-    {
-        warning (paste0 ('make_hull should have length 1 or equal to numbers ',
-                         'of groups; using first value only'))
-        make_hull <- make_hull [1]
-    }
-    if (max (sapply (groups, length)) < 3) # No groups have > 2 members
-        make_hull <- FALSE
-    # ---------- boundary
-    if (!is.numeric (boundary)) boundary <- 0
-
-    # ---------- colmat
-    if (!is.logical (colmat)) colmat <- FALSE
+    # ---------- others
+    make_hull <- check_hull_arg (make_hull, groups)
+    if (!is.numeric (boundary))
+        boundary <- 0
+    if (!is.logical (colmat))
+        colmat <- FALSE
     # ---------------  end sanity checks and warnings  ---------------
 
     # Set up group colours
     if (!colmat)
     {
-        if (missing (cols))
-            cols <- rainbow (length (groups))
-        else if (length (cols) < length (groups))
-            cols <- rep (cols, length.out = length (groups))
-        if (length (groups) == 1 & missing (bg))
-        {
-            warning ('There is only one group; using default bg')
-            if (missing (cols))
-            {
-                cols <- 'red'
-                bg <- 'gray40'
-            } else if (cols [1] != 'gray40')
-                bg <- 'gray40'
-            else
-                bg <- 'white'
-        }
+        cols_default <- group_colours_default (cols, groups, bg)
+        cols <- cols_default$cols
+        bg <- cols_default$bg
     } else
     {
-        if (missing (cols))
-            cols <- rainbow (4)
-        else if (length (cols) < 4)
-            cols <- rainbow (4)
-        ncols <- 20
-        if (missing (rotate))
-            cmat <- colour_mat (ncols, cols = cols)
-        else
-        {
-            if (!is.numeric (rotate))
-                rotate <- 0
-            cmat <- colour_mat (ncols, cols = cols, rotate)
-        }
-        cols <- rep (NA, length (groups))
-        # cols is then a vector of colours to be filled by matching group
-        # centroids to relative positions within cmat
+        cols_colourmat <- group_colours_colourmat (cols, groups, rotate)
+        cols <- cols_colourmat$cols
+        cmat <- cols_colourmat$cmat
     }
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
@@ -307,7 +247,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     xy_list <- list ()
     # The following loop constructs:
     # 1.  xy_list list for centroids of each object in each group; used to
-    # reallocate stray objects if missing (bg)
+    # reallocate stray objects if is.null (bg)
     # 2. boundaries list of enclosing polygons, creating convex hulls if
     # necessary.
     for (i in seq (groups))
@@ -331,7 +271,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         if (nrow (bdry) > 1) # otherwise group is obviously a single point
         {
             bdry <- rbind (bdry, bdry [1, ]) #enclose bdry back to 1st point
-            # The next 4 lines are only used if missing (bg)
+            # The next 4 lines are only used if is.null (bg)
             #indx <- sapply (xy_mn, function (x)
             #                spatialkernel::pinpoly (bdry, x))
             indx <- sapply (xy_mn, function (x)
@@ -352,9 +292,9 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         if (colmat)
         {
             # Then get colour from colour.mat
-            xi <- ceiling (ncols * (mean (xmn [indx]) - xrange [1]) /
+            xi <- ceiling (nrow (cmat) * (mean (xmn [indx]) - xrange [1]) /
                            diff (xrange))
-            yi <- ceiling (ncols * (mean (ymn [indx]) - yrange [1]) /
+            yi <- ceiling (nrow (cmat) * (mean (ymn [indx]) - yrange [1]) /
                            diff (yrange))
             cols [i] <- cmat [xi, yi]
         }
@@ -381,7 +321,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
                           cbind (i, pins)
                       })
 
-    if (missing (bg))
+    if (is.null (bg))
     {
         # Then each component is assigned to a single group based on entire
         # boundary.  NOTE that in cases where membership is *equally*
@@ -546,7 +486,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         names (xym [[i]]) <- c ("id", "lon", "lat", "col")
     }
     xyflat <- do.call (rbind, xym)
-    if (!missing (bg))
+    if (!is.null (bg))
         cols <- c (cols, bg)
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     aes <- ggplot2::aes (x = lon, y = lat, group = id)
@@ -606,4 +546,97 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     }
 
     return (map)
+}
+
+#' check groups argument
+#'
+#' @noRd
+check_groups_arg <- function (groups)
+{
+    if (class (groups) != 'list')
+    {
+        if (!is (groups, 'SpatialPoints'))
+            stop ('groups must be a SpatialPoints object (or list thereof)')
+        groups <- list (groups)
+    } else if (!all( (lapply (groups, class)) == 'SpatialPoints'))
+    {
+        e <- simpleError ('Cannot coerce groups to SpatialPoints')
+        tryCatch (
+                  groups <- lapply (groups, function (x)
+                                    as (x, 'SpatialPoints')),
+                  finally = stop (e))
+    }
+
+    return (groups)
+}
+
+#' check structure of 'make_hull' arg
+#'
+#' @noRd
+check_hull_arg <- function (make_hull, groups)
+{
+    if (length (make_hull) > length (groups))
+    {
+        warning (paste0 ('make_hull has length > number of groups'))
+        make_hull <- make_hull [seq (groups)]
+    } else if (length (make_hull) > 1 & length (make_hull) < length (groups))
+    {
+        warning (paste0 ('make_hull should have length 1 or equal to numbers ',
+                         'of groups; using first value only'))
+        make_hull <- make_hull [1]
+    }
+    if (max (sapply (groups, length)) < 3) # No groups have > 2 members
+        make_hull <- FALSE
+
+    return (make_hull)
+}
+
+#' default group colours with no colourmat
+#'
+#' @noRd
+group_colours_default <- function (cols, groups, bg)
+{
+    if (is.null (cols))
+        cols <- rainbow (length (groups))
+    else if (length (cols) < length (groups))
+        cols <- rep (cols, length.out = length (groups))
+    if (length (groups) == 1 & is.null (bg))
+    {
+        warning ('There is only one group; using default bg')
+        if (is.null (cols))
+        {
+            cols <- 'red'
+            bg <- 'gray40'
+        } else if (cols [1] != 'gray40')
+            bg <- 'gray40'
+        else
+            bg <- 'white'
+    }
+
+    return (list ('cols' = cols, 'bg' = bg))
+}
+
+#' group colours from colourmat
+#'
+#' @noRd
+group_colours_colourmat <- function (cols, groups, rotate)
+{
+    if (is.null (cols))
+        cols <- rainbow (4)
+    else if (length (cols) < 4)
+        cols <- rainbow (4)
+    ncols <- 20
+    if (missing (rotate))
+        cmat <- colour_mat (ncols, cols = cols)
+    else
+    {
+        if (!is.numeric (rotate))
+            rotate <- 0
+        cmat <- colour_mat (ncols, cols = cols, rotate)
+    }
+    cols <- rep (NA, length (groups))
+    # cols is then a vector of colours to be filled by matching group
+    # centroids to relative positions within cmat
+
+    return (list ('cols' = cols, 'cmat' = cmat))
 }

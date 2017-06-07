@@ -23,8 +23,9 @@ test_that ('cols', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox=bbox, bg="gray20")
            obj <- london$dat_BNR
-           expect_error (capture_warnings (add_osm_groups (map, obj)),
-                         "either 'cols' or 'bg' must be minimally given")
+           #expect_error (capture_warnings (add_osm_groups (map, obj)),
+           #              "either 'cols' or 'bg' must be minimally given")
+           expect_error (add_osm_groups (map, obj), "groups must be provided")
            pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
                                             c (51.505, 51.505, 51.515, 51.515)))
            expect_warning (add_osm_groups (map, obj, groups=pts, bg=1),
@@ -39,9 +40,8 @@ test_that ('groups', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox=bbox, bg="gray20")
            obj <- london$dat_BNR
-           expect_warning (add_osm_groups (map, obj, bg=1),
-                           paste0 ('No groups defined in add_osm_groups: ',
-                                   'passing to add_osm_objects'))
+           expect_error (add_osm_groups (map, obj, bg=1),
+                           "groups must be provided")
            expect_error (capture_warnings (add_osm_groups (map, obj, NULL)),
                          'groups must be a SpatialPoints object')
            expect_error (add_osm_groups (map, obj, groups=list (london$dat_HP)),

@@ -4,8 +4,9 @@
 \alias{add_osm_groups}
 \title{add_osm_groups}
 \usage{
-add_osm_groups(map, obj, groups, cols, bg, make_hull = FALSE, boundary = -1,
-  size, shape, border_width, colmat = FALSE, rotate)
+add_osm_groups(map, obj, groups, cols = NULL, bg = NULL,
+  make_hull = FALSE, boundary = -1, size, shape, border_width,
+  colmat = FALSE, rotate = NULL)
 }
 \arguments{
 \item{map}{A \code{ggplot2} object to which the grouped objects are to be

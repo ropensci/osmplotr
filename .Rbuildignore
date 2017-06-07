@@ -5,6 +5,7 @@ makefile$
 ^aaa.Rmd$
 ^london2.rda$
 ^README\.*
-^[.]travis[.]yml$
+^\.travis\.yml$
+^_pkgdown\.yml$
 figure/
 ^docs$
