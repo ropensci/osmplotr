@@ -93,12 +93,119 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
 
 
     # ---------- Initial data setup
-    xrange <- map$coordinates$limits$x
-    yrange <- map$coordinates$limits$y
-
     # expand is for semi-transparent underlay, done for direction parallel to
     # colourbar only; perpendicular expansion is handled by size = 5 below.
     expand <- 0.02
+
+    cbxy <- get_colourbar_xy (map, cols, vertical, barwidth, barlength, expand)
+
+    # ---------- LAYER#1: semi-transparent underlay
+    # The colour bar is also moved to middle of the underlay, away from the edge
+    # by expand/2
+    if (vertical)
+    {
+        x1 <- cbxy$x [1] + cbxy$barwidth * c (-1, 1) * (1 + 1 * expand) / 2
+        y1 <- cbxy$bary
+        cbxy$x <- mean (x1)
+    } else
+    {
+        x1 <- cbxy$bary
+        y1 <- cbxy$y [1] + cbxy$barwidth * c (-1, 1) * (1 + 1 * expand) / 2
+        cbxy$y <- mean (y1)
+    }
+    # The df needs the 6th point to connect up properly
+    rdat <- data.frame (
+                    "x" = c (x1 [1], x1 [1], x1 [2], x1 [2], x1 [1], x1 [1]),
+                    "y" = c (y1 [1], y1 [2], y1 [2], y1 [1], y1 [1], y1 [2])
+                        )
+    aes <- ggplot2::aes (x = x, y = y, size = 0)
+    pcol <- rgb (1, 1, 1, alpha)
+    # geom_path has rounded corners, geom_poly does not, and size = 5 *should*
+    # ensure it covers the inside of most bars
+    map <- map + ggplot2::geom_path (data = rdat, mapping = aes,
+                                     inherit.aes = FALSE,
+                                     colour = pcol, size = 5)
+
+    # ---------- LAYER#2: colourbar
+    aes <- ggplot2::aes (x = x, y = y)
+    args <- list (data = data.frame ('x' = cbxy$x, 'y' = cbxy$y),
+                  mapping = aes, fill = cols)
+    if (vertical)
+        args <- c (args, width = cbxy$barwidth)
+    else
+        args <- c (args, height = cbxy$barwidth)
+    map <- map + do.call (ggplot2::geom_tile, args)
+
+    # ---------- LAYER#3: outline around colourbar
+    makedat <- function (a, b, barwidth, expand)
+    {
+        bt <- max (b) + diff (b) [1] / 2
+        bb <- min (b) - diff (b) [1] / 2
+        data.frame (
+                    x = mean (a) + c (-1, -1, 1, 1, -1) * barwidth / 2,
+                    y = c (bb, bt, bt, bb, bb)
+                    )
+    }
+    if (vertical)
+        rdat <- makedat (cbxy$x, cbxy$y, cbxy$barwidth, expand)
+    else
+    {
+        rdat <- makedat (cbxy$y, cbxy$x, cbxy$barwidth, expand)
+        names (rdat) <- c ("y", "x")
+    }
+
+    map <- map + ggplot2::geom_path (data = rdat, mapping = aes,
+                                     colour = text_col)
+
+    # ---------- LAYERS#4-5: ticks and labels
+    # Note that the actual limits of geom_tile are increased by 1/2 an
+    # increment, so:
+    zlabs <- pretty (zlims)
+    zlabs <- zlabs [which (zlabs > zlims[1] & zlabs < zlims[2])]
+    z <- cbxy$bary [1] + (zlabs - zlims [1]) * diff (cbxy$bary) / diff (zlims)
+
+    if (vertical)
+    {
+        segdat <- data.frame (x1 = x1 [1], x2 = x1 [2], y1 = z, y2 = z)
+        labdat <- data.frame (x = x1 [1], y = z, z = zlabs)
+        nudge_x <- -0.005 * diff (map$coordinates$limits$x)
+        if (length (nudge_x) == 0)
+            nudge_x <- -0.005
+        nudge_y <- 0
+        vjust <- 0.5
+        hjust <- 1
+    } else
+    {
+        segdat <- data.frame (x1 = z, x2 = z, y1 = y1 [1], y2 = y1 [2])
+        labdat <- data.frame (x = z, y = y1 [1], z = zlabs)
+        nudge_x <- 0
+        nudge_y <- -0.005 * diff (map$coordinates$limits$y)
+        if (length (nudge_y) == 0)
+            nudge_y <- -0.010
+        vjust <- 1
+        hjust <- 0.5
+    }
+
+    gs <- ggplot2::geom_segment
+    glab <- ggplot2::geom_label
+
+    x2 <- y2 <- NULL # suppress 'no visible binding' error
+    map + gs (data = segdat, colour = text_col,
+                     mapping = ggplot2::aes (x = x1, y = y1,
+                                             xend = x2, yend = y2)) +
+                glab (data = labdat, mapping = ggplot2::aes (x = x, y = y,
+                                                             label = z),
+                      alpha = alpha, size = fontsize, colour = text_col,
+                      fontface = fontface, family = fontfamily,
+                      inherit.aes = FALSE, label.size = 0,
+                      nudge_x = nudge_x, nudge_y = nudge_y,
+                      vjust = vjust, hjust = hjust)
+}
+
+get_colourbar_xy <- function (map, cols, vertical, barwidth, barlength, expand)
+{
+    xrange <- map$coordinates$limits$x
+    yrange <- map$coordinates$limits$y
 
     n <- length (cols)
     if (!vertical)
@@ -140,108 +247,8 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
         y <- z
     }
 
-    cb <- data.frame (x = x, y = y)
-
-    # ---------- LAYER#1: semi-transparent underlay
-    # The colour bar is also moved to middle of the underlay, away from the edge
-    # by expand/2
-    if (vertical)
-    {
-        x1 <- cb$x [1] + barwidth * c (-1, 1) * (1 + 1 * expand) / 2
-        y1 <- bary
-        cb$x <- mean (x1)
-    } else
-    {
-        x1 <- bary
-        y1 <- cb$y [1] + barwidth * c (-1, 1) * (1 + 1 * expand) / 2
-        cb$y <- mean (y1)
-    }
-    # The df needs the 6th point to connect up properly
-    rdat <- data.frame (
-                    "x" = c (x1 [1], x1 [1], x1 [2], x1 [2], x1 [1], x1 [1]),
-                    "y" = c (y1 [1], y1 [2], y1 [2], y1 [1], y1 [1], y1 [2])
-                        )
-    aes <- ggplot2::aes (x = x, y = y, size = 0)
-    pcol <- rgb (1, 1, 1, alpha)
-    # geom_path has rounded corners, geom_poly does not, and size = 5 *should*
-    # ensure it covers the inside of most bars
-    map <- map + ggplot2::geom_path (data = rdat, mapping = aes,
-                                     inherit.aes = FALSE,
-                                     colour = pcol, size = 5)
-
-    # ---------- LAYER#2: colourbar
-    aes <- ggplot2::aes (x = x, y = y)
-    args <- list (data = cb, mapping = aes, fill = cols)
-    if (vertical)
-        args <- c (args, width = barwidth)
-    else
-        args <- c (args, height = barwidth)
-    map <- map + do.call (ggplot2::geom_tile, args)
-
-    # ---------- LAYER#3: outline around colourbar
-    makedat <- function (a, b, barwidth, expand)
-    {
-        bt <- max (b) + diff (b) [1] / 2
-        bb <- min (b) - diff (b) [1] / 2
-        data.frame (
-                    x = mean (a) + c (-1, -1, 1, 1, -1) * barwidth / 2,
-                    y = c (bb, bt, bt, bb, bb)
-                    )
-    }
-    if (vertical)
-        rdat <- makedat (x, y, barwidth, expand)
-    else
-    {
-        rdat <- makedat (y, x, barwidth, expand)
-        names (rdat) <- c ("y", "x")
-    }
-
-    map <- map + ggplot2::geom_path (data = rdat, mapping = aes,
-                                     colour = text_col)
-
-    # ---------- LAYERS#4-5: ticks and labels
-    # Note that the actual limits of geom_tile are increased by 1/2 an
-    # increment, so:
-    zlabs <- pretty (zlims)
-    zlabs <- zlabs [which (zlabs > zlims[1] & zlabs < zlims[2])]
-    z <- bary [1] + (zlabs - zlims [1]) * diff (bary) / diff (zlims)
-
-    if (vertical)
-    {
-        segdat <- data.frame (x1 = x1 [1], x2 = x1 [2], y1 = z, y2 = z)
-        labdat <- data.frame (x = x1 [1], y = z, z = zlabs)
-        nudge_x <- -0.005 * diff (map$coordinates$limits$x)
-        if (length (nudge_x) == 0)
-            nudge_x <- -0.005
-        nudge_y <- 0
-        vjust <- 0.5
-        hjust <- 1
-    } else
-    {
-        segdat <- data.frame (x1 = z, x2 = z, y1 = y1 [1], y2 = y1 [2])
-        labdat <- data.frame (x = z, y = y1 [1], z = zlabs)
-        nudge_x <- 0
-        nudge_y <- -0.005 * diff (map$coordinates$limits$y)
-        if (length (nudge_y) == 0)
-            nudge_y <- -0.010
-        vjust <- 1
-        hjust <- 0.5
-    }
-
-    gs <- ggplot2::geom_segment
-    glab <- ggplot2::geom_label
-
-    x2 <- y2 <- NULL # suppress 'no visible binding' error
-    map + gs (data = segdat, colour = text_col,
-                     mapping = ggplot2::aes (x = x1, y = y1,
-                                             xend = x2, yend = y2)) +
-                glab (data = labdat, mapping = ggplot2::aes (x = x, y = y,
-                                                             label = z),
-                      alpha = alpha, size = fontsize, colour = text_col,
-                      fontface = fontface, family = fontfamily,
-                      inherit.aes = FALSE, label.size = 0,
-                      nudge_x = nudge_x, nudge_y = nudge_y,
-                      vjust = vjust, hjust = hjust)
+    #cb <- data.frame (x = x, y = y)
+    list ('x' = x, 'y' = y, 'bary' = bary, 'barwidth' = barwidth)
 }
 
 
