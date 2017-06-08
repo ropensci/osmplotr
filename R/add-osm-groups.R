@@ -159,13 +159,11 @@ add_osm_groups <- function (map = NULL, obj = NULL, groups = NULL, cols = NULL,
         cmat <- cols_colourmat$cmat
     }
 
-    if (class (obj) == 'SpatialPolygonsDataFrame')
-        objtxt <- c ('polygons', 'Polygons')
-    else if (class (obj) == 'SpatialLinesDataFrame')
-        objtxt <- c ('lines', 'Lines')
-    else
+    if (!class (obj) %in% c ('SpatialPolygonsDataFrame',
+                             'SpatialLinesDataFrame'))
         stop ('obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame')
     # ... because points not yet implemented
+    objtxt <- get_objtxt (obj)
 
     # Determine whether any groups are holes - not implemented at present
     if (length (groups) > 1)
@@ -208,9 +206,9 @@ add_osm_groups <- function (map = NULL, obj = NULL, groups = NULL, cols = NULL,
     aes <- ggplot2::aes (x = lon, y = lat, group = id)
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
-        map <- map_plus_spPolydf (map, xyflat, aes, cols, size) #nolint
+        map <- map_plus_spPolydf_grps (map, xyflat, aes, cols, size) #nolint
     else if (class (obj) == 'SpatialLinesDataFrame')
-        map <- map_plus_spLinedf (map, xyflat, aes, cols, size, shape) #nolint
+        map <- map_plus_spLinedf_grps (map, xyflat, aes, cols, size, shape) #nolint
     else if (class (obj) == 'SpatialPointsDataFrame')
     {
         # Not implemented yet
@@ -679,7 +677,7 @@ cbind_membs_xy <- function (membs, xy)
 #' add SpatialPolygonsDataFrame to map
 #'
 #' @noRd
-map_plus_spPolydf <- function (map, xy, aes, cols, size) #nolint
+map_plus_spPolydf_grps <- function (map, xy, aes, cols, size) #nolint
 {
     if (is.null (size))
         size <- 0
@@ -693,7 +691,7 @@ map_plus_spPolydf <- function (map, xy, aes, cols, size) #nolint
 #' add SpatialLinesDataFrame to map
 #'
 #' @noRd
-map_plus_spLinedf <- function (map, xyflat, aes, cols, size, shape) #nolint
+map_plus_spLinedf_grps <- function (map, xyflat, aes, cols, size, shape) #nolint
 {
     if (is.null (size))
         size <- 0.5

@@ -1,9 +1,21 @@
 check_map_arg <- function (map)
 {
     if (is.null (map))
-        stop ('map must be supplied', call. = FALSE)
+        stop ('a non-null map must be supplied', call. = FALSE)
     if (!is (map, 'ggplot'))
         stop ('map must be a ggplot2 object', call. = FALSE)
+}
+
+get_objtxt <- function (obj)
+{
+    if (class (obj) == 'SpatialPolygonsDataFrame')
+        objtxt <- c ('polygons', 'Polygons')
+    else if (class (obj) == 'SpatialLinesDataFrame')
+        objtxt <- c ('lines', 'Lines')
+    else if (class (obj) == 'SpatialPointsDataFrame')
+        objtxt <- c ('points', '')
+
+    return (objtxt)
 }
 
 check_obj_arg <- function (obj)

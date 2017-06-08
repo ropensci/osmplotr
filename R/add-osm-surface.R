@@ -106,24 +106,50 @@
 #' print_osm_map (map)
 
 
-add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
-                              cols = heat.colors (30), bg, size, shape)
+add_osm_surface <- function (map = NULL, obj = NULL, dat = NULL, method = "idw",
+                             grid_size = 100, cols = heat.colors (30),
+                             bg = NULL, size = NULL, shape = NULL)
 {
     # ---------------  sanity checks and warnings  ---------------
-    # --------- map
-    if (missing (map))
-        stop ('map must be supplied to add_osm_surface')
-    if (!is (map, 'ggplot'))
-        stop ('map must be a ggplot2 object')
-    # --------- obj
-    if (missing (obj))
-        stop ('object must be supplied to add_osm_surface')
-    if (!inherits (obj, 'Spatial'))
-        stop ('obj must be a spatial object')
-    # --------- dat
-    if (missing (dat))
-        stop ('dat must be supplied to add_osm_surface')
-    else if (is.null (dat))
+    check_map_arg (map)
+    check_obj_arg (obj)
+    dat <- check_surface_dat (dat)
+    # --------- cols
+    if (!(is.character (cols) | is.numeric (cols)))
+    {
+        warning ("cols will be coerced to character")
+        cols <- as.character (cols)
+    }
+    # ---------------  end sanity checks and warnings  ---------------
+
+    objtxt <- get_objtxt (obj)
+
+    xy0 <- get_xy0 (map, obj, objtxt, xy)
+    xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size = grid_size,
+                              method = method)
+    if (is.null (bg))
+        xy <- xy0
+    else
+        xy <- xy0 [xy0$inp > 0, ]
+
+
+    if (class (obj) == 'SpatialPolygonsDataFrame')
+        map <- map_plus_spPolydf_srfc (map, xy, xy0, cols, bg, size) #nolint
+    else if (class (obj) == 'SpatialLinesDataFrame')
+        map <- map_plus_spLinesdf_srfc (map, xy, xy0, cols, bg, size, shape) #nolint
+    else if (class (obj) == 'SpatialPointsDataFrame')
+        map <- map_plus_spPointsdf_srfc (map, xy, xy0, cols, bg, size, shape) #nolint
+
+    return (map)
+}
+
+
+#' check and modify surface data arg
+#'
+#' @noRd
+check_surface_dat <- function (dat)
+{
+    if (is.null (dat))
         stop ('dat can not be NULL')
     if (!is.numeric (as.matrix (dat)))
         stop ('dat must be a numeric matrix or data.frame')
@@ -157,122 +183,9 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
             }
         }
     }
-    # --------- cols
-    if (!(is.character (cols) | is.numeric (cols)))
-    {
-        warning ("cols will be coerced to character")
-        cols <- as.character (cols)
-    }
-    # ---------------  end sanity checks and warnings  ---------------
 
-    if (class (obj) == 'SpatialPolygonsDataFrame')
-        objtxt <- c ('polygons', 'Polygons')
-    else if (class (obj) == 'SpatialLinesDataFrame')
-        objtxt <- c ('lines', 'Lines')
-    else if (class (obj) == 'SpatialPointsDataFrame')
-        objtxt <- c ('points', '')
-
-    xrange <- map$coordinates$limits$x
-    yrange <- map$coordinates$limits$y
-
-    if (class (obj) == 'SpatialPointsDataFrame')
-    {
-        xy0 <- sp::coordinates (obj)
-    } else
-    {
-        xylims <- lapply (slot (obj, objtxt [1]), function (i)
-                          {
-                              xyi <- slot (slot (i, objtxt [2]) [[1]], 'coords')
-                              c (apply (xyi, 2, min), apply (xyi, 2, max))
-                          })
-        xylims <- do.call (rbind, xylims)
-        indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
-                       xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
-        obj <- obj [indx, ]
-        xy0 <- lapply (slot (obj, objtxt [1]), function (x)
-                        slot (slot (x, objtxt [2]) [[1]], 'coords'))
-    }
-    xy0 <- structure (xy0, class = c (class (xy0), objtxt [1]))
-    xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size = grid_size,
-                              method = method)
-    if (missing (bg))
-        xy <- xy0
-    else
-        xy <- xy0 [xy0$inp > 0, ]
-
-
-    if (class (obj) == 'SpatialPolygonsDataFrame')
-    {
-        # TODO: Add border to geom_polygon call
-        lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-        aes <- ggplot2::aes (x = lon, y = lat, group = id, fill = z)
-        if (missing (size))
-            size <- 0
-        if (length (size) == 1)
-            size <- rep (size, 2) # else size [2] specifies bg size
-        map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
-                                            size = size [1]) +
-                        ggplot2::scale_fill_gradientn (colours = cols)
-
-        if (!missing (bg))
-        {
-            xy <- xy0 [xy0$inp == 0, ]
-            aes <- ggplot2::aes (x = lon, y = lat, group = id)
-            map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
-                                                size = size [2], fill = bg)
-        }
-    } else if (class (obj) == 'SpatialLinesDataFrame')
-    {
-        if (missing (size))
-            size <- 0.5
-        if (length (size) == 1)
-            size <- rep (size, 2) # else size [2] specifies bg size
-        if (missing (shape))
-            shape <- 1
-        if (length (shape) == 1)
-            shape <- rep (shape, 2)
-        aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
-        map <- map + ggplot2::geom_path (data = xy, mapping = aes,
-                                         size = size [1],
-                                         linetype = shape [1]) +
-                        ggplot2::scale_colour_gradientn (colours = cols)
-
-        if (!missing (bg))
-        {
-            xy <- xy0 [xy0$inp == 0, ]
-            aes <- ggplot2::aes (x = lon, y = lat, group = id)
-            map <- map + ggplot2::geom_path (data = xy, mapping = aes, col = bg,
-                                             size = size [2],
-                                             linetype = shape [2])
-        }
-    } else if (class (obj) == 'SpatialPointsDataFrame')
-    {
-        if (missing (size))
-            size <- 0.5
-        if (length (size) == 1)
-            size <- rep (size, 2) # else size [2] specifies bg size
-        if (missing (shape))
-            shape <- 1
-        if (length (shape) == 1)
-            shape <- rep (shape, 2)
-        aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
-        map <- map + ggplot2::geom_point (data = xy, mapping = aes,
-                                          size = size [1], shape = shape [1]) +
-                        ggplot2::scale_colour_gradientn (colours = cols)
-
-        if (!missing (bg))
-        {
-            xy <- xy0 [xy0$inp == 0, ]
-            aes <- ggplot2::aes (x = lon, y = lat, group = id)
-            map <- map + ggplot2::geom_point (data = xy, mapping = aes,
-                                              col = bg, size = size [2],
-                                              shape = shape [2])
-        }
-    }
-
-    return (map)
+    return (dat)
 }
-
 
 
 #' list2df_with_data
@@ -351,7 +264,7 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
 
     # Then remove any objects not in the convex hull of provided data
     indx <- rep (NA, length (xy))
-    if (!missing (bg))
+    if (!is.null (bg))
     {
         xyh <- spatstat::ppp (x, y, xrange = range (x), yrange = range (y))
         ch <- spatstat::convexhull (xyh)
@@ -384,7 +297,7 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
     xymn [, 1] <- ceiling (nx * (xymn [, 1] - xlims [1]) / diff (xlims))
     xymn [, 2] <- ceiling (ny * (xymn [, 2] - ylims [1]) / diff (ylims))
 
-    if (missing (bg))
+    if (is.null (bg))
     {
         xymn [, 1] [xymn [, 1] < 1] <- 1
         xymn [, 1] [xymn [, 1] > nx] <- nx
@@ -420,4 +333,122 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
                 inp = xy [, 5],
                 row.names = 1:nrow (xy)
                 )
+}
+
+
+get_xy0 <- function (map, obj, objtxt, xy)
+{
+    xrange <- map$coordinates$limits$x
+    yrange <- map$coordinates$limits$y
+
+    if (class (obj) == 'SpatialPointsDataFrame')
+    {
+        xy0 <- sp::coordinates (obj)
+    } else
+    {
+        xylims <- lapply (slot (obj, objtxt [1]), function (i)
+                          {
+                              xyi <- slot (slot (i, objtxt [2]) [[1]], 'coords')
+                              c (apply (xyi, 2, min), apply (xyi, 2, max))
+                          })
+        xylims <- do.call (rbind, xylims)
+        indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
+                       xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
+        obj <- obj [indx, ]
+        xy0 <- lapply (slot (obj, objtxt [1]), function (x)
+                        slot (slot (x, objtxt [2]) [[1]], 'coords'))
+    }
+
+    structure (xy0, class = c (class (xy0), objtxt [1]))
+}
+
+#' add SpatialPolygonsDataFrame to map
+#'
+#' @noRd
+map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) #nolint
+{
+    # TODO: Add border to geom_polygon call
+    if (is.null (size))
+        size <- 0
+    if (length (size) == 1)
+        size <- rep (size, 2) # else size [2] specifies bg size
+
+    lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, fill = z)
+    map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
+                                        size = size [1]) +
+                ggplot2::scale_fill_gradientn (colours = cols)
+
+    if (!is.null (bg))
+    {
+        xy <- xy0 [xy0$inp == 0, ]
+        aes <- ggplot2::aes (x = lon, y = lat, group = id)
+        map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
+                                            size = size [2], fill = bg)
+    }
+
+    return (map)
+}
+
+#' add SpatialLinesDataFrame to map
+#'
+#' @noRd
+map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolint
+{
+    if (is.null (size))
+        size <- 0.5
+    if (length (size) == 1)
+        size <- rep (size, 2) # else size [2] specifies bg size
+
+    if (is.null (shape))
+        shape <- 1
+    if (length (shape) == 1)
+        shape <- rep (shape, 2)
+
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
+    map <- map + ggplot2::geom_path (data = xy, mapping = aes,
+                                     size = size [1],
+                                     linetype = shape [1]) +
+            ggplot2::scale_colour_gradientn (colours = cols)
+
+    if (!is.null (bg))
+    {
+        xy <- xy0 [xy0$inp == 0, ]
+        aes <- ggplot2::aes (x = lon, y = lat, group = id)
+        map <- map + ggplot2::geom_path (data = xy, mapping = aes, col = bg,
+                                         size = size [2],
+                                         linetype = shape [2])
+    }
+
+    return (map)
+}
+
+#' add SpatialPointsDataFrame to map
+#'
+#' @noRd
+map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolint
+{
+    if (is.null (size))
+        size <- 0.5
+    if (length (size) == 1)
+        size <- rep (size, 2) # else size [2] specifies bg size
+
+    if (is.null (shape))
+        shape <- 1
+    if (length (shape) == 1)
+        shape <- rep (shape, 2)
+
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
+    map <- map + ggplot2::geom_point (data = xy, mapping = aes,
+                                      size = size [1], shape = shape [1]) +
+            ggplot2::scale_colour_gradientn (colours = cols)
+
+    if (!is.null (bg))
+    {
+        xy <- xy0 [xy0$inp == 0, ]
+        aes <- ggplot2::aes (x = lon, y = lat, group = id)
+        map <- map + ggplot2::geom_point (data = xy, mapping = aes,
+                                          col = bg, size = size [2],
+                                          shape = shape [2])
+    }
 }
