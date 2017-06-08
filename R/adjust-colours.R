@@ -37,20 +37,10 @@
 #' print_osm_map (dat$map)
 
 
-adjust_colours <- function (cols, adj = 0, plot = FALSE)
+adjust_colours <- function (cols = NULL, adj = 0, plot = FALSE)
 {
     # ---------------  sanity checks and warnings  ---------------
-    # ---------- cols
-    if (missing (cols)) stop ('cols must be provided')
-    if (is.null (cols)) return (NULL)
-    if (any (is.na (cols))) stop ('One or more cols is NA')
-    tryCatch (
-              col2rgb (cols),
-              error = function (e)
-              {
-                  e$message <-  paste0 ('Invalid colours: ', cols)
-                  stop (e)
-              })
+    check_col_arg (cols, null_okay = FALSE)
     if (class (cols [1]) != 'matrix')
         cols <- col2rgb (cols)
     # ---------- adj

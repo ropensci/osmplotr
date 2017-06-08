@@ -24,7 +24,7 @@ test_that ('col', {
                          "Invalid colour: -2")
            expect_silent (add_osm_objects (map, obj, col=NA))
            expect_error (add_osm_objects (map, obj, col=NULL),
-                         "col is NULL")
+                         "a non-null col must be provided")
 })
 
 test_that ('border', {
