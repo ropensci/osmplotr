@@ -210,47 +210,7 @@ check_surface_dat <- function (dat)
 list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
                                method = "idw")
 {
-    if ('z' %in% colnames (dat))
-        z <- dat [, 'z']
-    else
-        z <- dat [, 3]
-    if ('x' %in% colnames (dat))
-        x <- dat [, 'x']
-    else
-        x <- dat [, pmatch ('lon', colnames (dat))]
-    if ('y' %in% colnames (dat))
-        y <- dat [, 'y']
-    else
-        y <- dat [, pmatch ('lat', colnames (dat))]
-    xlims <- range (x) # used below to convert to indices into z-matrix
-    ylims <- range (y)
-    indx <- which (!is.na (z))
-    x <- x [indx]
-    y <- y [indx]
-    marks <- z [indx]
-    xyp <- spatstat::ppp (x, y, xrange = range (x), yrange = range(y),
-                          marks = marks)
-    if (method == 'idw')
-        z <- spatstat::idw (xyp, at = "pixels", dimyx = grid_size)$v
-    else if (method == 'smooth')
-        z <- spatstat::Smooth (xyp, at = "pixels", dimyx = grid_size,
-                               diggle = TRUE)$v
-    else
-    {
-        # x and y might not necessarily be regular, so grid has to be manually
-        # filled with z-values
-        nx <- length (unique (x))
-        ny <- length (unique (y))
-        arr <- array (NA, dim = c (nx, ny))
-        indx_x <- as.numeric (cut (x, nx))
-        indx_y <- as.numeric (cut (y, ny))
-        arr [(indx_y - 1) * nx + indx_x] <- z
-        z <- t (arr )
-        # z here, as for interp methods above, has
-        # (rows,cols) = (vert,horizont) = c(y,x) so is indexed (x, y). To yield
-        # a figure with horizontal x-axis, this is transformed below.
-    }
-    z <- t (z)
+    xyz <- get_surface_z (dat, method, grid_size)
 
     # Get mean coordinates of each object in xy.
     # TODO: Colour lines continuously according to the coordinates of each
@@ -266,7 +226,8 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
     indx <- rep (NA, length (xy))
     if (!is.null (bg))
     {
-        xyh <- spatstat::ppp (x, y, xrange = range (x), yrange = range (y))
+        xyh <- spatstat::ppp (xyz$x, xyz$y,
+                              xrange = range (xyz$x), yrange = range (xyz$y))
         ch <- spatstat::convexhull (xyh)
         bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
 
@@ -292,36 +253,28 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
 
     # Convert to integer indices into z. z spans the range of data, not
     # necessarily the bbox
+    nx <- length (unique (xyz$x))
+    ny <- length (unique (xyz$y))
     if (method == 'idw' | method == 'smooth')
         nx <- ny <- grid_size
-    xymn [, 1] <- ceiling (nx * (xymn [, 1] - xlims [1]) / diff (xlims))
-    xymn [, 2] <- ceiling (ny * (xymn [, 2] - ylims [1]) / diff (ylims))
+    xymn [, 1] <- ceiling (nx * (xymn [, 1] - xyz$xlims [1]) /
+                           diff (xyz$xlims))
+    xymn [, 2] <- ceiling (ny * (xymn [, 2] - xyz$ylims [1]) /
+                           diff (xyz$ylims))
 
-    if (is.null (bg))
-    {
-        xymn [, 1] [xymn [, 1] < 1] <- 1
-        xymn [, 1] [xymn [, 1] > nx] <- nx
-        xymn [, 2] [xymn [, 2] < 1] <- 1
-        xymn [, 2] [xymn [, 2] > ny] <- ny
-    } else
-    {
-        xymn [, 1] [xymn [, 1] < 1] <- NA
-        xymn [, 1] [xymn [, 1] > nx] <- NA
-        xymn [, 2] [xymn [, 2] < 1] <- NA
-        xymn [, 2] [xymn [, 2] > ny] <- NA
-    }
+    xymn <- set_extreme_vals (xymn, bg, nx, ny)
 
     if ('polygons' %in% class (xy) | 'lines' %in% class (xy))
     {
         for (i in seq (xy))
-            xy [[i]] <- cbind (i, xy [[i]], z [xymn [i, 1], xymn [i, 2]],
+            xy [[i]] <- cbind (i, xy [[i]], xyz$z [xymn [i, 1], xymn [i, 2]],
                                indx [i])
         # And rbind them to a single matrix.
         xy <-  do.call (rbind, xy)
     } else # can only be points
     {
         indx2 <- (xymn [, 2] - 1) * grid_size + xymn [, 1]
-        xy <- cbind (seq (dim (xy)[1]), xy, z [indx2], indx)
+        xy <- cbind (seq (dim (xy)[1]), xy, xyz$z [indx2], indx)
     }
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
@@ -333,6 +286,61 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
                 inp = xy [, 5],
                 row.names = 1:nrow (xy)
                 )
+}
+
+#' get surface values from submitted 'dat' argument
+#'
+#' @noRd
+get_surface_z <- function (dat, method, grid_size)
+{
+    if ('z' %in% colnames (dat))
+        z <- dat [, 'z']
+    else
+        z <- dat [, 3]
+
+    if ('x' %in% colnames (dat))
+        x <- dat [, 'x']
+    else
+        x <- dat [, pmatch ('lon', colnames (dat))]
+
+    if ('y' %in% colnames (dat))
+        y <- dat [, 'y']
+    else
+        y <- dat [, pmatch ('lat', colnames (dat))]
+
+    xlims <- range (x) # used below to convert to indices into z-matrix
+    ylims <- range (y)
+
+    indx <- which (!is.na (z))
+    x <- x [indx]
+    y <- y [indx]
+    marks <- z [indx]
+
+    xyp <- spatstat::ppp (x, y, xrange = range (x), yrange = range(y),
+                          marks = marks)
+
+    if (method == 'idw')
+        z <- spatstat::idw (xyp, at = "pixels", dimyx = grid_size)$v
+    else if (method == 'smooth')
+        z <- spatstat::Smooth (xyp, at = "pixels", dimyx = grid_size,
+                               diggle = TRUE)$v
+    else
+    {
+        # x and y might not necessarily be regular, so grid has to be manually
+        # filled with z-values
+        nx <- length (unique (x))
+        ny <- length (unique (y))
+        arr <- array (NA, dim = c (nx, ny))
+        indx_x <- as.numeric (cut (x, nx))
+        indx_y <- as.numeric (cut (y, ny))
+        arr [(indx_y - 1) * nx + indx_x] <- z
+        z <- t (arr )
+        # z here, as for interp methods above, has
+        # (rows,cols) = (vert,horizont) = c(y,x) so is indexed (x, y). To yield
+        # a figure with horizontal x-axis, this is transformed below.
+    }
+
+    list ('xlims' = xlims, 'ylims' = ylims, 'x' = x, 'y' = y, 'z' =  t (z))
 }
 
 
@@ -360,6 +368,28 @@ get_xy0 <- function (map, obj, objtxt, xy)
     }
 
     structure (xy0, class = c (class (xy0), objtxt [1]))
+}
+
+#' set out of range values to either bg colour or NA
+#'
+#' @noRd
+set_extreme_vals <- function (xy, bg, nx, ny)
+{
+    if (is.null (bg))
+    {
+        xy [, 1] [xy [, 1] < 1] <- 1
+        xy [, 1] [xy [, 1] > nx] <- nx
+        xy [, 2] [xy [, 2] < 1] <- 1
+        xy [, 2] [xy [, 2] > ny] <- ny
+    } else
+    {
+        xy [, 1] [xy [, 1] < 1] <- NA
+        xy [, 1] [xy [, 1] > nx] <- NA
+        xy [, 2] [xy [, 2] < 1] <- NA
+        xy [, 2] [xy [, 2] > ny] <- NA
+    }
+
+    return (xy)
 }
 
 #' add SpatialPolygonsDataFrame to map
@@ -405,6 +435,7 @@ map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolin
     if (length (shape) == 1)
         shape <- rep (shape, 2)
 
+    lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
     aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
     map <- map + ggplot2::geom_path (data = xy, mapping = aes,
                                      size = size [1],
@@ -438,6 +469,7 @@ map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #noli
     if (length (shape) == 1)
         shape <- rep (shape, 2)
 
+    lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
     aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
     map <- map + ggplot2::geom_point (data = xy, mapping = aes,
                                       size = size [1], shape = shape [1]) +
