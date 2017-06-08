@@ -13,14 +13,14 @@ test_that ('colours', {
 
 test_that ('adj', {
     expect_error (adjust_colours (1, -2), 'adj must be between -1 and 1')
-    expect_error (adjust_colours (1, NA), 'adj is NA')
-    expect_null (adjust_colours (1, NULL))
+    expect_error (adjust_colours (1, NA), 'adj can not be NA')
+    expect_error (adjust_colours (1, NULL), 'a non-null adj must be given')
     expect_error (adjust_colours (1, 'a'), 'adj can not be coerced to numeric')
 })
 
 test_that ('plot', {
-    expect_error (adjust_colours (1, 0, NA), 'plot is NA')
-    expect_null (adjust_colours (1, 0, NULL))
+    expect_error (adjust_colours (1, 0, NA), 'plot can not be NA')
+    expect_error (adjust_colours (1, 0, NULL), 'a non-null plot must be given')
     expect_error (adjust_colours (1, 0, 'a'), 
                   'plot can not be coerced to logical')
     expect_silent (adjust_colours (1, 0, FALSE))

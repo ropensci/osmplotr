@@ -44,19 +44,24 @@ check_col_arg <- function (col, null_okay = FALSE)
 #' generic function to check argument conversion to given function type
 #'
 #' @noRd
-check_arg <- function (arg, arg_name, fn_type, null_okay = FALSE)
+check_arg <- function (arg, arg_name, fn_type, null_okay = FALSE,
+                       na_okay = FALSE)
 {
-    if (!null_okay & is.null (arg))
-        stop (paste ('a non-null', arg_name, 'must be given'))
-    else if (is.na (arg))
+    if (is.null (arg))
+    {
+        if (!null_okay)
+            stop (paste ('a non-null', arg_name, 'must be given'))
+    } else if (!na_okay & is.na (arg))
         stop (paste (arg_name, 'can not be NA'))
 
     adj <- tryCatch (
                      do.call (paste0 ('as.', fn_type), list (arg)),
                      warning = function (w)
                      {
-                         w$message <- paste0 (arg_name, 
+                         w$message <- paste (arg_name, 
                                               'can not be coerced to',
                                               fn_type)
                      })
+
+    invisible (adj)
 }
