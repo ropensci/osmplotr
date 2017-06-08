@@ -1,12 +1,9 @@
 context ("add-groups")
 
 test_that ('basemap', {
-           expect_error (add_osm_groups (),
-                         'map must be supplied to add_osm_groups')
-           expect_error (add_osm_groups (NULL),
-                         'map must be a ggplot2 object')
-           expect_error (capture_warnings (add_osm_groups (cols=1:4)),
-                         'map must be supplied to add_osm_groups')
+           expect_error (add_osm_groups (), 'map must be supplied')
+           expect_error (add_osm_groups (NULL), 'map must be supplied')
+           expect_error (add_osm_groups (cols = 1:4), 'map must be supplied')
 })
 
 test_that ('obj', {
@@ -43,7 +40,7 @@ test_that ('groups', {
            expect_error (add_osm_groups (map, obj, bg=1),
                            "groups must be provided")
            expect_error (capture_warnings (add_osm_groups (map, obj, NULL)),
-                         'groups must be a SpatialPoints object')
+                         'groups must be provided')
            expect_error (add_osm_groups (map, obj, groups=list (london$dat_HP)),
                          'Cannot coerce groups to SpatialPoints')
            pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
