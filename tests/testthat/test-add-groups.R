@@ -82,7 +82,8 @@ test_that ('colourmat', {
                                             c (51.505, 51.505, 51.515, 51.515)))
            grps <- list (pts, pts, pts)
            expect_silent (add_osm_groups (map, obj, grps, 1, 2, colmat=1))
-           expect_silent (add_osm_groups (map, obj, grps, 1, 2, colmat="abc"))
+           expect_error (add_osm_groups (map, obj, grps, 1, 2, colmat="abc"),
+                         'colmat can not be coerced to logical')
            expect_silent (add_osm_groups (map, obj, grps, cols=1:2, 2))
            expect_silent (add_osm_groups (map, obj, grps, cols=1:2, 2,
                                           rotate="a"))

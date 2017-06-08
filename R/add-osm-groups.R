@@ -106,19 +106,23 @@
 #' print_osm_map (map)
 #' }
 
-add_osm_groups <- function (map = NULL, obj = NULL, groups = NULL, cols = NULL,
-                            bg = NULL, make_hull = FALSE, boundary = -1,
-                            size = NULL, shape = NULL, border_width = NULL,
-                            colmat = FALSE, rotate = NULL)
+add_osm_groups <- function (map, obj, groups = NULL, cols,
+                            bg, make_hull = FALSE, boundary = -1,
+                            size, shape, border_width,
+                            colmat, rotate)
 {
     # ---------------  sanity checks and warnings  ---------------
+    if (missing (map))
+        stop ('map must be supplied')
     check_map_arg (map)
+    if (missing (obj))
+        stop ('obj must be supplied')
     check_obj_arg (obj)
     groups <- check_groups_arg (groups)
     if (length (groups) == 1)
     {
         colmat <- FALSE
-        if (is.null (bg))
+        if (missing (bg))
         {
             message (paste0 ('Plotting one group only makes sense with bg;',
                              ' defaulting to gray40'))
@@ -126,9 +130,9 @@ add_osm_groups <- function (map = NULL, obj = NULL, groups = NULL, cols = NULL,
         }
     }
     # ---------- cols
-    if (is.null (cols))
+    if (missing (cols))
     {
-        if (is.null (bg))
+        if (missing (bg))
             stop ("Either 'cols' or 'bg' must be minimally given")
         else
         {
@@ -137,11 +141,17 @@ add_osm_groups <- function (map = NULL, obj = NULL, groups = NULL, cols = NULL,
             add_osm_objects (map, obj, col = bg)
         }
     }
+    if (!missing (colmat))
+    {
+        colmat <- check_arg (colmat, 'colmat', 'logical')
+        if (is.na (colmat))
+            stop ('colmat can not be coerced to logical', call. = FALSE)
+    }
     # ---------- others
     make_hull <- check_hull_arg (make_hull, groups)
     if (!is.numeric (boundary))
         boundary <- 0
-    if (!is.logical (colmat))
+    if (missing (colmat))
         colmat <- FALSE
     # ---------------  end sanity checks and warnings  ---------------
 
@@ -179,7 +189,7 @@ add_osm_groups <- function (map = NULL, obj = NULL, groups = NULL, cols = NULL,
     coords <- get_obj_coords (obj, objtxt, cent_bdy)
 
     # Get membership of objects within groups
-    if (is.null (bg))
+    if (missing (bg))
     {
         # single group based on entire boundary.
         membs <- membs_single_group (groups, coords, obj_xy, cent_bdy)
@@ -200,7 +210,7 @@ add_osm_groups <- function (map = NULL, obj = NULL, groups = NULL, cols = NULL,
 
     xyflat <- cbind_membs_xy (membs, xy)
 
-    if (!is.null (bg))
+    if (!missing (bg))
         cols <- c (cols, bg)
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     aes <- ggplot2::aes (x = lon, y = lat, group = id)
@@ -270,18 +280,14 @@ check_hull_arg <- function (make_hull, groups)
 #' @noRd
 group_colours_default <- function (cols, groups, bg)
 {
-    if (is.null (cols))
+    if (missing (cols))
         cols <- rainbow (length (groups))
     else if (length (cols) < length (groups))
         cols <- rep (cols, length.out = length (groups))
-    if (length (groups) == 1 & is.null (bg))
+    if (length (groups) == 1 & missing (bg))
     {
         warning ('There is only one group; using default bg')
-        if (is.null (cols))
-        {
-            cols <- 'red'
-            bg <- 'gray40'
-        } else if (cols [1] != 'gray40')
+        if (cols [1] != 'gray40')
             bg <- 'gray40'
         else
             bg <- 'white'
@@ -295,7 +301,7 @@ group_colours_default <- function (cols, groups, bg)
 #' @noRd
 group_colours_colourmat <- function (cols, groups, rotate)
 {
-    if (is.null (cols))
+    if (missing (cols))
         cols <- rainbow (4)
     else if (length (cols) < 4)
         cols <- rainbow (4)
@@ -679,7 +685,7 @@ cbind_membs_xy <- function (membs, xy)
 #' @noRd
 map_plus_spPolydf_grps <- function (map, xy, aes, cols, size) #nolint
 {
-    if (is.null (size))
+    if (missing (size))
         size <- 0
     else if (!is.numeric (size))
         size <- 0
@@ -693,12 +699,12 @@ map_plus_spPolydf_grps <- function (map, xy, aes, cols, size) #nolint
 #' @noRd
 map_plus_spLinedf_grps <- function (map, xyflat, aes, cols, size, shape) #nolint
 {
-    if (is.null (size))
+    if (missing (size))
         size <- 0.5
     else if (!is.numeric (size))
         size <- 0.5
 
-    if (is.null (shape))
+    if (missing (shape))
         shape <- 1
     else if (!is.numeric (shape))
         shape <- 1
@@ -715,37 +721,37 @@ map_plus_hulls <- function (map, border_width, groups, xyflat, cols)
 {
 
     id <- NULL # suppress R CMD check note for aes (..,`group = id`) below
-    if (!is.null (border_width)) # draw hulls around entire groups
+    if (!missing (border_width)) # draw hulls around entire groups
     {
-        if (is.numeric (border_width))
-        {
-            bdry <- list ()
-            for (i in seq (groups))
-            {
-                indx <- which (xyflat$col == i) # col = group membership
-                if (length (indx) > 1)
-                {
-                    x <- xyflat$lon [indx]
-                    y <- xyflat$lat [indx]
-                    indx <- which (!duplicated (cbind (x, y)))
-                    x <- x [indx]
-                    y <- y [indx]
-                    xy2 <- spatstat::ppp (x, y, xrange = range (x),
-                                          yrange = range (y))
-                    ch <- spatstat::convexhull (xy2)
-                    bdry [[i]] <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
-                }
-                bdry [[i]] <- cbind (i, bdry [[i]])
-            }
-            bdry <- data.frame (do.call (rbind, bdry))
-            names (bdry) <- c ("id", "x", "y")
+        if (!is.numeric (border_width))
+            return (map)
 
-            aes <- ggplot2::aes (x = x, y = y, group = id)
-            map <- map + ggplot2::geom_polygon (data = bdry, mapping = aes,
-                                                colour = cols [bdry$id],
-                                                fill = "transparent",
-                                                size = border_width)
+        bdry <- list ()
+        for (i in seq (groups))
+        {
+            indx <- which (xyflat$col == i) # col = group membership
+            if (length (indx) > 1)
+            {
+                x <- xyflat$lon [indx]
+                y <- xyflat$lat [indx]
+                indx <- which (!duplicated (cbind (x, y)))
+                x <- x [indx]
+                y <- y [indx]
+                xy2 <- spatstat::ppp (x, y, xrange = range (x),
+                                      yrange = range (y))
+                ch <- spatstat::convexhull (xy2)
+                bdry [[i]] <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+            }
+            bdry [[i]] <- cbind (i, bdry [[i]])
         }
+        bdry <- data.frame (do.call (rbind, bdry))
+        names (bdry) <- c ("id", "x", "y")
+
+        aes <- ggplot2::aes (x = x, y = y, group = id)
+        map <- map + ggplot2::geom_polygon (data = bdry, mapping = aes,
+                                            colour = cols [bdry$id],
+                                            fill = "transparent",
+                                            size = border_width)
     }
 
     return (map)
