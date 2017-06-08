@@ -9,7 +9,22 @@ check_map_arg <- function (map)
 check_obj_arg <- function (obj)
 {
     if (is.null (obj))
-        stop ('obj must be supplied to add_osm_groups', call. = FALSE)
+        stop ('obj must be supplied', call. = FALSE)
     if (!is (obj, 'Spatial'))
         stop ('obj must be a spatial object', call. = FALSE)
+}
+
+check_col_arg <- function (col, null_okay = FALSE)
+{
+    if (!null_okay & is.null (col))
+        stop ('col is NULL')
+
+    # Note col2rbg (NA) = white
+    tryCatch (
+              col2rgb (col),
+              error = function (e)
+              {
+                  e$message <-  paste0 ("Invalid colour: ", col)
+                  stop (e)
+              })
 }

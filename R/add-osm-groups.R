@@ -679,15 +679,15 @@ cbind_membs_xy <- function (membs, xy)
 #' add SpatialPolygonsDataFrame to map
 #'
 #' @noRd
-map_plus_spPolydf <- function (map, xyflat, aes, cols, size) #nolint
+map_plus_spPolydf <- function (map, xy, aes, cols, size) #nolint
 {
     if (is.null (size))
         size <- 0
     else if (!is.numeric (size))
         size <- 0
 
-    map + ggplot2::geom_polygon (data = xyflat, mapping = aes, fill = cols
-                                 [xyflat$col], size = size)
+    map + ggplot2::geom_polygon (data = xy, mapping = aes, fill = cols [xy$col],
+                                 size = size)
 }
 
 #' add SpatialLinesDataFrame to map

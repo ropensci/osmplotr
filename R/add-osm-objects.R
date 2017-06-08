@@ -45,64 +45,16 @@
 #'                         size = 0.5)
 #' print_osm_map (map)
 
-add_osm_objects <- function (map, obj, col = 'gray40', border = NA, size,
-                             shape)
+add_osm_objects <- function (map = NULL, obj = NULL, col = 'gray40', border = NA,
+                             size = NULL, shape = NULL)
 {
     # ---------------  sanity checks and warnings  ---------------
-    if (missing (map))
-        stop ('map must be supplied to add_osm_objects')
-    if (!is (map, 'ggplot'))
-        stop ('map must be a ggplot2 object')
-    if (missing (obj))
-        stop ('object must be supplied to add_osm_objects')
-    if (!inherits (obj, 'Spatial'))
-        stop ('obj must be a spatial object')
-    if (is.null (col)) stop ('col is NULL')
-    tryCatch (
-              col2rgb (col),
-              error = function (e)
-              {
-                  e$message <-  paste0 ("Invalid colour: ", col)
-                  stop (e)
-              })
-    tryCatch (
-              col2rgb (border),
-              error = function (e)
-              {
-                  e$message <-  paste0 ("Invalid border colour: ", border)
-                  stop (e)
-              })
-    # ------- size & shape
-    if (class (obj) == 'SpatialPolygonsDataFrame')
-        size_default <- 0
-    else
-    {
-        size_default <- 0.5
-        if (class (obj) == 'SpatialLinesDataFrame')
-            shape_default <- 1
-        else if (class (obj) == 'SpatialPointsDataFrame')
-            shape_default <- 19
-        if (missing (shape)) shape <- shape_default
-        else if (!is.numeric (shape))
-        {
-            warning ("shape should be numeric; defaulting to ", shape_default)
-            shape <- shape_default
-        } else if (shape < 0)
-        {
-            warning ("shape should be positive; defaulting to ", shape_default)
-            shape <- shape_default
-        }
-    }
-    if (missing (size)) size <- size_default
-    else if (!is.numeric (size))
-    {
-        warning ("size should be numeric; defaulting to ", size_default)
-        size <- size_default
-    } else if (size < 0)
-    {
-        warning ("size should be positive; defaulting to ", size_default)
-        size <- size_default
-    }
+    check_map_arg (map)
+    check_obj_arg (obj)
+    check_col_arg (col)
+    check_col_arg (border, null_okay = TRUE)
+    shape <- default_shape (obj, shape)
+    size <- default_size (obj, size)
     # ---------------  end sanity checks and warnings  ---------------
 
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
@@ -161,4 +113,54 @@ list2df <- function (xy, islines = FALSE)
     else
         names (xy) <- c ("id", "lon", "lat")
     return (xy)
+}
+
+#' convert shape to default values dependent on class of obj
+#'
+#' @noRd
+default_shape <- function (obj, shape)
+{
+    shape_default <- NULL
+    if (class (obj) == 'SpatialLinesDataFrame')
+        shape_default <- 1
+    else if (class (obj) == 'SpatialPointsDataFrame')
+        shape_default <- 19
+
+    if (is.null (shape))
+        shape <- shape_default
+    else if (!is.numeric (shape))
+    {
+        warning ("shape should be numeric; defaulting to ", shape_default)
+        shape <- shape_default
+    } else if (shape < 0)
+    {
+        warning ("shape should be positive; defaulting to ", shape_default)
+        shape <- shape_default
+    }
+
+    return (shape)
+}
+
+#' convert size to default values dependent on class of obj
+#'
+#' @noRd
+default_size <- function (obj, size)
+{
+    size_default <- 0
+    if (class (obj) != 'SpatialPolygonsDataFrame')
+        size_default <- 0.5
+
+    if (is.null (size))
+        size <- size_default
+    else if (!is.numeric (size))
+    {
+        warning ("size should be numeric; defaulting to ", size_default)
+        size <- size_default
+    } else if (size < 0)
+    {
+        warning ("size should be positive; defaulting to ", size_default)
+        size <- size_default
+    }
+
+    return (size)
 }

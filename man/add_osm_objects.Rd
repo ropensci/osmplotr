@@ -4,7 +4,8 @@
 \alias{add_osm_objects}
 \title{add_osm_objects}
 \usage{
-add_osm_objects(map, obj, col = "gray40", border = NA, size, shape)
+add_osm_objects(map = NULL, obj = NULL, col = "gray40", border = NA,
+  size = NULL, shape = NULL)
 }
 \arguments{
 \item{map}{A \code{ggplot2} object to which the objects are to be added.}
