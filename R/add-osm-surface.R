@@ -106,9 +106,8 @@
 #' print_osm_map (map)
 
 
-add_osm_surface <- function (map = NULL, obj = NULL, dat = NULL, method = "idw",
-                             grid_size = 100, cols = heat.colors (30),
-                             bg = NULL, size = NULL, shape = NULL)
+add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
+                             cols = heat.colors (30), bg, size, shape)
 {
     # ---------------  sanity checks and warnings  ---------------
     check_map_arg (map)
@@ -127,7 +126,7 @@ add_osm_surface <- function (map = NULL, obj = NULL, dat = NULL, method = "idw",
     xy0 <- get_xy0 (map, obj, objtxt, xy)
     xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size = grid_size,
                               method = method)
-    if (is.null (bg))
+    if (missing (bg))
         xy <- xy0
     else
         xy <- xy0 [xy0$inp > 0, ]
@@ -149,7 +148,7 @@ add_osm_surface <- function (map = NULL, obj = NULL, dat = NULL, method = "idw",
 #' @noRd
 check_surface_dat <- function (dat)
 {
-    if (is.null (dat))
+    if (missing (dat))
         stop ('dat can not be NULL')
     if (!is.numeric (as.matrix (dat)))
         stop ('dat must be a numeric matrix or data.frame')
@@ -224,7 +223,7 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
 
     # Then remove any objects not in the convex hull of provided data
     indx <- rep (NA, length (xy))
-    if (!is.null (bg))
+    if (!missing (bg))
     {
         xyh <- spatstat::ppp (xyz$x, xyz$y,
                               xrange = range (xyz$x), yrange = range (xyz$y))
@@ -375,7 +374,7 @@ get_xy0 <- function (map, obj, objtxt, xy)
 #' @noRd
 set_extreme_vals <- function (xy, bg, nx, ny)
 {
-    if (is.null (bg))
+    if (missing (bg))
     {
         xy [, 1] [xy [, 1] < 1] <- 1
         xy [, 1] [xy [, 1] > nx] <- nx
@@ -398,7 +397,7 @@ set_extreme_vals <- function (xy, bg, nx, ny)
 map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) #nolint
 {
     # TODO: Add border to geom_polygon call
-    if (is.null (size))
+    if (missing (size))
         size <- 0
     if (length (size) == 1)
         size <- rep (size, 2) # else size [2] specifies bg size
@@ -409,7 +408,7 @@ map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) #nolint
                                         size = size [1]) +
                 ggplot2::scale_fill_gradientn (colours = cols)
 
-    if (!is.null (bg))
+    if (!missing (bg))
     {
         xy <- xy0 [xy0$inp == 0, ]
         aes <- ggplot2::aes (x = lon, y = lat, group = id)
@@ -425,12 +424,12 @@ map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) #nolint
 #' @noRd
 map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolint
 {
-    if (is.null (size))
+    if (missing (size))
         size <- 0.5
     if (length (size) == 1)
         size <- rep (size, 2) # else size [2] specifies bg size
 
-    if (is.null (shape))
+    if (missing (shape))
         shape <- 1
     if (length (shape) == 1)
         shape <- rep (shape, 2)
@@ -442,7 +441,7 @@ map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolin
                                      linetype = shape [1]) +
             ggplot2::scale_colour_gradientn (colours = cols)
 
-    if (!is.null (bg))
+    if (!missing (bg))
     {
         xy <- xy0 [xy0$inp == 0, ]
         aes <- ggplot2::aes (x = lon, y = lat, group = id)
@@ -459,12 +458,12 @@ map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolin
 #' @noRd
 map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolint
 {
-    if (is.null (size))
+    if (missing (size))
         size <- 0.5
     if (length (size) == 1)
         size <- rep (size, 2) # else size [2] specifies bg size
 
-    if (is.null (shape))
+    if (missing (shape))
         shape <- 1
     if (length (shape) == 1)
         shape <- rep (shape, 2)
@@ -475,7 +474,7 @@ map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #noli
                                       size = size [1], shape = shape [1]) +
             ggplot2::scale_colour_gradientn (colours = cols)
 
-    if (!is.null (bg))
+    if (!missing (bg))
     {
         xy <- xy0 [xy0$inp == 0, ]
         aes <- ggplot2::aes (x = lon, y = lat, group = id)

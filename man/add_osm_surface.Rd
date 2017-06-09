@@ -4,9 +4,8 @@
 \alias{add_osm_surface}
 \title{add_osm_suface}
 \usage{
-add_osm_surface(map = NULL, obj = NULL, dat = NULL, method = "idw",
-  grid_size = 100, cols = heat.colors(30), bg = NULL, size = NULL,
-  shape = NULL)
+add_osm_surface(map, obj, dat, method = "idw", grid_size = 100,
+  cols = heat.colors(30), bg, size, shape)
 }
 \arguments{
 \item{map}{A \code{ggplot2} object to which the surface are to be added}

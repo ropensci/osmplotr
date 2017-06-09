@@ -106,9 +106,8 @@
 #' print_osm_map (map)
 #' }
 
-add_osm_groups <- function (map, obj, groups = NULL, cols,
-                            bg, make_hull = FALSE, boundary = -1,
-                            size, shape, border_width,
+add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
+                            boundary = -1, size, shape, border_width,
                             colmat, rotate)
 {
     # ---------------  sanity checks and warnings  ---------------
@@ -234,7 +233,7 @@ add_osm_groups <- function (map, obj, groups = NULL, cols,
 #' @noRd
 check_groups_arg <- function (groups)
 {
-    if (is.null (groups))
+    if (missing (groups))
         stop ('groups must be provided', call. = FALSE)
 
     if (class (groups) != 'list')

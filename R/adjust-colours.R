@@ -37,10 +37,12 @@
 #' print_osm_map (dat$map)
 
 
-adjust_colours <- function (cols = NULL, adj = 0, plot = FALSE)
+adjust_colours <- function (cols, adj = 0, plot = FALSE)
 {
     # ---------------  sanity checks and warnings  ---------------
-    check_col_arg (cols, null_okay = FALSE)
+    check_col_arg (cols)
+    if (length (cols) == 0)
+        stop ('cols must be non-null')
     if (class (cols [1]) != 'matrix')
         cols <- col2rgb (cols)
     # ---------- adj

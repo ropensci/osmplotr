@@ -4,7 +4,7 @@
 \alias{adjust_colours}
 \title{adjust_colours}
 \usage{
-adjust_colours(cols = NULL, adj = 0, plot = FALSE)
+adjust_colours(cols, adj = 0, plot = FALSE)
 }
 \arguments{
 \item{cols}{A vector of \code{R} colours (for allowable formats of which, see

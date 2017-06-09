@@ -45,14 +45,15 @@
 #'                         size = 0.5)
 #' print_osm_map (map)
 
-add_osm_objects <- function (map = NULL, obj = NULL, col = 'gray40', border = NA,
-                             size = NULL, shape = NULL)
+add_osm_objects <- function (map, obj, col = 'gray40', border = NA, size, shape)
 {
     # ---------------  sanity checks and warnings  ---------------
     check_map_arg (map)
     check_obj_arg (obj)
     check_col_arg (col)
-    check_col_arg (border, null_okay = TRUE)
+    if (length (col) == 0)
+        stop ('a non-null col must be provided')
+    check_col_arg (border)
     shape <- default_shape (obj, shape)
     size <- default_size (obj, size)
     # ---------------  end sanity checks and warnings  ---------------
@@ -126,19 +127,17 @@ default_shape <- function (obj, shape)
     else if (class (obj) == 'SpatialPointsDataFrame')
         shape_default <- 19
 
-    if (is.null (shape))
-        shape <- shape_default
-    else if (!is.numeric (shape))
+    ret <- NULL
+    if (!missing (shape) & !is.null (shape_default))
     {
-        warning ("shape should be numeric; defaulting to ", shape_default)
-        shape <- shape_default
-    } else if (shape < 0)
-    {
-        warning ("shape should be positive; defaulting to ", shape_default)
-        shape <- shape_default
+        if (!is.numeric (shape))
+            warning ("shape should be numeric; defaulting to ", shape_default)
+        else if (shape < 0)
+            warning ("shape should be positive; defaulting to ", shape_default)
+        ret <- shape_default
     }
 
-    return (shape)
+    return (ret)
 }
 
 #' convert size to default values dependent on class of obj
@@ -150,7 +149,7 @@ default_size <- function (obj, size)
     if (class (obj) != 'SpatialPolygonsDataFrame')
         size_default <- 0.5
 
-    if (is.null (size))
+    if (missing (size))
         size <- size_default
     else if (!is.numeric (size))
     {

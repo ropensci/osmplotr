@@ -2,15 +2,15 @@ context ("add-surface")
 
 test_that ('basemap', {
            expect_error (add_osm_surface (), 'map must be supplied')
-           expect_error (add_osm_surface (NULL),
-                         'a non-null map must be supplied')
+           expect_error (add_osm_surface (NULL), 'map must be a ggplot2 object')
 })
 
 test_that ('obj', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox=bbox, bg="gray20")
            expect_error (add_osm_surface (map), 'obj must be supplied')
-           expect_error (add_osm_surface (map, NULL), 'obj must be supplied')
+           expect_error (add_osm_surface (map, NULL),
+                         'obj must be a spatial object')
 })
 
 test_that ('dat', {
@@ -19,7 +19,7 @@ test_that ('dat', {
            obj <- london$dat_BNR
            expect_error (add_osm_surface (map, obj), 'dat can not be NULL')
            expect_error (add_osm_surface (map, obj, NULL), 
-                         'dat can not be NULL')
+                         "\'data\' must be of a vector type, was \'NULL\'")
            expect_error (add_osm_surface (map, obj, 1), 
                          'dat must have at least 3 columns')
            dat <- matrix (runif (12), nrow=4)

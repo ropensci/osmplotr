@@ -2,7 +2,7 @@ context ('add-axes')
 
 test_that ('basemap object', {
            expect_error (add_axes (), 'map must be supplied to add_axes')
-           expect_error (add_axes (NULL), 'map must be supplied')
+           expect_error (add_axes (NULL), 'map must be a ggplot2 object')
            expect_error (add_axes (colour='red'), 'map must be supplied to add_axes')
 })
 
