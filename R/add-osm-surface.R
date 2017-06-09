@@ -283,7 +283,7 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
                 lat = xy [, 3],
                 z = xy [, 4],
                 inp = xy [, 5],
-                row.names = 1:nrow (xy)
+                row.names = seq (nrow (xy))
                 )
 }
 

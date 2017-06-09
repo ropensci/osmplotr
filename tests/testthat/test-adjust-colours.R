@@ -20,7 +20,7 @@ test_that ('adj', {
 test_that ('plot', {
     expect_error (adjust_colours (1, 0, NA), 'plot can not be NA')
     expect_error (adjust_colours (1, 0, NULL), 'plot can not be NULL')
-    expect_error (adjust_colours (1, 0, 'a'), 
+    expect_error (adjust_colours (1, 0, 'a'),
                   'plot can not be coerced to logical')
     expect_silent (adjust_colours (1, 0, FALSE))
     expect_silent (adjust_colours (1, 0, TRUE))

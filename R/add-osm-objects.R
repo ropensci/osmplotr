@@ -108,7 +108,7 @@ list2df <- function (xy, islines = FALSE)
     xy <-  do.call (rbind, xy)
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
-    xy <-  data.frame (xy, row.names = 1:nrow (xy))
+    xy <-  data.frame (xy, row.names = seq (nrow (xy)))
     if (islines) # remove terminal row of NAs
         xy <- xy [1:(nrow (xy) - 1), ]
     else
@@ -136,7 +136,8 @@ default_shape <- function (obj, shape)
                 warning ("shape should be numeric; defaulting to ",
                          shape_default)
             else if (shape < 0)
-                warning ("shape should be positive; defaulting to ", shape_default)
+                warning ("shape should be positive; defaulting to ",
+                         shape_default)
         }
         ret <- shape_default
     }

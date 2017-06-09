@@ -90,7 +90,7 @@ make_osm_map <- function (bbox, osm_data,
         # style = 3 shows start and end positions
         t0 <- proc.time ()
         indx <- NULL
-        for (i in 1:nrow (structures)) {
+        for (i in seq (structures)) {
             dat <- extract_osm_objects (key = structures$key [i],
                                         value = structures$value [i],
                                         bbox = bbox)

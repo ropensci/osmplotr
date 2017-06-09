@@ -125,7 +125,7 @@ connect_highways <- function (highways, bbox, plot = FALSE)
         test <- do.call (rbind, ways [[i]])
         ref <- ways
         ref [[i]] <- NULL
-        indx <- (1:length (ways)) [!(1:length (ways)) %in% i]
+        indx <- (seq (ways)) [!(seq (ways)) %in% i]
         # Then find which lines from ref intersect with test:
         ni <- unlist (lapply (ref, function (x) {
                       xflat <- do.call (rbind, x)

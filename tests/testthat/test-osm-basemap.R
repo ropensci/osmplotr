@@ -12,18 +12,18 @@ test_that ('bbox', {
 
 test_that ('structures', {
            bb <- get_bbox (1:4)
-           expect_error (osm_basemap (bb, structures=NA), 
+           expect_error (osm_basemap (bb, structures = NA),
                          'structures must be a data frame')
            s <- osm_structures ()
            names (s) [1] <- 'x'
-           expect_error (osm_basemap (get_bbox (1:4), structures=s),
+           expect_error (osm_basemap (get_bbox (1:4), structures = s),
                          'structures not in recognised format')
 })
 
 test_that ('bg', {
            bb <- get_bbox (1:4)
-           expect_error (osm_basemap (bb, bg='a'), 'Invalid bg: a')
-           expect_error (osm_basemap (bb, bg=NA), 'Invalid bg')
-           expect_error (osm_basemap (bb, bg=NULL), 'Invalid bg')
-           expect_warning (osm_basemap (bb, bg=1:2), 'bg has length > 1')
+           expect_error (osm_basemap (bb, bg = 'a'), 'Invalid bg: a')
+           expect_error (osm_basemap (bb, bg = NA), 'Invalid bg')
+           expect_error (osm_basemap (bb, bg = NULL), 'Invalid bg')
+           expect_warning (osm_basemap (bb, bg = 1:2), 'bg has length > 1')
 })

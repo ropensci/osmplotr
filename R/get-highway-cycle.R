@@ -164,7 +164,7 @@ get_highway_cycle <- function (highways)
         test <- do.call (rbind, highways [[i]])
         ref <- highways
         ref [[i]] <- NULL
-        indx <- (1:length (highways)) [!(1:length (highways)) %in% i]
+        indx <- (seq (highways)) [!(seq (highways)) %in% i]
         # Then find which lines from ref intersect with test:
         ni <- unlist (lapply (ref, function (x) {
                       xflat <- do.call (rbind, x)
