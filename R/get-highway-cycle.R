@@ -39,14 +39,14 @@ get_highway_cycle <- function (highways)
         for (j in seq (obji))
         {
             li <- sp::Line (obji [[j]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID = 'a')))
+            li <- sp::SpatialLines (list (sp::Lines (list (li), ID = 'a')))
             # The following function returns default of -1 for no geometric
             # intersection; 0 where intersections exists but area *NOT* vertices
             # of li, and 2 where intersections are vertices of li.
             intersections <- sapply (test_flat, function (x) {
                         lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj),
-                                                             ID = 'a')))
+                        lj <- sp::SpatialLines (list (sp::Lines (list (lj),
+                                                                 ID = 'a')))
                         int <- rgeos::gIntersection (li, lj)
                         if (!is.null (int))
                             sum (sp::coordinates (int) %in% x)
@@ -59,7 +59,8 @@ get_highway_cycle <- function (highways)
                     # Then they have to be added to highways [[i]] [[j]].
                     x <- test_flat [k] [[1]]
                     lj <- sp::Line (x)
-                    lj <- sp::SpatialLines (list (Lines (list (lj), ID = 'a')))
+                    lj <- sp::SpatialLines (list (sp::Lines (list (lj),
+                                                             ID = 'a')))
                     xy <- sp::coordinates (rgeos::gIntersection (li, lj))
                     d <- sqrt ( (xy [1] - obji [[j]] [, 1]) ^ 2 +
                                (xy [2] - obji [[j]] [, 2]) ^ 2)

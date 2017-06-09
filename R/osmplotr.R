@@ -63,16 +63,17 @@
 #'
 #' @name osmplotr
 #' @docType package
-#' @import sp osmar 
 #' @importFrom curl has_internet
 #' @importFrom ggm fundCycles
-#' @importFrom graphics lines locator plot.new par rect text
+#' @importFrom graphics lines locator plot plot.new par rect text
 #' @importFrom grDevices dev.cur dev.new dev.off rainbow rgb col2rgb heat.colors
 #' @importFrom grDevices bmp jpeg pictex png postscript svg tiff 
 #' @importFrom httr content GET http_status
 #' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom methods slot as is hasArg
+#' @importFrom osmar as_osmar as_sp find find_down find_up relation tags way
 #' @importFrom rgeos gIntersection
+#' @importFrom sp coordinates point.in.polygon Line SpatialLines SpatialPoints 
 #' @importFrom spatstat convexhull idw ppp Smooth
 #' @importFrom stats runif
 #' @importFrom utils txtProgressBar setTxtProgressBar combn tail

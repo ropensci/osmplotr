@@ -100,12 +100,12 @@ order_lines <- function (sp_lines, i0 = 0)
             ref <- xy_ord
             ref [[i]] <- NULL
             li <- sp::Line (xy_ord [[i]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID = 'a')))
+            li <- sp::SpatialLines (list (sp::Lines (list (li), ID = 'a')))
             # ID is filler
             intersections <- sapply (ref, function (x) {
                         lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj),
-                                                             ID = 'a')))
+                        lj <- sp::SpatialLines (list (sp::Lines (list (lj),
+                                                                 ID = 'a')))
                         !is.null (rgeos::gIntersection (li, lj))
                         })
             inref <- sapply (ref, function (x) {
@@ -122,7 +122,8 @@ order_lines <- function (sp_lines, i0 = 0)
             for (j in inum)
             {
                 lj <- sp::Line (xy_ord [[j]])
-                lj <- sp::SpatialLines (list (Lines (list (lj), ID = 'a')))
+                lj <- sp::SpatialLines (list (sp::Lines (list (lj),
+                                                         ID = 'a')))
                 xy <- sp::coordinates (rgeos::gIntersection (li, lj))
                 # Then distances to from xy to xy_ord [[i]], to enable the
                 # junction point to be inserted in the appropriate sequence.

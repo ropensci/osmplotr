@@ -275,7 +275,7 @@ connect_highways <- function (highways, bbox, plot = FALSE)
 
     indx <- which (!duplicated (rownames (path)))
     res <- sp::SpatialPoints (path [indx, ])
-    proj4string (res) <- p4s
+    sp::proj4string (res) <- p4s
 
     return (res)
 }

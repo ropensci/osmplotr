@@ -70,7 +70,7 @@ extract_highways <- function (highway_names, bbox)
         lens <- sapply (waynames [indx], function (i) length (get (i)))
         lens <- length (which (lens > 0)) # total number returning data
         if (lens > 0)
-            p4s <- proj4string (get (waynames [indx] [which (lens > 0)[1]]))
+            p4s <- sp::proj4string (get (waynames [indx] [which (lens > 0)[1]]))
         rm (dat)
         close (pb)
         lens_old <- lens
@@ -125,13 +125,13 @@ extract_highways <- function (highway_names, bbox)
         for (j in seq (obji))
         {
             li <- sp::Line (obji [[j]])
-            li <- sp::SpatialLines (list (Lines (list (li), ID = 'a')))
+            li <- sp::SpatialLines (list (sp::Lines (list (li), ID = 'a')))
             # The following function returns default of -1 for no geometric
             # intersection; 0 where intersections exists but area *NOT* vertices
             # of li, and 2 where intersections are vertices of li.
             intersections <- sapply (test_flat, function (x) {
                         lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (Lines (list (lj),
+                        lj <- sp::SpatialLines (list (sp::Lines (list (lj),
                                                              ID = 'a')))
                         int <- rgeos::gIntersection (li, lj)
                         if (!is.null (int))
@@ -145,7 +145,8 @@ extract_highways <- function (highway_names, bbox)
                     # Then they have to be added to objs [[i]] [[j]].
                     x <- test_flat [k] [[1]]
                     lj <- sp::Line (x)
-                    lj <- sp::SpatialLines (list (Lines (list (lj), ID = 'a')))
+                    lj <- sp::SpatialLines (list (sp::Lines (list (lj),
+                                                             ID = 'a')))
                     xy <- sp::coordinates (rgeos::gIntersection (li, lj))
                     d <- sqrt ( (xy [1] - obji [[j]] [, 1]) ^ 2 +
                                (xy [2] - obji [[j]] [, 2]) ^ 2)
