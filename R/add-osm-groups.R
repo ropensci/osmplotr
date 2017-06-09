@@ -167,6 +167,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         cols <- cols_colourmat$cols
         cmat <- cols_colourmat$cmat
     }
+    if (missing (bg))
+        bg <- NULL
 
     if (!class (obj) %in% c ('SpatialPolygonsDataFrame',
                              'SpatialLinesDataFrame'))
@@ -188,9 +190,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     coords <- get_obj_coords (obj, objtxt, cent_bdy)
 
     # Get membership of objects within groups
-    if (missing (bg))
+    if (is.null (bg)) # include all points in groups
     {
-        # single group based on entire boundary.
         membs <- membs_single_group (groups, coords, obj_xy, cent_bdy)
         xy <- membs$xy
         membs <- membs$membs
