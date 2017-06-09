@@ -128,12 +128,16 @@ default_shape <- function (obj, shape)
         shape_default <- 19
 
     ret <- NULL
-    if (!missing (shape) & !is.null (shape_default))
+    if (!is.null (shape_default))
     {
-        if (!is.numeric (shape))
-            warning ("shape should be numeric; defaulting to ", shape_default)
-        else if (shape < 0)
-            warning ("shape should be positive; defaulting to ", shape_default)
+        if (!missing (shape))
+        {
+            if (!is.numeric (shape))
+                warning ("shape should be numeric; defaulting to ",
+                         shape_default)
+            else if (shape < 0)
+                warning ("shape should be positive; defaulting to ", shape_default)
+        }
         ret <- shape_default
     }
 

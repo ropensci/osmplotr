@@ -283,6 +283,8 @@ group_colours_default <- function (cols, groups, bg)
         cols <- rainbow (length (groups))
     else if (length (cols) < length (groups))
         cols <- rep (cols, length.out = length (groups))
+
+    ret <- list ('cols' = cols)
     if (length (groups) == 1 & missing (bg))
     {
         warning ('There is only one group; using default bg')
@@ -290,9 +292,12 @@ group_colours_default <- function (cols, groups, bg)
             bg <- 'gray40'
         else
             bg <- 'white'
-    }
 
-    return (list ('cols' = cols, 'bg' = bg))
+        ret ['bg'] <- bg
+    } else if (!missing (bg))
+        ret ['bg'] <- bg
+
+    return (ret)
 }
 
 #' group colours from colourmat
