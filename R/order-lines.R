@@ -173,7 +173,7 @@ order_lines <- function (sp_lines, i0 = 0)
     # number all sequentially:
     for (i in seq (xy_ord))
     {
-        rownames (xy_ord [[i]]) <- i0 + 1:nrow (xy_ord [[i]])
+        rownames (xy_ord [[i]]) <- i0 + seq (nrow (xy_ord [[i]]))
         i0 <- i0 + nrow (xy_ord [[i]])
     }
     # Then renumber all shared nodes from [[2]] onwards to correspond to

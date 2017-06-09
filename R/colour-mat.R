@@ -83,30 +83,7 @@ colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE)
     # ---------------  end sanity checks and warnings  ---------------
 
     if (!missing (rotate))
-    {
-        # rotation generally lowers RGB values, so they are increased following
-        # rotation according to the following value:
-        max_int <- max (cols)
-        while (rotate < 0)
-            rotate <- rotate + 360
-        while (rotate > 360)
-            rotate <- rotate - 360
-        cols <- cbind (cols, cols)
-        # Clockwise rotation shifts the top left to the top right, meaning the
-        # index of four colours must move *down* or *to the left* of cols
-        i <- floor (rotate / 90) # number of columns to move
-        i1 <- 1:4 - i
-        if (min (i1) < 1)
-            i1 <- i1 + 4
-        i2 <- i1 + 1
-        x <- (rotate %% 90) / 360
-        cols <- (1 - x) * cols [, i1] + x * cols [, i2]
-        cols <- apply (cols, 2, function (x)
-                       {
-                           if (max (x) == 0) rep (0, 3)
-                           else x * max_int / max (x)
-                       })
-    }
+        cols <- rotate_colourmat (cols, rotate)
 
     tl <- cols [, 1] # top left
     tr <- cols [, 2] # top right
@@ -133,13 +110,49 @@ colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE)
     carr <- array (rgb (col_arrs [[1]], col_arrs [[2]], col_arrs [[3]],
                         maxColorValue = 255), dim = n)
 
-    if (plot) {
-        plot.new ()
-        par (mar = rep (0, 4))
-        plot (NULL, NULL, xlim = c(0, n[2]), ylim = c (0, n[1]))
-        for (i in 1:n [1])
-            for (j in 1:n [2])
-                rect (j - 1, i - 1, j, i, col = carr [i, j])
-    }
+    if (plot)
+        plot_colourmat (carr)
+
     return (carr)
 } # end function colour.mat
+
+rotate_colourmat <- function (cols, rotate)
+{
+    # rotation generally lowers RGB values, so they are increased following
+    # rotation according to the following value:
+    max_int <- max (cols)
+
+    while (rotate < 0)
+        rotate <- rotate + 360
+    while (rotate > 360)
+        rotate <- rotate - 360
+
+    cols <- cbind (cols, cols)
+
+    # Clockwise rotation shifts the top left to the top right, meaning the
+    # index of four colours must move *down* or *to the left* of cols
+    i <- floor (rotate / 90) # number of columns to move
+    i1 <- 1:4 - i
+    if (min (i1) < 1)
+        i1 <- i1 + 4
+    i2 <- i1 + 1
+    x <- (rotate %% 90) / 360
+    cols <- (1 - x) * cols [, i1] + x * cols [, i2]
+    cols <- apply (cols, 2, function (x)
+                   {
+                       if (max (x) == 0) rep (0, 3)
+                       else x * max_int / max (x)
+                   })
+
+    return (cols)
+}
+
+plot_colourmat <- function (carr)
+{
+    plot.new ()
+    par (mar = rep (0, 4))
+    plot (NULL, NULL, xlim = c(0, dim (carr) [2]), ylim = c (0, dim (carr) [1]))
+    for (i in seq (dim (carr) [1]))
+        for (j in seq (dim (carr) [2]))
+            rect (j - 1, i - 1, j, i, col = carr [i, j])
+}
