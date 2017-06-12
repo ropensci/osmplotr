@@ -26,6 +26,13 @@ get_highway_cycle <- function (highways)
         stop ('highways must be a list')
     # TODO: Make class so that can be properly checked
 
+    # Get maximum vertext number of highways
+    maxvert <- 0
+    for (i in seq (highways))
+        maxvert <- max (maxvert, unlist (lapply (highways [[i]], function (x)
+                                    max (as.numeric (rownames (x))))))
+    maxvert <- maxvert + 1
+
     # ***** (1) Add intersection nodes to junctions of ways where these don't
     # *****     already exist
     for (i in seq (highways))
@@ -149,13 +156,6 @@ get_highway_cycle <- function (highways)
                 } # end for k over which (intersections == 0)
         } # end for j over obj [[i]]
     } # end for i over all highways
-
-    # Get maximum vertext number of highways
-    maxvert <- 0
-    for (i in seq (highways))
-        maxvert <- max (maxvert, unlist (lapply (highways [[i]], function (x)
-                                    max (as.numeric (rownames (x))))))
-    maxvert <- maxvert + 1
 
     # ***** (2) Fill a connectivity matrix between all highways and extract the
     # *****     *longest* cycle connecting them all
