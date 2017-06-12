@@ -35,127 +35,7 @@ get_highway_cycle <- function (highways)
 
     # ***** (1) Add intersection nodes to junctions of ways where these don't
     # *****     already exist
-    for (i in seq (highways))
-    {
-        obji <- highways [[i]]
-        test <- highways
-        test [[i]] <- NULL
-        test_flat <- do.call (c, test)
-        # Check whether any of obji cross any of test_flat *and* don't already
-        # exist as vertices
-        for (j in seq (obji))
-        {
-            li <- sp::Line (obji [[j]])
-            li <- sp::SpatialLines (list (sp::Lines (list (li), ID = 'a')))
-            # The following function returns default of -1 for no geometric
-            # intersection; 0 where intersections exists but area *NOT* vertices
-            # of li, and 2 where intersections are vertices of li.
-            intersections <- sapply (test_flat, function (x) {
-                        lj <- sp::Line (x)
-                        lj <- sp::SpatialLines (list (sp::Lines (list (lj),
-                                                                 ID = 'a')))
-                        int <- rgeos::gIntersection (li, lj)
-                        if (!is.null (int))
-                            sum (sp::coordinates (int) %in% x)
-                        else
-                            -1
-                        })
-            if (any (intersections == 0))
-                for (k in which (intersections == 0))
-                {
-                    # Then they have to be added to highways [[i]] [[j]].
-                    x <- test_flat [k] [[1]]
-                    lj <- sp::Line (x)
-                    lj <- sp::SpatialLines (list (sp::Lines (list (lj),
-                                                             ID = 'a')))
-                    xy <- sp::coordinates (rgeos::gIntersection (li, lj))
-                    d <- sqrt ( (xy [1] - obji [[j]] [, 1]) ^ 2 +
-                               (xy [2] - obji [[j]] [, 2]) ^ 2)
-                    di <- which.min (d)
-                    n <- nrow (obji [[j]])
-                    rnames <- rownames (obji [[j]])
-                    # xy can be closest to d1, but still either
-                    # A. -------d1---xy--------------d2, or
-                    # B. xy-----d1-------------------d2
-                    # A. implies that |xy,d2|<|d1,d2|, and B vice-versa
-                    if (di == 1)
-                    {
-                        d12 <- sqrt (diff (obji [[j]] [1:2, 1]) ^ 2 +
-                                     diff (obji [[j]] [1:2, 2]) ^ 2)
-                        if (d12 < d [2])
-                            indx <- list (NULL, 1:n)
-                        else
-                            indx <- list (1, 2:n)
-                    } else if (di == n)
-                    {
-                        d12 <- sqrt (diff (obji [[j]] [(n - 1:n), 1]) ^ 2 +
-                                     diff (obji [[j]] [(n - 1:n), 2]) ^ 2)
-                        if (d12 < d [n - 1])
-                            indx <- list (1:n, NULL)
-                        else
-                            indx <- list (1:(n - 1), n)
-                    } else if (d [di - 1] < d [di + 1])
-                        indx <- list (1:(di - 1), di:n)
-                    else
-                        indx <- list (1:di, (di + 1):n)
-                    highways [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ],
-                                                   xy,
-                                                   obji [[j]] [indx [[2]], ])
-                    rownames (highways [[i]] [[j]]) <- c (rnames [indx [[1]]],
-                                                      maxvert,
-                                                      rnames [indx [[2]]])
-
-                    # Then add same vertex into the other elements, which
-                    # requires first making an index into the list of lists that
-                    # is highways
-                    lens <- cumsum (sapply (test, length))
-                    if (k < lens [1])
-                    {
-                        ni <- 1
-                        nj <- k
-                    } else
-                    {
-                        ni <- max (which (lens < k)) + 1
-                        nj <- k - lens [ni - 1]
-                    }
-                    # Then ni needs to point into the full highways instead of
-                    # test
-                    ni <- seq (highways) [!seq (highways) %in% i] [ni]
-                    temp <- highways [[ni]] [[nj]]
-                    # Then insert xy into temp
-                    d <- sqrt ( (xy [1] - temp [, 1]) ^ 2 +
-                               (xy [2] - temp [, 2]) ^ 2)
-                    di <- which.min (d)
-                    n <- nrow (temp)
-                    rnames <- rownames (temp)
-
-                    if (di == 1)
-                    {
-                        d12 <- sqrt (diff (obji [[j]] [1:2, 1]) ^ 2 +
-                                     diff (obji [[j]] [1:2, 2]) ^ 2)
-                        if (d12 < d [2])
-                            indx <- list (NULL, 1:n)
-                        else
-                            indx <- list (1, 2:n)
-                    } else if (di == n)
-                    {
-                        d12 <- sqrt (diff (obji [[j]] [(n - 1:n), 1]) ^ 2 +
-                                     diff (obji [[j]] [(n - 1:n), 2]) ^ 2)
-                        if (d12 < d [n - 1])
-                            indx <- list (1:n, NULL)
-                        else
-                            indx <- list (1:(n - 1), n)
-                    } else if (d [di - 1] < d [di + 1])
-                        indx <- list (1:(di - 1), di:n)
-                    else
-                        indx <- list (1:di, (di + 1):n)
-                    temp <- rbind (temp [indx [[1]], ], xy, temp [indx [[2]], ])
-                    rownames (temp) <- c (rnames [indx [[1]]], maxvert,
-                                                rnames [indx [[2]]])
-                    highways [[ni]] [[nj]] <- unique (temp)
-                } # end for k over which (intersections == 0)
-        } # end for j over obj [[i]]
-    } # end for i over all highways
+    highways <- add_intersection_nodes (highways, maxvert)
 
     # ***** (2) Fill a connectivity matrix between all highways and extract the
     # *****     *longest* cycle connecting them all
@@ -167,14 +47,8 @@ get_highway_cycle <- function (highways)
         ref [[i]] <- NULL
         indx <- (seq (highways)) [!(seq (highways)) %in% i]
         # Then find which lines from ref intersect with test:
-        ni <- unlist (lapply (ref, function (x) {
-                      xflat <- do.call (rbind, x)
-                      n <- array (xflat %in% test, dim = dim (xflat))
-                      # NOTE: If there is more than one common vertex, only the
-                      # first is taken. TODO: Check alternatives!
-                      n <- which (rowSums (n) == 2) [1]
-                      rownames (xflat) [n]
-                     }))
+        ni <- unlist (lapply (ref, function (x)
+                              intersect_ref_test (x, test)))
         indx2 <- indx [which (!is.na (ni))]
         conmat [i, indx2] <- conmat [indx2, i] <- TRUE
     }
@@ -281,7 +155,156 @@ get_highway_cycle <- function (highways)
             highways [[i2]] [[ni2]] <- rbind (highways [[i2]] [[ni2]], xy1)
             names (highways [[i2]] [[ni2]]) <- hnames
         }
+        message ('---cyc_len = ', cyc_len, '---')
     } # end while cyc_len < length (highways)
 
     return (highways)
+}
+
+#' add intersection nodes to junctions of ways where these don't already exist
+#'
+#' This routine is necessary because \code{ways} are generally just named
+#' highways which will not necessarily include the actual OSM intersection nodes
+#' between each way.
+#'
+#' @noRd
+add_intersection_nodes <- function (ways, maxvert)
+{
+    for (i in seq (ways))
+    {
+        obji <- ways [[i]]
+        test <- ways
+        test [[i]] <- NULL
+        test_flat <- do.call (c, test)
+        # Check whether any of obji cross any of test_flat *and* don't already
+        # exist as vertices
+        for (j in seq (obji))
+        {
+            li <- sp::Line (obji [[j]])
+            li <- sp::SpatialLines (list (sp::Lines (list (li), ID = 'a')))
+            # The following function returns default of -1 for no geometric
+            # intersection; 0 where intersections exists but area *NOT* vertices
+            # of li, and 2 where intersections are vertices of li.
+            intersections <- sapply (test_flat, function (x)
+                                     intersection_type (x, li))
+            if (any (intersections == 0))
+                for (k in which (intersections == 0))
+                {
+                    # Then they have to be added to ways [[i]] [[j]].
+                    x <- test_flat [k] [[1]]
+                    lj <- sp::Line (x)
+                    lj <- sp::SpatialLines (list (sp::Lines (list (lj),
+                                                             ID = 'a')))
+                    xy <- sp::coordinates (rgeos::gIntersection (li, lj))
+                    d <- sqrt ( (xy [1] - obji [[j]] [, 1]) ^ 2 +
+                               (xy [2] - obji [[j]] [, 2]) ^ 2)
+                    di <- which.min (d)
+                    n <- nrow (obji [[j]])
+                    rnames <- rownames (obji [[j]])
+                    # xy can be closest to d1, but still either
+                    # A. -------d1---xy--------------d2, or
+                    # B. xy-----d1-------------------d2
+                    # A. implies that |xy,d2|<|d1,d2|, and B vice-versa
+                    if (di == 1)
+                    {
+                        d12 <- sqrt (diff (obji [[j]] [1:2, 1]) ^ 2 +
+                                     diff (obji [[j]] [1:2, 2]) ^ 2)
+                        if (d12 < d [2])
+                            indx <- list (NULL, 1:n)
+                        else
+                            indx <- list (1, 2:n)
+                    } else if (di == n)
+                    {
+                        d12 <- sqrt (diff (obji [[j]] [(n - 1:n), 1]) ^ 2 +
+                                     diff (obji [[j]] [(n - 1:n), 2]) ^ 2)
+                        if (d12 < d [n - 1])
+                            indx <- list (1:n, NULL)
+                        else
+                            indx <- list (1:(n - 1), n)
+                    } else if (d [di - 1] < d [di + 1])
+                        indx <- list (1:(di - 1), di:n)
+                    else
+                        indx <- list (1:di, (di + 1):n)
+                    ways [[i]] [[j]] <- rbind (obji [[j]] [indx [[1]], ],
+                                                   xy,
+                                                   obji [[j]] [indx [[2]], ])
+                    rownames (ways [[i]] [[j]]) <- c (rnames [indx [[1]]],
+                                                      maxvert,
+                                                      rnames [indx [[2]]])
+
+                    # Then add same vertex into the other elements, which
+                    # requires first making an index into the list of lists that
+                    # is ways
+                    lens <- cumsum (sapply (test, length))
+                    if (k < lens [1])
+                    {
+                        ni <- 1
+                        nj <- k
+                    } else
+                    {
+                        ni <- max (which (lens < k)) + 1
+                        nj <- k - lens [ni - 1]
+                    }
+                    # Then ni needs to point into the full ways instead of
+                    # test
+                    ni <- seq (ways) [!seq (ways) %in% i] [ni]
+                    temp <- ways [[ni]] [[nj]]
+                    # Then insert xy into temp
+                    d <- sqrt ( (xy [1] - temp [, 1]) ^ 2 +
+                               (xy [2] - temp [, 2]) ^ 2)
+                    di <- which.min (d)
+                    n <- nrow (temp)
+                    rnames <- rownames (temp)
+
+                    if (di == 1)
+                    {
+                        d12 <- sqrt (diff (obji [[j]] [1:2, 1]) ^ 2 +
+                                     diff (obji [[j]] [1:2, 2]) ^ 2)
+                        if (d12 < d [2])
+                            indx <- list (NULL, 1:n)
+                        else
+                            indx <- list (1, 2:n)
+                    } else if (di == n)
+                    {
+                        d12 <- sqrt (diff (obji [[j]] [(n - 1:n), 1]) ^ 2 +
+                                     diff (obji [[j]] [(n - 1:n), 2]) ^ 2)
+                        if (d12 < d [n - 1])
+                            indx <- list (1:n, NULL)
+                        else
+                            indx <- list (1:(n - 1), n)
+                    } else if (d [di - 1] < d [di + 1])
+                        indx <- list (1:(di - 1), di:n)
+                    else
+                        indx <- list (1:di, (di + 1):n)
+                    temp <- rbind (temp [indx [[1]], ], xy, temp [indx [[2]], ])
+                    rownames (temp) <- c (rnames [indx [[1]]], maxvert,
+                                                rnames [indx [[2]]])
+                    ways [[ni]] [[nj]] <- unique (temp)
+                } # end for k over which (intersections == 0)
+        } # end for j over obj [[i]]
+    } # end for i over all ways
+
+    return (ways)
+}
+
+#' Get type of intersection in a given line
+#'
+#' @param x a flat list of coordinates for all highways (except li)
+#' @param li Coordinates of one component of one highway
+#'
+#' @return Default of -1 for no geometric intersection; 0 where intersections
+#' exists but area *NOT* vertices of li, and 2 where intersections are vertices
+#' of li.
+#'
+#' @noRd
+intersection_type <- function (x, li)
+{
+    lj <- sp::Line (x)
+    lj <- sp::SpatialLines (list (sp::Lines (list (lj), ID = 'a')))
+
+    int <- rgeos::gIntersection (li, lj)
+    if (!is.null (int))
+        sum (sp::coordinates (int) %in% x)
+    else
+        -1
 }
