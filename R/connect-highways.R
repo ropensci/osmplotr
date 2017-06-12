@@ -91,7 +91,11 @@ connect_highways <- function (highways, bbox, plot = FALSE)
     if (plot)
         plot_highways (ways)
 
-    cyc <- extract_cycle (ways) # the actual cycle
+    conmat <- get_conmat (ways)
+    cycles <- try (ggm::fundCycles (conmat), TRUE)
+    if (is (attr (cycles, "condition"), "simpleError"))
+        stop ('There are no cycles in the listed highways')
+    cyc <- cycles [[which.max (sapply (cycles, nrow))]]
 
     # ***** Then calculate shortest path through the entire cycle
     paths <- sps_through_cycle (cyc, ways)
@@ -301,8 +305,7 @@ connect_two_ways <- function (ways, w0, conmat, w0f_names, w0t_names)
     ways [[w0]] [[i1]] <- way1
     ways [[w0]] [[i2]] <- way2
 
-    # This stop should never happen:
-    if (all (!is.finite (conmat)))
+    if (all (!is.finite (conmat))) # This stop should never happen:
         stop ('Segments of way cannot be joined')
 
     sp <- shortest_way (ways [[w0]], w0f_names, w0t_names)
@@ -336,10 +339,16 @@ plot_highways <- function (ways)
         }
 }
 
-#' extract the single cycle as established in get_highway_cycle
+#' get_conmat
+#'
+#' Get connection matrix between a list of ways
+#'
+#' @param ways List of ways to be connected
+#'
+#' @return Binary connectivity matrix between all ways
 #'
 #' @noRd
-extract_cycle <- function (ways)
+get_conmat <- function (ways)
 {
     conmat <- array (FALSE, dim = rep (length (ways), 2))
 
@@ -356,12 +365,10 @@ extract_cycle <- function (ways)
         indx2 <- indx [which (!is.na (ni))]
         conmat [i, indx2] <- conmat [indx2, i] <- TRUE
     }
-    cycles <- try (ggm::fundCycles (conmat), TRUE)
-    if (is (attr (cycles, "condition"), "simpleError"))
-        stop ('There are no cycles in the listed highways')
 
-    cycles [[which.max (sapply (cycles, nrow))]]
+    return (conmat)
 }
+
 
 #' get intersection between a single way and the flat list of all ways
 #'
