@@ -302,32 +302,31 @@ insert_terminal_node <- function (highways, es, nc)
 #' in the form \code{1:n} or \code{n:1}.
 #'
 #' @param xy coordinates of intersection
-#' @param obj1 object used to calculate minimal distance
-#' @param obj2 object from which actual distances are calculated 
+#' @param obj object used to calculate minimal distance
 #'
 #' @noRd
-get_join_index <- function (xy, obj1, obj2)
+get_join_index <- function (xy, obj)
 {
-    d <- sqrt ( (xy [1] - obj1 [, 1]) ^ 2 +
-               (xy [2] - obj1 [, 2]) ^ 2)
+    d <- sqrt ( (xy [1] - obj [, 1]) ^ 2 +
+               (xy [2] - obj [, 2]) ^ 2)
     di <- which.min (d)
-    n <- nrow (obj1)
+    n <- nrow (obj)
     # xy can be closest to d1, but still either
     # A. -------d1---xy--------------d2, or
     # B. xy-----d1-------------------d2
     # A. implies that |xy,d2|<|d1,d2|, and B vice-versa
     if (di == 1)
     {
-        d12 <- sqrt (diff (obj2 [1:2, 1]) ^ 2 +
-                     diff (obj2 [1:2, 2]) ^ 2)
+        d12 <- sqrt (diff (obj [1:2, 1]) ^ 2 +
+                     diff (obj [1:2, 2]) ^ 2)
         if (d12 < d [2])
             indx <- list (NULL, 1:n)
         else
             indx <- list (1, 2:n)
     } else if (di == n)
     {
-        d12 <- sqrt (diff (obj2 [(n - 1:n), 1]) ^ 2 +
-                     diff (obj2 [(n - 1:n), 2]) ^ 2)
+        d12 <- sqrt (diff (obj [(n - 1:n), 1]) ^ 2 +
+                     diff (obj [(n - 1:n), 2]) ^ 2)
         if (d12 < d [n - 1])
             indx <- list (1:n, NULL)
         else
@@ -351,7 +350,7 @@ get_join_index <- function (xy, obj1, obj2)
 #' @noRd
 insert_join <- function (xy, way, maxvert)
 {
-    indx <- get_join_index (xy, way, way)
+    indx <- get_join_index (xy, way)
     way <- rbind (way [indx [[1]], ], xy, way [indx [[2]], ])
     rnames <- rownames (way)
     rownames (way) <- c (rnames [indx [[1]]], maxvert, rnames [indx [[2]]])
