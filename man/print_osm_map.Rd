@@ -33,9 +33,10 @@ map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_objects (map, london$dat_BNR, col = 'gray40') 
 print_osm_map (map, width = 7) # prints to screen device
 \dontrun{
-print_osm_map (map, file = 'map.png', width = 500, units = 'px') # prints to file
+print_osm_map (map, file = 'map.png', width = 500, units = 'px')
 }
 }
 \seealso{
-\code{\link{osm_basemap}}, \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
+\code{\link{osm_basemap}}, \code{\link{add_osm_objects}},
+\code{\link{make_osm_map}}.
 }

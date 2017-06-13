@@ -21,7 +21,7 @@ corresponding prefixes, and colours.
 \description{
 For the given vector of structure types returns a \code{data.frame}
 containing two columns of corresponding OpenStreetMap \code{key-value} pairs,
-one column of unambiguous suffices to be appended to the objects returned by
+one column of unambiguous suffixes to be appended to the objects returned by
 \code{\link{extract_osm_objects}}, and one column specifying colours. This
 \code{data.frame} may be subsequently modified as desired, and ultimately
 passed to \code{\link{make_osm_map}} to automate map production.

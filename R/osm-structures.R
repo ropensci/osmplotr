@@ -2,7 +2,7 @@
 #'
 #' For the given vector of structure types returns a \code{data.frame}
 #' containing two columns of corresponding OpenStreetMap \code{key-value} pairs,
-#' one column of unambiguous suffices to be appended to the objects returned by
+#' one column of unambiguous suffixes to be appended to the objects returned by
 #' \code{\link{extract_osm_objects}}, and one column specifying colours. This
 #' \code{data.frame} may be subsequently modified as desired, and ultimately
 #' passed to \code{\link{make_osm_map}} to automate map production.
@@ -34,60 +34,21 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
 {
     kv <- get_key_vals (structures) # key-val pairs
 
-    # Get suffixes for naming data objects, extending suffixes until
-    # sufficiently many letters are included for entries to become unique.
+    # Get suffixes for naming data objects
     indx_in <- which (!duplicated (structures))
     indx_out <- which (duplicated (structures))
     lettrs <- sapply (structures [indx_in], function (x)
                       toupper (substr (x, 1, 1)))
-    matches <- sapply (lettrs, function (x) which (lettrs %in% x))
-    # matches returns a list of matches for each letter
-    nletts <- rep (2, length (matches))
-    # This while loop will always stop because it is only applied to unique
-    # values
-    while (max (sapply (matches, length)) > 1)
-    {
-        # The list of matches is then reduced to unique values. This is done
-        # with a loop, because it enables the list of matches to be shortened to
-        # only those containing unique values.
-        matches_red <- list ()
-        for (i in seq (matches))
-            if (length (matches [[i]]) > 1 &
-                !all (matches [[i]] %in% unlist (matches_red)))
-                matches_red [[length (matches_red) + 1]] <- matches [[i]]
-        for (i in seq (matches_red))
-        {
-            repls <- structures [indx_in] [matches_red [[i]] ]
-            lettrs [matches_red [[i]] ] <- toupper (substr (repls, 1,
-                                                nletts [matches_red [[i]] ]))
-            nletts [matches_red [[i]] ] <- nletts [matches_red [[i]] ] + 1
-        }
-        matches <- sapply (lettrs, function (x) which (lettrs %in% x))
-    }
-    # lettrs then has unique suffixes for all unique (structures). These values
-    # then have be extended to the full structures with duplicates. This is a
-    # bit tricky, and is done by first creating an index of all duplicates:
-    indx <- which (duplicated (structures) |
-                   duplicated (structures, fromLast = TRUE))
-    # Then the values of that indx that are not in indx_out
-    indx <- indx [!indx %in% indx_out]
-    # And those two can be matched for the desired replacement
-    suffixes <- rep (NULL, length (structures))
-    suffixes [indx_in] <- lettrs
-    for (i in indx)
-    {
-        ii <- which (structures == structures [i])
-        suffixes [ii] <- suffixes [i]
-    }
+    lettrs <- unique_suffixes (lettrs, structures, indx_in)
+    suffixes <- extend_suffixes (lettrs, structures, indx_in, indx_out)
 
     scheme_cols <- NULL
-    # Color scheme:
     if (col_scheme == 'dark')
         scheme_cols <- get_dark_cols ()
     else if (col_scheme == 'light')
         scheme_cols <- get_light_cols ()
 
-    if (!is.null (col_scheme))
+    if (!is.null (scheme_cols))
         cols <- set_cols (scheme_cols, structures)
 
     # Then add row to designate background colour (this has to be done prior to
@@ -164,4 +125,52 @@ set_cols <- function (col_scheme, structures)
     cols [structures == 'boundary'] <- col_scheme$col_white
 
     return (cols)
+}
+
+# Extend suffixes until sufficiently many letters are included for entries to
+# become unique.
+unique_suffixes <- function (sfx, structures, indx_in)
+{
+    matches <- sapply (sfx, function (x) which (sfx %in% x))
+    nletts <- rep (2, length (matches))
+    # This while loop will always stop because it is only applied to unique
+    # values
+    while (max (sapply (matches, length)) > 1)
+    {
+        matches_red <- list ()
+        for (i in seq (matches))
+            if (length (matches [[i]]) > 1 &
+                !all (matches [[i]] %in% unlist (matches_red)))
+                matches_red [[length (matches_red) + 1]] <- matches [[i]]
+        for (i in seq (matches_red))
+        {
+            repls <- structures [indx_in] [matches_red [[i]] ]
+            sfx [matches_red [[i]] ] <- toupper (substr (repls, 1,
+                                                nletts [matches_red [[i]] ]))
+            nletts [matches_red [[i]] ] <- nletts [matches_red [[i]] ] + 1
+        }
+        matches <- sapply (sfx, function (x) which (sfx %in% x))
+    }
+
+    return (sfx)
+}
+
+# Extend list of unique suffixes to the full structures with duplicates. This
+# is a bit tricky, and is done by first creating an index of all duplicates:
+extend_suffixes <- function (sfx, structures, indx_in, indx_out)
+{
+    indx <- which (duplicated (structures) |
+                   duplicated (structures, fromLast = TRUE))
+    # Then the values of that indx that are not in indx_out
+    indx <- indx [!indx %in% indx_out]
+    # And those two can be matched for the desired replacement
+    suffixes <- rep (NULL, length (structures))
+    suffixes [indx_in] <- sfx
+    for (i in indx)
+    {
+        ii <- which (structures == structures [i])
+        suffixes [ii] <- suffixes [i]
+    }
+
+    return (suffixes)
 }
