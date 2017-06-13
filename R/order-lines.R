@@ -34,9 +34,9 @@ order_lines <- function (sp_lines, i0 = 0)
     {
         ex <- extend_ord_list (xy, xy_ord, xy_ord_list)
         xy <- ex$xy
+        xy_ord <- ex$xy_ord
+        xy_ord_list <- ex$xy_ord_list
     }
-    xy_ord <- ex$xy_ord
-    xy_ord_list <- ex$xy_ord_list
 
     if (!is.null (xy_ord_list))
     {
@@ -115,10 +115,15 @@ extend_ord_list <- function (xy, xy_ord, xy_ord_list)
 #' @noRd
 flip_xyn <- function (xy, xy_ord, n, head = TRUE)
 {
-    temp <- rbind (head (xy_ord, 1), xy [[n]])
-    pos <- 2
-    if (!head)
+    if (head)
+    {
+        temp <- rbind (head (xy_ord, 1), xy [[n]])
+        pos <- 2
+    } else
+    {
+        temp <- rbind (tail (xy_ord, 1), xy [[n]])
         pos <- nrow (temp)
+    }
     dup <- which (duplicated (temp))
     if (dup == pos) # then flip
         xy [[n]] <- apply (t (xy [[n]]), 1, rev)

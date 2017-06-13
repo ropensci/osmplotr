@@ -41,6 +41,35 @@ check_col_arg <- function (col)
               })
 }
 
+check_bbox_arg <- function (bbox)
+{
+    if (missing (bbox))
+        stop ('bbox must be supplied')
+    if (!is.numeric (bbox))
+        stop ('bbox is not numeric')
+    if (length (bbox) < 4)
+        stop ('bbox must have length = 4')
+    if (length (bbox) > 4)
+    {
+        warning ('bbox has length > 4; only first 4 elements will be used')
+        bbox <- matrix (bbox [1:4], 2, 2)
+    }
+
+    return (bbox)
+}
+
+check_structures_arg <- function (structures)
+{
+    if (!missing (structures))
+    {
+        if (!is.data.frame (structures))
+            stop ('structures must be a data frame')
+        ns <- c ('structure', 'key', 'value', 'suffix', 'cols')
+        if (!all (names (structures) == ns))
+            stop ('structures not in recognised format')
+    }
+}
+
 #' generic function to check argument conversion to given function type
 #'
 #' @noRd

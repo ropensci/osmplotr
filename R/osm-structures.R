@@ -32,29 +32,7 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
                          'grass', 'natural', 'park', 'highway', 'boundary',
                          'tree'), col_scheme = 'dark')
 {
-    # Set up key-value pairs:
-    keys <- structures
-    values <- rep ('', length (keys))
-    if (any (structures == 'grass'))
-    {
-        keys [structures == 'grass'] <- 'landuse'
-        values [structures == 'grass'] <- 'grass'
-    }
-    if (any (structures == 'park'))
-    {
-        keys [structures == 'park'] <- 'leisure'
-        values [structures == 'park'] <- 'park'
-    }
-    if (any (structures == 'tree'))
-    {
-        keys [structures == 'tree'] <- 'natural'
-        values [structures == 'tree'] <- 'tree'
-    }
-    if (any (structures == 'water'))
-    {
-        keys [structures == 'water'] <- 'natural'
-        values [structures == 'water'] <- 'water'
-    }
+    kv <- get_key_vals (structures) # key-val pairs
 
     # Get suffixes for naming data objects, extending suffixes until
     # sufficiently many letters are included for entries to become unique.
@@ -102,59 +80,88 @@ osm_structures <- function (structures = c ('building', 'amenity', 'waterway',
         suffixes [ii] <- suffixes [i]
     }
 
+    scheme_cols <- NULL
     # Color scheme:
     if (col_scheme == 'dark')
-    {
-        col_bg <- 'gray20'
-        col_green <- rgb (100, 120, 100, 255, maxColorValue = 255)
-        col_green_bright <- rgb (100, 160, 100, 255, maxColorValue = 255)
-        col_blue <- rgb (100, 100, 120, 255, maxColorValue = 255)
-        col_gray1 <- rgb (100, 100, 100, 255, maxColorValue = 255)
-        col_gray2 <- rgb (120, 120, 120, 255, maxColorValue = 255)
-        col_white <- rgb (200, 200, 200, 255, maxColorValue = 255)
-        col_black <- rgb (0, 0, 0, 255, maxColorValue = 255)
-        cols <- rep (col_bg, length (structures))
-        cols [structures == 'building'] <- col_gray1
-        cols [structures == 'amenity'] <- col_gray2
-        cols [structures == 'waterway'] <- col_blue
-        cols [structures == 'natural'] <- col_green
-        cols [structures == 'park'] <- col_green
-        cols [structures == 'tree'] <- col_green_bright
-        cols [structures == 'grass'] <- col_green_bright
-        cols [structures == 'highway'] <- col_black
-        cols [structures == 'boundary'] <- col_white
-    } else if (col_scheme == 'light')
-    {
-        col_bg <- 'gray95'
-        col_green <- rgb (200, 220, 200, 255, maxColorValue = 255)
-        col_green_bright <- rgb (200, 255, 200, 255, maxColorValue = 255)
-        col_blue <- rgb (200, 200, 220, 255, maxColorValue = 255)
-        col_gray1 <- rgb (200, 200, 200, 255, maxColorValue = 255)
-        col_gray2 <- rgb (220, 220, 220, 255, maxColorValue = 255)
-        col_white <- rgb (255, 255, 255, 255, maxColorValue = 255)
-        col_black <- rgb (150, 150, 150, 255, maxColorValue = 255)
-        cols <- rep (col_bg, length (structures))
-        cols [structures == 'building'] <- col_gray1
-        cols [structures == 'amenity'] <- col_gray2
-        cols [structures == 'waterway'] <- col_blue
-        cols [structures == 'natural'] <- col_green
-        cols [structures == 'park'] <- col_green
-        cols [structures == 'tree'] <- col_green_bright
-        cols [structures == 'grass'] <- col_green_bright
-        cols [structures == 'highway'] <- col_black
-        cols [structures == 'boundary'] <- col_white
-    }
+        scheme_cols <- get_dark_cols ()
+    else if (col_scheme == 'light')
+        scheme_cols <- get_light_cols ()
+
+    if (!is.null (col_scheme))
+        cols <- set_cols (scheme_cols, structures)
+
     # Then add row to designate background colour (this has to be done prior to
     # data.frame construction, because cols are converted there to factors):
     structures <- c (structures, 'background')
-    keys <- c (keys, '')
-    values <- c (values, '')
+    kv$keys <- c (kv$keys, '')
+    kv$values <- c (kv$values, '')
     suffixes <- c (suffixes, '')
-    cols <- c (cols, col_bg)
+    cols <- c (cols, scheme_cols$col_bg)
 
-    dat <- data.frame (cbind (structures, keys, values, suffixes, cols),
+    dat <- data.frame (cbind (structures, kv$keys, kv$values, suffixes, cols),
                        stringsAsFactors = FALSE,
-                       row.names = seq (length (keys)))
+                       row.names = seq (length (kv$keys)))
     names (dat) <- c ('structure', 'key', 'value', 'suffix', 'cols')
     return (dat)
+}
+
+get_key_vals <- function (structures)
+{
+    keys <- structures
+    values <- rep ('', length (keys))
+    val_list <- c ('grass', 'park', 'tree', 'water')
+    key_list <- c ('landuse', 'leisure', 'natural', 'ntural')
+
+    for (i in seq (val_list))
+        if (any (structures == val_list [i]))
+        {
+            keys [structures == val_list [i]] <- key_list [i]
+            values [structures == val_list [i]] <- val_list [i]
+        }
+
+    return (list ('keys' = keys, 'values' = values))
+}
+
+get_dark_cols <- function ()
+{
+    list (
+          col_bg = 'gray20',
+          col_green = rgb (100, 120, 100, 255, maxColorValue = 255),
+          col_green_bright = rgb (100, 160, 100, 255, maxColorValue = 255),
+          col_blue = rgb (100, 100, 120, 255, maxColorValue = 255),
+          col_gray1 = rgb (100, 100, 100, 255, maxColorValue = 255),
+          col_gray2 = rgb (120, 120, 120, 255, maxColorValue = 255),
+          col_white = rgb (200, 200, 200, 255, maxColorValue = 255),
+          col_black = rgb (0, 0, 0, 255, maxColorValue = 255)
+          )
+}
+
+get_light_cols <- function ()
+{
+    list (
+          col_bg = 'gray95',
+          col_green = rgb (200, 220, 200, 255, maxColorValue = 255),
+          col_green_bright = rgb (200, 255, 200, 255, maxColorValue = 255),
+          col_blue = rgb (200, 200, 220, 255, maxColorValue = 255),
+          col_gray1 = rgb (200, 200, 200, 255, maxColorValue = 255),
+          col_gray2 = rgb (220, 220, 220, 255, maxColorValue = 255),
+          col_white = rgb (255, 255, 255, 255, maxColorValue = 255),
+          col_black = rgb (150, 150, 150, 255, maxColorValue = 255)
+          )
+}
+
+set_cols <- function (col_scheme, structures)
+{
+    cols <- rep (col_scheme$col_bg, length (structures))
+    cols [structures == 'building'] <- col_scheme$col_gray1
+    cols [structures == 'amenity'] <- col_scheme$col_gray2
+    cols [structures == 'waterway'] <- col_scheme$col_blue
+    cols [structures == 'natural'] <- col_scheme$col_green
+    cols [structures == 'park'] <- col_scheme$col_green
+    cols [structures == 'tree'] <- col_scheme$col_green_bright
+    cols [structures == 'grass'] <- col_scheme$col_green_bright
+    cols [structures == 'highway'] <- col_scheme$col_black
+    cols [structures == 'boundary'] <- col_scheme$col_white
+
+    return (cols)
 }

@@ -22,8 +22,8 @@ test_that ('structures', {
 
 test_that ('bg', {
            bb <- get_bbox (1:4)
-           expect_error (osm_basemap (bb, bg = 'a'), 'Invalid bg: a')
-           expect_error (osm_basemap (bb, bg = NA), 'Invalid bg')
-           expect_error (osm_basemap (bb, bg = NULL), 'Invalid bg')
+           expect_error (osm_basemap (bb, bg = 'a'), 'Invalid colour: a')
+           expect_silent (osm_basemap (bb, bg = NA))
+           expect_silent (osm_basemap (bb, bg = NULL))
            expect_warning (osm_basemap (bb, bg = 1:2), 'bg has length > 1')
 })
