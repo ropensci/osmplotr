@@ -14,6 +14,7 @@ Imports:
     httr,
     methods,
     osmar,
+    osmdata,
     rgeos,
     sp,
     spatstat,

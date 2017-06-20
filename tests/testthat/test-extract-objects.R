@@ -12,8 +12,10 @@ test_that ('missing objects', {
 
 test_that ('key missing', {
            bbox <- get_bbox (c (-0.12, 51.51, -0.11, 51.52))
-           expect_error (extract_osm_objects (bbox = bbox, key = ''),
-                         'key must be provided')
+           expect_error (extract_osm_objects (bbox = bbox, key = NULL),
+                         'key can not be NULL')
+           expect_error (extract_osm_objects (bbox = bbox, key = NA),
+                         'key can not be NA')
            expect_error (extract_osm_objects (bbox = bbox),
                          'key must be provided')
     })
@@ -22,30 +24,24 @@ if (curl::has_internet () & test_all)
 {
     test_that ('invalid key', {
                bbox <- get_bbox (c (-0.12, 51.51, -0.11, 51.52))
-               expect_warning (dat <- extract_osm_objects (bbox = bbox,
-                                                           key = 'aaa'))
-               expect_null (dat)
+               expect_warning (extract_osm_objects (bbox = bbox, key = 'aaa'),
+                               'No valid data returned')
     })
 
     test_that ('valid key', {
                bbox <- get_bbox (c (-0.12, 51.515, -0.115, 51.52))
                dat <- extract_osm_objects (bbox = bbox, key = 'building')
-               # Will return NULL if any warnings are generated (such as by
-               # download fail)
-               if (!is.null (dat))
-                   expect_is (dat, 'SpatialPolygonsDataFrame')
+               expect_is (dat, 'SpatialPolygonsDataFrame')
     })
 
-    test_that ('return_type', {
-               key <- 'route'
-               value <- 'bicycle'
-               extra_pairs <- c ('name', 'London.Cycle.Network.Route.9')
-               bbox <- get_bbox (c (-0.26, 51.47, 0.11, 51.67))
-               # NOTE: any downloading issues will generate warnings here. Only
-               # if downloading succeeds will the message be generated ('Cannot
-               # determine return_type, maybe specify explicitly?')
-               expect_message (dat <- extract_osm_objects (bbox = bbox,
-                                        key = key, value = value,
-                                        extra_pairs = extra_pairs))
+    test_that ('extra_pairs', {
+                   key <- 'route'
+                   value <- 'bicycle'
+                   extra_pairs <- c ('name', 'London Cycle Network')
+                   bbox <- get_bbox (c (0, 51.5, 0.1, 51.6))
+                   dat <- extract_osm_objects (bbox = bbox, key = key,
+                                               value = value,
+                                               extra_pairs = extra_pairs)
+                   expect_true (nrow (dat) > 0)
     })
 } # end if has_internet

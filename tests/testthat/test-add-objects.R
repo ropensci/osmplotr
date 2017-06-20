@@ -1,15 +1,16 @@
 context ("add-objects")
 
 test_that ('basemap', {
-           expect_error (add_osm_objects (), 'map must be supplied')
+           expect_error (add_osm_objects (), 'a non-null map must be provided')
            expect_error (add_osm_objects (NULL), 'map must be a ggplot2 object')
-           expect_error (add_osm_objects (col = 1:4), 'map must be supplied')
+           expect_error (add_osm_objects (col = 1:4),
+                         'a non-null map must be provided')
 })
 
 test_that ('obj', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox = bbox, bg = "gray20")
-           expect_error (add_osm_objects (map), 'obj must be supplied')
+           expect_error (add_osm_objects (map), 'obj must be provided')
            expect_error (add_osm_objects (map, NULL),
                          'obj must be a spatial object')
 })

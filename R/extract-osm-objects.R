@@ -18,10 +18,11 @@
 #' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
 #' max values, and rows of x and y values.
 #' @param return_type If specified, force return of spatial (\code{point},
-#' \code{line}, \code{polygon}) objects. \code{return_type = 'line'} will, for
-#' example, always return a SpatialLinesDataFrame. If not specified, defaults to
-#' 'sensible' values (for example, \code{lines} for highways, \code{points} for
-#' trees, \code{polygons} for bulidings).
+#' \code{line}, \code{polygon}, \code{multiline}, \code{multipolygon}) objects.
+#' \code{return_type = 'line'} will, for example, always return a
+#' SpatialLinesDataFrame. If not specified, defaults to 'sensible' values (for
+#' example, \code{lines} for highways, \code{points} for trees, \code{polygons}
+#' for bulidings).
 #' @param verbose If \code{TRUE}, provides notification of progress.
 #'
 #' @return Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
@@ -46,198 +47,100 @@
 extract_osm_objects <- function (key, value, extra_pairs, bbox,
                                  return_type, verbose = FALSE)
 {
-    if (missing (key))
-        stop ('key must be provided')
-    if (nchar (key) < 1)
-        stop ('key must be provided')
-    if (missing (bbox))
-        stop ('bbox must be provided')
-    stopifnot (is.numeric (bbox))
-    stopifnot (length (bbox) == 4)
+    check_arg (key, 'key', 'character')
+
+    bbox <- check_bbox_arg (bbox)
     if (!missing (value) & missing (key))
         stop ('key must be provided for value')
 
-    if (key == 'park')
-    {
-        key <- 'leisure'
-        value <- 'park'
-    } else if (key == 'grass')
-    {
-        key <- 'landuse'
-        value <- 'grass'
-    } else if (key == 'tree')
-    {
-        key <- 'natural'
-        value <- 'tree'
-    }
-
-    # Construct the overpass query, starting with main key-value pair and
-    # possible negation
-    keyold <- key
-    if (!missing (value))
-    {
-        if (value != '')
-        {
-            valold <- value
-            if (substring (value, 1, 1) == '!')
-                value <- paste0 ("['", key, "'!='",
-                                substring (value, 2, nchar (value)), "']")
-            else if (key == 'name')
-                value <- paste0 ("['", key, "'~'", value, "']")
-            else
-                value <- paste0 ("['", key, "'='", value, "']")
-        }
-    } else
-        value <- ''
-    if (key == 'name')
-        key <- ''
+    q_keys <- key
+    if (missing (value))
+        q_vals <- NA
     else
-        key <- paste0 ("['", key, "']")
+        q_vals <- value
 
-    # Then any extra key-value pairs
     if (!missing (extra_pairs))
     {
         if (!is.list (extra_pairs))
             extra_pairs <- list (extra_pairs)
-        ep <- NULL
-        for (i in extra_pairs)
-            ep <- paste0 (ep, "['", i [1], "'~'", i [2], "']")
-        extra_pairs <- ep
-    } else
-        extra_pairs <- ''
+        nprs <- vapply (extra_pairs, length, 1L)
+        if (!all (nprs %in% 1:2))
+            stop ('Extra pairs must be just keys or key-val pairs')
 
-    bbox <- paste0 ('(', bbox [2, 1], ',', bbox [1, 1], ',',
-                    bbox [2, 2], ',', bbox [1, 2], ')')
-
-
-    query <- paste0 ('(node', key, value, extra_pairs, bbox,
-                    ';way', key, value, extra_pairs, bbox,
-                    ';rel', key, value, extra_pairs, bbox, ';')
-    url_base <- 'http://overpass-api.de/api/interpreter?data='
-    query <- paste0 (url_base, query, ');(._;>;);out;')
-    if (nchar (value) > 0)
-        value <- valold
-    else
-        value <- NULL
-    key <- keyold
-
-    obj <- NULL
-
-    if (!curl::has_internet ())
-        stop ('Error: No internet connection')
-
-    # TODO: use curl::has_internet?
-    if (verbose) message ('downloading OSM data ... ')
-    #dat <- httr::GET (query)
-    # httr::GET sometimes errors with 'Error in curl::curl_fetch_memory (url,
-    #       handle = handle) : Timeout was reached'. The current tryCatch
-    #       catches this error only.
-    dat <- tryCatch (
-        httr::GET (query, timeout = 60),
-        error = function (err) {
-            message ('error in httr::GET - most likely Timeout')
-            return (list (status_code = 504))
-        })
-    count <- 1
-    # code#429 = "Too Many Requests (RFC 6585)"
-    # code#504 = "Gateway Timeout"
-    codes <- c (429, 504)
-    while (dat$status_code %in% codes && count < 10)
-    while (dat$status_code == 429 && count < 10)
-    {
-        #dat <- httr::GET (query)
-        dat <- tryCatch (
-            httr::GET (query, timeout = 60),
-            error = function (err) {
-                message ('error in httr::GET - most likely Timeout')
-                return (list (status_code = 504))
-            })
-        count <- count + 1
+        q_keys <- c (q_keys,
+                     vapply (extra_pairs, function (x) x [1], character (1)))
+        q_vals <- c (q_vals,
+                     vapply (extra_pairs, function (x) x [2], character (1)))
     }
 
-    if (dat$status_code != 200)
+    val_list <- c ('grass', 'park', 'tree', 'water')
+    key_list <- c ('landuse', 'leisure', 'natural', 'ntural')
+    indx <- which (q_keys %in% val_list)
+    if (length (indx) > 0)
     {
-        warning (httr::http_status (dat)$message)
-        return (NULL)
+        indx2 <- match (q_keys [indx], val_list)
+        q_keys [indx] <- key_list [indx2]
+        q_vals [indx] <- val_list [indx2]
     }
 
-    # Encoding must be supplied in the following to suppress warning
-    dat <- XML::xmlParse (httr::content (dat, 'text', encoding = 'UTF-8'))
-
-    k <- v <- NULL # supress 'no visible binding' note from R CMD check
-    if (verbose) message ('converting OSM data to omsar format')
-    dato <- osmar::as_osmar (dat)
-    nvalid <- sum (summary (dato)$n)
-    if (nvalid <= 3)
+    # default to non-exact matches
+    qry <- osmdata::opq (bbox = bbox)
+    for (i in seq (q_keys))
     {
-        warning (paste0 ('No valid data for (', key, ', ', value, ')'))
-        return (NULL)
+        if (is.na (q_vals [i]))
+            qry <- osmdata::add_feature (qry, key = q_keys [i],
+                                         key_exact = FALSE,
+                                         value_exact = FALSE,
+                                         match_case = FALSE)
+        else
+            qry <- osmdata::add_feature (qry, key = q_keys [i],
+                                         value = q_vals [i],
+                                         key_exact = FALSE,
+                                         value_exact = FALSE,
+                                         match_case = FALSE)
     }
 
-    # A very important NOTE: It can arise the OSM relations have IDs which
-    # duplicate IDs in OSM ways, even through the two may bear no relationship
-    # at all. This causes the attempt in `osmar::as_sp` to force them to an `sp`
-    # object to crash because
-    # # Error in validObject(.Object) :
-    # #   invalid class 'SpatialLines' object: non-unique Lines ID of
-    # #   slot values
-    # The IDs are actually neither needed not used, so the next lines simply
-    # modifies all relation IDs by pre-pending 'r' to avoid such problems:
-    for (i in seq (dato$relations))
-        if (nrow (dato$relations [[i]]) > 0)
-            dato$relations [[i]]$id <- paste0 ('r', dato$relations [[i]]$id)
+    obj <- osmdata::osmdata_sp (qry)
 
     if (!missing (return_type))
     {
         return_type <- tolower (return_type)
         if (substring (return_type, 1, 3) == 'poi')
-            return_type <- 'points'
+            obj <- obj$osm_points
         else if (substring (return_type, 1, 1) == 'l')
-            return_type <- 'lines'
+            obj <- obj$osm_lines
+        else if (substring (return_type, 1, 6) == 'multil')
+            obj <- obj$osm_multilines
+        else if (substring (return_type, 1, 6) == 'multip')
+            obj <- obj$osm_multipolygons
         else
-            return_type <- 'polygons'
+            obj <- obj$osm_polygons
     } else
     {
-        if (key == 'boundary' | key == 'highway' | key == 'waterway')
-            return_type <- 'lines'
-        else if (!is.null (value))
+        if (key == 'highway')
+            obj <- obj$osm_lines
+        if (key == 'building')
+            obj <- obj$osm_polygons
+        else if (key == 'route')
+            obj <- obj$osm_multilines
+        else if (key == 'boundary' | key == 'waterway')
+            obj <- obj$osm_multipolygons
+        else if (!missing (value))
         {
             if (value == 'tree')
-                return_type <- 'points'
+                obj <- obj$osm_points
             else
             {
                 message (paste0 ('Cannot determine return_type;',
                                  ' maybe specify explicitly?'))
-                return_type <- 'lines'
+                obj <- obj$osm_lines
             }
         } else
-            return_type <- 'polygons'
-
+            obj <- obj$osm_polygons
     }
 
-    if (verbose) message ('converting osmar data to sp format')
-
-    if (summary (dato)$n ['relations'] > 0)
-    {
-        pids <- osmar::find (dato, osmar::relation (osmar::tags(k == key)))
-        pids1 <- osmar::find_down (dato, osmar::relation (pids))
-        pids2 <- osmar::find_up (dato, osmar::relation (pids))
-    } else
-    {
-        if (nchar (key) > 0)
-            pids <- osmar::find (dato, osmar::way (osmar::tags(k == key)))
-        else if (!is.null (value))
-            pids <- osmar::find (dato, osmar::way (osmar::tags(v == value)))
-        pids1 <- osmar::find_down (dato, osmar::way (pids))
-        pids2 <- osmar::find_up (dato, osmar::way (pids))
-    }
-    pids <- mapply (c, pids1, pids2, simplify = FALSE)
-    pids <- lapply (pids, function (i) unique (i))
-
-    obj <- subset (dato, ids = pids)
-    # TODO: Extract names of objects (at least for streets, buildings)
-
-    obj <- osmar::as_sp (obj, return_type)
+    if (nrow (obj) == 0)
+        warning ('No valid data returned')
 
     return (obj)
 }

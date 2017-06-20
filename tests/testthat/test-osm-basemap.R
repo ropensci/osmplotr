@@ -1,7 +1,7 @@
 context ('osm-basemap')
 
 test_that ('bbox', {
-           expect_error (osm_basemap (), 'bbox must be supplied')
+           expect_error (osm_basemap (), 'bbox must be provided')
            expect_error (osm_basemap (-1), 'bbox must have length = 4')
            expect_error (osm_basemap ('a'), 'bbox is not numeric')
            expect_error (osm_basemap (NULL), 'bbox is not numeric')

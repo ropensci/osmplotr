@@ -1,7 +1,7 @@
 check_map_arg <- function (map)
 {
     if (missing (map))
-        stop ('a non-null map must be supplied', call. = FALSE)
+        stop ('a non-null map must be provided', call. = FALSE)
     if (!is (map, 'ggplot'))
         stop ('map must be a ggplot2 object', call. = FALSE)
 }
@@ -21,7 +21,7 @@ get_objtxt <- function (obj)
 check_obj_arg <- function (obj)
 {
     if (missing (obj))
-        stop ('obj must be supplied', call. = FALSE)
+        stop ('obj must be provided', call. = FALSE)
     if (!is (obj, 'Spatial'))
         stop ('obj must be a spatial object', call. = FALSE)
 }
@@ -44,7 +44,7 @@ check_col_arg <- function (col)
 check_bbox_arg <- function (bbox)
 {
     if (missing (bbox))
-        stop ('bbox must be supplied')
+        stop ('bbox must be provided')
     if (!is.numeric (bbox))
         stop ('bbox is not numeric')
     if (length (bbox) < 4)
@@ -76,7 +76,7 @@ check_structures_arg <- function (structures)
 check_arg <- function (arg, arg_name, fn_type, na_okay = FALSE)
 {
     if (missing (arg))
-        stop (paste (arg_name, 'must be given'))
+        stop (paste (arg_name, 'must be provided'))
     else if (length (arg) == 0)
         stop (paste (arg_name, 'can not be NULL'))
     else if (!na_okay & is.na (arg))

@@ -72,6 +72,7 @@
 #' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom methods slot as is hasArg
 #' @importFrom osmar as_osmar as_sp find find_down find_up relation tags way
+#' @importFrom osmdata add_feature opq osmdata_sp
 #' @importFrom rgeos gIntersection
 #' @importFrom sp coordinates point.in.polygon Line SpatialLines SpatialPoints 
 #' @importFrom spatstat convexhull idw ppp Smooth
