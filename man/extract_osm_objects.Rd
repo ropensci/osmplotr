@@ -39,9 +39,7 @@ or \code{SpatialPolygonsDataFrame}.
 \description{
 Downloads OSM XML objects and converts to \code{sp} objects
 (\code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame}, or
-\code{SpatialPolygonsDataFrame}).  Requires intermediate conversion to osmar
-object which can be quite slow, as can final conversion to \code{sp} objects
-for large numbers of objects
+\code{SpatialPolygonsDataFrame}).
 }
 \examples{
 \dontrun{

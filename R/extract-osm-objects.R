@@ -2,9 +2,7 @@
 #'
 #' Downloads OSM XML objects and converts to \code{sp} objects
 #' (\code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame}, or
-#' \code{SpatialPolygonsDataFrame}).  Requires intermediate conversion to osmar
-#' object which can be quite slow, as can final conversion to \code{sp} objects
-#' for large numbers of objects
+#' \code{SpatialPolygonsDataFrame}).
 #'
 #' @param key OSM key to search for. Useful keys include \code{building},
 #' \code{waterway}, \code{natural}, \code{grass}, \code{park}, \code{amenity},

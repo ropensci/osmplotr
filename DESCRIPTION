@@ -13,7 +13,6 @@ Imports:
     igraph,
     httr,
     methods,
-    osmar,
     osmdata,
     rgeos,
     sp,

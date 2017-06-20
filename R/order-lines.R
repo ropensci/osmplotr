@@ -201,8 +201,8 @@ xy_in_ref <- function (x, xy)
                 logical (1))
 }
 
-# Node numbers returned from osmar::as_sp are not necessarily unique, so are
-# replaced here with unique sequential numbers
+# Node numbers are not necessarily unique, so are replaced here with unique
+# sequential numbers
 renumber_nodes <- function (xy, i0)
 {
     for (i in seq (xy))
