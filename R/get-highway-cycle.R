@@ -27,13 +27,10 @@ get_highway_cycle <- function (highways)
         stop ('highways must be a list')
     # TODO: Make class so that can be properly checked
 
-    maxvert <- 0
-    for (i in seq (highways))
-        maxvert <- max (maxvert, unlist (lapply (highways [[i]], function (x)
-                                    max (as.numeric (rownames (x))))))
-    maxvert <- maxvert + 1
+    maxvert <- get_maxvert (highways)
 
     highways <- add_intersection_nodes (highways, maxvert)
+    maxvert <- get_maxvert (highways)
     conmat <- get_conmat (highways)
     cycles <- try (ggm::fundCycles (conmat), TRUE)
     if (is (attr (cycles, "condition"), "simpleError"))
@@ -70,6 +67,15 @@ get_highway_cycle <- function (highways)
     } # end while cyc_len < length (highways)
 
     return (highways)
+}
+
+get_maxvert <- function (ways)
+{
+    maxvert <- 0
+    for (i in seq (ways))
+        maxvert <- max (maxvert, unlist (lapply (ways [[i]], function (x)
+                                         max (as.numeric (rownames (x))))))
+    maxvert + 1
 }
 
 #' add intersection nodes to junctions of ways where these don't already exist
@@ -130,6 +136,8 @@ add_intersection_nodes <- function (ways, maxvert)
                     ways [[ni]] [[nj]] <- insert_join (xy, ways [[ni]] [[nj]],
                                                        maxvert)
                     ways [[ni]] [[nj]] <- unique (ways [[ni]] [[nj]])
+
+                    maxvert <- maxvert + 1
                 } # end for k over which (intersections == 0)
         } # end for j over obj [[i]]
     } # end for i over all ways
@@ -327,7 +335,7 @@ get_join_index <- function (xy, obj)
     {
         d12 <- sqrt (diff (obj [(n - 1:n), 1]) ^ 2 +
                      diff (obj [(n - 1:n), 2]) ^ 2)
-        if (d12 < d [n - 1])
+        if (all (d12 < d [n - 1]))
             indx <- list (1:n, NULL)
         else
             indx <- list (1:(n - 1), n)
@@ -347,13 +355,22 @@ get_join_index <- function (xy, obj)
 #' @param way way in which joining node is to be inserted
 #' @param maxvert maximal vertex number
 #'
+#' @note The \code{xy} values returned from \code{rgeos::gIntersection} are
+#' \code{List} objects whenever there are multiple intersections. These cases
+#' are simply ignored here.
+#'
 #' @noRd
 insert_join <- function (xy, way, maxvert)
 {
-    indx <- get_join_index (xy, way)
-    way <- rbind (way [indx [[1]], ], xy, way [indx [[2]], ])
-    rnames <- rownames (way)
-    rownames (way) <- c (rnames [indx [[1]]], maxvert, rnames [indx [[2]]])
+    if (is.matrix (xy))
+        if (nrow (xy) == 1)
+        {
+            rnames <- rownames (way)
+            indx <- get_join_index (xy, way)
+            way <- rbind (way [indx [[1]], ], xy, way [indx [[2]], ])
+            rownames (way) <- c (rnames [indx [[1]]], maxvert,
+                                 rnames [indx [[2]]])
+        }
 
     return (way)
 }

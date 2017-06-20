@@ -160,6 +160,10 @@ shortest_way <- function (way, node_from, node_to)
     from <- unlist (lapply (way, function (x)
                             rownames (x) [1:(nrow (x) - 1)]))
     to <- unlist (lapply (way, function (x) rownames (x) [2:nrow (x)]))
+    indx <- which (nchar (from) > 0 & nchar (to) > 0)
+    from <- from [indx]
+    to <- to [indx]
+
     g <- igraph::graph_from_edgelist (cbind (from, to), directed = FALSE)
 
     from_node_list <- rep (node_from, length (node_to))
