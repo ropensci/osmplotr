@@ -24,8 +24,8 @@ matrix:
           os: osx
         - r: release
           os: osx
-        - r: devel
-          os: osx
+          #- r: devel
+          #os: osx
 
 notifications:
   email:
