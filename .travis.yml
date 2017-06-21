@@ -10,24 +10,22 @@ addons:
 
 matrix:
     include:
-        - r: release
-          env: DEPS=cran
-          os: linux
-        - r: release
-          env: DEPS=cran
-          os: osx
-          #- r: oldrel
-          #env: DEPS=cran
-          #os: linux
         - r: oldrel
-          env: DEPS=cran
+          os: linux
+          dist: trusty # 14.04
+        - r: release
+          os: linux
+          dist: trusty
+          env: R_CODECOV=true
+        - r: devel
+          os: linux
+          dist: trusty
+        - r: oldrel
           os: osx
-          #- r: devel
-          #env: DEPS=cran
-          #os: linux
-          #- r: devel
-          #env: DEPS=cran
-          #os: osx
+        - r: release
+          os: osx
+        - r: devel
+          os: osx
 
 notifications:
   email:
