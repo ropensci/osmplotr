@@ -2,13 +2,17 @@
 title: "Basic Maps"
 author: "Mark Padgham"
 date: "`r Sys.Date()`"
-#output: rmarkdown::pdf_document
-output: rmarkdown::html_vignette
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        theme: flatly
 vignette: >
   %\VignetteIndexEntry{Basic Maps}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 
 `osmplotr` enables OpenStreetMap (OSM) data to be downloaded (using the
 [overpass API](https://overpass-api.de)) and used to produce highly customisable
@@ -53,7 +57,9 @@ in this vignette represent a small portion of central London, U.K.
 
 A map can be generated using the following simple steps:
 ```{r, echo = FALSE, message = FALSE}
-library (osmplotr)
+#library (osmplotr)
+#devtools::install_github ("ropensci/osmplotr")
+devtools::load_all ("../.", export_all = FALSE)
 library (maptools) # Needed for this vignette
 ```
 
@@ -103,7 +109,7 @@ The main function for downloading OSM data from the
 [overpass API](https://overpass-api.de) is `extract_osm_objects`. Data of a
 particular type can be extracted by passing the appropriate OSM `key`, as in the
 above example:
-```{r, eval = FALSE}
+```{r buildings-highways, eval = FALSE}
 bbox <- get_bbox (c(-0.13, 51.51, -0.11, 51.52))
 dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
 dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
@@ -121,7 +127,7 @@ length (dat_B); length (dat_H)
 ... 2,178 building polygons and 2,139 highway lines.  `extract_osm_objects` also
 accepts `key-value` pairs which are passed to the
 [overpass API](https://overpass-api.de) :
-```{r, eval = FALSE}
+```{r trees, eval = FALSE}
 dat_T <- extract_osm_objects (key = 'natural', value = 'tree', bbox = bbox)
 ```
 Trees are located by single coordinates and are thus `SpatialPoints`:
@@ -133,19 +139,35 @@ class (dat_T); length (dat_T)
 
 Negation can be specified by pre-pending `!` to the `value` argument so that,
 for example, all `natural` objects that are **not** trees can be extracted with
-```{r, eval = FALSE}
-dat_NT <- extract_osm_objects (key = 'natural', value = '!tree', bbox = bbox)
+```{r not trees, eval = FALSE}
+dat_NT <- extract_osm_objects (bbox = bbox, key = 'natural', value = '!tree')
 ```
+```{r, echo = FALSE}
+message ("Cannot determine return type; maybe specify explicitly?")
+```
+The message is generated because of course a request for anything that is not a
+tree could be for any kind of spatial object. `osmplotr` makes several educated
+guesses in the absence of specified return types, but these can always be forced
+with the `return_type` parameter:
+```{r not tree points, eval = FALSE}
+pts_NT <- extract_osm_objects (bbox = bbox, key = 'natural', value = '!tree',
+                               return_type = 'points')
+```
+
 `london$dat_H` contains all non-primary highways, and was extracted with,
-```{r, eval = FALSE}
+```{r non-primary highways, eval = FALSE}
 dat_H <- extract_osm_objects (key = 'highway', value = '!primary', bbox = bbox)
 ```
+In this case, a request for `key = 'highway'` automatically returns line objects
+(although, again, other kinds of objects may be forced through specifying
+`return_type`).
 
 ## <a name="2.2 keyval-pairs"></a>2.2 Additional `key-value` pairs
 
 Any number of `key-value` pairs may be passed to `extract_osm_objects`. For
 example, a named building can be extracted with
-```{r, eval = FALSE}
+```{r royal festival hall, eval = FALSE}
+bbox <- get_bbox (c(-0.13, 51.50, -0.11, 51.52))
 extra_pairs <- c ('name', 'Royal.Festival.Hall')
 dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
                                        bbox = bbox)
@@ -153,7 +175,7 @@ dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
 This data is stored in `london$dat_RFH`. Note that periods or dots are used for
 whitespace, and in fact symbolise (in `grep` terms) any character whatsoever.
 The polygon of a building at a particular street address can be extracted with
-```{r, eval = FALSE}
+```{r stamford st 150, eval = FALSE}
 extra_pairs <- list (c ('addr:street', 'Stamford.St'),
                      c ('addr:housenumber', '150'))
 dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
@@ -162,16 +184,6 @@ dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
 This data is stored as `london$dat_ST`.  Note that addresses generally require
 combining both `addr:street` with `addr:housenumber`.
 
-## <a name="2.3 rivers"></a>2.3 A note on rivers
-
-OSM objects are extracted within `R` through using the `osmar` package which
-does not currently handle the extraction of rivers in a failsafe way. Rivers are
-generally defined by `(key,value) = ('waterway','riverbank')`, with relations
-returned as an OSM `multipolygon`. These `multipolygon` objects are, however,
-**not** extracted by `osmar` when they extend beyond a requested `bbox`, and
-there is no way to know in advance whether or not that may be the case. This
-requests to download river polygons may not yield the desired results.  This
-problem will be addressed in future releases of `osmplotr`.
 
 ## <a name="2.4 downloading2"></a>2.4 Downloading with `osm_structures` and `make_osm_map`
 
