@@ -37,10 +37,10 @@ if (curl::has_internet ()) # otherwise all of these return errors not warnings
         test_that ('plot', {
                    bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
                    highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
-                   # This can't fail because failed downloads will generate warnings
-                   # and successful ones will generate a plot.
-                   expect_output (connect_highways (highways = highways,
-                                                    bbox = bbox, plot = TRUE))
+                   # This can't fail because failed downloads will generate
+                   # warnings and successful ones will generate a plot.
+                   expect_warning (connect_highways (highways = highways,
+                                                     bbox = bbox, plot = TRUE))
         })
     } # end if (test_all)
 } # end if has_internet

@@ -94,25 +94,31 @@ connect_highways <- function (highways, bbox, plot = FALSE)
 
     conmat <- get_conmat (ways)
     cycles <- try (ggm::fundCycles (conmat), TRUE)
+    res <- NULL
     if (is (attr (cycles, "condition"), "simpleError"))
-        stop ('There are no cycles in the listed highways')
-    cyc <- cycles [[which.max (sapply (cycles, nrow))]]
+        warning ('There are no cycles in the listed highways')
+    else
+    {
+        cyc <- cycles [[which.max (sapply (cycles, nrow))]]
 
-    # ***** Then calculate shortest path through the entire cycle
-    paths <- sps_through_cycle (cyc, ways)
-    nd_first <- rownames (paths [[1]]) [1]
-    nd_last <- tail (rownames (tail (paths, n = 1) [[1]]), n = 1)
-    if (nd_first != nd_last)
-        stop ('No cycle able to be formed')
+        # ***** Then calculate shortest path through the entire cycle
+        paths <- sps_through_cycle (cyc, ways)
+        nd_first <- rownames (paths [[1]]) [1]
+        nd_last <- tail (rownames (tail (paths, n = 1) [[1]]), n = 1)
+        if (nd_first != nd_last)
+            warning ('No cycle able to be formed')
+        else
+        {
+            path <- do.call (rbind, paths)
 
-    path <- do.call (rbind, paths)
+            if (plot)
+                lines (path [, 1], path [, 2], lwd = 3, col = 'black', lty = 2)
 
-    if (plot)
-        lines (path [, 1], path [, 2], lwd = 3, col = 'black', lty = 2)
-
-    indx <- which (!duplicated (rownames (path)))
-    res <- sp::SpatialPoints (path [indx, ])
-    sp::proj4string (res) <- p4s
+            indx <- which (!duplicated (rownames (path)))
+            res <- sp::SpatialPoints (path [indx, ])
+            sp::proj4string (res) <- p4s
+        }
+    }
 
     return (res)
 }

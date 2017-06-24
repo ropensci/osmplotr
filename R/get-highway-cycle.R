@@ -57,10 +57,6 @@ get_highway_cycle <- function (ways)
     return (ways)
 }
 
-get_maxvert <- function (ways)
-{
-    max (vapply (ways, function (x) max (as.numeric (rownames (x))), numeric (1))) + 1
-}
 
 #' add intersection nodes to junctions of ways where these don't already exist
 #'
