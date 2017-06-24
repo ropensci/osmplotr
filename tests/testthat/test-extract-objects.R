@@ -7,7 +7,8 @@ test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
 
 test_that ('missing objects', {
            expect_error (extract_osm_objects (), 'key must be provided')
-           expect_error (extract_osm_objects ('aaa'), 'bbox must be provided')
+           expect_error (extract_osm_objects (key = 'aaa'),
+                         'bbox must be provided')
     })
 
 test_that ('key missing', {

@@ -69,6 +69,7 @@ make_osm_map <- function (bbox, osm_data,
 
         indx <- c (md$indx, nrow (structures))
         structures <- structures [indx, ]
+        osm_data <- c (osm_data, md$osm_data)
     }
     ns <- nrow (structures) - 1 # last row is background
     if (ns == 0)
@@ -116,11 +117,17 @@ get_missing_osm_data <- function (osm_data, structures, bbox, dat_prefix)
     pb <- txtProgressBar (max = 1, style = 3)
     t0 <- proc.time ()
     indx <- NULL
-    for (i in seq (structures)) {
-        dat <- extract_osm_objects (key = structures$key [i],
-                                    value = structures$value [i],
-                                    bbox = bbox)
-        if (is (dat, 'Spatial'))
+    for (i in seq (nrow (structures)))
+    {
+        if (structures$value [i] == "")
+            dat <- extract_osm_objects (key = structures$key [i],
+                                        bbox = bbox)
+        else
+            dat <- extract_osm_objects (key = structures$key [i],
+                                        value = structures$value [i],
+                                        bbox = bbox)
+
+        if (nrow (dat) > 0)
         {
             fname <- paste0 (dat_prefix, structures$suffix [i])
             assign (fname, dat)
@@ -132,5 +139,5 @@ get_missing_osm_data <- function (osm_data, structures, bbox, dat_prefix)
     close (pb)
     cat ('That took ', (proc.time () - t0)[3], 's\n', sep = '')
 
-    list ('indx' = indx, 'osm_data' = 'osm_data')
+    list ('indx' = indx, 'osm_data' = osm_data)
 }

@@ -4,6 +4,9 @@
 #' (\code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame}, or
 #' \code{SpatialPolygonsDataFrame}).
 #'
+#' @param bbox the bounding box within which all key-value objects should be
+#' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
+#' max values, and rows of x and y values.
 #' @param key OSM key to search for. Useful keys include \code{building},
 #' \code{waterway}, \code{natural}, \code{grass}, \code{park}, \code{amenity},
 #' \code{shop}, \code{boundary}, and \code{highway}. Others will be passed
@@ -12,9 +15,6 @@
 #' returned.  Negation is specified by \code{!value}.
 #' @param extra_pairs A list of additional \code{key-value} pairs to be passed
 #' to the overpass API.
-#' @param bbox the bounding box within which all key-value objects should be
-#' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
-#' max values, and rows of x and y values.
 #' @param return_type If specified, force return of spatial (\code{point},
 #' \code{line}, \code{polygon}, \code{multiline}, \code{multipolygon}) objects.
 #' \code{return_type = 'line'} will, for example, always return a
@@ -42,7 +42,7 @@
 #' dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
 #'                             bbox = bbox)
 #' }
-extract_osm_objects <- function (key, value, extra_pairs, bbox,
+extract_osm_objects <- function (bbox, key, value, extra_pairs,
                                  return_type, verbose = FALSE)
 {
     check_arg (key, 'key', 'character')
@@ -85,15 +85,18 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
     qry <- osmdata::opq (bbox = bbox)
     for (i in seq (q_keys))
     {
+        key_exact <- FALSE
+        if (!is.na (q_vals [i]) & substring (q_vals [i], 1, 1) == '!')
+            key_exact <- TRUE
         if (is.na (q_vals [i]))
             qry <- osmdata::add_feature (qry, key = q_keys [i],
-                                         key_exact = FALSE,
+                                         key_exact = key_exact,
                                          value_exact = FALSE,
                                          match_case = FALSE)
         else
             qry <- osmdata::add_feature (qry, key = q_keys [i],
                                          value = q_vals [i],
-                                         key_exact = FALSE,
+                                         key_exact = key_exact,
                                          value_exact = FALSE,
                                          match_case = FALSE)
     }
@@ -117,7 +120,7 @@ extract_osm_objects <- function (key, value, extra_pairs, bbox,
     {
         if (key == 'highway')
             obj <- obj$osm_lines
-        if (key == 'building')
+        else if (key == 'building' | key == 'landuse' | key == 'leisure')
             obj <- obj$osm_polygons
         else if (key == 'route')
             obj <- obj$osm_multilines

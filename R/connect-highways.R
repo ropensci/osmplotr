@@ -72,8 +72,8 @@ connect_highways <- function (highways, bbox, plot = FALSE)
     # this routine is to ensure that the internal components of each highway are
     # actually all connected.
 
-    # Start by getting the sequentially ordered list of highways, exluding any
-    # components, and connecting them:
+    # Start by getting the list of highway components which have been
+    # sequentially joined and ordered into a minimal set
     ways <- extract_highways (highway_names = highways, bbox = bbox)
     i0 <- which (sapply (ways, length) == 0)
     if (any (i0))
@@ -86,6 +86,7 @@ connect_highways <- function (highways, bbox, plot = FALSE)
     }
     p4s <- attr (ways, "crs")
 
+    ways <- flatten_highways (ways)
     ways <- get_highway_cycle (ways)
 
     if (plot)
@@ -99,7 +100,12 @@ connect_highways <- function (highways, bbox, plot = FALSE)
 
     # ***** Then calculate shortest path through the entire cycle
     paths <- sps_through_cycle (cyc, ways)
-    path <- sp_through_cycle (paths)
+    nd_first <- rownames (paths [[1]]) [1]
+    nd_last <- tail (rownames (tail (paths, n = 1) [[1]]), n = 1)
+    if (nd_first != nd_last)
+        stop ('No cycle able to be formed')
+
+    path <- do.call (rbind, paths)
 
     if (plot)
         lines (path [, 1], path [, 2], lwd = 3, col = 'black', lty = 2)
@@ -109,6 +115,81 @@ connect_highways <- function (highways, bbox, plot = FALSE)
     sp::proj4string (res) <- p4s
 
     return (res)
+}
+
+#' flatten_highways
+#'
+#' Connect any distinct components of a single highway into one single connected
+#' component, inverting components where necessary
+#'
+#' @param ways List of highways returned from \code{extract_highways}, each
+#' component of which will have more than one component only where distinct
+#' components exist or for branches.
+#'
+#' @return Flattened List of highways, each component of which is a single
+#' matrix.
+#'
+#' @noRd
+flatten_highways <- function (ways)
+{
+    for (i in seq (ways))
+    {
+        while (length (ways [[i]]) > 1)
+        {
+            dmat <- ways_dist (ways [[i]])
+            i12 <- which (dmat == min (dmat), arr.ind = TRUE)
+            ways [[i]] [[ i12 [1] ]] <- join_ways (ways [[i]] [[i12 [1] ]],
+                                                   ways [[i]] [[i12 [2] ]])
+            ways [[i]] [[ i12 [2] ]] <- NULL
+        }
+        if (is.list (ways [[i]]))
+            ways [[i]] <- ways [[i]] [[1]]
+    }
+
+    return (ways)
+}
+
+# Distances between a single list of ways
+ways_dist <- function (ways)
+{
+    dmat <- array (Inf, dim = rep (length (ways), 2))
+    combs <- combn (length (ways), 2)
+    for (j in seq (ncol (combs)))
+    {
+        dmat [combs [1, j], combs [2, j]] <-
+            haversine (ways [[combs [1, j] ]],
+                       ways [[combs [2, j] ]]) [3]
+    }
+
+    return (dmat)
+}
+
+# connect way2 to way1 at closest nodes, flipping where needed and including the
+# longest components
+join_ways <- function (way1, way2)
+{
+    hs <- haversine (way1, way2)
+    way1 <- flip_joining_way (way1, hs [1],
+                              flip = (hs [1] < (nrow (way1) / 2)))
+    way2 <- flip_joining_way (way2, hs [2],
+                              flip = (hs [2] > (nrow (way2) / 2)))
+
+    way <- rbind (way1, way2)
+    way [!duplicated (way), ]
+}
+
+# extract longest part of way from join point i
+flip_joining_way <- function (way, i, flip = FALSE)
+{
+    if (i < (nrow (way) / 2))
+        way <- way [i:nrow (way), ]
+    else
+        way <- way [1:i, ]
+
+    if (flip)
+        way <- apply (way, 2, rev)
+
+    return (way)
 }
 
 
@@ -133,7 +214,7 @@ haversine <- function (way1, way2)
     xd <- (x2 - x1) * pi / 180
     yd <- (y2 - y1) * pi / 180
     d <- sin (yd / 2) * sin (yd / 2) + cos (y2 * pi / 180) *
-    cos (y1 * pi / 180) * sin (xd / 2) * sin (xd / 2)
+        cos (y1 * pi / 180) * sin (xd / 2) * sin (xd / 2)
     d <- 2.0 * atan2 (sqrt (d), sqrt (1.0 - d))
     d <- 6371 * d
     i1 <- which.min (apply (d, 1, min))
@@ -198,47 +279,29 @@ shortest_way <- function (way, node_from, node_to)
 #' @noRd
 one_shortest_path <- function (ways, w0, wf, wt)
 {
-    # Find the components of [[w0]] which connect to [[wf]] & [[wt]], along
-    # with the node names
-    wf_flat <- do.call (rbind, ways [[wf]])
-    w0f <- sapply (ways [[w0]], function (x)
-                   max (rowSums (array (x %in% wf_flat, dim = dim(x)))))
-    if (max (w0f) < 2)
-        stop ('Error: way [[', w0, ']] does not join any others')
-    w0f_names <- sapply (ways [[w0]], function (x) rownames (x)
-                         [which (rowSums (array (x %in% wf_flat,
-                                                 dim = dim (x))) == 2)])
-    w0f_names <- unique (unlist (w0f_names))
-    w0f <- which (w0f == 2)
-    # w0f_names holds names of nodes which join [[wf]], while w0f indexes
-    # bit(s) of [[w0]] which connect to [[wf]], with w0f == 2 for parts of
-    # [[w0]] that are in wf.
-    # TODO: Deal with multiple w0f / w0f_names
-
-    wt_flat <- do.call (rbind, ways [[wt]])
-    w0t <- sapply (ways [[w0]], function (x)
-                   max (rowSums (array (x %in% wt_flat, dim = dim(x)))))
-    if (max (w0t) < 2)
-        stop ('Error: way [[', w0, ']] does not join any others')
-    w0t_names <- sapply (ways [[w0]], function (x) rownames (x)
-                         [which (rowSums (array (x %in% wt_flat,
-                                                 dim = dim (x))) == 2)])
-    w0t_names <- unique (unlist (w0t_names))
-    w0t <- which (w0t == 2)
-
-    sp <- shortest_way (ways [[w0]], w0f_names, w0t_names)
-    if (is.null (sp)) # Find closest distances of disconnected components
-        conmat <- conmat_ways (ways [[w0]])
-
-    # successively connect the closest segments until a shortest path is found.
-    while (is.null (sp))
+    # Find the components of [[w0]] which connect to [[wf]] & [[wt]]
+    w0f <- which (rownames (ways [[w0]]) %in% rownames (ways [[wf]]))
+    w0t <- which (rownames (ways [[w0]]) %in% rownames (ways [[wt]]))
+    res <- NULL
+    if (!is.null (w0f) & !is.null (w0t))
     {
-        res <- connect_two_ways (ways, w0, conmat, w0f_names, w0t_names)
-        sp <- res$sp
-        ways <- res$ways
-    } # end if (maxlen == 0)
+        # w0f & w0t may have > 1 element
+        if (min (w0f) > max (w0t))
+        {
+            wtmp <- w0f
+            w0f <- w0t
+            w0t <- wtmp
+        }
+        w0f <- max (w0f)
+        w0t <- min (w0t)
 
-    return (sp)
+        res <- ways [[w0]] [w0f:w0t, ]
+        # invert so it can be rbind'ed directly onto next (wt)
+        if (!tail (rownames (res), 1) %in% rownames (ways [[wt]]))
+            res <- apply (res, 2, rev)
+    }
+
+    return (res)
 }
 
 #' Connection matrix between a list of ways
@@ -260,7 +323,11 @@ conmat_ways <- function (ways)
     for (j in seq (ncol (combs)))
     {
         way1 <- ways [[combs [1, j] ]]
+        if (is.list (way1))
+            way1 <- do.call (rbind, way1)
         way2 <- ways [[combs [2, j] ]]
+        if (is.list (way2))
+            way2 <- do.call (rbind, way2)
         shared_nodes <- array (way1 %in% way2, dim = dim (way1))
         shared_nodes <- which (rowSums (shared_nodes) == 2)
         if (length (shared_nodes) == 0)
@@ -320,27 +387,21 @@ connect_two_ways <- function (ways, w0, conmat, w0f_names, w0t_names)
 
 plot_highways <- function (ways)
 {
-    xlims <- range (sapply (ways, function (i)
-                            range (sapply (i, function (j) range (j [, 1])))))
-    ylims <- range (sapply (ways, function (i)
-                            range (sapply (i, function (j) range (j [, 2])))))
+    xy <- do.call (rbind, ways)
 
     par (mar = rep (0, 4))
-    plot (NULL, NULL, xlim = xlims, ylim = ylims, xaxt = 'n', yaxt = 'n',
-          xlab = '', ylab = '', frame = FALSE)
+    plot (NULL, NULL, xlim = range (xy [, 1]), ylim = range (xy [, 2]),
+          xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', frame = FALSE)
 
     cols <- rainbow (length (ways))
 
     for (i in seq (ways))
-        for (j in seq (ways [[i]]))
-        {
-            x <- ways [[i]] [[j]] [, 1]
-            y <- ways [[i]] [[j]] [, 2]
-            n <- length (x)
-            lines (x, y, col = cols [i])
-            text (x [1], y [1], labels = paste0 (i, '.', j), col = cols [i])
-            text (x [n], y [n], labels = paste0 (i, '.', j), col = cols [i])
-        }
+    {
+        x <- ways [[i]] [, 1]
+        y <- ways [[i]] [, 2]
+        lines (x, y, col = cols [i])
+        text (mean (x), mean (y), labels = i, col = cols [i])
+    }
 }
 
 #' get_conmat
@@ -358,14 +419,13 @@ get_conmat <- function (ways)
 
     for (i in seq (ways))
     {
-        test <- do.call (rbind, ways [[i]])
         ref <- ways
         ref [[i]] <- NULL
         indx <- (seq (ways)) [!(seq (ways)) %in% i]
 
-        # Then find which lines from ref intersect with test:
+        # Then find which lines from ref intersect with ways [[i]]:
         ni <- unlist (lapply (ref, function (x)
-                              intersect_ref_test (x, test)))
+                              intersect_ref_test (x, ways [[i]])))
         indx2 <- indx [which (!is.na (ni))]
         conmat [i, indx2] <- conmat [indx2, i] <- TRUE
     }
@@ -385,13 +445,12 @@ get_conmat <- function (ways)
 #' @noRd
 intersect_ref_test <- function (x, test)
 {
-    xflat <- do.call (rbind, x)
-    n <- array (xflat %in% test, dim = dim (xflat))
+    n <- array (x %in% test, dim = dim (x))
     n <- which (rowSums (n) == 2) [1]
-    rownames (xflat) [n]
+    rownames (x) [n]
 }
 
-#' shortest paths alone each component of cycle
+#' shortest paths along each component of cycle
 #'
 #' @param cyc Cycle extracted from \code{extract_cycle}
 #' @param ways List of ways to be connected

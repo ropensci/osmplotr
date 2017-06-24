@@ -12,43 +12,33 @@
 #' (3) Insert extra connections between highways until the longest cycle ==
 #'      length (highways).
 #'
-#' @param highways A list of highways as returned by
+#' @param ways A list of highways as returned by
 #' \code{\link{extract_highways}}, each element of which is a list of distinct
 #' segments for a particular OSM highway.
-#' @return A modified version of highways, extended by the addition of
+#'
+#' @return A modified version of ways, extended by the addition of
 #' connecting nodes.
 #'
 #' @noRd
-get_highway_cycle <- function (highways)
+get_highway_cycle <- function (ways)
 {
-    if (missing (highways))
-        stop ('highways must be given')
-    if (class (highways) != 'list')
-        stop ('highways must be a list')
-    # TODO: Make class so that can be properly checked
-
-    maxvert <- get_maxvert (highways)
-
-    highways <- add_intersection_nodes (highways, maxvert)
-    maxvert <- get_maxvert (highways)
-    conmat <- get_conmat (highways)
+    conmat <- get_conmat (ways)
     cycles <- try (ggm::fundCycles (conmat), TRUE)
     if (is (attr (cycles, "condition"), "simpleError"))
         cycles <- NULL
 
-    conmat_adj <- conmat
     cyc_len <- 0
     if (!is.null (cycles))
         cyc_len <- max (sapply (cycles, nrow))
-    n <- length (highways)
+    n <- length (ways)
     # i1_ref and i2_ref are index matricex of [from, to]
     i1_ref <- array (1:n, dim = c(n, n))
     i2_ref <- t (i1_ref)
     i1_ref <- i1_ref [upper.tri (i1_ref)]
     i2_ref <- i2_ref [upper.tri (i2_ref)]
-    while (cyc_len < length (highways))
+    while (cyc_len < length (ways))
     {
-        es <- extend_cycles (conmat_adj, i1_ref, i2_ref)
+        es <- extend_cycles (conmat, i1_ref, i2_ref)
         if (all (is.na (es$cyc_len_i)))
         {
             warning ('No cycles can be found or made')
@@ -60,22 +50,16 @@ get_highway_cycle <- function (highways)
         } else
             cyc_len <- max (es$cyc_len_i, na.rm = TRUE)
 
-        conmat_adj <- es$conmat
-        nc <- nodes_to_connect (highways, es)
-        highways <- insert_connecting_nodes (highways, es, nc)
-        highways <- insert_terminal_node (highways, es, nc)
-    } # end while cyc_len < length (highways)
+        nc <- nodes_to_connect (ways, es)
+        ways <- insert_connecting_nodes (ways, es, nc)
+    } # end while cyc_len < length (ways)
 
-    return (highways)
+    return (ways)
 }
 
 get_maxvert <- function (ways)
 {
-    maxvert <- 0
-    for (i in seq (ways))
-        maxvert <- max (maxvert, unlist (lapply (ways [[i]], function (x)
-                                         max (as.numeric (rownames (x))))))
-    maxvert + 1
+    max (vapply (ways, function (x) max (as.numeric (rownames (x))), numeric (1))) + 1
 }
 
 #' add intersection nodes to junctions of ways where these don't already exist
@@ -93,6 +77,43 @@ add_intersection_nodes <- function (ways, maxvert)
 {
     for (i in seq (ways))
     {
+        # The following function returns default of -1 for no geometric
+        # intersection; 0 where intersections exists but area *NOT* vertices
+        # of li, and 1 where intersections are vertices of li.
+        test <- ways
+        test [[i]] <- NULL
+        intersections <- vapply (test, function (x)
+                                 intersection_type (ways [[i]], x), numeric (1))
+        if (any (intersections == 0))
+            for (j in which (intersections == 0))
+            {
+                # Then they have to be added to ways [[i]] [[j]].
+                lj <- sp::Line (test [[j]])
+                lj <- sp::SpatialLines (list (sp::Lines (list (lj), ID = 'a')))
+                xy <- sp::coordinates (rgeos::gIntersection (li, lj))
+                ways [[i]] <- insert_join (xy, ways [[i]], maxvert)
+
+                # Then add same vertex into the other elements
+                lens <- cumsum (sapply (test, length))
+                if (k < lens [1])
+                {
+                    ni <- 1
+                    nj <- k
+                } else
+                {
+                    ni <- max (which (lens < k)) + 1
+                    nj <- k - lens [ni - 1]
+                }
+                # Then ni needs to point into the full ways instead of test
+                ni <- seq (ways) [!seq (ways) %in% i] [ni]
+                # Then insert xy into ways [[ni]] [[nj]]
+                ways [[ni]] [[nj]] <- insert_join (xy, ways [[ni]] [[nj]],
+                                                   maxvert)
+                ways [[ni]] [[nj]] <- unique (ways [[ni]] [[nj]])
+
+                maxvert <- maxvert + 1
+            } # end for k over which (intersections == 0)
+
         test <- ways
         test [[i]] <- NULL
         test_flat <- do.call (c, test)
@@ -149,24 +170,31 @@ add_intersection_nodes <- function (ways, maxvert)
 #'
 #' Get type of intersection in a given line
 #'
-#' @param x a flat list of coordinates for all highways (except li)
-#' @param li Coordinates of one component of one highway
+#' @param x1 Coordinates of one highway
+#' @param x2 Coordinates of another highway
 #'
 #' @return Default of -1 for no geometric intersection; 0 where intersections
-#' exists but area *NOT* vertices of li, and 2 where intersections are vertices
+#' exists but area *NOT* vertices of li, and 1 where intersections are vertices
 #' of li.
 #'
 #' @noRd
-intersection_type <- function (x, li)
+intersection_type <- function (x1, x2)
 {
-    lj <- sp::Line (x)
-    lj <- sp::SpatialLines (list (sp::Lines (list (lj), ID = 'a')))
-
-    int <- rgeos::gIntersection (li, lj)
-    if (!is.null (int))
-        sum (sp::coordinates (int) %in% x)
+    type <- -1
+    if (any (rownames (x1) %in% rownames (x2)))
+        type <- 1
     else
-        -1
+    {
+        li <- sp::Line (x1)
+        li <- sp::SpatialLines (list (sp::Lines (list (li), ID = 'a')))
+        lj <- sp::Line (x2)
+        lj <- sp::SpatialLines (list (sp::Lines (list (lj), ID = 'a')))
+
+        if (!is.null (rgeos::gIntersection (li, lj)))
+            type <- 0
+    }
+
+    return (type)
 }
 
 #' extend_cycles
@@ -201,7 +229,7 @@ extend_cycles <- function (conmat, i1, i2)
 
 #' nodes_to_connect
 #'
-#' @param highways A list of highways as returned by
+#' @param ways A list of highways as returned by
 #' \code{\link{extract_highways}}, each element of which is a list of distinct
 #' segments for a particular OSM highway.
 #' @param es Result of call to \code{extend_cycles}
@@ -209,24 +237,26 @@ extend_cycles <- function (conmat, i1, i2)
 #' Determine the actual nodes of the extended cycle which are to be connected
 #'
 #' @noRd
-nodes_to_connect <- function (highways, es)
+nodes_to_connect <- function (ways, es)
 {
-    # Then connect the actual highways corresponding to the longest cycle
+    # Then connect the actual ways corresponding to the longest cycle
     i1 <- es$i1 [which.max (es$cyc_len_i)]
     i2 <- es$i2 [which.max (es$cyc_len_i)]
-    h1 <- do.call (rbind, highways [[i1]])
-    h2 <- do.call (rbind, highways [[i2]])
-    h1x <- array (h1 [, 1], dim = c(nrow (h1), nrow (h2)))
-    h1y <- array (h1 [, 2], dim = c(nrow (h1), nrow (h2)))
-    h2x <- t (array (h2 [, 1], dim = c(nrow (h2), nrow (h1))))
-    h2y <- t (array (h2 [, 2], dim = c(nrow (h2), nrow (h1))))
+    h1x <- array (ways [[i1]] [, 1],
+                  dim = c(nrow (ways [[i1]]), nrow (ways [[i2]])))
+    h1y <- array (ways [[i1]] [, 2],
+                  dim = c(nrow (ways [[i1]]), nrow (ways [[i2]])))
+    h2x <- t (array (ways [[i2]] [, 1],
+                     dim = c(nrow (ways [[i2]]), nrow (ways [[i1]]))))
+    h2y <- t (array (ways [[i2]] [, 2],
+                     dim = c(nrow (ways [[i2]]), nrow (ways [[i1]]))))
     d <- sqrt ( (h1x - h2x) ^ 2 + (h1y - h2y) ^ 2)
     di1 <- which.min (apply (d, 1, min))
     di2 <- which.min (apply (d, 2, min))
-    node1 <- rownames (h1) [di1]
-    xy1 <- h1 [di1, ]
-    node2 <- rownames (h2) [di2]
-    xy2 <- h2 [di2, ]
+    node1 <- rownames (ways [[i1]]) [di1]
+    xy1 <- ways [[i1]] [di1, ]
+    node2 <- rownames (ways [[i2]]) [di2]
+    xy2 <- ways [[i2]] [di2, ]
 
     list ('node1' = node1, 'node2' = node2, 'xy1' = xy1, 'xy2' = xy2)
 }
@@ -234,41 +264,62 @@ nodes_to_connect <- function (highways, es)
 #' insert_connecting_nodes
 #'
 #' Nodes are only inserted in the respective highways where the joining node is
-#' terminal.  Joining nodes can't be non-terminal in both ways, because then
-#' they would cross and already have had a crossing-node inserted above. This
-#' insertion thus adds to the terminal node of one way an additional node that
-#' will generally lie in the middle of some other way, thereby connecting the
-#' two.
+#' terminal. This insertion adds to the terminal node of one way an additional
+#' node that will generally lie in the middle of some other way, thereby
+#' connecting the two.
 #'
-#' @param highways A list of highways as returned by
-#' \code{\link{extract_highways}}, each element of which is a list of distinct
-#' segments for a particular OSM highway.
+#' @param ways A list of flat highways as returned by \code{flatten_highways}
 #' @param es Result of call to \code{extend_cycles}
 #' @param nc Result of call to \code{nodes_to_connect}
 #'
 #' @noRd
-insert_connecting_nodes <- function (highways, es, nc)
+insert_connecting_nodes <- function (ways, es, nc)
 {
-    ni1 <- sapply (highways [[es$i1]], function (x)
-                   max (c (-1, which (rownames (x) == nc$node1))))
-    # ni1 = -1 where nc$node1 not found, otherwise it's the position of
-    # nc$node1 in highways [[es$i1]]
-    ni2 <- which.max (ni1)
-    if (max (ni1) == 1)
+    i1 <- es$i1 [which.max (es$cyc_len_i)]
+    i2 <- es$i2 [which.max (es$cyc_len_i)]
+
+    nsub1 <- nc$node2
+    xysub1 <- nc$xy2
+    ni1 <- max (c (-1, which (rownames (ways [[i1]]) == nc$node1)))
+    if (!ni1 %in% c (1, nrow (ways [[i1]])))
     {
-        hnames <- c (nc$node2, rownames (highways [[es$i1]] [[ni2]]))
-        highways [[es$i1]] [[ni2]] <- rbind (nc$xy2,
-                                             highways [[es$i1]] [[ni2]])
-        rownames (highways [[es$i1]] [[ni2]]) <- hnames
-    } else if (max (ni1) == nrow (highways [[es$i1]] [[ni2]]))
+        nsub1 <- nc$node1
+        xysub1 <- nc$xy1
+        ni1 <- max (c (-1, which (rownames (ways [[i1]]) == nc$node2)))
+    }
+    nsub2 <- nc$node1
+    xysub2 <- nc$xy1
+    ni2 <- max (c (-1, which (rownames (ways [[i2]]) == nc$node2)))
+    if (!ni2 %in% c (1, nrow (ways [[i2]])))
     {
-        hnames <- c (rownames (highways [[es$i1]] [[ni2]]), nc$node2)
-        highways [[es$i1]] [[ni2]] <- rbind (highways [[es$i1]] [[ni2]],
-                                             nc$xy2)
-        rownames (highways [[es$i1]] [[ni2]]) <- hnames
+        nsub2 <- nc$node2
+        xysub2 <- nc$xy2
+        ni2 <- max (c (-1, which (rownames (ways [[i2]]) == nc$node1)))
     }
 
-    return (highways)
+    if (ni1 == 1)
+    {
+        hnames <- c (nsub1, rownames (ways [[i1]]))
+        ways [[i1]] <- rbind (xysub1, ways [[i1]])
+        rownames (ways [[i1]]) <- hnames
+    } else if (ni1 == nrow (ways [[i1]]))
+    {
+        hnames <- c (rownames (ways [[i1]]), nsub1)
+        ways [[i1]] <- rbind (ways [[i1]], xysub1)
+        rownames (ways [[i1]]) <- hnames
+    } else if (ni1 == 1)
+    {
+        hnames <- c (nsub2, rownames (ways [[i2]]))
+        ways [[i2]] <- rbind (xysub2, ways [[i2]])
+        rownames (ways [[i2]]) <- hnames
+    } else if (ni2 == nrow (ways [[i2]]))
+    {
+        hnames <- c (rownames (ways [[i2]]), nsub2)
+        ways [[i2]] <- rbind (ways [[i2]], xysub2)
+        rownames (ways [[i2]]) <- hnames
+    }
+
+    return (ways)
 }
 
 #' insert_terminal_node
@@ -284,6 +335,7 @@ insert_connecting_nodes <- function (highways, es, nc)
 #' @noRd
 insert_terminal_node <- function (highways, es, nc)
 {
+    es$i2 <- es$i2 [which.max (es$cyc_len_i)]
     ni1 <- sapply (highways [[es$i2]], function (x)
                    max (c (-1, which (rownames (x) == nc$node2))))
     ni2 <- which.max (ni1)

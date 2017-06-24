@@ -34,17 +34,11 @@ extract_highways <- function (highway_names, bbox)
     }
 
 
-    # ***** (2) Order the individual OSM objects into a minimal number of
-    # *****     discrete sequences
-    i0 <- 0 # Nodes in ordered lines are numbered sequentially from (i0+1)
+    # ***** (2) Order into a minimal number of discrete sequences
     objs <- list ()
     for (i in seq (highway_names))
-    {
-        objs [[i]] <- order_lines (get (hw_abbrvs [i]), i0 = i0)
-        i0 <- max (unlist (lapply (objs [[i]], function (x)
-                                   as.numeric (rownames (x)))))
-    }
-    names (objs) <- paste0 (hw_abbrvs, 'o')
+        objs [[i]] <- order_lines (get (hw_abbrvs [i]))
+    names (objs) <- hw_abbrvs
 
     attr (objs, "crs") <- p4s
 

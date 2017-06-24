@@ -76,7 +76,7 @@
 #' @importFrom sp coordinates point.in.polygon Line SpatialLines SpatialPoints 
 #' @importFrom spatstat convexhull idw ppp Smooth
 #' @importFrom stats runif
-#' @importFrom utils txtProgressBar setTxtProgressBar combn tail
+#' @importFrom utils combn head setTxtProgressBar tail txtProgressBar
 #' @importFrom XML xmlParse
 NULL
 

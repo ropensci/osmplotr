@@ -4,10 +4,14 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(key, value, extra_pairs, bbox, return_type,
+extract_osm_objects(bbox, key, value, extra_pairs, return_type,
   verbose = FALSE)
 }
 \arguments{
+\item{bbox}{the bounding box within which all key-value objects should be
+downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
+max values, and rows of x and y values.}
+
 \item{key}{OSM key to search for. Useful keys include \code{building},
 \code{waterway}, \code{natural}, \code{grass}, \code{park}, \code{amenity},
 \code{shop}, \code{boundary}, and \code{highway}. Others will be passed
@@ -18,10 +22,6 @@ returned.  Negation is specified by \code{!value}.}
 
 \item{extra_pairs}{A list of additional \code{key-value} pairs to be passed
 to the overpass API.}
-
-\item{bbox}{the bounding box within which all key-value objects should be
-downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
-max values, and rows of x and y values.}
 
 \item{return_type}{If specified, force return of spatial (\code{point},
 \code{line}, \code{polygon}, \code{multiline}, \code{multipolygon}) objects.
