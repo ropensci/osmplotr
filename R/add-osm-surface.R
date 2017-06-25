@@ -123,7 +123,7 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
 
     objtxt <- get_objtxt (obj)
 
-    xy0 <- get_xy0 (map, obj, objtxt, xy)
+    xy0 <- get_xy0 (map, obj, objtxt, dat)
     xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size = grid_size,
                               method = method)
     if (missing (bg))
@@ -133,7 +133,8 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
 
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
-        map <- map_plus_spPolydf_srfc (map, xy, xy0, cols, bg, size) #nolint
+        map <- map_plus_spPolydf_srfc (map = map, xy = xy, xy0 = xy0,
+                                       cols = cols, bg = bg, size = size) #nolint
     else if (class (obj) == 'SpatialLinesDataFrame')
         map <- map_plus_spLinesdf_srfc (map, xy, xy0, cols, bg, size, shape) #nolint
     else if (class (obj) == 'SpatialPointsDataFrame')
@@ -393,6 +394,12 @@ set_extreme_vals <- function (xy, bg, nx, ny)
 
 #' add SpatialPolygonsDataFrame to map
 #'
+#' @note The following 3 functions could be re-written more efficiently using a
+#' generic functional, but this would severely obsucate what's actually done
+#' here, so these are left in this somewhat verbose format. Plus I tried it and
+#' it ended up with considerably more lines specifying all the required
+#' arguments.
+#'
 #' @noRd
 map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) #nolint
 {
@@ -482,4 +489,6 @@ map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #noli
                                           col = bg, size = size [2],
                                           shape = shape [2])
     }
+
+    return (map)
 }
