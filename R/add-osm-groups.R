@@ -128,18 +128,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
             bg <- 'gray40'
         }
     }
-    # ---------- cols
-    if (missing (cols))
-    {
-        if (missing (bg))
-            stop ("Either 'cols' or 'bg' must be minimally given")
-        else
-        {
-            warning (paste0 ('No group colours defined in add_osm_groups: ',
-                             'passing to add_osm_objects'))
-            add_osm_objects (map, obj, col = bg)
-        }
-    }
+    # ---------- colmat
     if (!missing (colmat))
     {
         colmat <- check_arg (colmat, 'colmat', 'logical')
@@ -156,11 +145,11 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
 
     # Set up group colours
     cmat <- NULL
-    if (!colmat)
+    if (!colmat & missing (cols))
     {
         cols_default <- group_colours_default (cols, groups, bg)
         cols <- cols_default$cols
-        bg <- cols_default$bg
+        #bg <- cols_default$bg
     } else
     {
         cols_colourmat <- group_colours_colourmat (cols, groups, rotate)

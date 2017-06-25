@@ -13,6 +13,7 @@ test_that ('colours', {
                          'One or more cols is NA')
            expect_silent (colour_mat (cols = 1:7))
            expect_silent (colour_mat (cols = 1:4, plot = TRUE))
+           dev.off (which = dev.cur ())
 })
 
 test_that ('n', {
