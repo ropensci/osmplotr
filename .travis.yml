@@ -2,12 +2,6 @@ language: r
 warnings_are_errors: true
 sudo: false
 
-addons:
-    apt:
-        packages:
-            - libgeos-dev
-# NOTE: libgeo++-dev not on current travis-ci white list for container-based
-
 matrix:
     include:
         - r: oldrel
