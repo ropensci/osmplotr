@@ -173,7 +173,7 @@ add_horizontal_axis <- function (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
 {
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = max (xrange),
                           y1 = xaxs_pos [1], y2 = xaxs_pos [1])
-    x1 <- y1 <- x2 <- y2 <- NULL
+    x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
     aes <- ggplot2::aes (x = x1, y = y1, xend = x2, yend = y2)
     map <- map + ggplot2::geom_segment (data = segdat, colour = colour,
                                         mapping = aes)
@@ -204,7 +204,7 @@ add_vertical_axis <- function (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
 {
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [1],
                           y1 = xaxs_pos [1], y2 = max (yrange))
-    x1 <- y1 <- x2 <- y2 <- NULL
+    x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
     aes <- ggplot2::aes (x = x1, y = y1, xend = x2, yend = y2)
     map <- map + ggplot2::geom_segment (data = segdat, colour = colour,
                                         mapping = aes)

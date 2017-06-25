@@ -69,10 +69,8 @@
 #' @importFrom grDevices dev.cur dev.new dev.off rainbow rgb col2rgb heat.colors
 #' @importFrom grDevices bmp jpeg pictex png postscript svg tiff 
 #' @importFrom httr content GET
-#' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom methods slot as is hasArg
 #' @importFrom osmdata add_feature opq osmdata_sp
-#' @importFrom rgeos gIntersection
 #' @importFrom sp coordinates point.in.polygon Line SpatialLines SpatialPoints 
 #' @importFrom spatstat convexhull idw ppp Smooth
 #' @importFrom stats runif

@@ -10,11 +10,9 @@ Imports:
     curl,
     ggm,
     ggplot2,
-    igraph,
     httr,
     methods,
     osmdata,
-    rgeos,
     sp,
     spatstat
 Suggests:
