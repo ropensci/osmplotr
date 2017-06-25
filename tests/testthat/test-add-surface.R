@@ -32,12 +32,38 @@ test_that ('dat', {
            expect_warning (add_osm_surface (map, obj, dat),
                            'dat should have column named z')
 
-           x <- seq (bbox [1, 1], bbox [1, 2], length.out = dim (volcano)[1])
-           y <- seq (bbox [2, 1], bbox [2, 2], length.out = dim (volcano)[2])
+           bbdat <- get_bbox (c (-0.128, 51.502, -0.112, 51.518))
+           x <- seq (bbdat [1, 1], bbdat [1, 2], length.out = dim (volcano)[1])
+           y <- seq (bbdat [2, 1], bbdat [2, 2], length.out = dim (volcano)[2])
            xy <- cbind (rep (x, dim (volcano) [2]),
                         rep (y, each = dim (volcano) [1]))
            z <- as.numeric (volcano)
            dat <- data.frame (x = xy [, 1], y = xy [, 2], z = z)
            cols <- gray (0:50 / 50)
-           expect_silent (add_osm_surface (map, obj, dat = dat, cols = cols))
+
+           # polygons---------------------------------
+           expect_silent (map <- add_osm_surface (map, obj = london$dat_BNR,
+                                                  dat = dat, cols = cols))
+           map <- osm_basemap (bbox = bbox, bg = "gray20")
+           expect_silent (map <- add_osm_surface (map, obj = london$dat_BNR,
+                                                  dat = dat, cols = cols,
+                                                  bg = 'orange'))
+
+           # lines------------------------------------
+           map <- osm_basemap (bbox = bbox, bg = "gray20")
+           expect_silent (map <- add_osm_surface (map, obj = london$dat_H,
+                                                  dat = dat, cols = cols))
+           map <- osm_basemap (bbox = bbox, bg = "gray20")
+           expect_silent (map <- add_osm_surface (map, obj = london$dat_H,
+                                                  dat = dat, cols = cols,
+                                                  bg = 'orange'))
+
+           # points-----------------------------------
+           #map <- osm_basemap (bbox = bbox, bg = "gray20")
+           #expect_silent (map <- add_osm_surface (map, obj = london$dat_T,
+           #                                       dat = dat, cols = cols))
+           #map <- osm_basemap (bbox = bbox, bg = "gray20")
+           #expect_silent (map <- add_osm_surface (map, obj = london$dat_T,
+           #                                       dat = dat, cols = cols,
+           #                                       bg = 'orange'))
 })

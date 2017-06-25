@@ -55,8 +55,8 @@ test_that ('groups with polygons', {
                expect_silent (map <- add_osm_groups (map, dat_B,
                                              groups = grps,
                                              bg = 'gray40'))
-               expect_silent (print_osm_map (map))
-               dev.off (which = dev.cur ())
+               #expect_silent (print_osm_map (map))
+               #dev.off (which = dev.cur ())
 
                map <- osm_basemap (bbox = bbox, bg = 'gray20')
                expect_silent (map <- add_osm_groups (map, dat_B,
@@ -70,8 +70,8 @@ test_that ('groups with lines', {
                expect_silent (map <- add_osm_groups (map, dat_H,
                                              groups = grps,
                                              bg = 'gray40'))
-               expect_silent (print_osm_map (map))
-               dev.off (which = dev.cur ())
+               #expect_silent (print_osm_map (map))
+               #dev.off (which = dev.cur ())
 
                map <- osm_basemap (bbox = bbox, bg = 'gray20')
                expect_silent (map <- add_osm_groups (map, dat_B,
