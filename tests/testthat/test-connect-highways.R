@@ -27,20 +27,35 @@ if (curl::has_internet ()) # otherwise all of these return errors not warnings
 
         test_that ('highways do not connect', {
                    bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
-                   highways <- c ('Kingsway', 'Holborn', 'Farringdon.St',
-                                  'Strand', 'Fleet.St', 'Aldwych')
-                   # Again, warnings will differ if download fails
-                   expect_warning (connect_highways (highways = highways,
-                                                     bbox = bbox))
+                   highways <- c ('Monmouth.St', 'Short.?s.Gardens',
+                                  'Endell.St', 'Long.Acre',
+                                  'Upper.Saint.Martin')
+                   # Again, warnings will appear if download fails
+                   expect_output (connect_highways (highways = highways,
+                                                    bbox = bbox, plot = TRUE))
         })
-
-        test_that ('plot', {
-                   bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
-                   highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
-                   # This can't fail because failed downloads will generate
-                   # warnings and successful ones will generate a plot.
-                   expect_warning (connect_highways (highways = highways,
-                                                     bbox = bbox, plot = TRUE))
-        })
-    } # end if (test_all)
+    }
 } # end if has_internet
+
+# highway tests using internal data
+load (system.file ("extdata", "hwys.rda", package = "osmplotr"))
+
+test_that ('connect highways internal code', { # these all form cycles
+               for (i in 1:3)
+               {
+                   expect_silent (ways0 <- flatten_highways (hwys [[1]]))
+                   expect_true (!all (vapply (ways0, is.list, logical (1))))
+                   expect_silent (ways <- get_highway_cycle (ways0))
+                   # get_highway_cycle should add nodes:
+                   expect_true (sum (vapply (ways0, length, numeric (1))) <
+                                sum (vapply (ways, length, numeric (1))))
+                   conmat <- get_conmat (ways)
+                   expect_true (nrow (conmat) == length (ways))
+                   cyc <- ggm::fundCycles (conmat) [[1]]
+                   paths <- sps_through_cycle (cyc, ways)
+                   expect_equal (length (paths), length (ways))
+                   # paths should have fewer total nodes:
+                   expect_true (sum (vapply (paths, length, numeric (1))) <
+                                sum (vapply (ways, length, numeric (1))))
+               }
+        })
