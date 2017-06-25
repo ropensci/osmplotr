@@ -13,7 +13,7 @@ test_that ('obj', {
                          'obj must be a spatial object')
 })
 
-test_that ('dat', {
+test_that ('add surface', {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            obj <- london$dat_BNR
@@ -59,11 +59,12 @@ test_that ('dat', {
                                                   bg = 'orange'))
 
            # points-----------------------------------
-           #map <- osm_basemap (bbox = bbox, bg = "gray20")
-           #expect_silent (map <- add_osm_surface (map, obj = london$dat_T,
-           #                                       dat = dat, cols = cols))
-           #map <- osm_basemap (bbox = bbox, bg = "gray20")
-           #expect_silent (map <- add_osm_surface (map, obj = london$dat_T,
-           #                                       dat = dat, cols = cols,
-           #                                       bg = 'orange'))
+           map <- osm_basemap (bbox = bbox, bg = "gray20")
+           expect_silent (map <- add_osm_surface (map, obj = london$dat_T,
+                                                  dat = dat,
+                                                  cols = cols))
+           map <- osm_basemap (bbox = bbox, bg = "gray20")
+           expect_silent (map <- add_osm_surface (map, obj = london$dat_T,
+                                                  dat = dat,
+                                                  cols = cols, bg = 'orange'))
 })
