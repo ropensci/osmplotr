@@ -91,7 +91,6 @@ colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE)
     bl <- cols [, 4] # bottom left
     # Then interpolate, starting with top and bottom rows
     ih <- t (array (seq (n [2]) - 1, dim = c (n [2], 3))) / (n [2] - 1)
-    iv <- t (array (seq (n [1]) - 1, dim = c (n [1], 3))) / (n [1] - 1)
     top <- (1 - ih) * tl + ih * tr
     bot <- (1 - ih) * bl + ih * br
     arr <- array (NA, dim = n)

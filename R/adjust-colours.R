@@ -57,7 +57,6 @@ adjust_colours <- function (cols, adj = 0, plot = FALSE)
         stop ('plot can not be coerced to logical')
     # ---------------  end sanity checks and warnings  ---------------
 
-    n <- ncol (cols)
     cols_old <- apply (cols, 2, function (x)
                        rgb (x[1], x[2], x[3], maxColorValue = 255))
 

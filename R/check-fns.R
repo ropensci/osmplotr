@@ -86,7 +86,7 @@ check_arg <- function (arg, arg_name, fn_type, na_okay = FALSE)
                      do.call (paste0 ('as.', fn_type), list (arg)),
                      warning = function (w)
                      {
-                         w$message <- paste (arg_name, 
+                         w$message <- paste (arg_name,
                                               'can not be coerced to',
                                               fn_type)
                      })

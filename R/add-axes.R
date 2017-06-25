@@ -92,9 +92,9 @@ add_axes <- function (map, colour = "black", pos = c(0.02, 0.03),
     map <- add_tick_rectangles_v (map, yp, xaxs_pos, yaxs_pos,
                                alpha = alpha, expand = expand)
 
-    map <- add_horizontal_axis (xaxs_pos, yaxs_pos, xrange, xp, colour,
+    map <- add_horizontal_axis (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
                                 alpha, fontsize, fontface, fontfamily)
-    map <- add_vertical_axis (xaxs_pos, yaxs_pos, yrange, yp, colour,
+    map <- add_vertical_axis (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
                               alpha, fontsize, fontface, fontfamily)
 
     return (map)
@@ -168,7 +168,7 @@ add_tick_rectangles_v <- function (map, yp, xaxs_pos, yaxs_pos,
                                         colour = 'transparent')
 }
 
-add_horizontal_axis <- function (xaxs_pos, yaxs_pos, xrange, xp, colour,
+add_horizontal_axis <- function (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
                                  alpha, fontsize, fontface, fontfamily)
 {
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = max (xrange),
@@ -199,7 +199,7 @@ add_horizontal_axis <- function (xaxs_pos, yaxs_pos, xrange, xp, colour,
                                  fontface = fontface, family = fontfamily)
 }
 
-add_vertical_axis <- function (xaxs_pos, yaxs_pos, yrange, yp, colour,
+add_vertical_axis <- function (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
                                alpha, fontsize, fontface, fontfamily)
 {
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [1],
@@ -213,6 +213,7 @@ add_vertical_axis <- function (xaxs_pos, yaxs_pos, yrange, yp, colour,
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [2],
                           y1 = yp, y2 = yp)
     labdat <- data.frame (x = yaxs_pos [2], y = yp)
+
     map + ggplot2::geom_segment (data = segdat, colour = colour,
                                  mapping = ggplot2::aes (x = x1, y = y1,
                                                 xend = x2,
