@@ -77,7 +77,7 @@ make_osm_map <- function (bbox, osm_data,
 
     bg <- structures$col [structures$structure == 'background']
     map <- osm_basemap (bbox = bbox, bg = bg)
-    for (i in seq (nrow (structures) - 1))
+    for (i in seq (ns))
     {
         obji <- paste0 ('dat_', structures$suffix [i])
         map <- add_osm_objects (map, osm_data [[obji]],
