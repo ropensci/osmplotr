@@ -65,10 +65,10 @@
 #' @docType package
 #' @importFrom curl has_internet
 #' @importFrom ggm fundCycles
-#' @importFrom graphics lines locator plot plot.new par rect text
+#' @importFrom graphics lines plot plot.new par rect text
 #' @importFrom grDevices dev.cur dev.new dev.off rainbow rgb col2rgb heat.colors
 #' @importFrom grDevices bmp jpeg pictex png postscript svg tiff 
-#' @importFrom httr content GET http_status
+#' @importFrom httr content GET
 #' @importFrom igraph graph_from_edgelist shortest_paths
 #' @importFrom methods slot as is hasArg
 #' @importFrom osmdata add_feature opq osmdata_sp
@@ -77,7 +77,6 @@
 #' @importFrom spatstat convexhull idw ppp Smooth
 #' @importFrom stats runif
 #' @importFrom utils combn head setTxtProgressBar tail txtProgressBar
-#' @importFrom XML xmlParse
 NULL
 
 #' london 

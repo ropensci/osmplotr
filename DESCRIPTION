@@ -16,8 +16,7 @@ Imports:
     osmdata,
     rgeos,
     sp,
-    spatstat,
-    XML
+    spatstat
 Suggests:
     knitr,
     roxygen2,
