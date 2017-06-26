@@ -4,7 +4,7 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(bbox, key, value, extra_pairs, return_type, sf = FALSE,
+extract_osm_objects(bbox, key, value, extra_pairs, return_type, sf = TRUE,
   verbose = FALSE)
 }
 \arguments{
