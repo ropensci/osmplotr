@@ -166,22 +166,25 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         stop ('add_osm_groups not yet implemented for points')
 
     # Determine whether any groups are holes - not implemented at present
-    if (length (groups) > 1)
-        holes <- groups_are_holes (groups)
+    #if (length (groups) > 1)
+    #    holes <- groups_are_holes (groups)
+
+    # convert sf/sp geometries to simple list of matrices
+    obj <- geom_to_xy (obj, obj_type)
 
     obj_trim <- trim_obj_to_map (obj, map, obj_type)
     obj <- obj_trim$obj
 
-    cent_bdy <- group_centroids_bdrys (groups, make_hull, cols, cmat, obj_trim,
+    cent_bdry <- group_centroids_bdrys (groups, make_hull, cols, cmat, obj_trim,
                                        map)
-    cols <- cent_bdy$cols
+    cols <- cent_bdry$cols
 
-    coords <- get_obj_coords (obj, obj_type, cent_bdy)
+    coords <- get_obj_coords (obj, cent_bdry)
 
     # Get membership of objects within groups
     if (is.null (bg)) # include all points in groups
     {
-        membs <- membs_single_group (groups, coords, obj_trim, cent_bdy)
+        membs <- membs_single_group (groups, coords, obj_trim, cent_bdry)
         xy <- membs$xy
         membs <- membs$membs
     } else
@@ -204,11 +207,11 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     aes <- ggplot2::aes (x = lon, y = lat, group = id)
 
-    if (class (obj) == 'SpatialPolygonsDataFrame')
+    if (grepl ('polygon', obj_type))
         map <- map_plus_spPolydf_grps (map, xyflat, aes, cols, size) #nolint
-    else if (class (obj) == 'SpatialLinesDataFrame')
+    else if (grepl ('line', obj_type))
         map <- map_plus_spLinedf_grps (map, xyflat, aes, cols, size, shape) #nolint
-    else if (class (obj) == 'SpatialPointsDataFrame')
+    else if (grepl ('point', obj_type))
     {
         # Not implemented yet
     }
@@ -225,22 +228,35 @@ check_groups_arg <- function (groups)
 {
     if (missing (groups))
         stop ('groups must be provided', call. = FALSE)
+    if (is.null (groups))
+        stop ('groups must not be NULL', call. = FALSE)
 
-    if (class (groups) != 'list')
+    if (is (groups, 'list'))
     {
-        if (!is (groups, 'SpatialPoints'))
-            stop ('groups must be a SpatialPoints object (or list thereof)')
+        for (i in seq (groups))
+        {
+            if (is (groups [[i]], 'Spatial'))
+                groups [[i]] <- de_spatial_points (groups [[i]])
+            else if (!is.numeric (groups [[i]]))
+                stop ('All groups must be numeric')
+        }
+    } else
+    {
+        if (is (groups, 'Spatial'))
+            groups <- de_spatial_points (groups)
         groups <- list (groups)
-    } else if (!all( (lapply (groups, class)) == 'SpatialPoints'))
-    {
-        e <- simpleError ('Cannot coerce groups to SpatialPoints')
-        tryCatch (
-                  groups <- lapply (groups, function (x)
-                                    as (x, 'SpatialPoints')),
-                  finally = stop (e))
     }
 
     return (groups)
+}
+
+#' get raw coordinates from spatialpoints object
+#' @noRd
+de_spatial_points <- function (x)
+{
+    if (!is (x, 'SpatialPoints'))
+        stop ('All groups must be SpatialPoints objects')
+    slot (x, 'coords')
 }
 
 #' check structure of 'make_hull' arg
@@ -372,30 +388,26 @@ groups_are_holes <- function (groups)
 
 #' Trim coordinates of obj to be plotted down to coordinates of map
 #'
+#' @note This has to be modified for points!
+#'
 #' @noRd
 trim_obj_to_map <- function (obj, map, obj_type)
 {
     xrange <- map$coordinates$limits$x
     yrange <- map$coordinates$limits$y
-    xylims <- lapply (slot (obj, obj_type), function (i)
-                      {
-                          xyi <- slot (slot (i, cap_first (obj_type)) [[1]],
-                                       'coords')
-                          c (apply (xyi, 2, min), apply (xyi, 2, max))
-                      })
+
+    xylims <- lapply (obj, function (i)
+                          c (apply (i, 2, min), apply (i, 2, max)))
     xylims <- do.call (rbind, xylims)
+
     indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
                    xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
-    obj <- obj [indx, ]
+    obj <- obj [indx]
 
-    # then extract mean coordinates for every polygon or line in obj:
-    xy_mn <- lapply (slot (obj, obj_type),  function (x)
-                     colMeans  (slot (slot (x, cap_first (obj_type)) [[1]],
-                                      'coords')))
-    xmn <- sapply (xy_mn, function (x) x [1])
-    ymn <- sapply (xy_mn, function (x) x [2])
+    # mean coordinates for every item in obj:
+    xy_mn <- do.call (rbind, lapply (obj, function (x) colMeans (x)))
 
-    return (list ('obj' = obj, 'xy_mn' = xy_mn, 'xmn' = xmn, 'ymn' = ymn))
+    return (list ('obj' = obj, 'xy_mn' = xy_mn))
 }
 
 #' Get centroids and boundaries of group objects
@@ -416,8 +428,8 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_trim, map)
         if ( (length (make_hull) == 1 & make_hull) |
             (length (make_hull) > 1 & make_hull [i]))
         {
-            x <- slot (groups [[i]], 'coords') [, 1]
-            y <- slot (groups [[i]], 'coords') [, 2]
+            x <- groups [[i]] [, 1]
+            y <- groups [[i]] [, 2]
             if (length (x) > 2)
             {
                 xy <- spatstat::ppp (x, y,
@@ -433,12 +445,11 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_trim, map)
         {
             bdry <- rbind (bdry, bdry [1, ]) #enclose bdry back to 1st point
             # The next 4 lines are only used if is.null (bg)
-            indx <- sapply (obj_trim$xy_mn, function (x)
-                            sp::point.in.polygon (x [1], x [2],
-                                                  bdry [, 1], bdry [, 2]))
+            indx <- sp::point.in.polygon (obj_trim$xy_mn [, 1],
+                                          obj_trim$xy_mn [, 2],
+                                          bdry [, 1], bdry [, 2])
             indx <- which (indx > 0) # see below for point.in.polygon values
-            grp_centroids [[i]] <- cbind (obj_trim$xmn [indx],
-                                          obj_trim$ymn [indx])
+            grp_centroids [[i]] <- obj_trim$xy_mn [indx, ]
         } else
         {
             grp_centroids [[i]] <- bdry
@@ -455,9 +466,9 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_trim, map)
             # Then get colour from colour.mat
             xrange <- map$coordinates$limits$x
             yrange <- map$coordinates$limits$y
-            xi <- ceiling (nrow (cmat) * (mean (obj_trim$xmn [indx]) -
+            xi <- ceiling (nrow (cmat) * (mean (obj_trim$xy_mn [indx, 1]) -
                                           xrange [1]) / diff (xrange))
-            yi <- ceiling (nrow (cmat) * (mean (obj_trim$ymn [indx]) -
+            yi <- ceiling (nrow (cmat) * (mean (obj_trim$xy_mn [indx, 2]) -
                                           yrange [1]) / diff (yrange))
             cols [i] <- cmat [xi, yi]
         }
@@ -474,13 +485,11 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_trim, map)
 #' sufficient size
 #'
 #' @noRd
-get_obj_coords <- function (obj, obj_type, cent_bdy)
+get_obj_coords <- function (obj, cent_bdry)
 {
-    coords <- lapply (slot (obj, obj_type),  function (x)
-                      slot (slot (x, cap_first (obj_type)) [[1]], 'coords'))
-    coords <- lapply (coords, function (i)
+    coords <- lapply (obj, function (i)
                       {
-                          pins <- lapply (cent_bdy$bdry, function (j)
+                          pins <- lapply (cent_bdry$bdry, function (j)
                                           {
                                               if (nrow (j) > 2)
                                                   sp::point.in.polygon (
@@ -499,11 +508,11 @@ get_obj_coords <- function (obj, obj_type, cent_bdy)
 #' get members of single group
 #'
 #' @noRd
-membs_single_group <- function (groups, coords, obj_trim, cent_bdy)
+membs_single_group <- function (groups, coords, obj_trim, cent_bdry)
 {
     membs <- sapply (coords, function (i)
                      {
-                         temp <- i [, 3:ncol (i)]
+                         temp <- i [, 3:ncol (i), drop = FALSE]
                          if (!is.matrix (temp))
                              temp <- matrix (temp, ncol = 1,
                                              nrow = length (temp))
@@ -519,19 +528,19 @@ membs_single_group <- function (groups, coords, obj_trim, cent_bdy)
                          return (n)
                      })
     indx <- which (membs == 0)
-    x0 <- obj_trim$xmn [indx]
-    y0 <- obj_trim$ymn [indx]
+    x0 <- obj_trim$xy_mn [indx, 1]
+    y0 <- obj_trim$xy_mn [indx, 2]
     dists <- array (NA, dim = c (length (indx), length (groups)))
     for (i in seq (groups))
     {
-        ng <- dim (cent_bdy$grp_centroids [[i]]) [1]
+        ng <- dim (cent_bdry$grp_centroids [[i]]) [1]
         if (ng > 0)
         {
             x0mat <- array (x0, dim = c(length (x0), ng))
             y0mat <- array (y0, dim = c(length (y0), ng))
-            xmat <- t (array (cent_bdy$grp_centroids [[i]] [, 1],
+            xmat <- t (array (cent_bdry$grp_centroids [[i]] [, 1],
                               dim = c(ng, length (x0))))
-            ymat <- t (array (cent_bdy$grp_centroids [[i]] [, 2],
+            ymat <- t (array (cent_bdry$grp_centroids [[i]] [, 2],
                               dim = c(ng, length (x0))))
             dg <- sqrt ( (xmat - x0mat) ^ 2 + (ymat - y0mat) ^ 2)
             # Then the minimum distance for each stray object to any object
@@ -542,7 +551,7 @@ membs_single_group <- function (groups, coords, obj_trim, cent_bdy)
     }
     # Then simply extract the group holding the overall minimum dist:
     membs [indx] <- apply (dists, 1, which.min)
-    xy <- lapply (coords, function (i) i [, 1:2])
+    xy <- lapply (coords, function (i) i [, 1:2, drop = FALSE])
 
     return (list ('membs' = membs, 'xy' = xy))
 }
@@ -555,10 +564,10 @@ membs_single_group <- function (groups, coords, obj_trim, cent_bdy)
 #' @noRd
 membs_multiple_groups_bdry <- function (coords, boundary)
 {
-    xy <- lapply (coords, function (i) i [, 1:2])
+    xy <- lapply (coords, function (i) i [, 1:2, drop = FALSE])
     membs <- lapply (coords, function (i)
                      {
-                         temp <- i [, 3:ncol (i)]
+                         temp <- i [, 3:ncol (i), drop = FALSE]
                          if (!is.matrix (temp))
                              temp <- matrix (temp, ncol = 1,
                                              nrow = length (temp))
@@ -668,12 +677,18 @@ membs_multiple_groups <- function (coords)
 
 #' cbind membs to xy so that membs maps straight onto cols
 #'
+#' @note This is the first place at which the OSM ID rownames have to be
+#' removed, because data.frame objects are not allowed to be constructed with
+#' duplicate row.names.
+#'
 #' @noRd
 cbind_membs_xy <- function (membs, xy)
 {
-    xym <- mapply (cbind, xy, membs)
+    xym <- mapply ("cbind", xy, membs, SIMPLIFY = FALSE)
+
     for (i in seq (xym))
     {
+        rownames (xym [[i]]) <- NULL
         xym [[i]] <- data.frame (cbind (i, xym [[i]]))
         names (xym [[i]]) <- c ("id", "lon", "lat", "col")
     }

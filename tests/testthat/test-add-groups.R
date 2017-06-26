@@ -40,14 +40,14 @@ test_that ('group errors', {
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            expect_error (add_osm_groups (map, dat_B, bg = 1),
                            "groups must be provided")
-           expect_error (capture_warnings (add_osm_groups (map, dat_B, NULL)),
-                         'groups must be a SpatialPoints object')
+           expect_error (add_osm_groups (map, dat_B, NULL),
+                         'groups must not be NULL')
            expect_error (add_osm_groups (map, dat_B,
                                          groups = list (dat_H)),
-                         'Cannot coerce groups to SpatialPoints')
+                         'All groups must be SpatialPoints objects')
            grps1 <- list (pts, pts, "a")
            expect_error (add_osm_groups (map, dat_B, groups = grps1),
-                         'Cannot coerce groups to SpatialPoints')
+                         'All groups must be numeric')
 })
 
 test_that ('groups with polygons', {
@@ -100,7 +100,7 @@ test_that ('make_hull', {
 test_that ('colourmat', {
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            expect_silent (add_osm_groups (map, dat_B, grps, 1, 2, colmat = 1))
-           expect_error (add_osm_groups (map, dat_B, grps, 1, 2, colmat = "abc"),
+           expect_error (add_osm_groups (map, dat_B, grps, 1, 2, colmat = "a"),
                          'colmat can not be coerced to logical')
            expect_silent (add_osm_groups (map, dat_B, grps, cols = 1:2, 2))
            expect_silent (add_osm_groups (map, dat_B, grps, cols = 1:2, 2,
@@ -110,5 +110,6 @@ test_that ('colourmat', {
 test_that ('rotate', {
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            expect_silent (add_osm_groups (map, dat_B, grps, 1, 2, rotate = 1))
-           expect_silent (add_osm_groups (map, dat_B, grps, 1, 2, rotate = "abc"))
+           expect_silent (add_osm_groups (map, dat_B, grps, 1, 2,
+                                          rotate = "abc"))
 })
