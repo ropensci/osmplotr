@@ -122,22 +122,27 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
     # ---------------  end sanity checks and warnings  ---------------
 
     obj_type <- get_obj_type (obj)
+    obj <- geom_to_xy (obj, obj_type)
 
-    xy0 <- get_xy0 (map, obj, obj_type, dat)
-    xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size = grid_size,
-                              method = method)
+    obj_trim <- trim_obj_to_map (obj, map, obj_type)
+    obj <- obj_trim$obj
+    xy_mn <- obj_trim$xy_mn
+
+    #xy0 <- get_xy0 (map, obj, obj_type, dat)
+    xy0 <- list2df_with_data (map, obj, obj_type, xy_mn, dat, bg,
+                              grid_size = grid_size, method = method)
     if (missing (bg))
         xy <- xy0
     else
         xy <- xy0 [xy0$inp > 0, ]
 
 
-    if (class (obj) == 'SpatialPolygonsDataFrame')
+    if (grepl ('polygon', obj_type))
         map <- map_plus_spPolydf_srfc (map = map, xy = xy, xy0 = xy0, #nolint
                                        cols = cols, bg = bg, size = size)
-    else if (class (obj) == 'SpatialLinesDataFrame')
+    else if (grepl ('line', obj_type))
         map <- map_plus_spLinesdf_srfc (map, xy, xy0, cols, bg, size, shape) #nolint
-    else if (class (obj) == 'SpatialPointsDataFrame')
+    else if (grepl ('point', obj_type))
         map <- map_plus_spPointsdf_srfc (map, xy, xy0, cols, bg, size, shape) #nolint
 
     return (map)
@@ -190,12 +195,16 @@ check_surface_dat <- function (dat)
 
 #' list2df_with_data
 #'
-#' Converts a list of spatial objects to a single data frame, and adds a
+#' Converts a list of spatial coordinatees to a single data frame, and adds a
 #' corresponding 'z' column provided by mapping mean object coordinates onto a
 #' spatially interpolated version of 'dat'
 #'
 #' @param map A ggplot2 object (used only to obtain plot limits)
-#' @param xy List of coordinates of spatial objects
+#' @param obj List of spatial coordinates of objects
+#' @param obj_type Type of spatial object as determined from
+#' \code{get_obj_type}.
+#' @param xy_mn Mean coordinates of objects as returned from
+#' \code{trim_obj_to_map}.
 #' @param dat A Matrix representing the data surface (which may be irregular)
 #' used to provide the z-values for the resultant data frame.
 #' @param bg background colour from 'add_osm_surface()', passed here only to
@@ -207,23 +216,16 @@ check_surface_dat <- function (dat)
 #' @return A single data frame of object IDs, coordinates, and z-values
 #'
 #' @noRd
-list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
-                               method = "idw")
+list2df_with_data <- function (map, obj, obj_type, xy_mn, dat, bg,
+                               grid_size = 100, method = "idw")
 {
     xyz <- get_surface_z (dat, method, grid_size)
 
-    # Get mean coordinates of each object in xy.
-    # TODO: Colour lines continuously according to the coordinates of each
-    # segment?
-    if ('polygons' %in% class (xy) | 'lines' %in% class (xy))
-        xymn <- do.call (rbind, lapply (xy, colMeans))
-    else if ('points' %in% class (xy))
-        xymn <- xy
-    else
-        stop ('xy must be a spatial object')
-
     # Then remove any objects not in the convex hull of provided data
-    indx <- rep (NA, length (xy))
+    if (grepl ('point', obj_type))
+        indx <- rep (NA, nrow (obj))
+    else
+        indx <- rep (NA, length (obj))
     if (!missing (bg))
     {
         xyh <- spatstat::ppp (xyz$x, xyz$y,
@@ -231,25 +233,23 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
         ch <- spatstat::convexhull (xyh)
         bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
 
-        indx <- apply (xymn, 1, function (x)
+        indx <- apply (xy_mn, 1, function (x)
                    sp::point.in.polygon (x [1], x [2], bdry [, 1], bdry [, 2]))
         # indx = 0 for outside polygon
     }
 
     # Include only those objects within the limits of the map
-    indx_xy <- which (xymn [, 1] >= map$coordinates$limits$x [1] &
-                      xymn [, 1] <= map$coordinates$limits$x [2] &
-                      xymn [, 2] >= map$coordinates$limits$y [1] &
-                      xymn [, 2] <= map$coordinates$limits$y [2])
-    xymn <- xymn [indx_xy, ]
+    indx_xy <- which (xy_mn [, 1] >= map$coordinates$limits$x [1] &
+                      xy_mn [, 1] <= map$coordinates$limits$x [2] &
+                      xy_mn [, 2] >= map$coordinates$limits$y [1] &
+                      xy_mn [, 2] <= map$coordinates$limits$y [2])
+    xy_mn <- xy_mn [indx_xy, ]
     indx <- indx [indx_xy]
     # And reduce xy to that index
-    c2 <- class (xy) [2]
-    if ('points' %in% class (xy))
-        xy <- xy [indx_xy, ]
+    if (grepl ('point', obj_type))
+        obj <- obj [indx_xy, ]
     else
-        xy <- xy [indx_xy]
-    xy <- structure (xy, class = c (class (xy), c2))
+        obj <- obj [indx_xy]
 
     # Convert to integer indices into z. z spans the range of data, not
     # necessarily the bbox
@@ -257,34 +257,35 @@ list2df_with_data <- function (map, xy, dat, bg, grid_size = 100,
     ny <- length (unique (xyz$y))
     if (method == 'idw' | method == 'smooth')
         nx <- ny <- grid_size
-    xymn [, 1] <- ceiling (nx * (xymn [, 1] - xyz$xlims [1]) /
+    xy_mn [, 1] <- ceiling (nx * (xy_mn [, 1] - xyz$xlims [1]) /
                            diff (xyz$xlims))
-    xymn [, 2] <- ceiling (ny * (xymn [, 2] - xyz$ylims [1]) /
+    xy_mn [, 2] <- ceiling (ny * (xy_mn [, 2] - xyz$ylims [1]) /
                            diff (xyz$ylims))
 
-    xymn <- set_extreme_vals (xymn, bg, nx, ny)
+    xy_mn <- set_extreme_vals (xy_mn, bg, nx, ny)
 
-    if ('polygons' %in% class (xy) | 'lines' %in% class (xy))
+    if (grepl ('polygon', obj_type) | grepl ('line', obj_type))
     {
-        for (i in seq (xy))
-            xy [[i]] <- cbind (i, xy [[i]], xyz$z [xymn [i, 1], xymn [i, 2]],
-                               indx [i])
+        for (i in seq (obj))
+            obj [[i]] <- cbind (i, obj [[i]],
+                                xyz$z [xy_mn [i, 1], xy_mn [i, 2]],
+                                indx [i])
         # And rbind them to a single matrix.
-        xy <-  do.call (rbind, xy)
+        obj <-  do.call (rbind, obj)
     } else # can only be points
     {
-        indx2 <- (xymn [, 2] - 1) * grid_size + xymn [, 1]
-        xy <- cbind (seq (dim (xy)[1]), xy, xyz$z [indx2], indx)
+        indx2 <- (xy_mn [, 2] - 1) * grid_size + xy_mn [, 1]
+        obj <- cbind (seq (dim (obj) [1]), obj, xyz$z [indx2], indx)
     }
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
     data.frame (
-                id = xy [, 1],
-                lon = xy [, 2],
-                lat = xy [, 3],
-                z = xy [, 4],
-                inp = xy [, 5],
-                row.names = seq (nrow (xy))
+                id = obj [, 1],
+                lon = obj [, 2],
+                lat = obj [, 3],
+                z = obj [, 4],
+                inp = obj [, 5],
+                row.names = seq (nrow (obj))
                 )
 }
 

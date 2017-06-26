@@ -396,16 +396,25 @@ trim_obj_to_map <- function (obj, map, obj_type)
     xrange <- map$coordinates$limits$x
     yrange <- map$coordinates$limits$y
 
-    xylims <- lapply (obj, function (i)
+    if (grepl ('point', obj_type))
+    {
+        indx <- which (obj [, 1] > xrange [1] & obj [, 2] > yrange [1] &
+                       obj [, 1] < xrange [2] & obj [, 2] < yrange [2])
+        obj <- obj [indx, ]
+        xy_mn <- obj
+    } else
+    {
+        xylims <- lapply (obj, function (i)
                           c (apply (i, 2, min), apply (i, 2, max)))
-    xylims <- do.call (rbind, xylims)
+        xylims <- do.call (rbind, xylims)
 
-    indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
-                   xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
-    obj <- obj [indx]
+        indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
+                       xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
+        obj <- obj [indx]
 
-    # mean coordinates for every item in obj:
-    xy_mn <- do.call (rbind, lapply (obj, function (x) colMeans (x)))
+        # mean coordinates for every item in obj:
+        xy_mn <- do.call (rbind, lapply (obj, function (x) colMeans (x)))
+    }
 
     return (list ('obj' = obj, 'xy_mn' = xy_mn))
 }
