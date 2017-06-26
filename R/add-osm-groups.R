@@ -166,8 +166,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         stop ('add_osm_groups not yet implemented for points')
 
     # Determine whether any groups are holes - not implemented at present
-    #if (length (groups) > 1)
-    #    holes <- groups_are_holes (groups)
+    if (length (groups) > 1)
+        holes <- groups_are_holes (groups)
 
     # convert sf/sp geometries to simple list of matrices
     obj <- geom_to_xy (obj, obj_type)

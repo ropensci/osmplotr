@@ -128,7 +128,6 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
     obj <- obj_trim$obj
     xy_mn <- obj_trim$xy_mn
 
-    #xy0 <- get_xy0 (map, obj, obj_type, dat)
     xy0 <- list2df_with_data (map, obj, obj_type, xy_mn, dat, bg,
                               grid_size = grid_size, method = method)
     if (missing (bg))
@@ -344,33 +343,6 @@ get_surface_z <- function (dat, method, grid_size)
     list ('xlims' = xlims, 'ylims' = ylims, 'x' = x, 'y' = y, 'z' =  t (z))
 }
 
-
-get_xy0 <- function (map, obj, obj_type, xy)
-{
-    xrange <- map$coordinates$limits$x
-    yrange <- map$coordinates$limits$y
-
-    if (class (obj) == 'SpatialPointsDataFrame')
-    {
-        xy0 <- sp::coordinates (obj)
-    } else
-    {
-        xylims <- lapply (slot (obj, obj_type), function (i)
-                          {
-                              xyi <- slot (slot (i, cap_first (obj_type)) [[1]],
-                                           'coords')
-                              c (apply (xyi, 2, min), apply (xyi, 2, max))
-                          })
-        xylims <- do.call (rbind, xylims)
-        indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
-                       xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
-        obj <- obj [indx, ]
-        xy0 <- lapply (slot (obj, obj_type), function (x)
-                        slot (slot (x, cap_first (obj_type)) [[1]], 'coords'))
-    }
-
-    structure (xy0, class = c (class (xy0), obj_type))
-}
 
 #' set out of range values to either bg colour or NA
 #'

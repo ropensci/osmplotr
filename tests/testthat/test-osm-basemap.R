@@ -14,7 +14,7 @@ test_that ('structures', {
            bb <- get_bbox (1:4)
            expect_error (osm_basemap (bb, structures = NA),
                          'structures must be a data frame')
-           s <- osm_structures ()
+           s <- osm_structures (col_scheme = 'light')
            names (s) [1] <- 'x'
            expect_error (osm_basemap (get_bbox (1:4), structures = s),
                          'structures not in recognised format')
