@@ -33,6 +33,7 @@ if (curl::has_internet ()) # otherwise all of these return errors not warnings
                    # Again, warnings will appear if download fails
                    expect_output (connect_highways (highways = highways,
                                                     bbox = bbox, plot = TRUE))
+                   dev.off (which = dev.cur ())
         })
     }
 } # end if has_internet

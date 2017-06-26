@@ -54,31 +54,33 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, size, shape)
     if (length (col) == 0)
         stop ('a non-null col must be provided')
     check_col_arg (border)
-    shape <- default_shape (obj, shape)
-    size <- default_size (obj, size)
     # ---------------  end sanity checks and warnings  ---------------
 
+    obj_type <- get_obj_type (obj)
+    # Then a couple more checks using obj_type:
+    shape <- default_shape (obj_type, shape)
+    size <- default_size (obj_type, size)
+
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
-    if (class (obj) == 'SpatialPolygonsDataFrame')
+
+    # convert sf/sp geometries to simple list of matrices
+    xy <- geom_to_xy (obj, obj_type)
+
+    if (grepl ('polygon', obj_type))
     {
-        xy <- lapply (slot (obj, "polygons"), function (x)
-                      slot (slot (x, "Polygons") [[1]], "coords"))
         xy <- list2df (xy)
         map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
                                                       data = xy, size = size,
                                                       fill = col,
                                                       colour = border)
-    } else if (class (obj) == 'SpatialLinesDataFrame')
+    } else if (grepl ('line', obj_type))
     {
-        xy <- lapply (slot (obj, 'lines'), function (x)
-                      slot (slot (x, 'Lines') [[1]], 'coords'))
         xy <- list2df (xy, islines = TRUE)
         map <- map + ggplot2::geom_path (data = xy,
                                    ggplot2::aes (x = lon, y = lat),
                                    colour = col, size = size, linetype = shape)
-    } else if (class (obj) == 'SpatialPointsDataFrame')
+    } else if (grepl ('point', obj_type))
     {
-        xy <- data.frame (slot (obj, 'coords'))
         map <- map + ggplot2::geom_point (data = xy,
                                     ggplot2::aes (x = lon, y = lat),
                                     col = col, size = size, shape = shape)
@@ -119,12 +121,12 @@ list2df <- function (xy, islines = FALSE)
 #' convert shape to default values dependent on class of obj
 #'
 #' @noRd
-default_shape <- function (obj, shape)
+default_shape <- function (obj_type, shape)
 {
     shape_default <- NULL
-    if (class (obj) == 'SpatialLinesDataFrame')
+    if (grepl ('line', obj_type))
         shape_default <- 1
-    else if (class (obj) == 'SpatialPointsDataFrame')
+    else if (grepl ('point', obj_type))
         shape_default <- 19
 
     ret <- NULL
@@ -151,7 +153,7 @@ default_shape <- function (obj, shape)
 default_size <- function (obj, size)
 {
     size_default <- 0
-    if (class (obj) != 'SpatialPolygonsDataFrame')
+    if (!grepl ('polygon', get_obj_type (obj)))
         size_default <- 0.5
 
     if (missing (size))
@@ -167,4 +169,26 @@ default_size <- function (obj, size)
     }
 
     return (size)
+}
+
+#' return geometries of sf/sp objects as lists of matrices
+#'
+#' @noRd
+geom_to_xy <- function (obj, obj_type)
+{
+    if (obj_type == 'polygon') # sf
+        xy <- lapply (obj$geometry, function (i) i [[1]])
+    else if (obj_type == 'linestring') # sf
+        xy <- lapply (obj$geometry, function (i) as.matrix (i))
+    else if (obj_type == 'point') # sf
+    {
+        xy <- data.frame (do.call (rbind, lapply (obj$geometry, as.numeric)))
+        names (xy) <- c ('lon', 'lat')
+    } else if (obj_type %in% c ('polygons', 'lines')) # sp
+        xy <- lapply (slot (obj, obj_type), function (x)
+                      slot (slot (x, cap_first (obj_type)) [[1]], "coords"))
+    else if (obj_type == 'points') # sp
+        xy <- data.frame (slot (obj, 'coords'))
+
+    return (xy)
 }

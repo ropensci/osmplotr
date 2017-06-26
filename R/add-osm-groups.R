@@ -163,20 +163,20 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
                              'SpatialLinesDataFrame'))
         stop ('obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame')
     # ... because points not yet implemented
-    objtxt <- get_objtxt (obj)
+    obj_type <- get_obj_type (obj)
 
     # Determine whether any groups are holes - not implemented at present
     if (length (groups) > 1)
         holes <- groups_are_holes (groups)
 
-    obj_xy <- trip_obj_to_map (obj, map, objtxt)
+    obj_xy <- trip_obj_to_map (obj, map, obj_type)
     obj <- obj_xy$obj
 
     cent_bdy <- group_centroids_bdrys (groups, make_hull, cols, cmat, obj_xy,
                                        map)
     cols <- cent_bdy$cols
 
-    coords <- get_obj_coords (obj, objtxt, cent_bdy)
+    coords <- get_obj_coords (obj, obj_type, cent_bdy)
 
     # Get membership of objects within groups
     if (is.null (bg)) # include all points in groups
@@ -369,13 +369,14 @@ groups_are_holes <- function (groups)
 #' Trim coordinates of obj to be plotted down to coordinates of map
 #'
 #' @noRd
-trip_obj_to_map <- function (obj, map, objtxt)
+trip_obj_to_map <- function (obj, map, obj_type)
 {
     xrange <- map$coordinates$limits$x
     yrange <- map$coordinates$limits$y
-    xylims <- lapply (slot (obj, objtxt [1]), function (i)
+    xylims <- lapply (slot (obj, obj_type), function (i)
                       {
-                          xyi <- slot (slot (i, objtxt [2]) [[1]], 'coords')
+                          xyi <- slot (slot (i, cap_first (obj_type)) [[1]],
+                                       'coords')
                           c (apply (xyi, 2, min), apply (xyi, 2, max))
                       })
     xylims <- do.call (rbind, xylims)
@@ -384,8 +385,9 @@ trip_obj_to_map <- function (obj, map, objtxt)
     obj <- obj [indx, ]
 
     # then extract mean coordinates for every polygon or line in obj:
-    xy_mn <- lapply (slot (obj, objtxt [1]),  function (x)
-                     colMeans  (slot (slot (x, objtxt [2]) [[1]], 'coords')))
+    xy_mn <- lapply (slot (obj, obj_type),  function (x)
+                     colMeans  (slot (slot (x, cap_first (obj_type)) [[1]],
+                                      'coords')))
     xmn <- sapply (xy_mn, function (x) x [1])
     ymn <- sapply (xy_mn, function (x) x [2])
 
@@ -467,10 +469,10 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_xy, map)
 #' sufficient size
 #'
 #' @noRd
-get_obj_coords <- function (obj, objtxt, cent_bdy)
+get_obj_coords <- function (obj, obj_type, cent_bdy)
 {
-    coords <- lapply (slot (obj, objtxt [1]),  function (x)
-                      slot (slot (x, objtxt [2]) [[1]], 'coords'))
+    coords <- lapply (slot (obj, obj_type),  function (x)
+                      slot (slot (x, cap_first (obj_type)) [[1]], 'coords'))
     coords <- lapply (coords, function (i)
                       {
                           pins <- lapply (cent_bdy$bdry, function (j)

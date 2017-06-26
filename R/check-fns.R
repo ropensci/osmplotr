@@ -6,23 +6,39 @@ check_map_arg <- function (map)
         stop ('map must be a ggplot2 object', call. = FALSE)
 }
 
-get_objtxt <- function (obj)
+get_obj_type <- function (obj)
 {
-    if (class (obj) == 'SpatialPolygonsDataFrame')
-        objtxt <- c ('polygons', 'Polygons')
-    else if (class (obj) == 'SpatialLinesDataFrame')
-        objtxt <- c ('lines', 'Lines')
-    else if (class (obj) == 'SpatialPointsDataFrame')
-        objtxt <- c ('points', '')
+    if (is (obj, 'sf'))
+    {
+        i <- which (grepl ('sfc_', class (obj$geometry)))
+        obj_type <- tolower (strsplit (class (obj$geometry) [i],
+                                       'sfc_') [[1]] [2])
+    } else
+    {
+        obj_type <- tolower (strsplit (strsplit (class (obj),
+                                                 'Spatial') [[1]] [2],
+                                       'DataFrame') [[1]] [1])
+    }
 
-    return (objtxt)
+    return (obj_type)
+}
+
+
+#' capitalise first letter of word
+#'
+#' @note does same as stringi::stri_trans_totitle
+#'
+#' @noRd
+cap_first <- function (x)
+{
+    paste0 (toupper (substring (x, 1, 1)), substring (x, 2, nchar (x)))
 }
 
 check_obj_arg <- function (obj)
 {
     if (missing (obj))
         stop ('obj must be provided', call. = FALSE)
-    if (!is (obj, 'Spatial'))
+    if (!(is (obj, 'Spatial') | is (obj, 'sf')))
         stop ('obj must be a spatial object', call. = FALSE)
 }
 

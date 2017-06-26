@@ -121,9 +121,9 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
     }
     # ---------------  end sanity checks and warnings  ---------------
 
-    objtxt <- get_objtxt (obj)
+    obj_type <- get_obj_type (obj)
 
-    xy0 <- get_xy0 (map, obj, objtxt, dat)
+    xy0 <- get_xy0 (map, obj, obj_type, dat)
     xy0 <- list2df_with_data (map, xy0, dat, bg, grid_size = grid_size,
                               method = method)
     if (missing (bg))
@@ -133,8 +133,8 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
 
 
     if (class (obj) == 'SpatialPolygonsDataFrame')
-        map <- map_plus_spPolydf_srfc (map = map, xy = xy, xy0 = xy0,
-                                       cols = cols, bg = bg, size = size) #nolint
+        map <- map_plus_spPolydf_srfc (map = map, xy = xy, xy0 = xy0, #nolint
+                                       cols = cols, bg = bg, size = size)
     else if (class (obj) == 'SpatialLinesDataFrame')
         map <- map_plus_spLinesdf_srfc (map, xy, xy0, cols, bg, size, shape) #nolint
     else if (class (obj) == 'SpatialPointsDataFrame')
@@ -344,7 +344,7 @@ get_surface_z <- function (dat, method, grid_size)
 }
 
 
-get_xy0 <- function (map, obj, objtxt, xy)
+get_xy0 <- function (map, obj, obj_type, xy)
 {
     xrange <- map$coordinates$limits$x
     yrange <- map$coordinates$limits$y
@@ -354,20 +354,21 @@ get_xy0 <- function (map, obj, objtxt, xy)
         xy0 <- sp::coordinates (obj)
     } else
     {
-        xylims <- lapply (slot (obj, objtxt [1]), function (i)
+        xylims <- lapply (slot (obj, obj_type), function (i)
                           {
-                              xyi <- slot (slot (i, objtxt [2]) [[1]], 'coords')
+                              xyi <- slot (slot (i, cap_first (obj_type)) [[1]],
+                                           'coords')
                               c (apply (xyi, 2, min), apply (xyi, 2, max))
                           })
         xylims <- do.call (rbind, xylims)
         indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
                        xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
         obj <- obj [indx, ]
-        xy0 <- lapply (slot (obj, objtxt [1]), function (x)
-                        slot (slot (x, objtxt [2]) [[1]], 'coords'))
+        xy0 <- lapply (slot (obj, obj_type), function (x)
+                        slot (slot (x, cap_first (obj_type)) [[1]], 'coords'))
     }
 
-    structure (xy0, class = c (class (xy0), objtxt [1]))
+    structure (xy0, class = c (class (xy0), obj_type))
 }
 
 #' set out of range values to either bg colour or NA

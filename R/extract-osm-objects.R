@@ -74,7 +74,7 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
     }
 
     val_list <- c ('grass', 'park', 'tree', 'water')
-    key_list <- c ('landuse', 'leisure', 'natural', 'ntural')
+    key_list <- c ('landuse', 'leisure', 'natural', 'natural')
     indx <- which (q_keys %in% val_list)
     if (length (indx) > 0)
     {
@@ -123,26 +123,24 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
             obj <- obj$osm_polygons
     } else
     {
-        if (key == 'highway')
+        if ('highway' %in% q_keys)
             obj <- obj$osm_lines
-        else if (key == 'building' | key == 'landuse' | key == 'leisure')
+        else if ('building' %in% q_keys | 'landuse' %in% q_keys |
+                 'leisure' %in% q_keys |
+                 ('natural' %in% q_keys & 'water' %in% q_vals))
             obj <- obj$osm_polygons
-        else if (key == 'route')
+        else if ('route' %in% q_keys)
             obj <- obj$osm_multilines
-        else if (key == 'boundary' | key == 'waterway')
+        else if ('boundary' %in% q_keys | 'waterway' %in% q_keys)
             obj <- obj$osm_multipolygons
-        else if (!missing (value))
+        else if ('natural' %in% q_keys & 'tree' %in% q_vals)
+            obj <- obj$osm_points
+        else
         {
-            if (value == 'tree')
-                obj <- obj$osm_points
-            else
-            {
-                message (paste0 ('Cannot determine return_type;',
-                                 ' maybe specify explicitly?'))
-                obj <- obj$osm_lines
-            }
-        } else
-            obj <- obj$osm_polygons
+            message (paste0 ('Cannot determine return_type;',
+                             ' maybe specify explicitly?'))
+            obj <- obj$osm_lines
+        }
     }
 
     if (nrow (obj) == 0)
