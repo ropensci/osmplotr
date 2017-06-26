@@ -21,6 +21,8 @@
 #' SpatialLinesDataFrame. If not specified, defaults to 'sensible' values (for
 #' example, \code{lines} for highways, \code{points} for trees, \code{polygons}
 #' for bulidings).
+#' @param sf If \code{TRUE}, return Simple Features (\code{sf}) objects;
+#' otherwise Spatial (\code{sp}) objects.
 #' @param verbose If \code{TRUE}, provides notification of progress.
 #'
 #' @return Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
@@ -43,7 +45,7 @@
 #'                             bbox = bbox)
 #' }
 extract_osm_objects <- function (bbox, key, value, extra_pairs,
-                                 return_type, verbose = FALSE)
+                                 return_type, sf = FALSE, verbose = FALSE)
 {
     check_arg (key, 'key', 'character')
 
@@ -101,7 +103,10 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
                                          match_case = FALSE)
     }
 
-    obj <- osmdata::osmdata_sp (qry)
+    if (sf)
+        obj <- osmdata::osmdata_sf (qry)
+    else
+        obj <- osmdata::osmdata_sp (qry)
 
     if (!missing (return_type))
     {

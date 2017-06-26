@@ -4,7 +4,7 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(bbox, key, value, extra_pairs, return_type,
+extract_osm_objects(bbox, key, value, extra_pairs, return_type, sf = FALSE,
   verbose = FALSE)
 }
 \arguments{
@@ -29,6 +29,9 @@ to the overpass API.}
 SpatialLinesDataFrame. If not specified, defaults to 'sensible' values (for
 example, \code{lines} for highways, \code{points} for trees, \code{polygons}
 for bulidings).}
+
+\item{sf}{If \code{TRUE}, return Simple Features (\code{sf}) objects;
+otherwise Spatial (\code{sp}) objects.}
 
 \item{verbose}{If \code{TRUE}, provides notification of progress.}
 }
