@@ -44,5 +44,19 @@ if (curl::has_internet () & test_all)
                                                value = value,
                                                extra_pairs = extra_pairs)
                    expect_true (nrow (dat) > 0)
+                   expect_is (dat, 'Spatial')
+    })
+
+    test_that ('sf objects', {
+                   key <- 'route'
+                   value <- 'bicycle'
+                   extra_pairs <- c ('name', 'London Cycle Network')
+                   bbox <- get_bbox (c (0, 51.5, 0.1, 51.6))
+                   dat <- extract_osm_objects (bbox = bbox, key = key,
+                                               value = value,
+                                               extra_pairs = extra_pairs,
+                                               sf = TRUE)
+                   expect_true (nrow (dat) > 0)
+                   expect_is (dat, 'sf')
     })
 } # end if has_internet

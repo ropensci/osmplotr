@@ -5,6 +5,8 @@ test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
              identical (Sys.getenv ("TRAVIS"), "true") |
              identical (Sys.getenv ("APPVEYOR"), "True"))
 
+source ("../stub.R")
+
 if (curl::has_internet ()) # otherwise all of these return errors not warnings
 {
     test_that ('missing objects', {
@@ -25,13 +27,28 @@ if (curl::has_internet ()) # otherwise all of these return errors not warnings
                        #              'No data able to be extracted')
         })
 
+        bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
+        highways <- c ('Monmouth.St', 'Short.?s.Gardens')
+
+        test_that ('extract_highways', {
+                       ways <- extract_highways (highway_names = highways,
+                                                 bbox = bbox)
+                       expect_is (ways, "list")
+                       expect_true (length (ways) > 1) # some might fail
+                       nms <- abbreviate_hwy_names (highways)
+                       expect_true (any (nms %in% names (ways)))
+        })
+
+        # This data for this test are stubbed because the dl fails too often
         test_that ('highways do not connect', {
-                   bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
-                   highways <- c ('Monmouth.St', 'Short.?s.Gardens',
-                                  'Endell.St', 'Long.Acre',
-                                  'Upper.Saint.Martin')
-                   # Again, warnings will appear if download fails
-                   expect_output (connect_highways (highways = highways,
+                   load (system.file ("extdata", "hwys.rda",
+                                      package = "osmplotr"))
+                   i <- which (lapply (hwys,
+                                       function (i) length (names (i))) == 5)
+                   hwys <- hwys [[i]] # make sure it's the right set
+                   stub (connect_highways, 'extract_highways',
+                         function (x, ...) hwys)
+                   expect_silent (connect_highways (highways = highways,
                                                     bbox = bbox, plot = TRUE))
                    dev.off (which = dev.cur ())
         })
