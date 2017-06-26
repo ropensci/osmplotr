@@ -145,11 +145,13 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
 
     # Set up group colours
     cmat <- NULL
-    if (!colmat & missing (cols))
+    if (!colmat)
     {
-        cols_default <- group_colours_default (cols, groups, bg)
-        cols <- cols_default$cols
-        #bg <- cols_default$bg
+        if (missing (cols))
+        {
+            cols_default <- group_colours_default (cols, groups, bg)
+            cols <- cols_default$cols
+        }
     } else
     {
         cols_colourmat <- group_colours_colourmat (cols, groups, rotate)
@@ -159,20 +161,18 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     if (missing (bg))
         bg <- NULL
 
-    if (!class (obj) %in% c ('SpatialPolygonsDataFrame',
-                             'SpatialLinesDataFrame'))
-        stop ('obj must be SpatialPolygonsDataFrame or SpatialLinesDataFrame')
-    # ... because points not yet implemented
     obj_type <- get_obj_type (obj)
+    if (grepl ('point', obj_type))
+        stop ('add_osm_groups not yet implemented for points')
 
     # Determine whether any groups are holes - not implemented at present
     if (length (groups) > 1)
         holes <- groups_are_holes (groups)
 
-    obj_xy <- trip_obj_to_map (obj, map, obj_type)
-    obj <- obj_xy$obj
+    obj_trim <- trim_obj_to_map (obj, map, obj_type)
+    obj <- obj_trim$obj
 
-    cent_bdy <- group_centroids_bdrys (groups, make_hull, cols, cmat, obj_xy,
+    cent_bdy <- group_centroids_bdrys (groups, make_hull, cols, cmat, obj_trim,
                                        map)
     cols <- cent_bdy$cols
 
@@ -181,7 +181,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     # Get membership of objects within groups
     if (is.null (bg)) # include all points in groups
     {
-        membs <- membs_single_group (groups, coords, obj_xy, cent_bdy)
+        membs <- membs_single_group (groups, coords, obj_trim, cent_bdy)
         xy <- membs$xy
         membs <- membs$membs
     } else
@@ -258,7 +258,11 @@ check_hull_arg <- function (make_hull, groups)
                          'of groups; using first value only'))
         make_hull <- make_hull [1]
     }
-    if (max (sapply (groups, length)) < 3) # No groups have > 2 members
+    if (!is.list (groups))
+    {
+        if (length (groups) < 3)
+            make_hull <- FALSE
+    } else if (max (sapply (groups, length)) < 3) # No groups have > 2 members
         make_hull <- FALSE
 
     return (make_hull)
@@ -369,7 +373,7 @@ groups_are_holes <- function (groups)
 #' Trim coordinates of obj to be plotted down to coordinates of map
 #'
 #' @noRd
-trip_obj_to_map <- function (obj, map, obj_type)
+trim_obj_to_map <- function (obj, map, obj_type)
 {
     xrange <- map$coordinates$limits$x
     yrange <- map$coordinates$limits$y
@@ -402,7 +406,7 @@ trip_obj_to_map <- function (obj, map, obj_type)
 #' 2. boundaries list of enclosing polygons, creating convex hulls if necessary.
 #'
 #' @noRd
-group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_xy, map)
+group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_trim, map)
 {
     boundaries <- list ()
     grp_centroids <- list ()
@@ -429,17 +433,18 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_xy, map)
         {
             bdry <- rbind (bdry, bdry [1, ]) #enclose bdry back to 1st point
             # The next 4 lines are only used if is.null (bg)
-            indx <- sapply (obj_xy$xy_mn, function (x)
+            indx <- sapply (obj_trim$xy_mn, function (x)
                             sp::point.in.polygon (x [1], x [2],
                                                   bdry [, 1], bdry [, 2]))
             indx <- which (indx > 0) # see below for point.in.polygon values
-            grp_centroids [[i]] <- cbind (obj_xy$xmn [indx], obj_xy$ymn [indx])
+            grp_centroids [[i]] <- cbind (obj_trim$xmn [indx],
+                                          obj_trim$ymn [indx])
         } else
         {
             grp_centroids [[i]] <- bdry
             # indx closest point to bdry
-            d <- sqrt ( (obj_xy$xmn - bdry [1]) ^ 2 +
-                       (obj_xy$ymn - bdry [2]) ^ 2)
+            d <- sqrt ( (obj_trim$xmn - bdry [1]) ^ 2 +
+                       (obj_trim$ymn - bdry [2]) ^ 2)
             indx <- which.min (d)
         }
 
@@ -450,9 +455,9 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_xy, map)
             # Then get colour from colour.mat
             xrange <- map$coordinates$limits$x
             yrange <- map$coordinates$limits$y
-            xi <- ceiling (nrow (cmat) * (mean (obj_xy$xmn [indx]) -
+            xi <- ceiling (nrow (cmat) * (mean (obj_trim$xmn [indx]) -
                                           xrange [1]) / diff (xrange))
-            yi <- ceiling (nrow (cmat) * (mean (obj_xy$ymn [indx]) -
+            yi <- ceiling (nrow (cmat) * (mean (obj_trim$ymn [indx]) -
                                           yrange [1]) / diff (yrange))
             cols [i] <- cmat [xi, yi]
         }
@@ -494,7 +499,7 @@ get_obj_coords <- function (obj, obj_type, cent_bdy)
 #' get members of single group
 #'
 #' @noRd
-membs_single_group <- function (groups, coords, obj_xy, cent_bdy)
+membs_single_group <- function (groups, coords, obj_trim, cent_bdy)
 {
     membs <- sapply (coords, function (i)
                      {
@@ -514,8 +519,8 @@ membs_single_group <- function (groups, coords, obj_xy, cent_bdy)
                          return (n)
                      })
     indx <- which (membs == 0)
-    x0 <- obj_xy$xmn [indx]
-    y0 <- obj_xy$ymn [indx]
+    x0 <- obj_trim$xmn [indx]
+    y0 <- obj_trim$ymn [indx]
     dists <- array (NA, dim = c (length (indx), length (groups)))
     for (i in seq (groups))
     {

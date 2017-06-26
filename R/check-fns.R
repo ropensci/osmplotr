@@ -6,6 +6,12 @@ check_map_arg <- function (map)
         stop ('map must be a ggplot2 object', call. = FALSE)
 }
 
+#' get type of geometry object from either sf or sp objects
+#'
+#' @note \code{sf} objects return singular nouns ('polygon', 'point'), while
+#' \code{sp} return plurals ('polygons', 'points')
+#'
+#' @noRd
 get_obj_type <- function (obj)
 {
     if (is (obj, 'sf'))
