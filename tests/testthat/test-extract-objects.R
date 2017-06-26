@@ -32,6 +32,9 @@ if (curl::has_internet () & test_all)
     test_that ('valid key', {
                bbox <- get_bbox (c (-0.12, 51.515, -0.115, 51.52))
                dat <- extract_osm_objects (bbox = bbox, key = 'building')
+               expect_is (dat, 'sf')
+               dat <- extract_osm_objects (bbox = bbox, key = 'building',
+                                           sf = FALSE)
                expect_is (dat, 'SpatialPolygonsDataFrame')
     })
 
@@ -44,10 +47,10 @@ if (curl::has_internet () & test_all)
                                                value = value,
                                                extra_pairs = extra_pairs)
                    expect_true (nrow (dat) > 0)
-                   expect_is (dat, 'Spatial')
+                   expect_is (dat, 'sf')
     })
 
-    test_that ('sf objects', {
+    test_that ('sp objects', {
                    key <- 'route'
                    value <- 'bicycle'
                    extra_pairs <- c ('name', 'London Cycle Network')
@@ -55,8 +58,8 @@ if (curl::has_internet () & test_all)
                    dat <- extract_osm_objects (bbox = bbox, key = key,
                                                value = value,
                                                extra_pairs = extra_pairs,
-                                               sf = TRUE)
+                                               sf = FALSE)
                    expect_true (nrow (dat) > 0)
-                   expect_is (dat, 'sf')
+                   expect_is (dat, 'Spatial')
     })
 } # end if has_internet

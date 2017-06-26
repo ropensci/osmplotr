@@ -45,7 +45,7 @@
 #'                             bbox = bbox)
 #' }
 extract_osm_objects <- function (bbox, key, value, extra_pairs,
-                                 return_type, sf = FALSE, verbose = FALSE)
+                                 return_type, sf = TRUE, verbose = FALSE)
 {
     check_arg (key, 'key', 'character')
 
