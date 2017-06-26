@@ -83,6 +83,10 @@ test_that ('vertical', {
            expect_warning (add_colourbar (map, cols = cols, zlims = zlims,
                                           vertical = "a"),
                            'vertical must be logical; using default')
+           expect_silent (add_colourbar (map, cols = cols, zlims = zlims,
+                                          vertical = TRUE))
+           expect_silent (add_colourbar (map, cols = cols, zlims = zlims,
+                                          vertical = FALSE))
 })
 
 test_that ('alpha values', {
