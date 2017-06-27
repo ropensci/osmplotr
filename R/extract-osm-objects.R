@@ -57,7 +57,16 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
     if (missing (value))
         q_vals <- NA
     else
+    {
         q_vals <- value
+        # If primary value is negation, then repeat primary key
+        if (substring (q_vals, 1, 1) == '!')
+        {
+            q_keys <- rep (q_keys, 2)
+            q_vals <- c (NA, q_vals)
+        }
+    }
+
 
     if (!missing (extra_pairs))
     {
