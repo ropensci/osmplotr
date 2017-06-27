@@ -68,7 +68,7 @@ devtools::load_all ('.', export_all = FALSE)
 
 1. Specify the bounding box for the desired region
     ```{r}
-    bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+    bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
     ```
 2. Download the desired data---in this case, all building perimeters.
     ```{r, eval = FALSE}
@@ -89,7 +89,7 @@ devtools::load_all ('.', export_all = FALSE)
 
 ```{r london2, echo = FALSE, eval = FALSE}
 devtools::load_all ("../osmdata", export_all = FALSE)
-bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
 q0 <- opq (bbox)
 q1 <- add_feature (q0, key = "building")
 dat_B <- osmdata_sp (q1, quiet = FALSE)$osm_polygons
@@ -204,10 +204,10 @@ spatial points denoting their centres:
 ```{r, echo = TRUE}
 set.seed (2)
 ngroups <- 12
-x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
-y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
+x <- bbox [1, 1] + runif (ngroups) * diff (bbox [1, ])
+y <- bbox [2, 1] + runif (ngroups) * diff (bbox [2, ])
 groups <- cbind (x, y)
-groups <- apply (groups, 1, function (i) 
+groups <- apply (groups, 1, function (i)
               sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
 ```
 Calling `add_osm_groups` with no `bg` argument forces all points lying outside
@@ -216,7 +216,7 @@ inclusive grouping extending across an entire region.
 
 ```{r map5, eval = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = groups, 
+map <- add_osm_groups (map, dat_B, groups = groups,
                        cols = rainbow (length (groups)), border_width = 2)
 print_osm_map (map)
 ```
@@ -233,7 +233,7 @@ An alternative way of defining highlighted groups is by naming the highways
 encircling desired regions.
 ```{r, eval = FALSE}
 # These highways extend beyond the previous, smaller bbox
-bbox_big <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+bbox_big <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
 highways <- c ('Davies.St', 'Berkeley.Sq', 'Berkeley.St', 'Piccadilly',
                'Regent.St', 'Oxford.St')
 highways1 <- connect_highways (highways = highways, bbox = bbox_big)
@@ -256,7 +256,7 @@ And then passing these lists of groups returned by `connect_highways` to
 ```{r map 6, eval = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 library (wesanderson)
-cols <- wes_palette ('Darjeeling', 5) 
+cols <- wes_palette ('Darjeeling', 5)
 map <- add_osm_groups (map, dat_B, groups = groups, boundary = 1,
                        cols = cols, bg = 'gray40', colmat = FALSE)
 map <- add_osm_groups (map, dat_H, groups = groups, boundary = 0,
@@ -278,18 +278,19 @@ interpolates a given set of spatial data points and colours OSM objects
 according to a specified colour gradient. This is illustrated here with the
 `volcano` data projected onto the `bbox`.
 ```{r}
-x <- seq (bbox [1,1], bbox [1,2], length.out = dim (volcano)[1])
-y <- seq (bbox [2,1], bbox [2,2], length.out = dim (volcano)[2])
+x <- seq (bbox [1, 1], bbox [1, 2], length.out = dim (volcano)[1])
+y <- seq (bbox [2, 1], bbox [2, 2], length.out = dim (volcano)[2])
 xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each = dim (volcano) [1]))
 z <- as.numeric (volcano)
-dat <- data.frame (x = xy [,1], y = xy [,2], z = z)
+dat <- data.frame (x = xy [, 1], y = xy [, 2], z = z)
 ```
 ```{r map7, eval = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 cols <- gray (0:50 / 50)
 map <- add_osm_surface (map, dat_B, dat = dat, cols = cols)
+# Darken cols by ~20%
 map <- add_osm_surface (map, dat_H, dat = dat,
-                        cols = adjust_colours (cols, -0.2)) # Darken cols by ~20%
+                        cols = adjust_colours (cols, -0.2))
 map <- add_colourbar (map, cols = cols, zlims = range (volcano))
 map <- add_axes (map)
 print_osm_map (map)
@@ -301,23 +302,29 @@ print_osm_map (map, filename = 'map7.png', width = 600, units = 'px', dpi = 72)
 ```{r map1-print, eval = FALSE, echo = FALSE}
 # This is map1 used as the title
 # extrafont::loadfonts ()
-lab_dat <- data.frame (x = mean (bbox[1,]), y = mean (bbox [2,]), lab = 'osmplotr')
+lab_dat <- data.frame (x = mean (bbox[1, ]), y = mean (bbox [2, ]),
+                       lab = 'osmplotr')
 aes <- ggplot2::aes (x, y, label = lab)
 
-bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 cols <- gray (0:50 / 50)
 map <- add_osm_surface (map, dat_B, dat = dat, cols = cols)
-map <- add_osm_surface (map, dat_H, dat = dat, cols = adjust_colours (cols, -0.2))
+map <- add_osm_surface (map, dat_H, dat = dat,
+                        cols = adjust_colours (cols, -0.2))
 
-#map2 <- map + ggplot2::geom_text (dat = dat, mapping = aes, size = 60, colour = 'white',
+#map2 <- map + ggplot2::geom_text (dat = dat, mapping = aes, size = 60,
+#                                  colour = 'white',
 #                                 family = 'Lato Light', nudge_y = 0.0015)
-map2 <- map + ggplot2::geom_text (dat = lab_dat, mapping = aes, size = 45, colour = 'black',
+map2 <- map + ggplot2::geom_text (dat = lab_dat, mapping = aes, size = 45,
+                                  colour = 'black',
                                  family = 'Purisa', fontface = 2,
                                  nudge_y = 0.0005, nudge_x = 0.0005)
-map2 <- map2 + ggplot2::geom_text (dat = lab_dat, mapping = aes, size = 45, colour = 'white',
-                                 family = 'Purisa', nudge_y = 0.001, fontface = 2)
-print_osm_map (map2, filename = 'map1.png', width = 800, units = 'px', dpi = 72)
+map2 <- map2 + ggplot2::geom_text (dat = lab_dat, mapping = aes, size = 45,
+                                   colour = 'white', family = 'Purisa',
+                                   nudge_y = 0.001, fontface = 2)
+print_osm_map (map2, filename = 'map1.png', width = 800, units = 'px',
+               dpi = 72)
 ```
 ![](./figure/map7.png)
 
@@ -327,7 +334,7 @@ print_osm_map (map2, filename = 'map1.png', width = 800, units = 'px', dpi = 72)
 
 Got a nice `osmplotr` map? Please contribute in one of the following ways:
 
-1. Fork repo, add link to `README.md/.Rdm`, and send pull request; or
+1. Fork repo, add link to `README.md/.Rmd`, and send pull request; or
 
 2. Open issue with details; or
 
@@ -336,14 +343,12 @@ Got a nice `osmplotr` map? Please contribute in one of the following ways:
 
 ---------------
 
-See package vignettes (
-[basic maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html)
-and
-[data maps](https://cran.r-project.org/web/packages/osmplotr/vignettes/data-maps.html)
-) for a lot more
-detail and further capabilities of `osmplotr`.  Please note that this project is
-released with a [Contributor Code of Conduct](CONDUCT.md). By participating in
-this project you agree to abide by its terms.
+See package vignettes 
+([basic maps](https://ropensci.github.io/osmplotr/articles/basic-maps.html) and
+[data maps](https://ropensci.github.io/osmplotr/articles/data-maps.html)) for a
+lot more detail and further capabilities of `osmplotr`.  Please note that this
+project is released with a [Contributor Code of Conduct](CONDUCT.md). By
+participating in this project you agree to abide by its terms.
 
 --------------
 
