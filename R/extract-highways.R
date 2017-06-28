@@ -23,7 +23,7 @@ extract_highways <- function (highway_names, bbox)
     if (missing (bbox))
         stop ('A bounding box must be given')
 
-    # **** (1) Download OSM data for highways
+    #----------Download OSM data for highways
     hw_abbrvs <- abbreviate_hwy_names (highway_names)
     dl_dat <- dl_hw_data (highway_names, hw_abbrvs, bbox)
     p4s <- dl_dat$p4s
@@ -34,15 +34,19 @@ extract_highways <- function (highway_names, bbox)
     }
 
 
-    # ***** (2) Order into a minimal number of discrete sequences
-    objs <- list ()
+    #---------Extract coordinates
+    ways <- list ()
     for (i in seq (highway_names))
-        objs [[i]] <- order_lines (get (hw_abbrvs [i]))
-    names (objs) <- hw_abbrvs
+    {
+        wi <- lapply (get (hw_abbrvs [i])$geometry,
+                      function (i) as.matrix (i))
+        ways [[i]] <- order_lines (wi)
+    }
+    names (ways) <- hw_abbrvs
 
-    attr (objs, "crs") <- p4s
+    attr (ways, "crs") <- p4s
 
-    return (objs)
+    return (ways)
 }
 
 abbreviate_hwy_names <- function (highway_names, nletters = 2)
@@ -76,23 +80,24 @@ dl_hw_data <- function (highway_names, hw_abbrvs, bbox)
         {
             dat <- extract_highway (name = highway_names [i], bbox = bbox)
             if (!is.null (dat))
-            {
-                stopifnot (is (dat, 'Spatial')) # should never happen
-                assign (hw_abbrvs [i], dat, envir = parent.frame ())
-                indx <- c (indx, i)
-            }
+                if (nrow (dat) > 0)
+                {
+                    assign (hw_abbrvs [i], dat, envir = parent.frame ())
+                    indx <- c (indx, i)
+                }
             setTxtProgressBar(pb, i / length (highway_names))
         }
         lens <- rep (0, length (indx))
         for (i in seq (indx))
-            lens [i] <- length (get (hw_abbrvs [indx] [i],
-                                     envir = parent.frame ()))
+            lens [i] <- nrow (get (hw_abbrvs [indx] [i],
+                                   envir = parent.frame ()))
 
         lens <- length (which (lens > 0)) # total number returning data
         if (lens > 0)
         {
             hw1 <- hw_abbrvs [indx] [which (lens > 0)] [1]
-            p4s <- sp::proj4string (get (hw1, envir = parent.frame ()))
+            p4s <- attr (get (hw1, envi = parent.frame ())$geometry,
+                         'crs')$proj4string
         }
         rm (dat)
         close (pb)

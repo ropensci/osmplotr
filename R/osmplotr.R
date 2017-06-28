@@ -64,6 +64,7 @@
 #' @name osmplotr
 #' @docType package
 #' @importFrom curl has_internet
+#' @importFrom e1071 allShortestPaths extractPath
 #' @importFrom ggm fundCycles
 #' @importFrom graphics lines plot plot.new par rect text
 #' @importFrom grDevices dev.cur dev.new dev.off rainbow rgb col2rgb heat.colors
@@ -71,6 +72,7 @@
 #' @importFrom httr content GET
 #' @importFrom methods slot as is hasArg
 #' @importFrom osmdata add_feature opq osmdata_sf osmdata_sp
+#' @importFrom rgeos gIntersection
 #' @importFrom sp coordinates point.in.polygon Line SpatialLines SpatialPoints 
 #' @importFrom spatstat convexhull idw ppp Smooth
 #' @importFrom stats runif
@@ -79,38 +81,26 @@ NULL
 
 #' london 
 #'
-#' A list of \code{SpatialPolygonsDataFrames} (SPDF),
-#' \code{SpatialLinesDataFrames} (SLDF), and \code{SpatialPointsDataFrames}
-#' (SPtDf) objects containing OpenStreetMap polygons and lines for various
-#' OpenStreetMap structures in a small part of central London,
-#' U.K.  (\code{bbox = -0.15, 51.5, -0.1, 51.52}). The list includes:
+#' A list of \code{Simple Features} (\code{sf}) \code{data.frame} objects
+#' containing OpenStreetMap polygons, lines, and points for various
+#' OpenStreetMap structures in a small part of central London, U.K.  (\code{bbox
+#' = -0.13, 51.51, -0.11, 51.52}). The list includes:
 #' \enumerate{
-#'  \item \code{dat_H}: an SLDF of non-primary highways with 1.764 lines 
-#'  \item \code{dat_HP}: an SLDF of primary highways with 378 lines 
-#'  \item \code{dat_BNR}: an SPDF of non-residential buildings with 2,138 polygons 
-#'  \item \code{dat_BR}: an SPDF of residential buildings with 40 polygons 
-#'  \item \code{dat_BC}: an SPDF of commerical buildings with 17 polygons 
-#'  \item \code{dat_A}: an SPDF of amenities with 442 polygons 
-#'  \item \code{dat_G}: an SPDF of grassed areas with 23 polygons 
-#'  \item \code{dat_P}: an SPDF of parks with 24 polygons 
-#'  \item \code{dat_N}: an SPDF of natural areas with 18 polygons 
-#'  \item \code{dat_T}: an SPtDF of trees with 1,310 points 
-#'  \item \code{dat_RFH}: an SPDF containing 1 polygon representing Royal
-#'      Festival Hall 
-#'  \item \code{dat_ST}: an SPDF containing 1 polygon representing
-#'      150 Stamford Street
-#'  \item \code{highways1}: A \code{SpatialPoints} object containing 55 points
-#'      representing the circular perimeter of \code{c ('Monmouth.St',
-#'      'Short.?s.Gardens', 'Endell.St', 'Long.Acre', 'Upper.Saint.Martin')}
-#'  \item \code{highways2}: A \code{SpatialPoints} object containing 47 points
-#'      representing the circular perimeter of 
-#'      \code{c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')}
-#'  \item \code{highways3}: A \code{SpatialPoints} object containing 55 points
-#'      representing the circular perimeter of 
-#'      \code{c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')}
+#'  \item \code{dat_H}: 974 non-primary highways as linestrings
+#'  \item \code{dat_HP}: 159 primary highways as linestrings
+#'  \item \code{dat_BNR}: 1,716 non-residential buildings as polygons
+#'  \item \code{dat_BR}: 43 residential buildings as polygons
+#'  \item \code{dat_BC}: 67 commerical buildings as polygons
+#'  \item \code{dat_A}: 372 amenities as polygons
+#'  \item \code{dat_P}: 13 parks as polygons
+#'  \item \code{dat_T}: 688 trees as points
+#'  \item \code{dat_RFH}: 1 polygon representing Royal Festival Hall 
+#'  \item \code{dat_ST}: 1 polygon representing 150 Stamford Street
 #' }
 #'
-#' The vignette \code{basic-maps} details how these data were downloaded.
+#' The vignette \code{basic-maps} details how these data were downloaded. Note
+#' that these internal versions have had all descriptive data removed other than
+#' their names, geometries, and their OSM identification numbers.
 #'
 #' @docType data
 #' @keywords datasets

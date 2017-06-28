@@ -1,6 +1,6 @@
 #' order_lines
 #'
-#' Accepts a \code{SpatialLinesDataFrame} representing an OpenStreetMap line
+#' Accepts a single way as list of matrices representing an OpenStreetMap line
 #' object such as a highway. The list items of these objects are arbitrarily
 #' organised within OpenStreetMap. This function orders the components,
 #' returning a list of components each of which is ordered sequentially along
@@ -15,12 +15,8 @@
 #' This function is primarily used in \code{extract_highways}.
 #'
 #' @noRd
-order_lines <- function (sp_lines)
+order_lines <- function (xy)
 {
-    stopifnot (class (sp_lines) == 'SpatialLinesDataFrame')
-    # Extract all coords from the SLDF and store as simple list:
-    xy <- lapply (sp::coordinates (sp_lines), function (i) i [[1]])
-    # Start the ordered list with the first item of xy
     xy_ord <- list (xy [[1]])
     xy [[1]] <- NULL
     while (length (xy) > 0)

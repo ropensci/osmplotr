@@ -13,11 +13,13 @@ Depends:
     R (>= 3.2.3)
 Imports:
     curl,
+    e1071,
     ggm,
     ggplot2,
     httr,
     methods,
     osmdata,
+    rgeos,
     sp,
     spatstat
 Suggests:

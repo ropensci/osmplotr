@@ -21,5 +21,5 @@ extract_highway <- function (name = '', bbox)
                                  key_exact = FALSE, value_exact = FALSE,
                                  match_case = FALSE)
 
-    osmdata::osmdata_sp (qry)$osm_lines
+    osmdata::osmdata_sf (qry)$osm_lines
 }

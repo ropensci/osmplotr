@@ -39,19 +39,29 @@ get_highway_cycle <- function (ways)
     while (cyc_len < length (ways))
     {
         es <- extend_cycles (conmat, i1_ref, i2_ref)
-        if (all (is.na (es$cyc_len_i)))
+
+        if (all (is.na (es$cyc_len)))
         {
             warning ('No cycles can be found or made')
             break
-        } else if (max (es$cyc_len_i, na.rm = TRUE) <= cyc_len)
+        } else if (max (es$cyc_len, na.rm = TRUE) <= cyc_len)
         {
             warning ('Cycle unable to be extended through all ways')
             break
         } else
-            cyc_len <- max (es$cyc_len_i, na.rm = TRUE)
+        {
+            if (length (es$i1) > 1)
+                es <- closest_cycle_connection (ways, es)
+            cyc_len <- es$cyc_len
+        }
 
-        nc <- nodes_to_connect (ways, es)
-        ways <- insert_connecting_nodes (ways, es, nc)
+        #nc <- nodes_to_connect (ways, es)
+        #ways <- insert_connecting_nodes (ways, es, nc)
+        ways <- connect_two_ways (ways, es)
+        conmat <- get_conmat (ways)
+        cycles <- try (ggm::fundCycles (conmat), TRUE)
+        if (!is.null (cycles))
+            cyc_len <- max (sapply (cycles, nrow))
     } # end while cyc_len < length (ways)
 
     return (ways)
@@ -61,7 +71,11 @@ get_highway_cycle <- function (ways)
 #' extend_cycles
 #'
 #' Find lengths of cycles formed by adding all possible single individual links
-#' in a conmat
+#' in a conmat and return the connection that gives the longest conmat.
+#'
+#' @note There is no check for the proximity of potentially connected lines
+#' here, so it may theoretically occur that this routine will suggest shortcuts
+#' across large distances.
 #'
 #' @noRd
 extend_cycles <- function (conmat, i1, i2)
@@ -72,54 +86,75 @@ extend_cycles <- function (conmat, i1, i2)
     i1 <- i1 [indx]
     i2 <- i2 [indx]
     # Then connect each in turn and get length of cycle if formed
-    cyc_len_i <- rep (NA, length (i1))
+    cyc_len <- rep (NA, length (i1))
+    conmat_ref <- conmat
     for (i in seq (i1))
     {
+        conmat <- conmat_ref
         conmat [i1 [i], i2 [i]] <- TRUE
         conmat [i2 [i], i1 [i]] <- TRUE
         cycles <- try (ggm::fundCycles (conmat), TRUE)
         if (is (attr (cycles, "condition"), "simpleError"))
             cycles <- NULL
         if (!is.null (cycles))
-            cyc_len_i [i] <- max (sapply (cycles, nrow))
+            cyc_len [i] <- max (sapply (cycles, nrow))
     }
 
-    return (list ('cyc_len_i' = cyc_len_i, 'i1' = i1, 'i2' = i2,
-                  'conmat' = conmat))
+    indx <- which (cyc_len == max (cyc_len))
+
+    return (list ('cyc_len' = max (cyc_len), 'i1' = i1 [indx],
+                  'i2' = i2 [indx]))
 }
 
-#' nodes_to_connect
+# when extend_cycle returns multiple options, this returns the single option
+# as the two ways that are the closest together.
+closest_cycle_connection <- function (ways, es)
+{
+    d <- rep (NA, length (es$i1))
+    for (i in seq (es$i1))
+    {
+        way1 <- do.call (rbind, ways [[es$i1 [i] ]])
+        way2 <- do.call (rbind, ways [[es$i2 [i] ]])
+        d [i] <- haversine (way1, way2) [3]
+    }
+    es$i1 <- es$i1 [which.min (d)]
+    es$i2 <- es$i2 [which.min (d)]
+
+    return (es)
+}
+
+#' connect_two_ways
 #'
-#' @param ways A list of highways as returned by
-#' \code{\link{extract_highways}}, each element of which is a list of distinct
-#' segments for a particular OSM highway.
+#' @param ways A list of highways as returned by \code{\link{extract_highways}},
+#' each element of which is a list of distinct segments for a particular OSM
+#' highway.
 #' @param es Result of call to \code{extend_cycles}
-#'
-#' Determine the actual nodes of the extended cycle which are to be connected
+#' @return Modified version of ways with a new connection that maximises the
+#' length of the cycle given in \code{es}
 #'
 #' @noRd
-nodes_to_connect <- function (ways, es)
+connect_two_ways <- function (ways, es)
 {
-    # Then connect the actual ways corresponding to the longest cycle
-    i1 <- es$i1 [which.max (es$cyc_len_i)]
-    i2 <- es$i2 [which.max (es$cyc_len_i)]
-    h1x <- array (ways [[i1]] [, 1],
-                  dim = c(nrow (ways [[i1]]), nrow (ways [[i2]])))
-    h1y <- array (ways [[i1]] [, 2],
-                  dim = c(nrow (ways [[i1]]), nrow (ways [[i2]])))
-    h2x <- t (array (ways [[i2]] [, 1],
-                     dim = c(nrow (ways [[i2]]), nrow (ways [[i1]]))))
-    h2y <- t (array (ways [[i2]] [, 2],
-                     dim = c(nrow (ways [[i2]]), nrow (ways [[i1]]))))
-    d <- sqrt ( (h1x - h2x) ^ 2 + (h1y - h2y) ^ 2)
-    di1 <- which.min (apply (d, 1, min))
-    di2 <- which.min (apply (d, 2, min))
-    node1 <- rownames (ways [[i1]]) [di1]
-    xy1 <- ways [[i1]] [di1, ]
-    node2 <- rownames (ways [[i2]]) [di2]
-    xy2 <- ways [[i2]] [di2, ]
+    wi1 <- ways [[es$i1]]
+    wi2 <- ways [[es$i2]]
+    dmat <- array (NA, dim = c (length (wi1), length (wi2)))
+    for (i in seq (length (wi1)))
+        for (j in seq (length (wi2)))
+            dmat [i, j] <- haversine (wi1 [[i]], wi2 [[j]]) [3]
+    indx <- which (dmat == min (dmat), arr.ind = TRUE) [1, ] # there may be > 1
 
-    list ('node1' = node1, 'node2' = node2, 'xy1' = xy1, 'xy2' = xy2)
+    hs <- haversine (wi1 [[indx [1] ]], wi2 [[indx [2] ]])
+
+    # Then insert one node in ways [[i1]]
+    new_node <- wi2 [[indx [2] ]] [hs [2], , drop = FALSE] #nolint
+    wi11 <- wi1 [[indx [1] ]]
+    wi11 <- rbind (wi11 [1:(hs [1] - 1), , drop = FALSE], #nolint
+                   new_node,
+                   wi11 [hs [1]:nrow (wi11), , drop = FALSE]) #nolint
+
+    ways [[es$i1]] [[indx [1] ]] <- wi11
+
+    return (ways)
 }
 
 #' insert_connecting_nodes
