@@ -93,11 +93,18 @@ get_bbox_from_data <- function (osm_data)
         stop ('Either bounding box or osm_data must be given')
     bbox <- matrix (c (Inf, Inf, -Inf, -Inf), nrow = 2, ncol = 2)
     rownames (bbox) <- c ('x', 'y')
-    classes <- c ('SpatialLinesDataFrame', 'SpatialPolygonsDataFrame',
+    sp_classes <- c ('SpatialLinesDataFrame', 'SpatialPolygonsDataFrame',
                   'SpatialPointsDataFrame')
     for (i in osm_data)
     {
-        if (class (i) %in% classes)
+        if (is (i, 'sf'))
+        {
+            bbi <- attr (i$geometry, 'bbox')
+            if (bbi [1] < bbox [1, 1]) bbox [1, 1] <- bbi [1]
+            if (bbi [2] < bbox [2, 1]) bbox [2, 1] <- bbi [2]
+            if (bbi [1] > bbox [1, 2]) bbox [1, 2] <- bbi [1]
+            if (bbi [2] > bbox [2, 2]) bbox [2, 2] <- bbi [2]
+        } else if (any (class (i) %in% sp_classes))
         {
             bbi <- slot (i, 'bbox')
             if (bbi [1, 1] < bbox [1, 1]) bbox [1, 1] <- bbi [1, 1]
