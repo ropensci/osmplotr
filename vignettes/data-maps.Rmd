@@ -2,8 +2,11 @@
 title: "Data Maps"
 author: "Mark Padgham"
 date: "`r Sys.Date()`"
-#output: rmarkdown::pdf_document
-output: rmarkdown::html_vignette
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        theme: flatly
 vignette: >
   %\VignetteIndexEntry{Data Maps}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,9 +21,11 @@ plotted by highlighting defined regions with different colours using
 `add_osm_groups`, while continuous data can be plotted with `add_osm_surface`.
 
 
-```{r load, message = FALSE}
+```{r load, message = FALSE, eval = FALSE}
 library (osmplotr)
-library (maptools) # Needed for this vignette
+```
+```{r, echo = FALSE, message = FALSE}
+devtools::load_all ("../.", export_all = FALSE)
 ```
 As in the first vignette, maps produced in this vignette contain data for a
 small portion of central London, U.K.
@@ -29,64 +34,41 @@ bbox <- get_bbox (c(-0.13, 51.51, -0.11, 51.52))
 ```
 
 ```{r, echo = FALSE, message = FALSE}
-indx <- which (!london$dat_BR$id %in% london$dat_BNR$id)
-dat_B <- maptools::spRbind (london$dat_BR [indx, ], london$dat_BNR)
-indx <- which (!london$dat_H$id %in% london$dat_HP$id)
-dat_H <- maptools::spRbind (london$dat_H [indx, ], london$dat_HP)
+dat_B <- rbind (london$dat_BR, london$dat_BNR)
+dat_H <- rbind (london$dat_H, london$dat_HP)
 dat_HP <- london$dat_HP
 ```
 
-## Contents
 
-[1 Categorical data](#1 cat-data)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;1.1 Hulls around groups](#1.1 hulls)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;1.2 Inclusive, exclusive and bisected polygons](#1.2 polygons)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;1.3 Adjusting colours](#1.3 adjust-colours)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;1.4 Dark-on-Light Highlights](#1.4 dark-on-light)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;1.5 Visualising clustering data](#1.5 clusters)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;1.6 The Colour Matrix](#1.6 colmat)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;1.7 Bounding areas within named highways](#1.7 highways)
-
-[2 Continuous data](#2 continuous-data)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;2.1 Colourbar legends for data surfaces](#2.1 colourbar-legend)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;2.2 Surfaces and data perimeters](#2.2 surface-perimeters)
-
-[&nbsp;&nbsp;&nbsp;&nbsp;2.3 Further control of surface appearance](#2.3 surface-parameters)
-
-
-## <a name="1 cat-data"></a>1. Categorical data: `add_osm_groups`
+# 1. Categorical data: `add_osm_groups`
 
 The function `add_osm_groups` enables spatially-defined groups to be plotted in
 different colours.  The two primary arguments are `obj`, which defines the OSM
 structure to be used for plotting the regions, and `groups` which is a list of
-SpatialPoints objects defining the desired regions. An example of an `obj` is
-the SpatialPolygonsDataFrame of buildings downloaded in the first vingette with
-the following line
+geometric coordinates defining the desired regions. An example of an `obj` is
+the Simple Features ([`sf`](https://cran.r-project.org/package=sf)) `data.frame`
+of building polygons downloaded in the first vignette with the following line
 ```{r, eval = FALSE}
 dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
+```
+These data may be obtained by simply combining the data provided with the
+package of residential and non-residential buildings to give all buildings as
+```{r}
+dat_B <- rbind (london$dat_BNR, london$dat_BR)
 ```
 
 The most direct way to define `groups` is through specifying coordinates of
 boundary points:
 ```{r map1, eval = FALSE}
-pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
-                             c (51.513, 51.513, 51.517, 51.517)))
+pts <- cbind (c (-0.115, -0.125, -0.125, -0.115),
+              c (51.513, 51.513, 51.517, 51.517))
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
 print_osm_map (map)
 ```
 ```{r map1-print, echo = FALSE}
-pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
-                             c (51.513, 51.513, 51.517, 51.517)))
+pts <- cbind (c (-0.115, -0.125, -0.125, -0.115),
+              c (51.513, 51.513, 51.517, 51.517))
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
 print_osm_map (map, filename = 'map_b1.png', width = 600,
@@ -94,19 +76,20 @@ print_osm_map (map, filename = 'map_b1.png', width = 600,
 ```
 ![](map_b1.png)
 
-Multiple groups can be defined by passing a list of `SpatialPoints` objects to
-the `groups` argument of `add_osm_groups`, and specifying corresponding colours.
+Multiple groups can be defined by passing a list of multiple sets of point
+coordinates to the `groups` argument of `add_osm_groups`, and specifying
+corresponding colours.
 ```{r map2, eval = FALSE}
-pts2 <- sp::SpatialPoints (cbind (c (-0.111, -0.1145, -0.1145, -0.111),
-                             c (51.517, 51.517, 51.519, 51.519)))
+pts2 <- cbind (c (-0.111, -0.1145, -0.1145, -0.111),
+               c (51.517, 51.517, 51.519, 51.519))
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = list (pts, pts2),
                        cols = c ('orange', 'tomato'), bg = 'gray40')
 print_osm_map (map)
 ```
 ```{r map2-print, echo = FALSE}
-pts2 <- sp::SpatialPoints (cbind (c (-0.111, -0.1145, -0.1145, -0.111),
-                             c (51.517, 51.517, 51.519, 51.519)))
+pts2 <- cbind (c (-0.111, -0.1145, -0.1145, -0.111),
+               c (51.517, 51.517, 51.519, 51.519))
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = list (pts, pts2),
                        cols = c ('orange', 'tomato'), bg = 'gray40')
@@ -134,7 +117,7 @@ print_osm_map (map, filename = 'map_b3.png', width = 600,
 ```
 ![](map_b3.png)
 
-## <a name="1.1 hulls"></a>1.1 Hulls around groups
+## 1.1 Hulls around groups
 
 `add_osm_groups` includes the argument `make_hull` which specifies whether
 convex hulls should be fitted around the points defining the provided `groups`,
@@ -144,13 +127,13 @@ of the above groups, then the group boundary will connect to that point and
 create a concave shape.
 
 ```{r map5, eval = FALSE}
-pts <- sp::SpatialPoints (rbind (coordinates (pts), c (-0.12, 51.515)))
+pts <- rbind (pts, c (-0.12, 51.515))
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
 print_osm_map (map)
 ```
 ```{r map5-print, echo = FALSE}
-pts <- sp::SpatialPoints (rbind (coordinates (pts), c (-0.12, 51.515)))
+pts <- rbind (pts, c (-0.12, 51.515))
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
 print_osm_map (map, filename = 'map_b5.png', width = 600,
@@ -164,7 +147,7 @@ thus the concave boundary extends in between the two easterly points. Setting
 this case would revert this map to the initial map with the group defined by a
 regular, convex perimeter.
 
-## <a name="1.2 polygons"></a>1.2 Inclusive, exclusive, and bisected polygons
+## 1.2 Inclusive, exclusive, and bisected polygons
 
 The highlighted regions of the previous maps are irregular because the default
 behaviour of `add_osm_groups` is to include within a group only those OSM
@@ -229,12 +212,13 @@ appropriate `key-value` pairs, so
 osm_structures (structure = 'park')
 ```
 reveals that this `key` is actually converted to `key = 'leisure'` and
-`value = 'park'`.)
+`value = 'park'`.) These data are also provided with the package as
+`london$dat_P`.
 ```{r, echo = FALSE}
 dat_P <- london$dat_P
 ```
-Plotting buildings inclusively within each group and parks bisected by the
-group boundaries produces the following map:
+Plotting buildings inclusively within each group and overlaying parks bisected
+by the group boundaries produces the following map:
 ```{r map8, eval = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
@@ -307,7 +291,7 @@ The `boundary` argument has no effect if `bg` is not given, because in this case
 all objects will be assigned to a group and there will be no boundaries between
 groups and other, non-grouped objects.
 
-## <a name="1.3 adjust-colours"></a>1.3 Adjusting colours with `adjust_colours`
+## 1.3 Adjusting colours with `adjust_colours`
 
 The `adjust_colours` function allows different groups to be highlighted with
 slightly different colours for different kinds of OSM objects. For example, the
@@ -315,30 +299,27 @@ following code adds highways to the above map in slightly darkened versions of
 the highlight colours (using `boundary = 1`, so any highways with any points lying
 within the bounding box are included in the groups):
 ```{r map10, eval = FALSE}
-dat_HP <- extract_osm_objects (key = "highway", value = "primary", bbox = bbox)
-dat_H <- extract_osm_objects (key = "highway", value = "!primary", bbox = bbox)
 # darken colours by aboud 20%
 cols_adj <- adjust_colours (c ('orange', 'tomato'), adj = -0.2)
-map <- add_osm_groups (map, dat_HP, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = cols_adj,
+map <- add_osm_groups (map, london$dat_HP, groups = list (pts, pts2),
+                       make_hull = TRUE, cols = cols_adj,
                        bg = adjust_colours ('gray40', adj = -0.4),
                        boundary = 1, size = 2)
-map <- add_osm_groups (map, dat_H, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = cols_adj,
+map <- add_osm_groups (map, london$dat_H, groups = list (pts, pts2),
+                       make_hull = TRUE, cols = cols_adj,
                        bg = adjust_colours ('gray40', adj = -0.2),
                        boundary = 1, size = 1)
 print_osm_map (map)
 ```
 ```{r map10-print, echo = FALSE}
-dat_H <- london$dat_H
-dat_HP <- london$dat_HP
+# darken colours by aboud 20%
 cols_adj <- adjust_colours (c ('orange', 'tomato'), adj = -0.2)
-map <- add_osm_groups (map, dat_HP, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = cols_adj,
+map <- add_osm_groups (map, london$dat_HP, groups = list (pts, pts2),
+                       make_hull = TRUE, cols = cols_adj,
                        bg = adjust_colours ('gray40', adj = -0.4),
                        boundary = 1, size = 2)
-map <- add_osm_groups (map, dat_H, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = cols_adj,
+map <- add_osm_groups (map, london$dat_H, groups = list (pts, pts2),
+                       make_hull = TRUE, cols = cols_adj,
                        bg = adjust_colours ('gray40', adj = -0.2),
                        boundary = 1, size = 1)
 print_osm_map (map, filename = 'map_b10.png', width = 600,
@@ -346,10 +327,10 @@ print_osm_map (map, filename = 'map_b10.png', width = 600,
 ```
 ![](map_b10.png)
 
-(And of course `adjust_colours ('gray40', adj = -0.2)` is nothing other than
-'gray32', and `adj = -0.4` gives 'gray24'.)
+And of course `adjust_colours ('gray40', adj = -0.2)` is nothing other than
+'gray32', and `adj = -0.4` gives 'gray24'.
 
-## <a name="1.4 dark-on-light"></a>1.4 Dark-on-Light Highlights 
+## 1.4 Dark-on-Light Highlights 
 
 A particularly effective way to highlight single regions within a map is through
 using dark colours upon otherwise light coloured maps.
@@ -377,25 +358,23 @@ print_osm_map (map, filename = 'map_b11.png', width = 600,
 ![](map_b11.png)
 
 
-## <a name="1.5 clusters"></a>1.5 Visualising clustering data
+## 1.5 Visualising clustering data
 
 One of the most likely uses of `add_osm_groups` is to visualise statistical
 clusters. Clustering algorithms will generally produce membership lists which
-may be mapped onto spatial locations. Each cluster can be converted to a data
-frame of `SpatialPoints`, and the `groups` specified as a list, each item of
-which represents one cluster.  A general approach is illustrated here with
-`groups` defined by single, randomly generated points.
+may be mapped onto spatial locations. Each cluster can be defined as a matrix of
+points in a single list of `groups`.  A general approach is illustrated here
+with `groups` defined by single, randomly generated points.
 ```{r}
 set.seed (2)
 ngroups <- 12
 x <- bbox [1, 1] + runif (ngroups) * diff (bbox [1, ])
 y <- bbox [2, 1] + runif (ngroups) * diff (bbox [2, ])
-groups <- cbind (x, y)
-groups <- apply (groups, 1, function (i)
-              sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
+groups <- as.list (data.frame (t (cbind (x, y))))
 ```
-Having generated the points, a map of corresponding clusters can be generated by
-the following simple code.
+(The last line just transforms each row of the matrix into a list item.) Having
+generated the points, a map of corresponding clusters can be generated by the
+following simple code.
 ```{r map12, eval = FALSE}
 map <- osm_basemap (bbox = bbox, bg = 'gray95')
 map <- add_osm_groups (map, dat_B, groups = groups,
@@ -446,13 +425,13 @@ visually pleasing or intelligible. To overcome this, `add_osm_groups` includes
 an option described in the following section to generate spatially sensible
 colour schemes for colouring distinct groups.
 
-## <a name="1.6 colmat"></a>1.6 The Colour Matrix: Colouring Several Regions
+## 1.6 The Colour Matrix: Colouring Several Regions
 
 An additional argument which may be passed to `add_osm_groups` is `colmat`,
 an abbreviation of 'colour matrix'. If set to true (the default is `FALSE`),
 group colours are specified by the function `colour_mat`. This function takes
 a vector of four or more colours as input, wraps them around the four corners of a
-rectangular grid, and spatially interpolates a chromatially regular grid between
+rectangular grid, and spatially interpolates a chromatically regular grid between
 these corners. To visual different schemes, it has a `plot` argument:
 
 ```{r, eval = FALSE}
@@ -501,7 +480,7 @@ also that the `rotate` argument can be submitted to `add_osm_groups` and passed
 on to `colour_mat`.
 
 
-## <a name="1.7 highways"></a>1.7 Bounding areas within named highways
+## 1.7 Bounding areas within named highways
 
 As explained in the first vignette,
 [Basic maps](https://cran.r-project.org/package=osmplotr),
@@ -514,21 +493,37 @@ highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
                'Upper.Saint.Martin')
 highways1 <- connect_highways (highways = highways, bbox = bbox)
 highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
-highways2 <- connect_highways (highways = highways, bbox = bbox, plot = T)
+highways2 <- connect_highways (highways = highways, bbox = bbox)
 highways <- c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')
-highways3 <- connect_highways (highways = highways, bbox = bbox, plot = T)
+highways3 <- connect_highways (highways = highways, bbox = bbox)
+highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
+               'Fleet.St', 'Aldwych')
+highways4 <- connect_highways (highways = highways, bbox = bbox)
 ```
 Note the use of the [regex](https://en.wikipedia.org/wiki/Regular_expression)
 character `?` in the first list of highway names, denoting the previous
 character as optional.  This is necessary here because there are OSM sections
 named both "Shorts Gardens" and "Short's Gardens".
 ```{r, echo = FALSE}
-highways1 <- london$highways1
-highways2 <- london$highways2
-highways3 <- london$highways3
+load (system.file ('extdata', 'hwys.rda', package = 'osmplotr'))
+highways1 <- hwys [[1]]
+highways2 <- hwys [[2]]
+highways3 <- hwys [[3]]
+con_h <- function (hwy)
+{
+    hwy <- osmplotr:::connect_single_ways (hwy)
+    hwy <- osmplotr:::get_highway_cycle (hwy)
+    conmat <- osmplotr:::get_conmat (hwy)
+    cycles <- try (ggm::fundCycles (conmat), TRUE)
+    cyc <- cycles [[which.max (sapply (cycles, nrow))]]
+    osmplotr:::sps_through_cycle (hwy, cyc)
+}
+highways1 <- con_h (highways1)
+highways2 <- con_h (highways2)
+highways3 <- con_h (highways3)
 ```
 ```{r}
-class (highways1); length (highways1); length (highways2); length (highways3)
+class (highways1); nrow (highways1); nrow (highways2); nrow (highways3)
 ```
 `connect_highways` returns a list of `SpatialPoints` representing the shortest
 path that sequentially connects all of the listed highways. (Connecting all
@@ -541,7 +536,7 @@ visually inspected and hopefully corrected.)
 These lists of highway coordinates can then be used to highlight the areas they
 encircle. First group the highways and establish a colour scheme for the map:
 ```{r, echo = TRUE}
-groups <- list (london$highways1, london$highways2, london$highways3)
+groups <- list (highways1, highways2, highways3)
 cols_B <- c ('red', 'orange', 'tomato') # for the 3 groups
 cols_H <- adjust_colours (cols_B, -0.2)
 bg_B <- 'gray40'
@@ -576,7 +571,7 @@ print_osm_map (map, filename = 'map_b15.png', width = 600,
 These encircling highways are included in the `london` data provided with
 `osmplotr`. 
 
-## <a name="2 continuous-data"></a>2. Continuous data: `add_osm_surface`
+# 2. Continuous data: `add_osm_surface`
 
 The `add_osm_surface` function enables a continuous data surface to be overlaid
 on a map. User-provided data is spatially interpolated across a map region and
@@ -652,7 +647,7 @@ print_osm_map (map, filename = 'map_b17.png', width = 600,
 ![](map_b17.png)
 
 
-## <a name="2.1 colourbar-legend"></a>2.1 Colourbar legends for data surfaces
+## 2.1 Colourbar legends for data surfaces
 
 A colourbar legend for the surface may be added with `add_colourbar`. As with
 `add_axes`, this function is provided separately to allow colourbars to be
@@ -730,7 +725,7 @@ Finally, as for `add_axes`, the text labels of colourbars are not currently able
 to be rotated because `ggplot2` does not permit rotation for the `geom_label`
 function used to produce these labels.
 
-## <a name="2.2 surface-perimeters"></a>2.1 Surfaces and data perimeters
+## 2.1 Surfaces and data perimeters
 
 It may often be that user-provided data only extend across a portion of a map,
 leaving a perimeter beyond the data boundary for which interpolation should not
@@ -771,7 +766,7 @@ print_osm_map (map, filename = 'map_b20.png', width = 600,
 
 (The perimeter is irregular because of the positions of the points in `dat`.)
 
-## <a name="2.3 surface-parameters"></a>2.3 Further control of surface appearance
+## 2.3 Further control of surface appearance
 
 The final `add_osm_surface` call in the above code (for `dat_HP`) illustrates
 additional parameters that may be passed for further control of map appearance.
@@ -816,7 +811,7 @@ print_osm_map (map, filename = 'map_b21.png', width = 600,
 ```
 ![](map_b21.png)
 
-The first two colour specificiations (`terrain.colors`) have been ignored, and
+The first two colour specifications (`terrain.colors`) have been ignored, and
 all added items are coloured according to the final value of `heat.colors (30)`.
 Other aspects such as line sizes and point shapes are nevertheless respected.
 

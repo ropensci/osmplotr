@@ -122,13 +122,13 @@ class (dat_T$geometry); nrow (dat_T)
 
 The [`osmdata`](https://cran.r-project.org/package=osmdata) package provides a
 more powerful interface for downloading OSM data, and may be used directly with
-`osmplotr`. The `osmplotr` functionn `extract_osm_objects` is effecitvely just a
+`osmplotr`. The `osmplotr` function `extract_osm_objects` is effectively just a
 convenience wrapper around `omsdata` functionality. The primary differences
 between the two are:
 
 1. `osmdata` returns *all* spatial data for a given query; that is, *all*
    points, lines, polygons, multilines, and multipolygons, while `osmplotr`
-   returns a single specifed geometric type.
+   returns a single specified geometric type.
 2. `osmplotr` accepts multiple `key-value` pairs in a single call to
    `extract_osm_objects`, which the equivalent `osmdata` function,
    `add_feature`, accepts only a single `key-value` pair, with queries
@@ -158,7 +158,7 @@ ensures that only npn-primary highways are returned.
 
 ## 2.2 Negation
 
-As demonstrated abovve, negation can be specified by pre-pending `!` to the
+As demonstrated above, negation can be specified by pre-pending `!` to the
 `value` argument so that, for example, all `natural` objects that are **not**
 trees can be extracted with
 ```{r not trees, eval = FALSE}
@@ -193,7 +193,7 @@ dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
                                        bbox = bbox)
 ```
 These data are stored in `london$dat_RFH`. Note that periods or dots are used for
-whitespace, and in fact symbolise (in `grep` terms) any character whatsoever.
+white space, and in fact symbolise (in `grep` terms) any character whatsoever.
 The polygon of a building at a particular street address can be extracted with
 ```{r stamford st 150, eval = FALSE}
 extra_pairs <- list (c ('addr:street', 'Stamford.St'),
@@ -323,7 +323,7 @@ data.
 class (highways1); length (highways1); highways1 [[1]] [[1]]
 ```
 
-The extraction of bounding polygons from named highways is not failsafe, and may
+The extraction of bounding polygons from named highways is not fail-safe, and may
 generate various warning messages.  To understand the kinds of conditions under
 which it may not work, it is useful to examine `connect_highways` in more
 detail.
@@ -344,7 +344,7 @@ generate an error message. The routine proceeds through the three stages of,
 3. Inserting extra connections between highways until the length of the longest
    cycle is equal to `length (highways)`.
 
-This procedure can not be guaranteed failsafe owing both to the inherently
+This procedure can not be guaranteed fail-safe owing both to the inherently
 unpredictable nature of OpenStreetMap, as well as to the unknown relationships
 between named highways. To enable problematic cases to be examined and hopefully
 resolved, `connect_highways` has a `plot` option:
@@ -584,7 +584,7 @@ print_osm_map (dat$map, filename = 'map_a9.png', width = 600,
 
 Note that omitting the bounding box argument (`bbox`) produces a map with a bounding
 box is extracted as the **largest** box spanning all objects in `osm_data`. This
-may be considerably larger than the desired boundaries, partiuclarly because
+may be considerably larger than the desired boundaries, particularly because
 highways are returned by `overpass` in their entirety, and will generally extend
 well beyond the specified bounding box.
 

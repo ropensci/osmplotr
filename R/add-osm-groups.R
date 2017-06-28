@@ -175,8 +175,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     obj_trim <- trim_obj_to_map (obj, map, obj_type)
     obj <- obj_trim$obj
 
-    cent_bdry <- group_centroids_bdrys (groups, make_hull, cols, cmat, obj_trim,
-                                       map)
+    cent_bdry <- group_centroids_bdrys (groups, make_hull, cols, cmat,
+                                        obj_trim, map)
     cols <- cent_bdry$cols
 
     coords <- get_obj_coords (obj, cent_bdry)
@@ -446,10 +446,16 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_trim, map)
                 ch <- spatstat::convexhull (xy)
                 bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
             } else
-                bdry <- sp::coordinates (groups [[i]])
+            {
+                bdry <- groups [[i]]
+            }
+        } else
+        {
+            bdry <- groups [[i]]
         }
-        else
-            bdry <- sp::coordinates (groups [[i]])
+        if (!is.matrix (bdry))
+            bdry <- matrix (bdry, nrow = 1)
+
         if (nrow (bdry) > 1) # otherwise group is obviously a single point
         {
             bdry <- rbind (bdry, bdry [1, ]) #enclose bdry back to 1st point
@@ -475,9 +481,13 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_trim, map)
             # Then get colour from colour.mat
             xrange <- map$coordinates$limits$x
             yrange <- map$coordinates$limits$y
-            xi <- ceiling (nrow (cmat) * (mean (obj_trim$xy_mn [indx, 1]) -
+            #xi <- ceiling (nrow (cmat) * (mean (obj_trim$xy_mn [indx, 1]) -
+            #                              xrange [1]) / diff (xrange))
+            #yi <- ceiling (nrow (cmat) * (mean (obj_trim$xy_mn [indx, 2]) -
+            #                              yrange [1]) / diff (yrange))
+            xi <- ceiling (nrow (cmat) * (mean (boundaries [[i]] [, 1]) -
                                           xrange [1]) / diff (xrange))
-            yi <- ceiling (nrow (cmat) * (mean (obj_trim$xy_mn [indx, 2]) -
+            yi <- ceiling (nrow (cmat) * (mean (boundaries [[i]] [, 2]) -
                                           yrange [1]) / diff (yrange))
             cols [i] <- cmat [xi, yi]
         }

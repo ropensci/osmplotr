@@ -120,6 +120,8 @@ connect_highways <- function (highways, bbox, plot = FALSE)
 #'
 #' When one way crosses another over a bridge or overpass, they will not
 #' actually share a node and so intersection nodes must be inserted.
+#'
+#' @noRd
 insert_intersections <- function (ways)
 {
     # first find which ways don't have common nodes and seem to cross
