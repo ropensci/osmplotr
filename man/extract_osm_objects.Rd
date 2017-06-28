@@ -5,7 +5,7 @@
 \title{extract_osm_objects}
 \usage{
 extract_osm_objects(bbox, key, value, extra_pairs, return_type, sf = TRUE,
-  verbose = FALSE)
+  geom_only = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{bbox}{the bounding box within which all key-value objects should be
@@ -32,6 +32,9 @@ for bulidings).}
 
 \item{sf}{If \code{TRUE}, return Simple Features (\code{sf}) objects;
 otherwise Spatial (\code{sp}) objects.}
+
+\item{geom_only}{If \code{TRUE}, return only those OSM data describing the
+geometric object; otherwise return all data describing each object.}
 
 \item{verbose}{If \code{TRUE}, provides notification of progress.}
 }

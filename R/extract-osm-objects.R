@@ -23,6 +23,8 @@
 #' for bulidings).
 #' @param sf If \code{TRUE}, return Simple Features (\code{sf}) objects;
 #' otherwise Spatial (\code{sp}) objects.
+#' @param geom_only If \code{TRUE}, return only those OSM data describing the
+#' geometric object; otherwise return all data describing each object.
 #' @param verbose If \code{TRUE}, provides notification of progress.
 #'
 #' @return Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
@@ -45,7 +47,8 @@
 #'                             bbox = bbox)
 #' }
 extract_osm_objects <- function (bbox, key, value, extra_pairs,
-                                 return_type, sf = TRUE, verbose = FALSE)
+                                 return_type, sf = TRUE,
+                                 geom_only = FALSE, verbose = FALSE)
 {
     check_arg (key, 'key', 'character')
 
@@ -154,6 +157,18 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
 
     if (nrow (obj) == 0)
         warning ('No valid data returned')
+
+    if (geom_only)
+    {
+        if (sf)
+        {
+            indx <- match (c ('osm_id', 'geometry'), names(obj))
+            obj <- obj [, indx]
+        } else
+        {
+            attr (obj, 'data') <- NULL
+        }
+    }
 
     return (obj)
 }
