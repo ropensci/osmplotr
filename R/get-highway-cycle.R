@@ -46,7 +46,8 @@ get_highway_cycle <- function (ways)
             break
         } else if (max (es$cyc_len, na.rm = TRUE) <= cyc_len)
         {
-            warning ('Cycle unable to be extended through all ways')
+            warning ('Cycle unable to be extended through all ways',
+                     call. = FALSE)
             break
         } else
         {
