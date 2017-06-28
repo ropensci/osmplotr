@@ -10,12 +10,12 @@ bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 dat_B <- london$dat_BNR
 dat_H <- london$dat_H
 
-pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
-                                 c (51.505, 51.505, 51.515, 51.515)))
-pts1 <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
-                                  c (51.513, 51.513, 51.517, 51.517)))
-pts2 <- sp::SpatialPoints (cbind (c (-0.111, -0.1145, -0.1145, -0.111),
-                                  c (51.517, 51.517, 51.519, 51.519)))
+pts <- cbind (c (-0.115, -0.13, -0.13, -0.115),
+              c (51.505, 51.505, 51.515, 51.515))
+pts1 <- cbind (c (-0.115, -0.125, -0.125, -0.115),
+               c (51.513, 51.513, 51.517, 51.517))
+pts2 <- cbind (c (-0.111, -0.1145, -0.1145, -0.111),
+               c (51.517, 51.517, 51.519, 51.519))
 grps <- list (pts, pts1, pts2)
 
 test_that ('obj', {
@@ -44,7 +44,7 @@ test_that ('group errors', {
                          'groups must not be NULL')
            expect_error (add_osm_groups (map, dat_B,
                                          groups = list (dat_H)),
-                         'All groups must be SpatialPoints objects')
+                         'All groups must be numeric')
            grps1 <- list (pts, pts, "a")
            expect_error (add_osm_groups (map, dat_B, groups = grps1),
                          'All groups must be numeric')

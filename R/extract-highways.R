@@ -96,7 +96,7 @@ dl_hw_data <- function (highway_names, hw_abbrvs, bbox)
         if (lens > 0)
         {
             hw1 <- hw_abbrvs [indx] [which (lens > 0)] [1]
-            p4s <- attr (get (hw1, envi = parent.frame ())$geometry,
+            p4s <- attr (get (hw1, envir = parent.frame ())$geometry,
                          'crs')$proj4string
         }
         rm (dat)

@@ -41,20 +41,17 @@
 #' highways1 <- connect_highways (highways = highways, bbox = bbox, plot = TRUE)
 #' highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
 #' highways2 <- connect_highways (highways = highways, bbox = bbox, plot = TRUE)
-#' }
-#' # These are also part of the 'london' data provided with 'osmplotr':
-#' highways1 <- london$highways1
-#' highways2 <- london$highways2
 #'
 #' # Use of 'connect_highways' to highlight a region on a map
 #' map <- osm_basemap (bbox = bbox, bg = 'gray20')
 #' # dat_B <- extract_osm_data (key = 'building', value = '!residential', bbox = bbox)
 #' # Those data are part of 'osmplotr':
 #' dat_BNR <- london$dat_BNR # Non-residential buildings
-#' groups <- list (london$highways1, london$highways2)
+#' groups <- list (highways1, highways2)
 #' map <- add_osm_groups (map, obj = dat_BNR, groups = groups,
 #'                        cols = c('red', 'blue'), bg = 'gray40')
 #' print_osm_map (map)
+#' }
 connect_highways <- function (highways, bbox, plot = FALSE)
 {
     if (missing (highways))
@@ -480,7 +477,6 @@ one_shortest_path <- function (ways, w0, wf, wt, prefix = 'a', num = 0)
                 len <- 2
             } else
             {
-                path <- e1071::extractPath (asp, wst [i], wend [j])
                 # this returns direct path of len 2 if whole matrix is void
                 if (length (path) == 2)
                 {

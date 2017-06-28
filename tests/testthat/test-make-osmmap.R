@@ -5,7 +5,6 @@ source ("../stub.R")
 
 test_that ('make_osm_map', {
                dat <- list (dat_BU = london$dat_BNR, dat_A = london$dat_A,
-                            dat_G = london$dat_G, dat_N = london$dat_N,
                             dat_P = london$dat_P, dat_H = london$dat_H,
                             dat_T = london$dat_T)
                structures <- osm_structures ()
@@ -35,5 +34,5 @@ test_that ('get_missing_osm_data', {
                expect_is (dat$osm_data, 'list')
                expect_equal (length (dat$osm_data), 1)
                # TODO: Change that when london data are updated to sf
-               expect_is (dat$osm_data [[1]], 'Spatial')
+               expect_is (dat$osm_data [[1]], 'sf')
 })

@@ -61,19 +61,21 @@ load (system.file ("extdata", "hwys.rda", package = "osmplotr"))
 test_that ('connect highways internal code', { # these all form cycles
                for (i in 1:3)
                {
-                   expect_silent (ways0 <- flatten_highways (hwys [[1]]))
-                   expect_true (!all (vapply (ways0, is.list, logical (1))))
+                   expect_silent (ways0 <- connect_single_ways (hwys [[1]]))
+                   expect_true (all (vapply (ways0, is.list, logical (1))))
                    expect_silent (ways <- get_highway_cycle (ways0))
                    # get_highway_cycle should add nodes:
-                   expect_true (sum (vapply (ways0, length, numeric (1))) <
-                                sum (vapply (ways, length, numeric (1))))
+                   n0 <- sum (vapply (ways0, function (i)
+                                      nrow (do.call (rbind, i)), numeric (1)))
+                   n <- sum (vapply (ways, function (i)
+                                     nrow (do.call (rbind, i)), numeric (1)))
+                   expect_true (n > n0)
+
                    conmat <- get_conmat (ways)
                    expect_true (nrow (conmat) == length (ways))
                    cyc <- ggm::fundCycles (conmat) [[1]]
-                   paths <- sps_through_cycle (cyc, ways)
-                   expect_equal (length (paths), length (ways))
+                   paths <- sps_through_cycle (ways, cyc)
                    # paths should have fewer total nodes:
-                   expect_true (sum (vapply (paths, length, numeric (1))) <
-                                sum (vapply (ways, length, numeric (1))))
+                   expect_true (nrow (paths) < n0)
                }
         })
