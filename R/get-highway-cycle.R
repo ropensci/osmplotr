@@ -56,8 +56,6 @@ get_highway_cycle <- function (ways)
             cyc_len <- es$cyc_len
         }
 
-        #nc <- nodes_to_connect (ways, es)
-        #ways <- insert_connecting_nodes (ways, es, nc)
         ways <- connect_two_ways (ways, es)
         conmat <- get_conmat (ways)
         cycles <- try (ggm::fundCycles (conmat), TRUE)
@@ -154,67 +152,6 @@ connect_two_ways <- function (ways, es)
                    wi11 [hs [1]:nrow (wi11), , drop = FALSE]) #nolint
 
     ways [[es$i1]] [[indx [1] ]] <- wi11
-
-    return (ways)
-}
-
-#' insert_connecting_nodes
-#'
-#' Nodes are only inserted in the respective highways where the joining node is
-#' terminal. This insertion adds to the terminal node of one way an additional
-#' node that will generally lie in the middle of some other way, thereby
-#' connecting the two.
-#'
-#' @param ways A list of flat highways as returned by \code{flatten_highways}
-#' @param es Result of call to \code{extend_cycles}
-#' @param nc Result of call to \code{nodes_to_connect}
-#'
-#' @noRd
-insert_connecting_nodes <- function (ways, es, nc)
-{
-    i1 <- es$i1 [which.max (es$cyc_len_i)]
-    i2 <- es$i2 [which.max (es$cyc_len_i)]
-
-    nsub1 <- nc$node2
-    xysub1 <- nc$xy2
-    ni1 <- max (c (-1, which (rownames (ways [[i1]]) == nc$node1)))
-    if (!ni1 %in% c (1, nrow (ways [[i1]])))
-    {
-        nsub1 <- nc$node1
-        xysub1 <- nc$xy1
-        ni1 <- max (c (-1, which (rownames (ways [[i1]]) == nc$node2)))
-    }
-    nsub2 <- nc$node1
-    xysub2 <- nc$xy1
-    ni2 <- max (c (-1, which (rownames (ways [[i2]]) == nc$node2)))
-    if (!ni2 %in% c (1, nrow (ways [[i2]])))
-    {
-        nsub2 <- nc$node2
-        xysub2 <- nc$xy2
-        ni2 <- max (c (-1, which (rownames (ways [[i2]]) == nc$node1)))
-    }
-
-    if (ni1 == 1)
-    {
-        hnames <- c (nsub1, rownames (ways [[i1]]))
-        ways [[i1]] <- rbind (xysub1, ways [[i1]])
-        rownames (ways [[i1]]) <- hnames
-    } else if (ni1 == nrow (ways [[i1]]))
-    {
-        hnames <- c (rownames (ways [[i1]]), nsub1)
-        ways [[i1]] <- rbind (ways [[i1]], xysub1)
-        rownames (ways [[i1]]) <- hnames
-    } else if (ni1 == 1)
-    {
-        hnames <- c (nsub2, rownames (ways [[i2]]))
-        ways [[i2]] <- rbind (xysub2, ways [[i2]])
-        rownames (ways [[i2]]) <- hnames
-    } else if (ni2 == nrow (ways [[i2]]))
-    {
-        hnames <- c (rownames (ways [[i2]]), nsub2)
-        ways [[i2]] <- rbind (ways [[i2]], xysub2)
-        rownames (ways [[i2]]) <- hnames
-    }
 
     return (ways)
 }
