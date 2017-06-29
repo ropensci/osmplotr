@@ -15,12 +15,12 @@ vignette: >
 
 
 The **R** package `osmplotr` uses OpenStreetMap (OSM) data to produce highly
-customisable maps. Data are downloaded via the [`osmdata`
-package](https://cran.r-project.org/package=osmdata), and different aspects of
-map data - such as roads, buildings, parks, or water bodies - are able to be
-visually customised.  This vignette demonstrates both data downloading and the
-creation of simple maps. The subsequent vignette
-(['data-maps'](https://cran.r-project.org/web/packages/osmplotr/vignettes/data-maps.html))
+customisable maps. Data are downloaded via the 
+[`osmdata` package](https://cran.r-project.org/package=osmdata), and different
+aspects of map data - such as roads, buildings, parks, or water bodies - are
+able to be visually customised.  This vignette demonstrates both data
+downloading and the creation of simple maps. The subsequent vignette
+(['data-maps'](https://cran.r-project.org/package=osmplotr))
 demonstrates how `osmplotr` enables user-defined data to be visualised using OSM
 data.  The maps in this vignette represent a small portion of central London,
 U.K. 
@@ -98,7 +98,7 @@ class (dat_B$geometry); class (dat_H$geometry)
 `Spatial` ([`sp`](https://cran.r-project.org/package=sf)) objects may be
 returned with,
 ```{r, eval = FALSE}
-dat_B <- extract_osm_objects (key = 'building', bbox = bbox, sf = FALSE))
+dat_B <- extract_osm_objects (key = 'building', bbox = bbox, sf = FALSE)
 ```
 otherwise `sf` is used as the default format.  The Simple Features (`sf`)
 objects with polygons of London buildings and linestrings of highways
