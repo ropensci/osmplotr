@@ -381,7 +381,7 @@ warning message.
 These connected polygons returned from `connect_highways` can then be used to
 highlight the enclosed regions within maps, as demonstrated in the second
 vignette,
-['Data Maps'](https://cran.r-project.org/web/packages/osmplotr/vignettes/data-maps.html).
+['Data Maps'](https://cran.r-project.org/package=osmplotr).
 
 
 # 4. Producing maps
