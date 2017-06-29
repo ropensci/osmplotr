@@ -25,12 +25,13 @@ if (curl::has_internet () & test_all)
 {
     test_that ('invalid key', {
                bbox <- get_bbox (c (-0.12, 51.51, -0.11, 51.52))
-               expect_warning (extract_osm_objects (bbox = bbox, key = 'aaa'),
+               expect_warning (suppressMessages (
+                            extract_osm_objects (bbox = bbox, key = 'aaa')),
                                'No valid data returned')
     })
 
     test_that ('valid key', {
-               bbox <- get_bbox (c (-0.12, 51.515, -0.115, 51.52))
+               bbox <- get_bbox (c (-0.12, 51.518, -0.118, 51.52))
                dat <- extract_osm_objects (bbox = bbox, key = 'building')
                expect_is (dat, 'sf')
                dat <- extract_osm_objects (bbox = bbox, key = 'building',
