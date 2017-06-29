@@ -1,6 +1,6 @@
 Package: osmplotr
 Title: Customisable Images of OpenStreetMap Data
-Version: 0.2.4
+Version: 0.3.0
 Authors@R: c(
     person("Mark", "Padgham", email="mark.padgham@email.com", role=c("aut", "cre")),
     person("Finkelstein", "Noam", role=c("ctb","cph"),

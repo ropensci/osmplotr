@@ -8,4 +8,5 @@ makefile$
 ^\.travis\.yml$
 ^_pkgdown\.yml$
 figure/
+data-raw/
 ^docs$

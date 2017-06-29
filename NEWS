@@ -1,10 +1,21 @@
-osmplotr v0.2.4
+osmplotr v0.3.0
 ===============
 
+Major changes
+-------
+* Major re-structure to use 'osmdata' package instead of 'osmdar', with
+  conomitantly enormous increase in speed of 'extract_osm_objects'
+* Package is now also 'sf'-compatible: objects to be plotted can be either 'sp'
+  or 'sf' format, with all 'osmplotr' functions defaulting to 'sf'
+
+Minor changes
+-------
 * Better control of timeout errors when calling the overpass API
 * Git host transferred from ropenscilabs to ropensci
 * Acknowledge OSM contributors on startup
 * Rename 'borderWidth' parameter of 'add_osm_groups' to 'border_width'
+* 'connect_highways' also entirely re-coded to be much more efficient, but
+  this should not affect functionality at all.
 
 osmplotr v0.2.3
 ===============

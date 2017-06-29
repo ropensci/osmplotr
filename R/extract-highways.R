@@ -82,7 +82,7 @@ dl_hw_data <- function (highway_names, hw_abbrvs, bbox)
             if (!is.null (dat))
                 if (nrow (dat) > 0)
                 {
-                    assign (hw_abbrvs [i], dat, envir = parent.frame ())
+                    assign (hw_abbrvs [i], value = dat, envir = parent.frame ())
                     indx <- c (indx, i)
                 }
             setTxtProgressBar(pb, i / length (highway_names))
