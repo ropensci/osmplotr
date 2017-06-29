@@ -1,0 +1,88 @@
+# scrips to generate both `data/london.rda` and `inst/extdata/hwys.rda`
+
+```{r load, echo = FALSE}
+devtools::load_all (".", export_all = FALSE)
+library (magrittr)
+```
+
+
+### test data for highway cycles
+
+These are the `/inst/extdata/hwys.rda` data
+
+```{r}
+bbox <- get_bbox (c(-0.15, 51.50, -0.10, 51.52))
+highways1 <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
+               'Upper.Saint.Martin') %>%
+                osmplotr:::extract_highways (bbox = bbox)
+highways2 <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre') %>%
+                osmplotr:::extract_highways (bbox = bbox)
+highways3 <- c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St') %>%
+                osmplotr:::extract_highways (bbox = bbox)
+highways4 <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
+               'Fleet.St', 'Aldwych') %>%
+                osmplotr:::extract_highways (bbox = bbox)
+hwys <- list (highways1 = highways1, highways2 = highways2,
+              highways3 = highways3, highways4 = highways4)
+fname <- system.file ('extdata', 'hwys.rda', package = 'osmplotr')
+save (hwys, file = fname)
+format (file.size (fname), big.mark = ',')
+```
+
+
+### The main London data
+
+
+The `london` data are stripped of all columns except the 2 primary ones. The
+names can't be stored because they fail `R CMD check` due to non-ASCII strings.
+
+```{r}
+col_names <- c ('osm_id', 'geometry')
+bbox <- get_bbox (c (-0.13, 51.51, -0.11, 51.52))
+dat_H <- extract_osm_objects (key = 'highway', value = '!primary',
+                              bbox = bbox)
+indx <- which (names (dat_H) %in% col_names)
+dat_H <- dat_H [, indx]
+dat_HP <- extract_osm_objects (key = 'highway', value = 'primary',
+                              bbox = bbox)
+indx <- which (names (dat_HP) %in% col_names)
+dat_HP <- dat_HP [, indx]
+dat_BNR <- extract_osm_objects (key = 'building', value = '!residential',
+                              bbox = bbox)
+indx <- which (names (dat_BNR) %in% col_names)
+dat_BNR <- dat_BNR [, indx]
+dat_BR <- extract_osm_objects (key = 'building', value = 'residential',
+                              bbox = bbox)
+indx <- which (names (dat_BR) %in% col_names)
+dat_BR <- dat_BR [, indx]
+dat_BC <- extract_osm_objects (key = 'building', value = 'commercial',
+                              bbox = bbox)
+indx <- which (names (dat_BC) %in% col_names)
+dat_BC <- dat_BC [, indx]
+dat_A <- extract_osm_objects (key = 'amenity', bbox = bbox,
+                              return_type = 'polygon')
+indx <- which (names (dat_A) %in% col_names)
+dat_A <- dat_A [, indx]
+dat_P <- extract_osm_objects (key = 'park', bbox = bbox)
+indx <- which (names (dat_P) %in% col_names)
+dat_P <- dat_P [, indx]
+dat_T <- extract_osm_objects (key = 'tree', bbox = bbox)
+indx <- which (names (dat_T) %in% col_names)
+dat_T <- dat_T [, indx]
+bbox <- get_bbox (c (-0.13, 51.50, -0.11, 51.52))
+dat_RFH <- extract_osm_objects (key = 'building', bbox = bbox,
+                                extra_pairs = c ('name',
+                                                 'Royal.Festival.Hall'))
+extra_pairs <- list (c ('addr:street', 'Stamford.St'),
+                     c ('addr:housenumber', '150'))
+dat_ST <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
+                            bbox = bbox)
+```
+```{r}
+london <- list (dat_H = dat_H, dat_HP = dat_HP, dat_BNR = dat_BNR,
+                dat_BR = dat_BR, dat_BC = dat_BC, dat_A = dat_A, dat_P = dat_P,
+                dat_T = dat_T, dat_RFH = dat_RFH, dat_ST = dat_ST)
+devtools::use_data (london, overwrite = TRUE, compress = 'xz')
+format (file.size ('./data/london.rda'), big.mark = ',') # 189,984
+```
+
