@@ -33,6 +33,7 @@ A map can be generated using the following simple steps:
 #library (osmplotr)
 #devtools::install_github ("ropensci/osmplotr")
 devtools::load_all ("../.", export_all = FALSE)
+map_dpi <- 72 # dpi res for all maps
 ```
 
 ```{r, echo = FALSE, message = FALSE}
@@ -62,7 +63,7 @@ print_osm_map (map)
 ```
 ```{r map1-print, echo = FALSE}
 print_osm_map (map, filename = 'map_a1.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a1.png)
 
@@ -409,7 +410,7 @@ print_osm_map (map)
 ```
 ```{r map2-print, echo = FALSE}
 print_osm_map (map, filename = 'map_a2.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a2.png)
 
@@ -427,7 +428,7 @@ map <- osm_basemap (bbox = bbox_small, bg = 'gray20')
 map <- add_osm_objects (map, dat_B, col = 'gray40', border = 'orange',
                         size = 0.2)
 print_osm_map (map, filename = 'map_a3.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a3.png)
 
@@ -445,7 +446,7 @@ print_osm_map (map)
 map <- add_osm_objects (map, dat_H, col = 'gray70', size = 0.7)
 map <- add_osm_objects (map, dat_T, col = 'green', size = 2, shape = 1)
 print_osm_map (map, filename = 'map_a4.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a4.png)
 
@@ -470,8 +471,10 @@ print_osm_map (map)
 ```
 while examples of writing higher resolution versions to files include:
 ```{r, eval = FALSE}
-print_osm_map (map, filename = "map.png", width = 10, units = "in", dpi = 72)
-print_osm_map (map, filename = "map.eps", width = 1000, units = "px", dpi = 72)
+print_osm_map (map, filename = "map.png", width = 10,
+               units = "in", dpi = map_dpi)
+print_osm_map (map, filename = "map.eps", width = 1000,
+               units = "px", dpi = map_dpi)
 print_osm_map (map, filename = "map", device = "jpeg", width = 10, units = "cm")
 ```
 
@@ -500,7 +503,7 @@ map <- osm_basemap (bbox = bbox_small, bg = 'gray20')
 map <- add_osm_objects (map, dat_H, col = 'gray50')
 map <- add_osm_objects (map, dat_HP, col = 'gray80', size = 2)
 print_osm_map (map, filename = 'map_a5.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a5.png)
 
@@ -529,7 +532,7 @@ map <- add_osm_objects (map, dat_HP, col = 'gray60', size = 2)
 map <- add_osm_objects (map, dat_RFH, col = 'orange', border = 'red', size = 2)
 map <- add_osm_objects (map, dat_ST, col = 'skyblue', border = 'blue', size = 2)
 print_osm_map (map, filename = 'map_a7.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a7.png)
 
@@ -558,7 +561,7 @@ osm_dat <- list (dat_B = dat_B, dat_H = dat_H, dat_P = london$dat_P,
 dat <- make_osm_map (structures = structures, osm_data = osm_dat,
                      bbox = bbox)
 print_osm_map (dat$map, filename = 'map_a8.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a8.png)
 
@@ -578,7 +581,7 @@ print_osm_map (dat$map)
 ```{r map9-print, echo = FALSE}
 dat <- make_osm_map (structures = structures, osm_data = osm_dat, bbox = bbox)
 print_osm_map (dat$map, filename = 'map_a9.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a9.png)
 
@@ -622,7 +625,7 @@ print_osm_map (map)
 ```
 ```{r map10-print, echo = FALSE}
 print_osm_map (map, filename = 'map_a10.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a10.png)
 
@@ -641,7 +644,7 @@ print_osm_map (map)
 map <- add_axes (map, colour = 'blue', pos = c(0.1, 0.2),
                       fontsize = 5, fontface = 3, fontfamily = "Times")
 print_osm_map (map, filename = 'map_a11.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_a11.png)
 

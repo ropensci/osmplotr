@@ -26,6 +26,7 @@ library (osmplotr)
 ```
 ```{r, echo = FALSE, message = FALSE}
 devtools::load_all ("../.", export_all = FALSE)
+map_dpi <- 72 # dpi res for all maps
 ```
 As in the first vignette, maps produced in this vignette contain data for a
 small portion of central London, U.K.
@@ -72,7 +73,7 @@ pts <- cbind (c (-0.115, -0.125, -0.125, -0.115),
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
 print_osm_map (map, filename = 'map_b1.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b1.png)
 
@@ -94,7 +95,7 @@ map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = list (pts, pts2),
                        cols = c ('orange', 'tomato'), bg = 'gray40')
 print_osm_map (map, filename = 'map_b2.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b2.png)
 
@@ -113,7 +114,7 @@ map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = list (pts, pts2),
                        cols = c ('orange', 'tomato'))
 print_osm_map (map, filename = 'map_b3.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b3.png)
 
@@ -137,7 +138,7 @@ pts <- rbind (pts, c (-0.12, 51.515))
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
 print_osm_map (map, filename = 'map_b5.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b5.png)
 
@@ -171,7 +172,7 @@ map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
                        cols = c ('orange', 'tomato'), bg = 'gray40',
                        boundary = 1)
 print_osm_map (map, filename = 'map_b6.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b6.png)
 
@@ -193,7 +194,7 @@ map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
                        cols = c ('orange', 'tomato'), bg = 'gray40',
                        boundary = 0)
 print_osm_map (map, filename = 'map_b7.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b7.png)
 
@@ -242,7 +243,7 @@ map <- add_osm_groups (map, dat_P, groups = list (pts, pts2),
                        cols = rep (col_park_in, 2), bg = col_park_out,
                        boundary = 0)
 print_osm_map (map, filename = 'map_b8.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b8.png)
 
@@ -274,7 +275,7 @@ map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
                        cols = c ('orange', 'tomato'), bg = 'gray40',
                        boundary = 0)
 print_osm_map (map, filename = 'map_b9.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b9.png)
 
@@ -323,7 +324,7 @@ map <- add_osm_groups (map, london$dat_H, groups = list (pts, pts2),
                        bg = adjust_colours ('gray40', adj = -0.2),
                        boundary = 1, size = 1)
 print_osm_map (map, filename = 'map_b10.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b10.png)
 
@@ -353,7 +354,7 @@ map <- add_osm_groups (map, dat_H, groups = pts, cols = 'gray20', bg = 'gray70',
 map <- add_osm_groups (map, dat_HP, groups = pts, cols = 'gray10', bg = 'white',
                    boundary = 0, size = 1)
 print_osm_map (map, filename = 'map_b11.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b11.png)
 
@@ -386,7 +387,7 @@ map <- osm_basemap (bbox = bbox, bg = 'gray95')
 map <- add_osm_groups (map, dat_B, groups = groups,
                        cols = rainbow (length (groups)))
 print_osm_map (map, filename = 'map_b12.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b12.png)
 
@@ -414,7 +415,7 @@ map <- osm_basemap (bbox = bbox, bg = 'gray95')
 map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
                        cols = heat.colors (length (groups)))
 print_osm_map (map, filename = 'map_b13.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b13.png)
 
@@ -470,7 +471,7 @@ map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
                        colmat = TRUE,
                        cols = c('red', 'green', 'yellow', 'blue'), rotate = 180)
 print_osm_map (map, filename = 'map_b14.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b14.png)
 
@@ -564,7 +565,7 @@ map <- add_osm_groups (map, dat_H, groups = groups, boundary = 0,
 map <- add_osm_groups (map, dat_HP, groups = groups, boundary = 0,
                    cols = cols_H, bg = bg_H, size = 1)
 print_osm_map (map, filename = 'map_b15.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b15.png)
 
@@ -602,7 +603,7 @@ print_osm_map (map)
 map <- osm_basemap (bbox = bbox, bg = 'gray20')
 map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
 print_osm_map (map, filename = 'map_b16.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b16.png)
 
@@ -642,7 +643,7 @@ map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj, size = 1.5)
 map <- add_osm_objects (map, dat_P, col = rgb (0.1, 0.3, 0.1))
 map <- add_osm_objects (map, dat_H, col = 'gray60')
 print_osm_map (map, filename = 'map_b17.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b17.png)
 
@@ -667,7 +668,7 @@ map <- add_osm_objects (map, dat_P, col = rgb (0.1, 0.3, 0.1))
 map <- add_osm_objects (map, dat_H, col = 'gray60')
 map <- add_colourbar (map, cols = terrain.colors (100), zlims = range (dat$z))
 print_osm_map (map, filename = 'map_b18.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b18.png)
 
@@ -705,7 +706,7 @@ map <- add_colourbar (map, cols = heat.colors (100), zlims = range (dat$z),
 map <- add_axes (map, colour = "blue", fontsize = 5, fontface = 3,
                  fontfamily = "Times")
 print_osm_map (map, filename = 'map_b19.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b19.png)
 
@@ -760,7 +761,7 @@ cols_adj <- adjust_colours (heat.colors (30), -0.2)
 map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj,
                         size = c (1.5, 0.5), bg = "gray70")
 print_osm_map (map, filename = 'map_b20.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b20.png)
 
@@ -807,7 +808,7 @@ map <- add_osm_surface (map, dat_H, dat = dat, cols = terrain.colors (30),
 map <- add_osm_surface (map, dat_T, dat = dat, cols = heat.colors (30),
                               bg = "lawngreen", size = c(3, 2), shape = c(8, 1))
 print_osm_map (map, filename = 'map_b21.png', width = 600,
-               units = 'px', dpi = 72)
+               units = 'px', dpi = map_dpi)
 ```
 ![](map_b21.png)
 

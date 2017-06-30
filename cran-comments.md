@@ -1,9 +1,10 @@
 # CRAN notes for osmplotr_v0.3.0 submission
 
-The single note regarding installed size is due to the vignettes. These produce
-many graphical files representing the package's functionality. I have
-endeavoured to make these files as small as possible, but the 'doc' fold
-nevertheless remains ~5MB.
+The single note regarding installed size of ~6MB is due to the vignettes. These
+produce many graphical files illustrating the package's functionality. Halving
+the current resolution of these images (from 72 to 36 dpi) only decreases the
+final package size by around 200 kB - it really is the sheer number of them
+required, rather than their sizes.
 
 ## Test environments
 
