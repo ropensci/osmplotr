@@ -10,6 +10,8 @@ Major changes
 
 Minor changes
 -------
+* Title in DESCRIPTION changed from "Customisable Images of OpenStreetMap Data"
+  to "Bespoke Images of 'OpenStreetMap' Data"
 * Better control of timeout errors when calling the overpass API
 * Git host transferred from ropenscilabs to ropensci
 * Acknowledge OSM contributors on startup
