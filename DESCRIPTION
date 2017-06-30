@@ -7,8 +7,8 @@ Authors@R: c(
         comment="Author of included stub.R code"),
     person ("Bartnik", "Lukasz", role=c("ctb","cph"),
         comment="Author of included stub.R code"))
-Description: Customisable images of OpenStreetMap (OSM) data and
-    data visualisation using OSM objects.
+Description: Customizable images of 'OpenStreetMap' ('OSM') data and
+    data visualisation using 'OSM' objects.
 Depends:
     R (>= 3.2.3)
 Imports:
