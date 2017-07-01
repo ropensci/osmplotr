@@ -3,8 +3,8 @@ osmplotr v0.3.0
 
 Major changes
 -------
-* Major re-structure to use 'osmdata' package instead of 'osmdar', with
-  conomitantly enormous increase in speed of 'extract_osm_objects'
+* Major re-structure to use 'osmdata' package instead of 'osmar', with
+  concomitantly enormous increase in speed of 'extract_osm_objects'
 * Package is now also 'sf'-compatible: objects to be plotted can be either 'sp'
   or 'sf' format, with all 'osmplotr' functions defaulting to 'sf'
 
@@ -23,7 +23,7 @@ osmplotr v0.2.3
 ===============
 
 * add 'return_type' argument to 'extract_osm_objects' to enable explicit
-    specificiation of return type (points, lines, polygons)
+  specification of return type (points, lines, polygons)
 * fix tests so they pass even if download fails
 
 osmplotr v0.2.2
