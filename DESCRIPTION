@@ -27,7 +27,6 @@ Suggests:
     roxygen2,
     rmarkdown,
     devtools,
-    maptools,
     testthat
 License: GPL-3
 URL: https://github.com/ropensci/osmplotr
