@@ -52,7 +52,7 @@ print_osm_map <- function (map, width, height, filename,
         on.exit (utils::capture.output (grDevices::dev.off (which =
                                                             dev.cur ())))
     }
-    invisible()
+    invisible (map)
 }
 
 # code from hadley/ggplot2::save
