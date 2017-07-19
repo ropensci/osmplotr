@@ -65,31 +65,44 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, hcol,
 
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
 
-    # convert sf/sp geometries to simple list of matrices
-    xy <- geom_to_xy (obj, obj_type)
 
     if (obj_type == "multipolygon") # sf
     {
-        xy <- list2df (xy)
-        xy1 <- xy [which (xy$id == 1), ]
-        xy_not1 <- xy [which (xy$id != 1), ]
-        if (missing (hcol))
-            hcol <- map$theme$panel.background$fill
-        hcol <- rep (hcol, length.out = length (unique (xy_not1$id)))
-        hcols <- NULL
-        ids <- unique (xy_not1$id)
-        for (i in seq (ids))
+        for (i in seq (nrow (obj)))
         {
-            n <- length (which (xy_not1$id == ids [i]))
-            hcols <- c (hcols, rep (hcol [i], n))
+            #xy <- lapply (obj$geometry [[i]], function (i) i [[1]])
+            xy <- obj$geometry [[i]] [[1]]
+            # if only one polygon in multipolygon, which can happen:
+            if (!is.list (xy))
+                xy <- list (xy)
+            xy <- list2df (xy)
+            xy1 <- xy [which (xy$id == 1), ]
+            xy_not1 <- xy [which (xy$id != 1), ]
+
+            map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
+                                                data = xy1, size = size,
+                                                fill = col, colour = border)
+
+            if (nrow (xy_not1) > 0)
+            {
+                if (missing (hcol))
+                    hcol <- map$theme$panel.background$fill
+                hcol <- rep (hcol, length.out = length (unique (xy_not1$id)))
+                hcols <- NULL
+                ids <- unique (xy_not1$id)
+                for (i in seq (ids))
+                {
+                    n <- length (which (xy_not1$id == ids [i]))
+                    hcols <- c (hcols, rep (hcol [i], n))
+                }
+                map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
+                                                    data = xy_not1,
+                                                    fill = hcols)
+            }
         }
-        map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
-                                            data = xy1, size = size,
-                                            fill = col, colour = border)
-        map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
-                                            data = xy_not1, fill = hcols)
     } else if (grepl ('polygon', obj_type))
     {
+        xy <- geom_to_xy (obj, obj_type)
         xy <- list2df (xy)
         map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
                                                       data = xy, size = size,
@@ -97,12 +110,14 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, hcol,
                                                       colour = border)
     } else if (grepl ('line', obj_type))
     {
+        xy <- geom_to_xy (obj, obj_type)
         xy <- list2df (xy, islines = TRUE)
         map <- map + ggplot2::geom_path (data = xy,
                                    ggplot2::aes (x = lon, y = lat),
                                    colour = col, size = size, linetype = shape)
     } else if (grepl ('point', obj_type))
     {
+        xy <- geom_to_xy (obj, obj_type)
         map <- map + ggplot2::geom_point (data = xy,
                                     ggplot2::aes (x = lon, y = lat),
                                     col = col, size = size, shape = shape)
@@ -198,9 +213,7 @@ default_size <- function (obj, size)
 #' @noRd
 geom_to_xy <- function (obj, obj_type)
 {
-    if (obj_type == 'multipolygon') # sf
-        xy <- lapply (obj$geometry, function (i) i [[1]]) [[1]]
-    else if (obj_type == 'polygon') # sf
+    if (obj_type == 'polygon') # sf
         xy <- lapply (obj$geometry, function (i) i [[1]])
     else if (obj_type == 'linestring') # sf
         xy <- lapply (obj$geometry, function (i) as.matrix (i))
