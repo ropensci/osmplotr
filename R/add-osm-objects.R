@@ -9,6 +9,7 @@
 #' typically as returned by \code{\link{extract_osm_objects}}.
 #' @param col Colour of lines or points; fill colour of polygons.
 #' @param border Border colour of polygons.
+#' @param hcol (Multipolygons only) Vector of fill colours for holes
 #' @param size Size argument passed to \code{ggplot2} (polygon, path, point)
 #' functions: determines width of lines for (polygon, line), and sizes of
 #' points.  Respective defaults are (0, 0.5, 0.5).
@@ -45,7 +46,8 @@
 #'                         size = 0.5)
 #' print_osm_map (map)
 
-add_osm_objects <- function (map, obj, col = 'gray40', border = NA, size, shape)
+add_osm_objects <- function (map, obj, col = 'gray40', border = NA, hcol,
+                             size, shape)
 {
     # ---------------  sanity checks and warnings  ---------------
     check_map_arg (map)
@@ -66,7 +68,27 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, size, shape)
     # convert sf/sp geometries to simple list of matrices
     xy <- geom_to_xy (obj, obj_type)
 
-    if (grepl ('polygon', obj_type))
+    if (obj_type == "multipolygon") # sf
+    {
+        xy <- list2df (xy)
+        xy1 <- xy [which (xy$id == 1), ]
+        xy_not1 <- xy [which (xy$id != 1), ]
+        if (missing (hcol))
+            hcol <- map$theme$panel.background$fill
+        hcol <- rep (hcol, length.out = length (unique (xy_not1$id)))
+        hcols <- NULL
+        ids <- unique (xy_not1$id)
+        for (i in seq (ids))
+        {
+            n <- length (which (xy_not1$id == ids [i]))
+            hcols <- c (hcols, rep (hcol [i], n))
+        }
+        map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
+                                            data = xy1, size = size,
+                                            fill = col, colour = border)
+        map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
+                                            data = xy_not1, fill = hcols)
+    } else if (grepl ('polygon', obj_type))
     {
         xy <- list2df (xy)
         map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
@@ -176,7 +198,9 @@ default_size <- function (obj, size)
 #' @noRd
 geom_to_xy <- function (obj, obj_type)
 {
-    if (obj_type == 'polygon') # sf
+    if (obj_type == 'multipolygon') # sf
+        xy <- lapply (obj$geometry, function (i) i [[1]]) [[1]]
+    else if (obj_type == 'polygon') # sf
         xy <- lapply (obj$geometry, function (i) i [[1]])
     else if (obj_type == 'linestring') # sf
         xy <- lapply (obj$geometry, function (i) as.matrix (i))
