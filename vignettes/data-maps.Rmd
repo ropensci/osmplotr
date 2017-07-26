@@ -34,12 +34,11 @@ small portion of central London, U.K.
 bbox <- get_bbox (c(-0.13, 51.51, -0.11, 51.52))
 ```
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, message= FALSE}
 dat_B <- rbind (london$dat_BR, london$dat_BNR)
 dat_H <- rbind (london$dat_H, london$dat_HP)
 dat_HP <- london$dat_HP
 ```
-
 
 # 1. Categorical data: `add_osm_groups`
 
@@ -63,16 +62,35 @@ boundary points:
 ```{r map1, eval = FALSE}
 pts <- cbind (c (-0.115, -0.125, -0.125, -0.115),
               c (51.513, 51.513, 51.517, 51.517))
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
+
+map <- osm_basemap (bbox = bbox, 
+                    bg = 'gray20')
+
+map <- add_osm_groups (map, 
+                       dat_B, 
+                       groups = pts, 
+                       cols = 'orange', 
+                       bg = 'gray40')
+
 print_osm_map (map)
 ```
 ```{r map1-print, echo = FALSE}
+
 pts <- cbind (c (-0.115, -0.125, -0.125, -0.115),
               c (51.513, 51.513, 51.517, 51.517))
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
-print_osm_map (map, filename = 'map_b1.png', width = 600,
+
+map <- osm_basemap (bbox = bbox, 
+                    bg = 'gray20')
+
+map <- add_osm_groups (map, 
+                       dat_B, 
+                       groups = pts, 
+                       cols = 'orange', 
+                       bg = 'gray40')
+
+print_osm_map (map, 
+               filename = 'map_b1.png', 
+               width = 600,
                units = 'px', dpi = map_dpi)
 ```
 ![](map_b1.png)
@@ -80,22 +98,41 @@ print_osm_map (map, filename = 'map_b1.png', width = 600,
 Multiple groups can be defined by passing a list of multiple sets of point
 coordinates to the `groups` argument of `add_osm_groups`, and specifying
 corresponding colours.
+
 ```{r map2, eval = FALSE}
 pts2 <- cbind (c (-0.111, -0.1145, -0.1145, -0.111),
                c (51.517, 51.517, 51.519, 51.519))
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2),
-                       cols = c ('orange', 'tomato'), bg = 'gray40')
+
+map <- osm_basemap (bbox = bbox, 
+                    bg = 'gray20')
+
+map <- add_osm_groups (map, 
+                       dat_B, 
+                       groups = list (pts, pts2),
+                       cols = c ('orange', 'tomato'), 
+                       bg = 'gray40')
+
 print_osm_map (map)
 ```
 ```{r map2-print, echo = FALSE}
+
 pts2 <- cbind (c (-0.111, -0.1145, -0.1145, -0.111),
                c (51.517, 51.517, 51.519, 51.519))
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2),
-                       cols = c ('orange', 'tomato'), bg = 'gray40')
-print_osm_map (map, filename = 'map_b2.png', width = 600,
-               units = 'px', dpi = map_dpi)
+
+map <- osm_basemap (bbox = bbox, 
+                    bg = 'gray20')
+
+map <- add_osm_groups (map, 
+                       dat_B, 
+                       groups = list (pts, pts2),
+                       cols = c ('orange', 'tomato'), 
+                       bg = 'gray40')
+
+print_osm_map (map, 
+               filename = 'map_b2.png', 
+               width = 600,
+               units = 'px', 
+               dpi = map_dpi)
 ```
 ![](map_b2.png)
 
@@ -103,20 +140,71 @@ The `bg` argument specifies the colour of any objects lying outside the
 boundaries of the specified groups. If this argument is not given, then all
 objects are assigned to the nearest group, so that the groups fill the entire
 map.
+
 ```{r map3, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2),
+
+map <- osm_basemap (bbox = bbox, 
+                    bg = 'gray20')
+
+map <- add_osm_groups (map, 
+                       dat_B, 
+                       groups = list (pts, pts2),
                        cols = c ('orange', 'tomato'))
+
 print_osm_map (map)
 ```
 ```{r map3-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2),
+
+map <- osm_basemap (bbox = bbox, 
+                    bg = 'gray20')
+
+map <- add_osm_groups (map, 
+                       dat_B, 
+                       groups = list (pts, pts2),
                        cols = c ('orange', 'tomato'))
-print_osm_map (map, filename = 'map_b3.png', width = 600,
-               units = 'px', dpi = map_dpi)
+
+print_osm_map (map, 
+               filename = 'map_b3.png', 
+               width = 600,
+               units = 'px', 
+               dpi = map_dpi)
 ```
 ![](map_b3.png)
+
+Now that you've seen the general workflow of `osmplotr`, let's repeat the previous code, but streamline it with `magrittr`'s `%>%` function. This allows us to pipe the functions together instead of re-assigning the `map` variable. 
+
+```{r map_b3_pipe, eval = FALSE}
+
+library(magrittr)
+
+osm_basemap(bbox = bbox,
+            bg = 'gray20') %>%
+  add_osm_groups(dat_B,
+                 groups = list(pts, pts2),
+                 cols = c('orange', 'tomato')) %>%
+  print_osm_map()
+```
+```{r map_b3_pipe-print, echo = FALSE}
+
+library(magrittr)
+
+map <- osm_basemap (bbox = bbox, 
+                    bg = 'gray20')
+
+map <- add_osm_groups (map, 
+                       dat_B, 
+                       groups = list (pts, pts2),
+                       cols = c ('orange', 'tomato'))
+
+print_osm_map (map, 
+               filename = 'map_b3_pipe.png', 
+               width = 600,
+               units = 'px', 
+               dpi = map_dpi)
+```
+
+![](map_b3_pipe.png)
+
 
 ## 1.1 Hulls around groups
 
@@ -129,16 +217,29 @@ create a concave shape.
 
 ```{r map5, eval = FALSE}
 pts <- rbind (pts, c (-0.12, 51.515))
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
-print_osm_map (map)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_groups (dat_B, 
+                  groups = pts, 
+                  cols = 'orange', 
+                  bg = 'gray40') %>%
+  print_osm_map ()
 ```
 ```{r map5-print, echo = FALSE}
+
 pts <- rbind (pts, c (-0.12, 51.515))
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
-print_osm_map (map, filename = 'map_b5.png', width = 600,
-               units = 'px', dpi = map_dpi)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_groups (dat_B, 
+                  groups = pts, 
+                  cols = 'orange', 
+                  bg = 'gray40') %>%
+  print_osm_map (filename = 'map_b5.png', 
+                 width = 600,
+                 units = 'px',
+                 dpi = map_dpi)
 ```
 ![](map_b5.png)
 
@@ -160,19 +261,30 @@ maps illustrate the default option (`boundary = -1`), while the two other
 options produce the following maps. 
 
 ```{r map6, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = c ('orange', 'tomato'), bg = 'gray40',
-                       boundary = 1)
-print_osm_map (map)
+
+osm_basemap (bbox = bbox, bg = 'gray20') %>%
+  add_osm_groups (dat_B, 
+                  groups = list (pts, pts2), 
+                  make_hull = TRUE,
+                  cols = c('orange', 'tomato'), 
+                  bg = 'gray40',
+                  boundary = 1) %>%
+  print_osm_map ()
 ```
 ```{r map6-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = c ('orange', 'tomato'), bg = 'gray40',
-                       boundary = 1)
-print_osm_map (map, filename = 'map_b6.png', width = 600,
-               units = 'px', dpi = map_dpi)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_groups (dat_B, 
+                  groups = list (pts, pts2), 
+                  make_hull = TRUE,
+                  cols = c('orange', 'tomato'), 
+                  bg = 'gray40',
+                  boundary = 1) %>%
+  print_osm_map (filename = 'map_b6.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b6.png)
 
@@ -182,19 +294,29 @@ regions than the previous default exclusive option. Precisely
 bisecting boundaries produces the following map.
 
 ```{r map7, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = c ('orange', 'tomato'), bg = 'gray40',
-                       boundary = 0)
-print_osm_map (map)
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_groups (dat_B, 
+                  groups = list (pts, pts2), 
+                  make_hull = TRUE,
+                  cols = c ('orange', 'tomato'), 
+                  bg = 'gray40',
+                  boundary = 0) %>%
+  print_osm_map ()
 ```
 ```{r map7-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = c ('orange', 'tomato'), bg = 'gray40',
-                       boundary = 0)
-print_osm_map (map, filename = 'map_b7.png', width = 600,
-               units = 'px', dpi = map_dpi)
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_groups (dat_B, 
+                  groups = list (pts, pts2), 
+                  make_hull = TRUE,
+                  cols = c ('orange', 'tomato'), 
+                  bg = 'gray40',
+                  boundary = 0) %>%
+  print_osm_map (filename = 'map_b7.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b7.png)
 
@@ -221,29 +343,45 @@ dat_P <- london$dat_P
 Plotting buildings inclusively within each group and overlaying parks bisected
 by the group boundaries produces the following map:
 ```{r map8, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = c ('orange', 'tomato'), bg = 'gray40',
-                       boundary = 0)
 col_park_in <- rgb (50, 255, 50, maxColorValue = 255)
 col_park_out <- rgb (50, 155, 50, maxColorValue = 255)
-map <- add_osm_groups (map, dat_P, groups = list (pts, pts2),
-                       cols = rep (col_park_in, 2), bg = col_park_out,
-                       boundary = 0)
-print_osm_map (map)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_groups (dat_B, 
+                  groups = list (pts, pts2), 
+                  make_hull = TRUE,
+                  cols = c('orange', 'tomato'), 
+                  bg = 'gray40',
+                  boundary = 0) %>%
+  add_osm_groups (dat_P, 
+                  groups = list (pts, pts2),
+                  cols = rep (col_park_in, 2),
+                  bg = col_park_out,
+                  boundary = 0) %>%
+  print_osm_map ()
 ```
 ```{r map8-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = c ('orange', 'tomato'), bg = 'gray40',
-                       boundary = 0)
 col_park_in <- rgb (50, 255, 50, maxColorValue = 255)
 col_park_out <- rgb (50, 155, 50, maxColorValue = 255)
-map <- add_osm_groups (map, dat_P, groups = list (pts, pts2),
-                       cols = rep (col_park_in, 2), bg = col_park_out,
-                       boundary = 0)
-print_osm_map (map, filename = 'map_b8.png', width = 600,
-               units = 'px', dpi = map_dpi)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_groups (dat_B, 
+                  groups = list (pts, pts2), 
+                  make_hull = TRUE,
+                  cols = c('orange', 'tomato'), 
+                  bg = 'gray40',
+                  boundary = 0) %>%
+  add_osm_groups (dat_P, 
+                  groups = list (pts, pts2),
+                  cols = rep (col_park_in, 2),
+                  bg = col_park_out,
+                  boundary = 0) %>%
+  print_osm_map (filename = 'map_b8.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b8.png)
 
@@ -255,27 +393,48 @@ overlaid, such gaps can be avoided by initially plotting underlying layers using
 `add_osm_objects` prior to grouping objects:
 
 ```{r map9, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_objects (map, dat_P, col = col_park_out)
-map <- add_osm_groups (map, dat_P, groups = list (pts, pts2),
-                       cols = rep (col_park_in, 2), bg = col_park_out,
-                       boundary = 0)
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = c ('orange', 'tomato'), bg = 'gray40',
-                       boundary = 0)
-print_osm_map (map)
+
+map <- osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_objects (dat_P, 
+                   col = col_park_out) %>%
+  add_osm_groups (dat_P, 
+                  groups = list (pts, pts2),
+                  cols = rep (col_park_in, 2), 
+                  bg = col_park_out,
+                  boundary = 0) %>%
+  add_osm_groups (dat_B, 
+                  groups = list (pts, pts2), 
+                  make_hull = TRUE,
+                  cols = c ('orange', 'tomato'), 
+                  bg = 'gray40',
+                  boundary = 0)
+
+map %>%
+  print_osm_map ()
 ```
 ```{r map9-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_objects (map, dat_P, col = col_park_out)
-map <- add_osm_groups (map, dat_P, groups = list (pts, pts2),
-                       cols = rep (col_park_in, 2), bg = col_park_out,
-                       boundary = 0)
-map <- add_osm_groups (map, dat_B, groups = list (pts, pts2), make_hull = TRUE,
-                       cols = c ('orange', 'tomato'), bg = 'gray40',
-                       boundary = 0)
-print_osm_map (map, filename = 'map_b9.png', width = 600,
-               units = 'px', dpi = map_dpi)
+map <- osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_objects (dat_P, 
+                   col = col_park_out) %>%
+  add_osm_groups (dat_P, 
+                  groups = list (pts, pts2),
+                  cols = rep (col_park_in, 2), 
+                  bg = col_park_out,
+                  boundary = 0) %>%
+  add_osm_groups (dat_B, 
+                  groups = list (pts, pts2), 
+                  make_hull = TRUE,
+                  cols = c ('orange', 'tomato'), 
+                  bg = 'gray40',
+                  boundary = 0)
+
+map %>%
+  print_osm_map (filename = 'map_b9.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b9.png)
 
@@ -300,31 +459,57 @@ following code adds highways to the above map in slightly darkened versions of
 the highlight colours (using `boundary = 1`, so any highways with any points lying
 within the bounding box are included in the groups):
 ```{r map10, eval = FALSE}
+#create separate data for all highways and primary highways
+dat_H <- rbind (london$dat_H, london$dat_HP)
+dat_HP <- london$dat_HP
+
 # darken colours by aboud 20%
-cols_adj <- adjust_colours (c ('orange', 'tomato'), adj = -0.2)
-map <- add_osm_groups (map, london$dat_HP, groups = list (pts, pts2),
-                       make_hull = TRUE, cols = cols_adj,
-                       bg = adjust_colours ('gray40', adj = -0.4),
-                       boundary = 1, size = 2)
-map <- add_osm_groups (map, london$dat_H, groups = list (pts, pts2),
-                       make_hull = TRUE, cols = cols_adj,
-                       bg = adjust_colours ('gray40', adj = -0.2),
-                       boundary = 1, size = 1)
-print_osm_map (map)
+cols_adj <- adjust_colours (c ('orange', 'tomato'), 
+                            adj = -0.2)
+
+map %>%
+  add_osm_groups (dat_HP, 
+                groups = list (pts, pts2),
+                make_hull = TRUE, 
+                cols = cols_adj,
+                bg = adjust_colours('gray40', 
+                                    adj = -0.4),
+                boundary = 1, size = 2) %>%
+  add_osm_groups (dat_H, 
+                  groups = list (pts, pts2),
+                  make_hull = TRUE, 
+                  cols = cols_adj,
+                  bg = adjust_colours ('gray40', 
+                                       adj = -0.2),
+                  boundary = 1, 
+                  size = 1) %>%
+  print_osm_map ()
 ```
 ```{r map10-print, echo = FALSE}
 # darken colours by aboud 20%
-cols_adj <- adjust_colours (c ('orange', 'tomato'), adj = -0.2)
-map <- add_osm_groups (map, london$dat_HP, groups = list (pts, pts2),
-                       make_hull = TRUE, cols = cols_adj,
-                       bg = adjust_colours ('gray40', adj = -0.4),
-                       boundary = 1, size = 2)
-map <- add_osm_groups (map, london$dat_H, groups = list (pts, pts2),
-                       make_hull = TRUE, cols = cols_adj,
-                       bg = adjust_colours ('gray40', adj = -0.2),
-                       boundary = 1, size = 1)
-print_osm_map (map, filename = 'map_b10.png', width = 600,
-               units = 'px', dpi = map_dpi)
+cols_adj <- adjust_colours (c ('orange', 'tomato'), 
+                            adj = -0.2)
+
+map %>%
+  add_osm_groups (dat_HP, 
+                groups = list (pts, pts2),
+                make_hull = TRUE, 
+                cols = cols_adj,
+                bg = adjust_colours('gray40', 
+                                    adj = -0.4),
+                boundary = 1, size = 2) %>%
+  add_osm_groups (dat_H, 
+                  groups = list (pts, pts2),
+                  make_hull = TRUE, 
+                  cols = cols_adj,
+                  bg = adjust_colours ('gray40', 
+                                       adj = -0.2),
+                  boundary = 1, 
+                  size = 1) %>%
+  print_osm_map (filename = 'map_b10.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b10.png)
 
@@ -335,26 +520,49 @@ And of course `adjust_colours ('gray40', adj = -0.2)` is nothing other than
 
 A particularly effective way to highlight single regions within a map is through
 using dark colours upon otherwise light coloured maps.
+
 ```{r map11, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = pts, cols = 'gray40', bg = 'gray85',
-                   boundary = 1)
-map <- add_osm_groups (map, dat_H, groups = pts, cols = 'gray20', bg = 'gray70',
-                   boundary = 0)
-map <- add_osm_groups (map, dat_HP, groups = pts, cols = 'gray10', bg = 'white',
-                   boundary = 0, size = 1)
-print_osm_map (map)
+osm_basemap (bbox = bbox, bg = 'gray95') %>%
+  add_osm_groups (dat_B, 
+                  groups = pts, 
+                  cols = 'gray40', 
+                  bg = 'gray85',
+                  boundary = 1) %>%
+  add_osm_groups (dat_H, 
+                  groups = pts, 
+                  cols = 'gray20', 
+                  bg = 'gray70',
+                  boundary = 0) %>%
+  add_osm_groups (dat_HP, 
+                  groups = pts, 
+                  cols = 'gray10', 
+                  bg = 'white',
+                  boundary = 0, 
+                  size = 1) %>%
+  print_osm_map ()
 ```
 ```{r map11-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = pts, cols = 'gray40', bg = 'gray85',
-                   boundary = 1)
-map <- add_osm_groups (map, dat_H, groups = pts, cols = 'gray20', bg = 'gray70',
-                   boundary = 0)
-map <- add_osm_groups (map, dat_HP, groups = pts, cols = 'gray10', bg = 'white',
-                   boundary = 0, size = 1)
-print_osm_map (map, filename = 'map_b11.png', width = 600,
-               units = 'px', dpi = map_dpi)
+osm_basemap (bbox = bbox, bg = 'gray95') %>%
+  add_osm_groups (dat_B, 
+                  groups = pts, 
+                  cols = 'gray40', 
+                  bg = 'gray85',
+                  boundary = 1) %>%
+  add_osm_groups (dat_H, 
+                  groups = pts, 
+                  cols = 'gray20', 
+                  bg = 'gray70',
+                  boundary = 0) %>%
+  add_osm_groups (dat_HP, 
+                  groups = pts, 
+                  cols = 'gray10', 
+                  bg = 'white',
+                  boundary = 0, 
+                  size = 1) %>%
+  print_osm_map (filename = 'map_b11.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b11.png)
 
@@ -376,18 +584,25 @@ groups <- as.list (data.frame (t (cbind (x, y))))
 (The last line just transforms each row of the matrix into a list item.) Having
 generated the points, a map of corresponding clusters can be generated by the
 following simple code.
+
 ```{r map12, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups,
-                       cols = rainbow (length (groups)))
-print_osm_map (map)
+osm_basemap (bbox = bbox, 
+             bg = 'gray95') %>%
+  add_osm_groups (dat_B, 
+                  groups = groups,
+                  cols = rainbow (length (groups))) %>%
+  print_osm_map ()
 ```
 ```{r map12-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups,
-                       cols = rainbow (length (groups)))
-print_osm_map (map, filename = 'map_b12.png', width = 600,
-               units = 'px', dpi = map_dpi)
+osm_basemap (bbox = bbox, 
+             bg = 'gray95') %>%
+  add_osm_groups (dat_B, 
+                  groups = groups,
+                  cols = rainbow (length (groups))) %>%
+  print_osm_map (filename = 'map_b12.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b12.png)
 
@@ -405,17 +620,25 @@ numbers of groups, manually defined colour schemes are likely to become
 impractical for larger numbers of groups.
 
 ```{r map13, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
-                       cols = heat.colors (length (groups)))
-print_osm_map (map)
+osm_basemap (bbox = bbox, 
+             bg = 'gray95') %>%
+  add_osm_groups (dat_B, 
+                  groups = groups, 
+                  border_width = 2,
+                  cols = heat.colors (length (groups))) %>%
+  print_osm_map ()
 ```
 ```{r map13-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
-                       cols = heat.colors (length (groups)))
-print_osm_map (map, filename = 'map_b13.png', width = 600,
-               units = 'px', dpi = map_dpi)
+osm_basemap (bbox = bbox, 
+             bg = 'gray95') %>%
+  add_osm_groups (dat_B, 
+                  groups = groups, 
+                  border_width = 2,
+                  cols = heat.colors (length (groups))) %>%
+  print_osm_map (filename = 'map_b13.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b13.png)
 
@@ -459,19 +682,29 @@ This example also illustrates that the size of colour matrices may also be
 arbitrarily specified. Using the `colmat` option in `add_osm_groups` enables the
 previous maps to be redrawn like this:
 ```{r map14, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
-                       colmat = TRUE,
-                       cols = c('red', 'green', 'yellow', 'blue'), rotate = 180)
-print_osm_map (map)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray95') %>%
+  add_osm_groups (dat_B, 
+                  groups = groups, 
+                  border_width = 2,
+                  colmat = TRUE,
+                  cols = c('red', 'green', 'yellow', 'blue'), 
+                  rotate = 180) %>%
+  print_osm_map ()
 ```
 ```{r map14-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = groups, border_width = 2,
-                       colmat = TRUE,
-                       cols = c('red', 'green', 'yellow', 'blue'), rotate = 180)
-print_osm_map (map, filename = 'map_b14.png', width = 600,
-               units = 'px', dpi = map_dpi)
+osm_basemap (bbox = bbox, bg = 'gray95') %>%
+  add_osm_groups (dat_B, 
+                  groups = groups, 
+                  border_width = 2,
+                  colmat = TRUE,
+                  cols = c('red', 'green', 'yellow', 'blue'), 
+                  rotate = 180) %>%
+  print_osm_map (filename = 'map_b14.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b14.png)
 
@@ -497,9 +730,6 @@ highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
 highways2 <- connect_highways (highways = highways, bbox = bbox)
 highways <- c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')
 highways3 <- connect_highways (highways = highways, bbox = bbox)
-highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
-               'Fleet.St', 'Aldwych')
-highways4 <- connect_highways (highways = highways, bbox = bbox)
 ```
 Note the use of the [regex](https://en.wikipedia.org/wiki/Regular_expression)
 character `?` in the first list of highway names, denoting the previous
@@ -545,27 +775,52 @@ bg_H <- 'gray60'
 ```
 And then plot the map.
 ```{r map15, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_objects (map, dat_P, col = col_park_out)
-map <- add_osm_groups (map, dat_B, groups = groups, boundary = 1,
-                   bg = bg_B, cols = cols_B)
-map <- add_osm_groups (map, dat_H, groups = groups, boundary = 1,
-                   bg = bg_H, cols = cols_H)
-map <- add_osm_groups (map, dat_HP, groups = groups, boundary = 0,
-                   cols = cols_H, bg = bg_H, size = 1)
-print_osm_map (map)
+osm_basemap (bbox = bbox, bg = 'gray20') %>%
+  add_osm_objects (dat_P, 
+                   col = col_park_out) %>%
+  add_osm_groups (dat_B, 
+                  groups = groups, 
+                  boundary = 1,
+                  bg = bg_B, 
+                  cols = cols_B) %>%
+  add_osm_groups (dat_H, 
+                  groups = groups, 
+                  boundary = 1,
+                  bg = bg_H, 
+                  cols = cols_H) %>%
+  add_osm_groups (dat_HP, 
+                  groups = groups, 
+                  boundary = 0,
+                  cols = cols_H, 
+                  bg = bg_H, 
+                  size = 1) %>%
+  print_osm_map ()
+
 ```
 ```{r map15-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_objects (map, dat_P, col = col_park_out)
-map <- add_osm_groups (map, dat_B, groups = groups, boundary = 1,
-                   cols = cols_B, bg = bg_B)
-map <- add_osm_groups (map, dat_H, groups = groups, boundary = 0,
-                   cols = cols_H, bg = bg_H)
-map <- add_osm_groups (map, dat_HP, groups = groups, boundary = 0,
-                   cols = cols_H, bg = bg_H, size = 1)
-print_osm_map (map, filename = 'map_b15.png', width = 600,
-               units = 'px', dpi = map_dpi)
+osm_basemap (bbox = bbox, bg = 'gray20') %>%
+  add_osm_objects (dat_P, 
+                   col = col_park_out) %>%
+  add_osm_groups (dat_B, 
+                  groups = groups, 
+                  boundary = 1,
+                  bg = bg_B, 
+                  cols = cols_B) %>%
+  add_osm_groups (dat_H, 
+                  groups = groups, 
+                  boundary = 1,
+                  bg = bg_H, 
+                  cols = cols_H) %>%
+  add_osm_groups (dat_HP, 
+                  groups = groups, 
+                  boundary = 0,
+                  cols = cols_H, 
+                  bg = bg_H, 
+                  size = 1) %>%
+  print_osm_map (filename = 'map_b15.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b15.png)
 
@@ -595,15 +850,23 @@ head (dat)
 ```
 And then passed to `add_osm_surface`
 ```{r map16, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
-print_osm_map (map)
+osm_basemap (bbox = bbox,
+             bg = 'gray20') %>%
+  add_osm_surface (dat_B, 
+                   dat = dat, 
+                   cols = heat.colors (30)) %>%
+  print_osm_map ()
 ```
 ```{r map16-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
-print_osm_map (map, filename = 'map_b16.png', width = 600,
-               units = 'px', dpi = map_dpi)
+osm_basemap (bbox = bbox,
+             bg = 'gray20') %>%
+  add_osm_surface (dat_B, 
+                   dat = dat, 
+                   cols = heat.colors (30)) %>%
+  print_osm_map (filename = 'map_b16.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b16.png)
 
@@ -612,9 +875,13 @@ once to any one kind of `Spatial` object (polygons or lines), as illustrated in
 the following code (in which both `dat_H` and `dat_HP` are of class
 `SpatialLinesDataFrame`:
 ```{r, eval = TRUE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = heat.colors (30))
-map <- add_osm_surface (map, dat_H, dat = dat, cols = heat.colors (30))
+osm_basemap (bbox = bbox, bg = 'gray20') %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = heat.colors (30)) %>%
+  add_osm_surface (dat_H, 
+                   dat = dat, 
+                   cols = heat.colors (30))
 ```
 This is because `add_osm_surface` creates new `ggplot2` aesthetic schemes for
 each kind of object, and these schemes are not intended to be modified or
@@ -627,23 +894,47 @@ different one for all objects of class `SpatialPolygons`.
 Of course, any number of additional objects may be overlaid with
 `add_osm_objects`, for example,
 ```{r map17, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
 cols_adj <- adjust_colours (heat.colors (30), -0.2)
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj, size = 1.5)
-map <- add_osm_objects (map, dat_P, col = rgb (0.1, 0.3, 0.1))
-map <- add_osm_objects (map, dat_H, col = 'gray60')
-print_osm_map (map)
+
+map <- osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_surface (dat_B, 
+                   dat = dat, 
+                   cols = heat.colors (30)) %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = cols_adj, 
+                   size = 1.5) %>%
+  add_osm_objects (dat_P, 
+                   col = rgb (0.1, 0.3, 0.1)) %>%
+  add_osm_objects (dat_H, 
+                   col = 'gray60') 
+
+map %>%
+  print_osm_map ()
 ```
 ```{r map17-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
 cols_adj <- adjust_colours (heat.colors (30), -0.2)
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj, size = 1.5)
-map <- add_osm_objects (map, dat_P, col = rgb (0.1, 0.3, 0.1))
-map <- add_osm_objects (map, dat_H, col = 'gray60')
-print_osm_map (map, filename = 'map_b17.png', width = 600,
-               units = 'px', dpi = map_dpi)
+
+map <- osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_surface (dat_B, 
+                   dat = dat, 
+                   cols = heat.colors (30)) %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = cols_adj, 
+                   size = 1.5) %>%
+  add_osm_objects (dat_P, 
+                   col = rgb (0.1, 0.3, 0.1)) %>%
+  add_osm_objects (dat_H, 
+                   col = 'gray60') 
+
+map %>%
+  print_osm_map (filename = 'map_b17.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b17.png)
 
@@ -656,19 +947,19 @@ overlaid only after all desired map items have been added. The only parameters
 required for `add_colourbar` are the limits of the data (`zlims`) and the
 colours (along with the `map`, a modified version of which is returned).
 ```{r map18, eval = FALSE}
-map <- add_colourbar (map, cols = terrain.colors (100), zlims = range (dat$z))
-print_osm_map (map)
+map %>%
+  add_colourbar (cols = terrain.colors (100), 
+                 zlims = range (dat$z)) %>%
+  print_osm_map ()
 ```
 ```{r map18-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
-cols_adj <- adjust_colours (heat.colors (30), -0.2)
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj, size = 1.5)
-map <- add_osm_objects (map, dat_P, col = rgb (0.1, 0.3, 0.1))
-map <- add_osm_objects (map, dat_H, col = 'gray60')
-map <- add_colourbar (map, cols = terrain.colors (100), zlims = range (dat$z))
-print_osm_map (map, filename = 'map_b18.png', width = 600,
-               units = 'px', dpi = map_dpi)
+map %>%
+  add_colourbar (cols = terrain.colors (100), 
+                 zlims = range (dat$z)) %>%
+  print_osm_map (filename = 'map_b18.png', 
+                 width = 600, 
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b18.png)
 
@@ -680,33 +971,63 @@ the transparency of the boxes surrounding the elements of the colourbar may be
 controlled by specifying the value of `alpha`. Both alignment and position may
 also be adjusted, as illustrated in this example.
 ```{r map19, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
 cols_adj <- adjust_colours (heat.colors (30), -0.2)
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj, size = 1.5)
-map <- add_colourbar (map, cols = heat.colors (100), zlims = range (dat$z),
-                      alpha = 0.9, vertical = FALSE,
-                      barwidth = c(0.1, 0.12), barlength = c(0.5, 0.9),
-                      text_col = "blue", fontsize = 5, fontface = 3,
-                      fontfamily = "Times")
-map <- add_axes (map, colour = "blue", fontsize = 5, fontface = 3,
-                 fontfamily = "Times")
-print_osm_map (map)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_surface (dat_B, 
+                   dat = dat, 
+                   cols = heat.colors (30)) %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = cols_adj, 
+                   size = 1.5) %>%
+add_colourbar (cols = heat.colors (100), 
+               zlims = range (dat$z),
+               alpha = 0.9,
+               vertical = FALSE,
+               barwidth = c(0.1, 0.12), 
+               barlength = c(0.5, 0.9),
+               text_col = "blue", 
+               fontsize = 5, 
+               fontface = 3,
+               fontfamily = "Times") %>%
+  add_axes (colour = "blue", 
+            fontsize = 5, 
+            fontface = 3,
+            fontfamily = "Times") %>%
+  print_osm_map ()
 ```
 ```{r map19-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
 cols_adj <- adjust_colours (heat.colors (30), -0.2)
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj, size = 1.5)
-map <- add_colourbar (map, cols = heat.colors (100), zlims = range (dat$z),
-                      alpha = 0.9, vertical = FALSE,
-                      barwidth = c(0.1, 0.12), barlength = c(0.5, 0.9),
-                      text_col = "blue", fontsize = 5, fontface = 3,
-                      fontfamily = "Times")
-map <- add_axes (map, colour = "blue", fontsize = 5, fontface = 3,
-                 fontfamily = "Times")
-print_osm_map (map, filename = 'map_b19.png', width = 600,
-               units = 'px', dpi = map_dpi)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_surface (dat_B, 
+                   dat = dat, 
+                   cols = heat.colors (30)) %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = cols_adj, 
+                   size = 1.5) %>%
+add_colourbar (cols = heat.colors (100), 
+               zlims = range (dat$z),
+               alpha = 0.9,
+               vertical = FALSE,
+               barwidth = c(0.1, 0.12), 
+               barlength = c(0.5, 0.9),
+               text_col = "blue", 
+               fontsize = 5, 
+               fontface = 3,
+               fontfamily = "Times") %>%
+  add_axes (colour = "blue", 
+            fontsize = 5, 
+            fontface = 3,
+            fontfamily = "Times") %>%
+  print_osm_map (filename = 'map_b19.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b19.png)
 
@@ -744,24 +1065,40 @@ range (d)
 Remove from `dat` all rows translating to `d>0.01`:
 ```{r map20, eval = FALSE}
 dat <- dat [which (d < 0.01), ]
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30),
-                        bg = "gray40")
 cols_adj <- adjust_colours (heat.colors (30), -0.2)
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj,
-                        size = c (1.5, 0.5), bg = "gray70")
-print_osm_map (map)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_surface (dat_B, 
+                   dat = dat, 
+                   cols = heat.colors (30),
+                   bg = "gray40") %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = cols_adj,
+                   size = c (1.5, 0.5), 
+                   bg = "gray70") %>%
+  print_osm_map ()
 ```
 ```{r map20-print, echo = FALSE}
 dat <- dat [which (d < 0.01), ]
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30),
-                        bg = "gray40")
 cols_adj <- adjust_colours (heat.colors (30), -0.2)
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = cols_adj,
-                        size = c (1.5, 0.5), bg = "gray70")
-print_osm_map (map, filename = 'map_b20.png', width = 600,
-               units = 'px', dpi = map_dpi)
+
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_surface (dat_B, 
+                   dat = dat, 
+                   cols = heat.colors (30),
+                   bg = "gray40") %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = cols_adj,
+                   size = c (1.5, 0.5), 
+                   bg = "gray70") %>%
+  print_osm_map (filename = 'map_b20.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b20.png)
 
@@ -790,25 +1127,49 @@ dat_T <- london$dat_T
 ```
 
 ```{r map21, eval = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = terrain.colors (30),
-                        size = c (1.5, 0.5), bg = "gray70")
-map <- add_osm_surface (map, dat_H, dat = dat, cols = terrain.colors (30),
-                        size = c (1, 0.5), bg = "gray70")
-map <- add_osm_surface (map, dat_T, dat = dat, cols = heat.colors (30),
-                              bg = "lawngreen", size = c(3, 2), shape = c(8, 1))
-print_osm_map (map)
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = terrain.colors (30),
+                   size = c (1.5, 0.5), 
+                   bg = "gray70") %>%
+  add_osm_surface (dat_H, 
+                   dat = dat, 
+                   cols = terrain.colors (30),
+                   size = c (1, 0.5), 
+                   bg = "gray70") %>%
+  add_osm_surface (dat_T, 
+                   dat = dat, 
+                   cols = heat.colors (30),
+                   bg = "lawngreen", 
+                   size = c(3, 2), 
+                   shape = c(8, 1)) %>%
+  print_osm_map ()
 ```
 ```{r map21-print, echo = FALSE}
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_HP, dat = dat, cols = terrain.colors (30),
-                        size = c (1.5, 0.5), bg = "gray70")
-map <- add_osm_surface (map, dat_H, dat = dat, cols = terrain.colors (30),
-                        size = c (1, 0.5), bg = "gray70")
-map <- add_osm_surface (map, dat_T, dat = dat, cols = heat.colors (30),
-                              bg = "lawngreen", size = c(3, 2), shape = c(8, 1))
-print_osm_map (map, filename = 'map_b21.png', width = 600,
-               units = 'px', dpi = map_dpi)
+osm_basemap (bbox = bbox, 
+             bg = 'gray20') %>%
+  add_osm_surface (dat_HP, 
+                   dat = dat, 
+                   cols = terrain.colors (30),
+                   size = c (1.5, 0.5), 
+                   bg = "gray70") %>%
+  add_osm_surface (dat_H, 
+                   dat = dat, 
+                   cols = terrain.colors (30),
+                   size = c (1, 0.5), 
+                   bg = "gray70") %>%
+  add_osm_surface (dat_T, 
+                   dat = dat, 
+                   cols = heat.colors (30),
+                   bg = "lawngreen", 
+                   size = c(3, 2), 
+                   shape = c(8, 1)) %>%
+  print_osm_map (filename = 'map_b21.png', 
+                 width = 600,
+                 units = 'px', 
+                 dpi = map_dpi)
 ```
 ![](map_b21.png)
 
