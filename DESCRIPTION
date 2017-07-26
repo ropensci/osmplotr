@@ -24,6 +24,7 @@ Imports:
     spatstat
 Suggests:
     knitr,
+    magrittr,
     roxygen2,
     rmarkdown,
     devtools,
