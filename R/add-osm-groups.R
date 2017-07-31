@@ -388,7 +388,7 @@ groups_are_holes <- function (groups)
 
 #' Trim coordinates of obj to be plotted down to coordinates of map
 #'
-#' @note Polygons are not trimmed and this also has to be modified for points!
+#' @note This has to be modified for points!
 #'
 #' @noRd
 trim_obj_to_map <- function (obj, map, obj_type)
@@ -404,16 +404,13 @@ trim_obj_to_map <- function (obj, map, obj_type)
         xy_mn <- obj
     } else
     {
-        if (grepl ('line', obj_type))
-        {
-            xylims <- lapply (obj, function (i)
-                              c (apply (i, 2, min), apply (i, 2, max)))
-            xylims <- do.call (rbind, xylims)
+        xylims <- lapply (obj, function (i)
+                          c (apply (i, 2, min), apply (i, 2, max)))
+        xylims <- do.call (rbind, xylims)
 
-            indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
-                           xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
-            obj <- obj [indx]
-        }
+        indx <- which (xylims [, 1] > xrange [1] & xylims [, 2] > yrange [1] &
+                       xylims [, 3] < xrange [2] & xylims [, 4] < yrange [2])
+        obj <- obj [indx]
 
         # mean coordinates for every item in obj:
         xy_mn <- do.call (rbind, lapply (obj, function (x) colMeans (x)))
