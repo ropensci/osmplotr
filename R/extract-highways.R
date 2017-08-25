@@ -130,8 +130,8 @@ extract_highway <- function (name = '', bbox)
     bbox <- check_bbox_arg (bbox)
 
     qry <- osmdata::opq (bbox = bbox)
-    qry <- osmdata::add_feature (qry, key = 'highway')
-    qry <- osmdata::add_feature (qry, key = 'name', value = name,
+    qry <- osmdata::add_osm_feature (qry, key = 'highway')
+    qry <- osmdata::add_osm_feature (qry, key = 'name', value = name,
                                  key_exact = FALSE, value_exact = FALSE,
                                  match_case = FALSE)
 

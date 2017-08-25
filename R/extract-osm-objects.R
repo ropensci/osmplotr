@@ -103,12 +103,12 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
         if (!is.na (q_vals [i]) & substring (q_vals [i], 1, 1) == '!')
             key_exact <- TRUE
         if (is.na (q_vals [i]))
-            qry <- osmdata::add_feature (qry, key = q_keys [i],
+            qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
                                          key_exact = key_exact,
                                          value_exact = FALSE,
                                          match_case = FALSE)
         else
-            qry <- osmdata::add_feature (qry, key = q_keys [i],
+            qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
                                          value = q_vals [i],
                                          key_exact = key_exact,
                                          value_exact = FALSE,
