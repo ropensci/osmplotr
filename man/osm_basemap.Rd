@@ -9,7 +9,9 @@ osm_basemap(bbox, structures, bg = "gray20")
 \arguments{
 \item{bbox}{bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
 matrix of 4 elements with columns of min and max values, and rows of x and y
-values.}
+values. Can also be an object of class \code{sf}, for example as returned
+from \code{extract_osm_objects} or the \code{osmdata} package, in which case
+the bounding box will be extracted from the object coordinates.}
 
 \item{structures}{Data frame returned by \code{\link{osm_structures}} used
 here to specify background colour of plot; if missing, the colour is

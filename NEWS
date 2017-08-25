@@ -1,3 +1,12 @@
+osmplotr v0.4.0
+===============
+
+Minor changes
+-------
+* 'osm_basemap' now accepts an 'sf' object instead of explicit 'bbox' values,
+  and extracts the corresponding 'bbox' directly from that object.
+
+
 osmplotr v0.3.0
 ===============
 

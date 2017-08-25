@@ -67,6 +67,21 @@ check_bbox_arg <- function (bbox)
 {
     if (missing (bbox))
         stop ('bbox must be provided')
+    if (is (bbox, 'sf')) # sf obj submitted to osm_basemap
+    {
+        if (is (bbox$geometry, "sfc_LINESTRING") |
+            is (bbox$geometry, "sfc_POINT"))
+            xy <- do.call (rbind, bbox$geometry)
+        else if (is (bbox$geometry, "sfc_POLYGON"))
+            xy <- do.call (rbind, lapply (bbox$geometry, function (i) i [[1]]))
+        else if (is (bbox$geometry, "sfc_MULTIPOLYGON") |
+                 is (bbox$geometry, "sfc_MULTILINESTRING"))
+            xy <- do.call (rbind, lapply (bbox$geometry,
+                                          function (i) i [[1]] [[1]]))
+        bbox <- t (apply (xy, 2, range))
+        rownames (bbox) <- c ("x", "y")
+        colnames (bbox) <- c ("min", "max")
+    }
     if (!is.numeric (bbox))
         stop ('bbox is not numeric')
     if (length (bbox) < 4)
