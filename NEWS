@@ -1,6 +1,11 @@
 osmplotr v0.4.0
 ===============
 
+Major changes
+-------
+* New function 'line2poly' enables plotting polygonal shapes delineated only by
+  lines, through tracing around the bounding box to form full polygons.
+
 Minor changes
 -------
 * 'osm_basemap' now accepts an 'sf' object instead of explicit 'bbox' values,
