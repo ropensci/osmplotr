@@ -3,8 +3,8 @@ osmplotr v0.4.0
 
 Major changes
 -------
-* New function 'line2poly' enables plotting polygonal shapes delineated only by
-  lines, through tracing around the bounding box to form full polygons.
+* New function 'osm_line2poly' enables plotting polygonal shapes delineated only
+  by lines, through tracing around the bounding box to form full polygons.
 
 Minor changes
 -------

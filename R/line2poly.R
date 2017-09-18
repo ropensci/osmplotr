@@ -1,4 +1,4 @@
-#' line2poly
+#' osm_line2poly
 #'
 #' Converts \code{sf::sfc_LINSTRING} objects to polygons by connecting end
 #' points around the given bounding box. This is particularly useful for
@@ -34,13 +34,13 @@
 #' coast <- opq (bb) %>%
 #'     add_osm_feature (key = "natural", value = "coastline") %>%
 #'     osmdata_sf ()
-#' coast <- line2poly (coast$osm_lines, bbox = bb)
+#' coast <- osm_line2poly (coast$osm_lines, bbox = bb)
 #' # The following map then colours in just the ocean:
 #' map <- osm_basemap (bbox = bb) %>%
 #'     add_osm_objects (coast [[1]], col = "lightsteelblue") %>%
 #'     print_osm_map ()
 #' }
-line2poly <- function (obj, bbox)
+osm_line2poly <- function (obj, bbox)
 {
     if (!is (obj$geometry, "sfc_LINESTRING"))
         stop ("obj must be class 'sf' with fields of class 'sfc_LINESTRING'")
