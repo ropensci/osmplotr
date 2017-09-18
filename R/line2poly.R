@@ -30,11 +30,10 @@
 #' \dontrun{
 #' library (magrittr)
 #' library (osmdata)
-#' bb <- getbb ("melbourne, australia")
-#' coast <- opq (bb) %>%
-#'     add_osm_feature (key = "natural", value = "coastline") %>%
-#'     osmdata_sf ()
-#' coast <- osm_line2poly (coast$osm_lines, bbox = bb)
+#' bb <- osmdta::getbb ("melbourne, australia")
+#' coast <- extract_osm_objects (bbox = bb, key = "natural", value = "coastline",
+#'                               return_type = "line")
+#' coast <- osm_line2poly (coast, bbox = bb)
 #' # The following map then colours in just the ocean:
 #' map <- osm_basemap (bbox = bb) %>%
 #'     add_osm_objects (coast [[1]], col = "lightsteelblue") %>%
