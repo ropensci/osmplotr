@@ -30,7 +30,7 @@
 #' \dontrun{
 #' library (magrittr)
 #' library (osmdata)
-#' bb <- osmdta::getbb ("melbourne, australia")
+#' bb <- osmdata::getbb ("melbourne, australia")
 #' coast <- extract_osm_objects (bbox = bb, key = "natural", value = "coastline",
 #'                               return_type = "line")
 #' coast <- osm_line2poly (coast, bbox = bb)
