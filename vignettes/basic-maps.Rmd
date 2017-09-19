@@ -6,6 +6,7 @@ output:
     html_document:
         toc: true
         toc_float: true
+        #number_sections: true
         theme: flatly
 vignette: >
   %\VignetteIndexEntry{Basic Maps}
@@ -226,7 +227,7 @@ osm_structures()$value [1:4]
 ```
 The last row of `osm_structures` exists only to define the background colour of
 the map, as explained below 
-([4.3. Automating map production](#4.3. Automating map production)).
+([4.3 Automating map production](#4.3 Automating map production)).
 
 The suffices include as many letters as are necessary to represent all unique
 structure names.  `make_osm_map` returns a list of two components:
@@ -292,7 +293,7 @@ london <- make_osm_map (structures = structs, bbox = bbox)$osm_data
 ```
 The requested data are contained in the `$osm_data` list item. `make_osm_map`
 also returns a `$map` item which is described below 
-(see [4.3. Automating map production](#4.3 make-osm-map)).
+(see [4.3 Automating map production](#4.3 make-osm-map)).
 
 # 3. Downloading connected highways
 
@@ -536,8 +537,35 @@ print_osm_map (map, filename = 'map_a7.png', width = 600,
 ```
 ![](map_a7.png)
 
+## 4.3 Filling within boundary lines
 
-## 4.3. Automating map production
+Different portions of a map may sometimes be delineated by lines, for example
+with coastlines which are always represented in OpenStreetMap as lines. Plotting
+the water or land either side of a coastline in a single block of colour
+requires the regions to be polygons, not lines. `osmplotr` has a function
+`osm_line2poly()` which converts boundary lines extending beyond a given
+bounding box into polygons encircling the perimeter of the bounding box. An
+example is given in `?osm_line2poly`, using both the `osmdata` package to obtain
+the bounding box of a named region, and the `magrittr` pipe operator.
+```{r, eval = FALSE}
+library (osmdata)
+bb <- osmdata::getbb ("melbourne, australia")
+coast <- extract_osm_objects (bbox = bb, key = "natural", value = "coastline",
+                              return_type = "line")
+coast <- osm_line2poly (coast, bbox = bb)
+map <- osm_basemap (bbox = bb) %>%
+        add_osm_objects (coast [[1]], col = "lightsteelblue") %>%
+        print_osm_map ()
+```
+The `osm_line2poly()` function returns a list of two `sf` polygons. For
+coastline, one of these will correspond to water, one to land. In the preceding
+example, the first polygon is the ocean, which is coloured in
+`"lightsteelblue"`. Users must determine for themselves which polygon is to be
+plotted in which colour. Note that `osm_line2poly()` only accepts `sf`-formatted
+data, and not `sp`.
+
+
+## 4.4 Automating map production
 
 As indicated above 
 ([2.4 Downloading with `osm_structures` and `make_osm_map`](#2.4 downloading2)),
@@ -602,7 +630,7 @@ osm_structures (structs, col_scheme = 'light')
 ```
 
 
-## 4.4 Axes
+## 4.5 Axes
 
 Axes may be added to maps using the `add_axes` function. In contrast to many `R`
 packages for producing maps, maps in `osmplotr` fill the entire plotting space,

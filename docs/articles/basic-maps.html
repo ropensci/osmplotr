@@ -142,8 +142,8 @@ dat2 &lt;-<span class="st"> </span>osmdata<span class="op">::</span><span class=
 <span class="st">    </span><span class="kw">add_feature</span> (<span class="dt">key =</span> <span class="st">'highway'</span>, <span class="dt">value =</span> <span class="st">'!primary'</span>) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">osmdata_sf</span> ()
 dat2 &lt;-<span class="st"> </span>dat2<span class="op">$</span>osm_lines</code></pre></div>
-<p>The <code>osmdata</code> function <code>opq()</code> constructs an overpass query, with successive calls to <code>add_feature</code> extending the query until it is finally submitted to overpass by <code>osmdata_sf()</code> (or the <code>sp</code> version <code>osmdata_sp()</code>).</p>
-<p>Note that <code>add_feature()</code> has to be called twice in this case, because a single call to <code>add_feature (key = 'highway', value = '!primary')</code> would request <em>all</em> features that are not primary highways. The initial query for <code>key = 'highway'</code> ensures that only npn-primary highways are returned.</p>
+<p>The <code>osmdata</code> function <code><a href="http://www.rdocumentation.org/packages/osmdata/topics/opq">opq()</a></code> constructs an overpass query, with successive calls to <code>add_feature</code> extending the query until it is finally submitted to overpass by <code><a href="http://www.rdocumentation.org/packages/osmdata/topics/osmdata_sf">osmdata_sf()</a></code> (or the <code>sp</code> version <code><a href="http://www.rdocumentation.org/packages/osmdata/topics/osmdata_sp">osmdata_sp()</a></code>).</p>
+<p>Note that <code><a href="http://www.rdocumentation.org/packages/osmdata/topics/add_osm_feature">add_feature()</a></code> has to be called twice in this case, because a single call to <code><a href="http://www.rdocumentation.org/packages/osmdata/topics/add_osm_feature">add_feature (key = 'highway', value = '!primary')</a></code> would request <em>all</em> features that are not primary highways. The initial query for <code>key = 'highway'</code> ensures that only npn-primary highways are returned.</p>
 </div>
 <div id="negation" class="section level2">
 <h2 class="hasAnchor">
@@ -191,7 +191,7 @@ dat &lt;-<span class="st"> </span><span class="kw">extract_osm_objects</span> (<
 <p>Many structures are identified by keys only, in which cases the values are empty strings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">osm_structures</span>()<span class="op">$</span>value [<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]</code></pre></div>
 <pre><code>## [1] ""      ""      ""      "grass"</code></pre>
-<p>The last row of <code>osm_structures</code> exists only to define the background colour of the map, as explained below (<a href="#4.3.%20Automating%20map%20production">4.3. Automating map production</a>).</p>
+<p>The last row of <code>osm_structures</code> exists only to define the background colour of the map, as explained below (<a href="#4.3%20Automating%20map%20production">4.3 Automating map production</a>).</p>
 <p>The suffices include as many letters as are necessary to represent all unique structure names. <code>make_osm_map</code> returns a list of two components:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -242,7 +242,7 @@ structs<span class="op">$</span>suffix [<span class="dv">4</span>] &lt;-<span cl
 structs<span class="op">$</span>suffix [<span class="dv">5</span>] &lt;-<span class="st"> 'BC'</span></code></pre></div>
 <p>Suffices are generated automatically from structure names only, not values, and the suffices for negated forms must therefore be specified manually. The <code>london</code> data can then be downloaded by simply calling <code>make_osm_map</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">london &lt;-<span class="st"> </span><span class="kw">make_osm_map</span> (<span class="dt">structures =</span> structs, <span class="dt">bbox =</span> bbox)<span class="op">$</span>osm_data</code></pre></div>
-<p>The requested data are contained in the <code>$osm_data</code> list item. <code>make_osm_map</code> also returns a <code>$map</code> item which is described below (see <a href="#4.3%20make-osm-map">4.3. Automating map production</a>).</p>
+<p>The requested data are contained in the <code>$osm_data</code> list item. <code>make_osm_map</code> also returns a <code>$map</code> item which is described below (see <a href="#4.3%20make-osm-map">4.3 Automating map production</a>).</p>
 </div>
 </div>
 </div>
@@ -356,9 +356,23 @@ map &lt;-<span class="st"> </span><span class="kw">add_osm_objects</span> (map, 
 <img src="map_a7.png">
 </div>
 </div>
+<div id="filling-within-boundary-lines" class="section level2">
+<h2 class="hasAnchor">
+<a href="#filling-within-boundary-lines" class="anchor"></a>4.3 Filling within boundary lines</h2>
+<p>Different portions of a map may sometimes be delineated by lines, for example with coastlines which are always represented in OpenStreetMap as lines. Plotting the water or land either side of a coastline in a single block of colour requires the regions to be polygons, not lines. <code>osmplotr</code> has a function <code>osm_line2poly()</code> which converts boundary lines extending beyond a given bounding box into polygons encircling the perimeter of the bounding box. An example is given in <code>?osm_line2poly</code>, using both the <code>osmdata</code> package to obtain the bounding box of a named region, and the <code>magrittr</code> pipe operator.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span> (osmdata)
+bb &lt;-<span class="st"> </span>osmdata<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmdata/topics/getbb">getbb</a></span> (<span class="st">"melbourne, australia"</span>)
+coast &lt;-<span class="st"> </span><span class="kw">extract_osm_objects</span> (<span class="dt">bbox =</span> bb, <span class="dt">key =</span> <span class="st">"natural"</span>, <span class="dt">value =</span> <span class="st">"coastline"</span>,
+                              <span class="dt">return_type =</span> <span class="st">"line"</span>)
+coast &lt;-<span class="st"> </span><span class="kw">osm_line2poly</span> (coast, <span class="dt">bbox =</span> bb)
+map &lt;-<span class="st"> </span><span class="kw">osm_basemap</span> (<span class="dt">bbox =</span> bb) <span class="op">%&gt;%</span>
+<span class="st">        </span><span class="kw">add_osm_objects</span> (coast [[<span class="dv">1</span>]], <span class="dt">col =</span> <span class="st">"lightsteelblue"</span>) <span class="op">%&gt;%</span>
+<span class="st">        </span><span class="kw">print_osm_map</span> ()</code></pre></div>
+<p>The <code>osm_line2poly()</code> function returns a list of two <code>sf</code> polygons. For coastline, one of these will correspond to water, one to land. In the preceding example, the first polygon is the ocean, which is coloured in <code>"lightsteelblue"</code>. Users must determine for themselves which polygon is to be plotted in which colour. Note that <code>osm_line2poly()</code> only accepts <code>sf</code>-formatted data, and not <code>sp</code>.</p>
+</div>
 <div id="automating-map-production" class="section level2">
 <h2 class="hasAnchor">
-<a href="#automating-map-production" class="anchor"></a>4.3. Automating map production</h2>
+<a href="#automating-map-production" class="anchor"></a>4.4 Automating map production</h2>
 <p>As indicated above (<a href="#2.4%20downloading2">2.4 Downloading with <code>osm_structures</code> and <code>make_osm_map</code></a>), the production of maps overlaying various type of OSM objects is facilitated with <code>make_osm_map</code>. The structure of a map is defined by <code>osm_structures</code> as described above.</p>
 <p>Producing a map with customised data is as simple as,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">structs &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'highway'</span>, <span class="st">'building'</span>, <span class="st">'park'</span>, <span class="st">'tree'</span>)
@@ -392,7 +406,7 @@ dat &lt;-<span class="st"> </span><span class="kw">make_osm_map</span> (<span cl
 </div>
 <div id="axes" class="section level2">
 <h2 class="hasAnchor">
-<a href="#axes" class="anchor"></a>4.4 Axes</h2>
+<a href="#axes" class="anchor"></a>4.5 Axes</h2>
 <p>Axes may be added to maps using the <code>add_axes</code> function. In contrast to many <code>R</code> packages for producing maps, maps in <code>osmplotr</code> fill the entire plotting space, and axes are added <em>internal</em> to this space. The separate function for adding axes allows them to be overlaid on top of all previous layers.</p>
 <p>Axes added to a dark version of the previous map look like this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">structures &lt;-<span class="st"> </span><span class="kw">osm_structures</span> (<span class="dt">structures =</span> structs, <span class="dt">col_scheme =</span> <span class="st">'dark'</span>)
@@ -442,8 +456,9 @@ map &lt;-<span class="st"> </span><span class="kw">add_axes</span> (dat<span cla
 <a href="#producing-maps">4. Producing maps</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#saving-maps">4.1 Saving Maps</a></li>
       <li><a href="#plotting-different-osm-structures">4.2 Plotting different OSM Structures</a></li>
-      <li><a href="#automating-map-production">4.3. Automating map production</a></li>
-      <li><a href="#axes">4.4 Axes</a></li>
+      <li><a href="#filling-within-boundary-lines">4.3 Filling within boundary lines</a></li>
+      <li><a href="#automating-map-production">4.4 Automating map production</a></li>
+      <li><a href="#axes">4.5 Axes</a></li>
       </ul>
 </li>
       </ul>
