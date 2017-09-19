@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Customisable Images of OpenStreetMap Data • osmplotr</title>
+<title>Bespoke Images of 'OpenStreetMap' Data • osmplotr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -83,23 +83,23 @@
 <ol style="list-style-type: decimal">
 <li>
 <p>Specify the bounding box for the desired region</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bbox &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_bbox.html">get_bbox</a></span> (<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.15</span>,<span class="fl">51.5</span>,<span class="op">-</span><span class="fl">0.10</span>,<span class="fl">51.52</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bbox &lt;-<span class="st"> </span><span class="kw">get_bbox</span> (<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.15</span>, <span class="fl">51.5</span>, <span class="op">-</span><span class="fl">0.10</span>, <span class="fl">51.52</span>))</code></pre></div>
 </li>
 <li>
 <p>Download the desired data—in this case, all building perimeters.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat_B &lt;-<span class="st"> </span><span class="kw"><a href="reference/extract_osm_objects.html">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'building'</span>, <span class="dt">bbox =</span> bbox)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat_B &lt;-<span class="st"> </span><span class="kw">extract_osm_objects</span> (<span class="dt">key =</span> <span class="st">'building'</span>, <span class="dt">bbox =</span> bbox)</code></pre></div>
 </li>
 <li>
 <p>Initiate an <code>osm_basemap</code> with desired background (<code>bg</code>) colour</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw">osm_basemap</span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)</code></pre></div>
 </li>
 <li>
 <p>Overlay objects on plot in the desired colour.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_objects.html">add_osm_objects</a></span> (map, dat_B, <span class="dt">col =</span> <span class="st">'gray40'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw">add_osm_objects</span> (map, dat_B, <span class="dt">col =</span> <span class="st">'gray40'</span>)</code></pre></div>
 </li>
 <li>
 <p>Print the map to graphics device of choice</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/print_osm_map.html">print_osm_map</a></span> (map)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print_osm_map</span> (map)</code></pre></div>
 </li>
 </ol>
 <hr>
@@ -110,7 +110,7 @@
 <p>First install the package</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span> (<span class="st">'osmplotr'</span>)</code></pre></div>
 <p>or the development version</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">install_github</span> (<span class="st">'ropensci/osmplotr'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span> (<span class="st">'ropensci/osmplotr'</span>)</code></pre></div>
 <p>And then load it in the usual way</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span> (osmplotr)</code></pre></div>
 <hr>
@@ -119,15 +119,15 @@
 <h2 class="hasAnchor">
 <a href="#a-simple-map" class="anchor"></a><a name="3%20simple%20map"></a>3. A Simple Map</h2>
 <p>Simple maps can be made by overlaying different kinds of OSM data in different colours:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat_H &lt;-<span class="st"> </span><span class="kw"><a href="reference/extract_osm_objects.html">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'highway'</span>, <span class="dt">bbox =</span> bbox)
-dat_P &lt;-<span class="st"> </span><span class="kw"><a href="reference/extract_osm_objects.html">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'park'</span>, <span class="dt">bbox =</span> bbox)
-dat_G &lt;-<span class="st"> </span><span class="kw"><a href="reference/extract_osm_objects.html">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'landuse'</span>, <span class="dt">value =</span> <span class="st">'grass'</span>, <span class="dt">bbox =</span> bbox)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_objects.html">add_osm_objects</a></span> (map, dat_B, <span class="dt">col =</span> <span class="st">'gray40'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_objects.html">add_osm_objects</a></span> (map, dat_H, <span class="dt">col =</span> <span class="st">'gray80'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_objects.html">add_osm_objects</a></span> (map, dat_P, <span class="dt">col =</span> <span class="st">'darkseagreen'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_objects.html">add_osm_objects</a></span> (map, dat_G, <span class="dt">col =</span> <span class="st">'darkseagreen1'</span>)
-<span class="kw"><a href="reference/print_osm_map.html">print_osm_map</a></span> (map)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat_H &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/extract_osm_objects">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'highway'</span>, <span class="dt">bbox =</span> bbox)
+dat_P &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/extract_osm_objects">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'park'</span>, <span class="dt">bbox =</span> bbox)
+dat_G &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/extract_osm_objects">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'landuse'</span>, <span class="dt">value =</span> <span class="st">'grass'</span>, <span class="dt">bbox =</span> bbox)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (map, dat_B, <span class="dt">col =</span> <span class="st">'gray40'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (map, dat_H, <span class="dt">col =</span> <span class="st">'gray80'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (map, dat_P, <span class="dt">col =</span> <span class="st">'darkseagreen'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (map, dat_G, <span class="dt">col =</span> <span class="st">'darkseagreen1'</span>)
+<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
 <div class="figure">
 <img src="./figure/map2.png">
 </div>
@@ -137,23 +137,23 @@ map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_ob
 <h2 class="hasAnchor">
 <a href="#highlighting-selected-areas" class="anchor"></a><a name="4%20highlighting%20areas"></a>4. Highlighting Selected Areas</h2>
 <p><code>osmplotr</code> is primarily intended as a data visualisation tool, particularly through enabling selected regions to be highlighted. Regions can be defined according to simple point boundaries:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pts &lt;-<span class="st"> </span>sp<span class="op">::</span><span class="kw">SpatialPoints</span> (<span class="kw">cbind</span> (<span class="kw">c</span> (<span class="op">-</span><span class="fl">0.115</span>, <span class="op">-</span><span class="fl">0.13</span>, <span class="op">-</span><span class="fl">0.13</span>, <span class="op">-</span><span class="fl">0.115</span>),
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pts &lt;-<span class="st"> </span>sp<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sp/topics/SpatialPoints">SpatialPoints</a></span> (<span class="kw">cbind</span> (<span class="kw">c</span> (<span class="op">-</span><span class="fl">0.115</span>, <span class="op">-</span><span class="fl">0.13</span>, <span class="op">-</span><span class="fl">0.13</span>, <span class="op">-</span><span class="fl">0.115</span>),
                              <span class="kw">c</span> (<span class="fl">51.505</span>, <span class="fl">51.505</span>, <span class="fl">51.515</span>, <span class="fl">51.515</span>)))</code></pre></div>
 <p>OSM objects within the defined regions can then be highlighted with different colour schemes. <code>cols</code> defines colours for each group (with only one here), while <code>bg</code> defines the colour of the remaining, background area.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_groups.html">add_osm_groups</a></span> (map, dat_B, <span class="dt">groups =</span> pts, <span class="dt">cols =</span> <span class="st">'orange'</span>, <span class="dt">bg =</span> <span class="st">'gray40'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_objects.html">add_osm_objects</a></span> (map, london<span class="op">$</span>dat_P, <span class="dt">col =</span> <span class="st">'darkseagreen1'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_groups.html">add_osm_groups</a></span> (map, london<span class="op">$</span>dat_P, <span class="dt">groups =</span> pts, <span class="dt">cols =</span> <span class="st">'darkseagreen1'</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, dat_B, <span class="dt">groups =</span> pts, <span class="dt">cols =</span> <span class="st">'orange'</span>, <span class="dt">bg =</span> <span class="st">'gray40'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (map, london<span class="op">$</span>dat_P, <span class="dt">col =</span> <span class="st">'darkseagreen1'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, london<span class="op">$</span>dat_P, <span class="dt">groups =</span> pts, <span class="dt">cols =</span> <span class="st">'darkseagreen1'</span>,
                    <span class="dt">bg =</span> <span class="st">'darkseagreen'</span>, <span class="dt">boundary =</span> <span class="dv">0</span>)
-<span class="kw"><a href="reference/print_osm_map.html">print_osm_map</a></span> (map)</code></pre></div>
+<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
 <div class="figure">
 <img src="./figure/map3.png">
 </div>
 <p>Note the <code>border = 0</code> argument on the last call divides the park polygons precisely along the border. The same map highlighted in dark-on-light:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray95'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_groups.html">add_osm_groups</a></span> (map, dat_B, <span class="dt">groups =</span> pts, <span class="dt">cols =</span> <span class="st">'gray40'</span>, <span class="dt">bg =</span> <span class="st">'gray85'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_groups.html">add_osm_groups</a></span> (map, dat_H, <span class="dt">groups =</span> pts, <span class="dt">cols =</span> <span class="st">'gray20'</span>, <span class="dt">bg =</span> <span class="st">'gray70'</span>)
-<span class="kw"><a href="reference/print_osm_map.html">print_osm_map</a></span> (map)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray95'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, dat_B, <span class="dt">groups =</span> pts, <span class="dt">cols =</span> <span class="st">'gray40'</span>, <span class="dt">bg =</span> <span class="st">'gray85'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, dat_H, <span class="dt">groups =</span> pts, <span class="dt">cols =</span> <span class="st">'gray20'</span>, <span class="dt">bg =</span> <span class="st">'gray70'</span>)
+<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
 <div class="figure">
 <img src="./figure/map4.png">
 </div>
@@ -165,16 +165,16 @@ map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_gr
 <p><code>add_osm_groups</code> also enables plotting an entire region as a group of spatially distinct clusters of defined colours. Groups can be defined by simple spatial points denoting their centres:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span> (<span class="dv">2</span>)
 ngroups &lt;-<span class="st"> </span><span class="dv">12</span>
-x &lt;-<span class="st"> </span>bbox [<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span> (ngroups) <span class="op">*</span><span class="st"> </span><span class="kw">diff</span> (bbox [<span class="dv">1</span>,])
-y &lt;-<span class="st"> </span>bbox [<span class="dv">2</span>,<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span> (ngroups) <span class="op">*</span><span class="st"> </span><span class="kw">diff</span> (bbox [<span class="dv">2</span>,])
+x &lt;-<span class="st"> </span>bbox [<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span> (ngroups) <span class="op">*</span><span class="st"> </span><span class="kw">diff</span> (bbox [<span class="dv">1</span>, ])
+y &lt;-<span class="st"> </span>bbox [<span class="dv">2</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span> (ngroups) <span class="op">*</span><span class="st"> </span><span class="kw">diff</span> (bbox [<span class="dv">2</span>, ])
 groups &lt;-<span class="st"> </span><span class="kw">cbind</span> (x, y)
-groups &lt;-<span class="st"> </span><span class="kw">apply</span> (groups, <span class="dv">1</span>, <span class="cf">function</span> (i) 
-              sp<span class="op">::</span><span class="kw">SpatialPoints</span> (<span class="kw">matrix</span> (i, <span class="dt">nrow =</span> <span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">2</span>)))</code></pre></div>
+groups &lt;-<span class="st"> </span><span class="kw">apply</span> (groups, <span class="dv">1</span>, <span class="cf">function</span> (i)
+              sp<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/sp/topics/SpatialPoints">SpatialPoints</a></span> (<span class="kw">matrix</span> (i, <span class="dt">nrow =</span> <span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">2</span>)))</code></pre></div>
 <p>Calling <code>add_osm_groups</code> with no <code>bg</code> argument forces all points lying outside those defined groups to be allocated to the nearest groups, and thus produces an inclusive grouping extending across an entire region.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_groups.html">add_osm_groups</a></span> (map, dat_B, <span class="dt">groups =</span> groups, 
-                       <span class="dt">cols =</span> <span class="kw">rainbow</span> (<span class="kw">length</span> (groups)), <span class="dt">borderWidth =</span> <span class="dv">2</span>)
-<span class="kw"><a href="reference/print_osm_map.html">print_osm_map</a></span> (map)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, dat_B, <span class="dt">groups =</span> groups,
+                       <span class="dt">cols =</span> <span class="kw">rainbow</span> (<span class="kw">length</span> (groups)), <span class="dt">border_width =</span> <span class="dv">2</span>)
+<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
 <div class="figure">
 <img src="./figure/map5.png">
 </div>
@@ -185,32 +185,32 @@ map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_gr
 <a href="#highlighting-areas-bounded-by-named-highways" class="anchor"></a><a name="6%20highlighting%20with%20highways"></a>6. Highlighting Areas Bounded by Named Highways</h2>
 <p>An alternative way of defining highlighted groups is by naming the highways encircling desired regions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># These highways extend beyond the previous, smaller bbox</span>
-bbox_big &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_bbox.html">get_bbox</a></span> (<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.15</span>,<span class="fl">51.5</span>,<span class="op">-</span><span class="fl">0.10</span>,<span class="fl">51.52</span>))
+bbox_big &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/get_bbox">get_bbox</a></span> (<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.15</span>, <span class="fl">51.5</span>, <span class="op">-</span><span class="fl">0.10</span>, <span class="fl">51.52</span>))
 highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Davies.St'</span>, <span class="st">'Berkeley.Sq'</span>, <span class="st">'Berkeley.St'</span>, <span class="st">'Piccadilly'</span>,
                <span class="st">'Regent.St'</span>, <span class="st">'Oxford.St'</span>)
-highways1 &lt;-<span class="st"> </span><span class="kw"><a href="reference/connect_highways.html">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
+highways1 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/connect_highways">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
 highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Regent.St'</span>, <span class="st">'Oxford.St'</span>, <span class="st">'Shaftesbury'</span>)
-highways2 &lt;-<span class="st"> </span><span class="kw"><a href="reference/connect_highways.html">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
+highways2 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/connect_highways">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
 highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Piccadilly'</span>, <span class="st">'Shaftesbury.Ave'</span>, <span class="st">'Charing.Cross.R'</span>,
                <span class="st">'Saint.Martin'</span>, <span class="st">'Trafalgar.Sq'</span>, <span class="st">'Cockspur.St'</span>,
                <span class="st">'Pall.Mall'</span>, <span class="st">'St.James'</span>)
-highways3 &lt;-<span class="st"> </span><span class="kw"><a href="reference/connect_highways.html">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
+highways3 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/connect_highways">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
 highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Charing.Cross'</span>, <span class="st">'Duncannon.St'</span>, <span class="st">'Strand'</span>, <span class="st">'Aldwych'</span>,
                <span class="st">'Kingsway'</span>, <span class="st">'High.Holborn'</span>, <span class="st">'Shaftesbury.Ave'</span>)
-highways4 &lt;-<span class="st"> </span><span class="kw"><a href="reference/connect_highways.html">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
+highways4 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/connect_highways">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
 highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Kingsway'</span>, <span class="st">'Holborn'</span>, <span class="st">'Farringdon.St'</span>, <span class="st">'Strand'</span>,
                <span class="st">'Fleet.St'</span>, <span class="st">'Aldwych'</span>)
-highways5 &lt;-<span class="st"> </span><span class="kw"><a href="reference/connect_highways.html">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
+highways5 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/connect_highways">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox_big)
 groups &lt;-<span class="st"> </span><span class="kw">list</span> (highways1, highways2, highways3, highways4, highways5)</code></pre></div>
 <p>And then passing these lists of groups returned by <code>connect_highways</code> to <code>add_osm_groups</code>, this time with some Wes Anderson flair.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
 <span class="kw">library</span> (wesanderson)
-cols &lt;-<span class="st"> </span><span class="kw">wes_palette</span> (<span class="st">'Darjeeling'</span>, <span class="dv">5</span>) 
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_groups.html">add_osm_groups</a></span> (map, dat_B, <span class="dt">groups =</span> groups, <span class="dt">boundary =</span> <span class="dv">1</span>,
+cols &lt;-<span class="st"> </span><span class="kw">wes_palette</span> (<span class="st">'Darjeeling'</span>, <span class="dv">5</span>)
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, dat_B, <span class="dt">groups =</span> groups, <span class="dt">boundary =</span> <span class="dv">1</span>,
                        <span class="dt">cols =</span> cols, <span class="dt">bg =</span> <span class="st">'gray40'</span>, <span class="dt">colmat =</span> <span class="ot">FALSE</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_groups.html">add_osm_groups</a></span> (map, dat_H, <span class="dt">groups =</span> groups, <span class="dt">boundary =</span> <span class="dv">0</span>,
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, dat_H, <span class="dt">groups =</span> groups, <span class="dt">boundary =</span> <span class="dv">0</span>,
                        <span class="dt">cols =</span> cols, <span class="dt">bg =</span> <span class="st">'gray70'</span>, <span class="dt">colmat =</span> <span class="ot">FALSE</span>)
-<span class="kw"><a href="reference/print_osm_map.html">print_osm_map</a></span> (map)</code></pre></div>
+<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
 <div class="figure">
 <img src="./figure/map6.png">
 </div>
@@ -220,19 +220,20 @@ map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_gr
 <h2 class="hasAnchor">
 <a href="#data-surfaces" class="anchor"></a><a name="7%20data%20surfaces"></a>7. Data Surfaces</h2>
 <p>Finally, <code>osmplotr</code> contains a function <code>add_osm_surface</code> that spatially interpolates a given set of spatial data points and colours OSM objects according to a specified colour gradient. This is illustrated here with the <code>volcano</code> data projected onto the <code>bbox</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">seq</span> (bbox [<span class="dv">1</span>,<span class="dv">1</span>], bbox [<span class="dv">1</span>,<span class="dv">2</span>], <span class="dt">length.out =</span> <span class="kw">dim</span> (volcano)[<span class="dv">1</span>])
-y &lt;-<span class="st"> </span><span class="kw">seq</span> (bbox [<span class="dv">2</span>,<span class="dv">1</span>], bbox [<span class="dv">2</span>,<span class="dv">2</span>], <span class="dt">length.out =</span> <span class="kw">dim</span> (volcano)[<span class="dv">2</span>])
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">seq</span> (bbox [<span class="dv">1</span>, <span class="dv">1</span>], bbox [<span class="dv">1</span>, <span class="dv">2</span>], <span class="dt">length.out =</span> <span class="kw">dim</span> (volcano)[<span class="dv">1</span>])
+y &lt;-<span class="st"> </span><span class="kw">seq</span> (bbox [<span class="dv">2</span>, <span class="dv">1</span>], bbox [<span class="dv">2</span>, <span class="dv">2</span>], <span class="dt">length.out =</span> <span class="kw">dim</span> (volcano)[<span class="dv">2</span>])
 xy &lt;-<span class="st"> </span><span class="kw">cbind</span> (<span class="kw">rep</span> (x, <span class="kw">dim</span> (volcano) [<span class="dv">2</span>]), <span class="kw">rep</span> (y, <span class="dt">each =</span> <span class="kw">dim</span> (volcano) [<span class="dv">1</span>]))
 z &lt;-<span class="st"> </span><span class="kw">as.numeric</span> (volcano)
-dat &lt;-<span class="st"> </span><span class="kw">data.frame</span> (<span class="dt">x =</span> xy [,<span class="dv">1</span>], <span class="dt">y =</span> xy [,<span class="dv">2</span>], <span class="dt">z =</span> z)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
+dat &lt;-<span class="st"> </span><span class="kw">data.frame</span> (<span class="dt">x =</span> xy [, <span class="dv">1</span>], <span class="dt">y =</span> xy [, <span class="dv">2</span>], <span class="dt">z =</span> z)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>)
 cols &lt;-<span class="st"> </span><span class="kw">gray</span> (<span class="dv">0</span><span class="op">:</span><span class="dv">50</span> <span class="op">/</span><span class="st"> </span><span class="dv">50</span>)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_surface.html">add_osm_surface</a></span> (map, dat_B, <span class="dt">dat =</span> dat, <span class="dt">cols =</span> cols)
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_osm_surface.html">add_osm_surface</a></span> (map, dat_H, <span class="dt">dat =</span> dat,
-                        <span class="dt">cols =</span> <span class="kw"><a href="reference/adjust_colours.html">adjust_colours</a></span> (cols, <span class="op">-</span><span class="fl">0.2</span>)) <span class="co"># Darken cols by ~20%</span>
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_colourbar.html">add_colourbar</a></span> (map, <span class="dt">cols =</span> cols, <span class="dt">zlims =</span> <span class="kw">range</span> (volcano))
-map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_axes.html">add_axes</a></span> (map)
-<span class="kw"><a href="reference/print_osm_map.html">print_osm_map</a></span> (map)</code></pre></div>
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (map, dat_B, <span class="dt">dat =</span> dat, <span class="dt">cols =</span> cols)
+<span class="co"># Darken cols by ~20%</span>
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (map, dat_H, <span class="dt">dat =</span> dat,
+                        <span class="dt">cols =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours</a></span> (cols, <span class="op">-</span><span class="fl">0.2</span>))
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_colourbar">add_colourbar</a></span> (map, <span class="dt">cols =</span> cols, <span class="dt">zlims =</span> <span class="kw">range</span> (volcano))
+map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_axes">add_axes</a></span> (map)
+<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
 <div class="figure">
 <img src="./figure/map7.png">
 </div>
@@ -243,12 +244,12 @@ map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_axes.h
 <a href="#gallery" class="anchor"></a><a name="8%20gallery"></a>8. Gallery</h2>
 <p>Got a nice <code>osmplotr</code> map? Please contribute in one of the following ways:</p>
 <ol style="list-style-type: decimal">
-<li><p>Fork repo, add link to <code>README.md/.Rdm</code>, and send pull request; or</p></li>
+<li><p>Fork repo, add link to <code>README.md/.Rmd</code>, and send pull request; or</p></li>
 <li><p>Open issue with details; or</p></li>
 <li><p>Send email to address in <a href="https://github.com/ropensci/osmplotr/blob/master/DESCRIPTION"><code>DESCRIPTION</code></a>.</p></li>
 </ol>
 <hr>
-<p>See package vignettes ( <a href="https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html">basic maps</a> and <a href="https://cran.r-project.org/web/packages/osmplotr/vignettes/data-maps.html">data maps</a> ) for a lot more detail and further capabilities of <code>osmplotr</code>. Please note that this project is released with a <a href="CONDUCT.md">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
+<p>See package vignettes (<a href="https://ropensci.github.io/osmplotr/articles/basic-maps.html">basic maps</a> and <a href="https://ropensci.github.io/osmplotr/articles/data-maps.html">data maps</a>) for a lot more detail and further capabilities of <code>osmplotr</code>. Please note that this project is released with a <a href="CONDUCT.md">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 <hr>
 <p><a href="http://ropensci.org"><img src="http://ropensci.org/public_images/github_footer.png" alt="ropensci_footer"></a></p>
 </div>
@@ -256,7 +257,8 @@ map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_axes.h
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Links</h2>
+    <h2 class="hasAnchor">
+<a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
 <li>Download from CRAN at <br><a href="https://cran.r-project.org/package=osmplotr">https://​cran.r-project.org/​package=osmplotr</a>
 </li>
@@ -270,6 +272,7 @@ map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_axes.h
 <h2>Developers</h2>
 <ul class="list-unstyled">
 <li>Mark Padgham <br><small class="roles"> Author, maintainer </small> </li>
+<li><a href="authors.html">All authors...</a></li>
 </ul>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
@@ -278,6 +281,7 @@ map &lt;-<span class="st"> </span><span class="kw"><a href="reference/add_axes.h
 <li><a href="https://codecov.io/gh/ropensci/osmplotr"><img src="https://codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg" alt="codecov"></a></li>
 <li><a href="http://cran.r-project.org/package=osmplotr"><img src="http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange" alt="CRAN Downloads"></a></li>
 <li><a href="http://cran.r-project.org/package=osmplotr"><img src="http://www.r-pkg.org/badges/version/osmplotr" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://github.com/ropensci/onboarding/issues/27"><img src="https://badges.ropensci.org/27_status.svg"></a></li>
 </ul>
 </div>
 

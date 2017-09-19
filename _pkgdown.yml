@@ -24,6 +24,7 @@ reference:
     contents:
     - add_axes
     - add_colourbar
+    - osm_line2poly
   - title: Maps with data
     contents:
     - add_osm_groups

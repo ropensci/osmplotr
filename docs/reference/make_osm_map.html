@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Vignettes</a>
+</li>
+<li>
+  <a href="../reference/index.html">Functions</a>
 </li>
       </ul>
       
@@ -86,7 +90,7 @@ an entire map to be produced according to the graphical format specified with
 the <code>structures</code> argument.</p>
     
 
-    <pre class="usage"><span class='fu'>make_osm_map</span>(<span class='no'>bbox</span>, <span class='no'>osm_data</span>, <span class='kw'>structures</span> <span class='kw'>=</span> <span class='fu'><a href='osm_structures.html'>osm_structures</a></span>(),
+    <pre class="usage"><span class='fu'>make_osm_map</span>(<span class='no'>bbox</span>, <span class='no'>osm_data</span>, <span class='kw'>structures</span> <span class='kw'>=</span> <span class='fu'>osm_structures</span>(),
   <span class='kw'>dat_prefix</span> <span class='kw'>=</span> <span class='st'>"dat_"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -102,14 +106,14 @@ columns of min and max values, and rows of x and y values.  If <code>NULL</code>
     <tr>
       <th>osm_data</th>
       <td><p>A list of OSM objects as returned from
-<code><a href='extract_osm_objects.html'>extract_osm_objects</a></code>.  These objects may be included in the plot
+<code>extract_osm_objects</code>.  These objects may be included in the plot
 without downloading. These should all be named with the stated
 <code>dat_prefix</code> and have suffixes as given in <code>structures</code>.</p></td>
     </tr>
     <tr>
       <th>structures</th>
       <td><p>A <code>data.frame</code> specifying types of OSM structures as
-returned from <code><a href='osm_structures.html'>osm_structures</a></code>, and potentially modified to alter
+returned from <code>osm_structures</code>, and potentially modified to alter
 lists of structures to be plotted, and their associated colours. Objects are
 overlaid on plot according to the order given in <code>structures</code>.</p></td>
     </tr>
@@ -117,7 +121,7 @@ overlaid on plot according to the order given in <code>structures</code>.</p></t
       <th>dat_prefix</th>
       <td><p>Prefix for data structures (default <code>dat_</code>). Final data
 structures are created by appending the suffixes from
-<code><a href='osm_structures.html'>osm_structures</a></code>.</p></td>
+<code>osm_structures</code>.</p></td>
     </tr>
     </table>
     
@@ -139,21 +143,20 @@ some time.  Progress is dumped to screen.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='osm_basemap.html'>osm_basemap</a></code>, <code><a href='add_osm_objects.html'>add_osm_objects</a></code>.</p>
+    <p><code>osm_basemap</code>, <code>add_osm_objects</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>structures</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span> (<span class='st'>'highway'</span>, <span class='st'>'park'</span>, <span class='st'>'grass'</span>)
-<span class='no'>structs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='osm_structures.html'>osm_structures</a></span> (<span class='kw'>structures</span> <span class='kw'>=</span> <span class='no'>structures</span>, <span class='kw'>col_scheme</span> <span class='kw'>=</span> <span class='st'>'light'</span>)
+    <pre class="examples"><div class='input'><span class='no'>structures</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span> (<span class='st'>'highway'</span>, <span class='st'>'park'</span>)
+<span class='no'>structs</span> <span class='kw'>&lt;-</span> <span class='fu'>osm_structures</span> (<span class='kw'>structures</span> <span class='kw'>=</span> <span class='no'>structures</span>, <span class='kw'>col_scheme</span> <span class='kw'>=</span> <span class='st'>'light'</span>)
 <span class='co'># make_osm_map returns potentially modified list of data using the provided</span>
-<span class='co'># 'london' data:</span>
+<span class='co'># 'london' data for highways and parks.</span>
 <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>make_osm_map</span> (<span class='kw'>osm_data</span> <span class='kw'>=</span> <span class='no'>london</span>, <span class='kw'>structures</span> <span class='kw'>=</span> <span class='no'>structs</span>)
 <span class='co'># or download data automatically using a defined bounding boox</span>
-<span class='no'>bbox</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_bbox.html'>get_bbox</a></span> (<span class='fu'>c</span>(-<span class='fl'>0.15</span>,<span class='fl'>51.5</span>,-<span class='fl'>0.10</span>,<span class='fl'>51.52</span>))
-<span class='fu'>not_run</span>({
-  <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>make_osm_map</span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>structures</span> <span class='kw'>=</span> <span class='no'>structs</span>)
-  <span class='fu'><a href='print_osm_map.html'>print_osm_map</a></span> (<span class='no'>dat</span>$<span class='no'>map</span>)
-})</div></pre>
+<span class='no'>bbox</span> <span class='kw'>&lt;-</span> <span class='fu'>get_bbox</span> (<span class='fu'>c</span>(-<span class='fl'>0.15</span>,<span class='fl'>51.5</span>,-<span class='fl'>0.10</span>,<span class='fl'>51.52</span>))</div><span class='co'># NOT RUN {</span>
+<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>make_osm_map</span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>structures</span> <span class='kw'>=</span> <span class='no'>structs</span>)
+<span class='fu'>print_osm_map</span> (<span class='no'>dat</span>$<span class='no'>map</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

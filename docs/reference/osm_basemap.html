@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Vignettes</a>
+</li>
+<li>
+  <a href="../reference/index.html">Functions</a>
 </li>
       </ul>
       
@@ -81,7 +85,7 @@
 
     
     <p>Generates a base OSM plot ready for polygon, line, and point objects to be
-overlain with <code><a href='add_osm_objects.html'>add_osm_objects</a></code>.</p>
+overlain with <code>add_osm_objects</code>.</p>
     
 
     <pre class="usage"><span class='fu'>osm_basemap</span>(<span class='no'>bbox</span>, <span class='no'>structures</span>, <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>"gray20"</span>)</pre>
@@ -93,11 +97,13 @@ overlain with <code><a href='add_osm_objects.html'>add_osm_objects</a></code>.</
       <th>bbox</th>
       <td><p>bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
 matrix of 4 elements with columns of min and max values, and rows of x and y
-values.</p></td>
+values. Can also be an object of class <code>sf</code>, for example as returned
+from <code>extract_osm_objects</code> or the <code>osmdata</code> package, in which case
+the bounding box will be extracted from the object coordinates.</p></td>
     </tr>
     <tr>
       <th>structures</th>
-      <td><p>Data frame returned by <code><a href='osm_structures.html'>osm_structures</a></code> used
+      <td><p>Data frame returned by <code>osm_structures</code> used
 here to specify background colour of plot; if missing, the colour is
 specified by <code>bg</code>.</p></td>
     </tr>
@@ -114,14 +120,14 @@ specified by <code>bg</code>.</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='add_osm_objects.html'>add_osm_objects</a></code>, <code><a href='make_osm_map.html'>make_osm_map</a></code>.</p>
+    <p><code>add_osm_objects</code>, <code>make_osm_map</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>bbox</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_bbox.html'>get_bbox</a></span> (<span class='fu'>c</span> (-<span class='fl'>0.13</span>, <span class='fl'>51.5</span>, -<span class='fl'>0.11</span>, <span class='fl'>51.52</span>))
+    <pre class="examples"><div class='input'><span class='no'>bbox</span> <span class='kw'>&lt;-</span> <span class='fu'>get_bbox</span> (<span class='fu'>c</span> (-<span class='fl'>0.13</span>, <span class='fl'>51.5</span>, -<span class='fl'>0.11</span>, <span class='fl'>51.52</span>))
 <span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>osm_basemap</span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>'gray20'</span>)
-<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_osm_objects.html'>add_osm_objects</a></span> (<span class='no'>map</span>, <span class='no'>london</span>$<span class='no'>dat_BNR</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>'gray40'</span>)
-<span class='fu'><a href='print_osm_map.html'>print_osm_map</a></span> (<span class='no'>map</span>)</div></pre>
+<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>add_osm_objects</span> (<span class='no'>map</span>, <span class='no'>london</span>$<span class='no'>dat_BNR</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>'gray40'</span>)
+<span class='fu'>print_osm_map</span> (<span class='no'>map</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

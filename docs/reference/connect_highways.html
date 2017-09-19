@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Vignettes</a>
+</li>
+<li>
+  <a href="../reference/index.html">Functions</a>
 </li>
       </ul>
       
@@ -119,7 +123,7 @@ coordinates of the cyclic line connecting all given streets.</p>
     <ol>
 <li><p><code>connect_highways</code> is primarily intended to provide a means to
 define boundaries of groups which can then be highlighted using
-<code><a href='add_osm_groups.html'>add_osm_groups</a></code>.</p></li>
+<code>add_osm_groups</code>.</p></li>
 <li><p>This function can not be guaranteed failsafe owing both to the
 inherently unpredictable nature of OpenStreetMap, as well as to the unknown
 relationships between named highways. The <code>plot</code> option enables
@@ -130,34 +134,30 @@ problems!</p></li>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='add_osm_groups.html'>add_osm_groups</a></code>.</p>
+    <p><code>add_osm_groups</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>bbox</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_bbox.html'>get_bbox</a></span> (<span class='fu'>c</span> (-<span class='fl'>0.13</span>, <span class='fl'>51.5</span>, -<span class='fl'>0.11</span>, <span class='fl'>51.52</span>))
-<span class='fu'>not_run</span>({
-  <span class='no'>highways</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span> (<span class='st'>'Monmouth.St'</span>, <span class='st'>'Short.?s.Gardens'</span>, <span class='st'>'Endell.St'</span>, <span class='st'>'Long.Acre'</span>,
-                 <span class='st'>'Upper.Saint.Martin'</span>)
-  <span class='co'># Note that dots signify "anything", including whitespace and apostrophes, and</span>
-  <span class='co'># that '?' denotes optional previous character and so here matches both </span>
-  <span class='co'># "Shorts Gardens" and "Short's Gardens"</span>
-  <span class='no'>highways1</span> <span class='kw'>&lt;-</span> <span class='fu'>connect_highways</span> (<span class='kw'>highways</span> <span class='kw'>=</span> <span class='no'>highways</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-  <span class='no'>highways</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span> (<span class='st'>'Endell.St'</span>, <span class='st'>'High.Holborn'</span>, <span class='st'>'Drury.Lane'</span>, <span class='st'>'Long.Acre'</span>)
-  <span class='no'>highways2</span> <span class='kw'>&lt;-</span> <span class='fu'>connect_highways</span> (<span class='kw'>highways</span> <span class='kw'>=</span> <span class='no'>highways</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-})
-<span class='co'># These are also part of the 'london' data provided with 'osmplotr':</span>
-<span class='no'>highways1</span> <span class='kw'>&lt;-</span> <span class='no'>london</span>$<span class='no'>highways1</span>
-<span class='no'>highways2</span> <span class='kw'>&lt;-</span> <span class='no'>london</span>$<span class='no'>highways2</span>
+    <pre class="examples"><div class='input'><span class='no'>bbox</span> <span class='kw'>&lt;-</span> <span class='fu'>get_bbox</span> (<span class='fu'>c</span> (-<span class='fl'>0.13</span>, <span class='fl'>51.5</span>, -<span class='fl'>0.11</span>, <span class='fl'>51.52</span>))</div><span class='co'># NOT RUN {</span>
+<span class='no'>highways</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span> (<span class='st'>'Monmouth.St'</span>, <span class='st'>'Short.?s.Gardens'</span>, <span class='st'>'Endell.St'</span>, <span class='st'>'Long.Acre'</span>,
+               <span class='st'>'Upper.Saint.Martin'</span>)
+<span class='co'># Note that dots signify "anything", including whitespace and apostrophes, and</span>
+<span class='co'># that '?' denotes optional previous character and so here matches both </span>
+<span class='co'># "Shorts Gardens" and "Short's Gardens"</span>
+<span class='no'>highways1</span> <span class='kw'>&lt;-</span> <span class='fu'>connect_highways</span> (<span class='kw'>highways</span> <span class='kw'>=</span> <span class='no'>highways</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>highways</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span> (<span class='st'>'Endell.St'</span>, <span class='st'>'High.Holborn'</span>, <span class='st'>'Drury.Lane'</span>, <span class='st'>'Long.Acre'</span>)
+<span class='no'>highways2</span> <span class='kw'>&lt;-</span> <span class='fu'>connect_highways</span> (<span class='kw'>highways</span> <span class='kw'>=</span> <span class='no'>highways</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='co'># Use of 'connect_highways' to highlight a region on a map</span>
-<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='osm_basemap.html'>osm_basemap</a></span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>'gray20'</span>)
+<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>osm_basemap</span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>'gray20'</span>)
 <span class='co'># dat_B &lt;- extract_osm_data (key = 'building', value = '!residential', bbox = bbox)</span>
 <span class='co'># Those data are part of 'osmplotr':</span>
 <span class='no'>dat_BNR</span> <span class='kw'>&lt;-</span> <span class='no'>london</span>$<span class='no'>dat_BNR</span> <span class='co'># Non-residential buildings</span>
-<span class='no'>groups</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span> (<span class='no'>london</span>$<span class='no'>highways1</span>, <span class='no'>london</span>$<span class='no'>highways2</span>)
-<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_osm_groups.html'>add_osm_groups</a></span> (<span class='no'>map</span>, <span class='kw'>obj</span> <span class='kw'>=</span> <span class='no'>dat_BNR</span>, <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>groups</span>,
+<span class='no'>groups</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span> (<span class='no'>highways1</span>, <span class='no'>highways2</span>)
+<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>add_osm_groups</span> (<span class='no'>map</span>, <span class='kw'>obj</span> <span class='kw'>=</span> <span class='no'>dat_BNR</span>, <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>groups</span>,
                        <span class='kw'>cols</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'red'</span>, <span class='st'>'blue'</span>), <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>'gray40'</span>)
-<span class='fu'><a href='print_osm_map.html'>print_osm_map</a></span> (<span class='no'>map</span>)</div></pre>
+<span class='fu'>print_osm_map</span> (<span class='no'>map</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

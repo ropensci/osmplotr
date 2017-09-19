@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Vignettes</a>
+</li>
+<li>
+  <a href="../reference/index.html">Functions</a>
 </li>
       </ul>
       
@@ -80,34 +84,20 @@
     </div>
 
     
-    <p>A list of <code>SpatialPolygonsDataFrames</code> (SPDF),
-<code>SpatialLinesDataFrames</code> (SLDF), and <code>SpatialPointsDataFrames</code>
-(SPtDf) objects containing OpenStreetMap polygons and lines for various
-OpenStreetMap structures in a small part of central London,
-U.K.  (<code>bbox = -0.15, 51.5, -0.1, 51.52</code>). The list includes:</p><ol>
-<li><p><code>dat_H</code>: an SLDF of non-primary highways with 1.764 lines</p></li>
-<li><p><code>dat_HP</code>: an SLDF of primary highways with 378 lines</p></li>
-<li><p><code>dat_BNR</code>: an SPDF of non-residential buildings with 2,138 polygons</p></li>
-<li><p><code>dat_BR</code>: an SPDF of residential buildings with 40 polygons</p></li>
-<li><p><code>dat_BC</code>: an SPDF of commerical buildings with 17 polygons</p></li>
-<li><p><code>dat_A</code>: an SPDF of amenities with 442 polygons</p></li>
-<li><p><code>dat_G</code>: an SPDF of grassed areas with 23 polygons</p></li>
-<li><p><code>dat_P</code>: an SPDF of parks with 24 polygons</p></li>
-<li><p><code>dat_N</code>: an SPDF of natural areas with 18 polygons</p></li>
-<li><p><code>dat_T</code>: an SPtDF of trees with 1,310 points</p></li>
-<li><p><code>dat_RFH</code>: an SPDF containing 1 polygon representing Royal
-     Festival Hall</p></li>
-<li><p><code>dat_ST</code>: an SPDF containing 1 polygon representing
-     150 Stamford Street</p></li>
-<li><p><code>highways1</code>: A <code>SpatialPoints</code> object containing 55 points
-     representing the circular perimeter of <code>c ('Monmouth.St',
-     'Short.?s.Gardens', 'Endell.St', 'Long.Acre', 'Upper.Saint.Martin')</code></p></li>
-<li><p><code>highways2</code>: A <code>SpatialPoints</code> object containing 47 points
-     representing the circular perimeter of 
-     <code>c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')</code></p></li>
-<li><p><code>highways3</code>: A <code>SpatialPoints</code> object containing 55 points
-     representing the circular perimeter of 
-     <code>c ('Drury.Lane', 'High.Holborn', 'Kingsway', 'Great.Queen.St')</code></p></li>
+    <p>A list of <code>Simple Features</code> (<code>sf</code>) <code>data.frame</code> objects
+containing OpenStreetMap polygons, lines, and points for various
+OpenStreetMap structures in a small part of central London, U.K.  (<code>bbox
+= -0.13, 51.51, -0.11, 51.52</code>). The list includes:</p><ol>
+<li><p><code>dat_H</code>: 974 non-primary highways as linestrings</p></li>
+<li><p><code>dat_HP</code>: 159 primary highways as linestrings</p></li>
+<li><p><code>dat_BNR</code>: 1,716 non-residential buildings as polygons</p></li>
+<li><p><code>dat_BR</code>: 43 residential buildings as polygons</p></li>
+<li><p><code>dat_BC</code>: 67 commerical buildings as polygons</p></li>
+<li><p><code>dat_A</code>: 372 amenities as polygons</p></li>
+<li><p><code>dat_P</code>: 13 parks as polygons</p></li>
+<li><p><code>dat_T</code>: 688 trees as points</p></li>
+<li><p><code>dat_RFH</code>: 1 polygon representing Royal Festival Hall</p></li>
+<li><p><code>dat_ST</code>: 1 polygon representing 150 Stamford Street</p></li>
 </ol>
     
 
@@ -118,7 +108,9 @@ U.K.  (<code>bbox = -0.15, 51.5, -0.1, 51.52</code>). The list includes:</p><ol>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The vignette <code>basic-maps</code> details how these data were downloaded.</p>
+    <p>The vignette <code>basic-maps</code> details how these data were downloaded. Note
+that these internal versions have had all descriptive data removed other than
+their names, geometries, and their OSM identification numbers.</p>
     
 
   </div>

@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Vignettes</a>
+</li>
+<li>
+  <a href="../reference/index.html">Functions</a>
 </li>
       </ul>
       
@@ -81,7 +85,7 @@
 
     
     <p>Adds a colourbar to an existing map. Intended to be used in combination with
-<code><a href='add_osm_surface.html'>add_osm_surface</a></code>. At present, only plots on right side of map.</p>
+<code>add_osm_surface</code>. At present, only plots on right side of map.</p>
     
 
     <pre class="usage"><span class='fu'>add_colourbar</span>(<span class='no'>map</span>, <span class='kw'>barwidth</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>barlength</span> <span class='kw'>=</span> <span class='fl'>0.7</span>, <span class='no'>zlims</span>, <span class='no'>cols</span>,
@@ -110,7 +114,7 @@ giving lower/upper or left/right limits.</p></td>
     <tr>
       <th>zlims</th>
       <td><p>Vector of (min,max) values for scale of colourbar. These should
-be the values returned from <code><a href='add_osm_surface.html'>add_osm_surface</a></code>.</p></td>
+be the values returned from <code>add_osm_surface</code>.</p></td>
     </tr>
     <tr>
       <th>cols</th>
@@ -156,12 +160,12 @@ names (such as <code>xyz</code> for <code>fontxyz</code>).</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='osm_basemap.html'>osm_basemap</a></code>, <code><a href='add_osm_surface.html'>add_osm_surface</a></code>.</p>
+    <p><code>osm_basemap</code>, <code>add_osm_surface</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>bbox</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_bbox.html'>get_bbox</a></span> (<span class='fu'>c</span> (-<span class='fl'>0.13</span>, <span class='fl'>51.5</span>, -<span class='fl'>0.11</span>, <span class='fl'>51.52</span>))
-<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='osm_basemap.html'>osm_basemap</a></span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>"gray20"</span>)
+    <pre class="examples"><div class='input'><span class='no'>bbox</span> <span class='kw'>&lt;-</span> <span class='fu'>get_bbox</span> (<span class='fu'>c</span> (-<span class='fl'>0.13</span>, <span class='fl'>51.5</span>, -<span class='fl'>0.11</span>, <span class='fl'>51.52</span>))
+<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>osm_basemap</span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>"gray20"</span>)
 <span class='co'># Align volcano data to lat-lon range of bbox</span>
 <span class='no'>dv</span> <span class='kw'>&lt;-</span> <span class='fu'>dim</span> (<span class='no'>volcano</span>)
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>seq</span> (<span class='no'>bbox</span> [<span class='fl'>1</span>,<span class='fl'>1</span>], <span class='no'>bbox</span> [<span class='fl'>1</span>,<span class='fl'>2</span>], <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='no'>dv</span> [<span class='fl'>1</span>])
@@ -171,22 +175,22 @@ names (such as <code>xyz</code> for <code>fontxyz</code>).</p></td>
                   <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>rep</span> (<span class='no'>y</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>dv</span> [<span class='fl'>1</span>]),
                   <span class='kw'>z</span> <span class='kw'>=</span> <span class='fu'>as.numeric</span> (<span class='no'>volcano</span>)
                   )
-<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_osm_surface.html'>add_osm_surface</a></span> (<span class='no'>map</span>, <span class='kw'>obj</span> <span class='kw'>=</span> <span class='no'>london</span>$<span class='no'>dat_BNR</span>, <span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>,
+<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>add_osm_surface</span> (<span class='no'>map</span>, <span class='kw'>obj</span> <span class='kw'>=</span> <span class='no'>london</span>$<span class='no'>dat_BNR</span>, <span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>,
                         <span class='kw'>cols</span> <span class='kw'>=</span> <span class='fu'>heat.colors</span> (<span class='fl'>30</span>))
-<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_axes.html'>add_axes</a></span> (<span class='no'>map</span>)
+<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>add_axes</span> (<span class='no'>map</span>)
 <span class='co'># Note colours of colourbar can be artibrarily set, and need not equal those</span>
 <span class='co'># passed to 'add_osm_surface'</span>
 <span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>add_colourbar</span> (<span class='no'>map</span>, <span class='kw'>zlims</span> <span class='kw'>=</span> <span class='fu'>range</span> (<span class='no'>volcano</span>), <span class='kw'>cols</span> <span class='kw'>=</span> <span class='fu'>heat.colors</span>(<span class='fl'>100</span>),
                       <span class='kw'>text_col</span> <span class='kw'>=</span> <span class='st'>"black"</span>)
-<span class='fu'><a href='print_osm_map.html'>print_osm_map</a></span> (<span class='no'>map</span>)
+<span class='fu'>print_osm_map</span> (<span class='no'>map</span>)
 
 <span class='co'># Horizontal colourbar shifted away from margins:</span>
-<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='osm_basemap.html'>osm_basemap</a></span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>"gray20"</span>)</div><img src='add_colourbar-2.png' alt='' width='540' height='400' /><div class='input'><span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='add_osm_surface.html'>add_osm_surface</a></span> (<span class='no'>map</span>, <span class='kw'>obj</span> <span class='kw'>=</span> <span class='no'>london</span>$<span class='no'>dat_BNR</span>, <span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>,
+<span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>osm_basemap</span> (<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>"gray20"</span>)</div><div class='img'><img src='add_colourbar-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'><span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>add_osm_surface</span> (<span class='no'>map</span>, <span class='kw'>obj</span> <span class='kw'>=</span> <span class='no'>london</span>$<span class='no'>dat_BNR</span>, <span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>,
                         <span class='kw'>cols</span> <span class='kw'>=</span> <span class='fu'>heat.colors</span> (<span class='fl'>30</span>))
 <span class='no'>map</span> <span class='kw'>&lt;-</span> <span class='fu'>add_colourbar</span> (<span class='no'>map</span>, <span class='kw'>zlims</span> <span class='kw'>=</span> <span class='fu'>range</span> (<span class='no'>volcano</span>), <span class='kw'>cols</span> <span class='kw'>=</span> <span class='fu'>heat.colors</span>(<span class='fl'>100</span>),
                       <span class='kw'>barwidth</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.1</span>,<span class='fl'>0.15</span>), <span class='kw'>barlength</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.5</span>, <span class='fl'>0.9</span>),
                       <span class='kw'>vertical</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'><a href='print_osm_map.html'>print_osm_map</a></span> (<span class='no'>map</span>)</div></pre>
+<span class='fu'>print_osm_map</span> (<span class='no'>map</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
