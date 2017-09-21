@@ -1,0 +1,233 @@
+---
+title: "Rendering Ocean"
+author: "Richard Beare"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        #number_sections: true
+        theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Basic Maps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+Queries to OpenStreetMap can return segments of coastline which can be plotted easily with `osmplotr`. However
+it is sometimes desirable to colour the ocean or land separately. This requires constructing polygons that
+are partly outside the bounding box, as polygons are easily fillable.
+
+This vignette contains the test cases used when developing the `osm_line2poly` function, as well as the larger
+example that raised the issue in the first place.
+
+# Greater Melbourne.
+
+This was the task that first prompted the work. It performs large queries to OSM, and the timeout has 
+been reset.
+```{r GMFuncs, echo=FALSE}
+library(osmplotr)
+library(osmdata)
+map_dpi <- 72 # dpi res for all maps
+
+myqry <- function(bbox)
+{
+  qry <- osmdata::opq (bbox = bbox)
+  qry$prefix <- "[out:xml][timeout:300];\n(\n"
+  return(qry)
+}
+getGM <- function(bbox)
+{
+  qry <- myqry (bbox = bbox)
+  qry <- osmdata::add_osm_feature (qry, key = "highway", value="motorway")
+  dat_M <- osmdata::osmdata_sf(qry)
+
+  qry <- myqry (bbox = bbox)
+  qry <- osmdata::add_osm_feature (qry, key = "highway", value="trunk")
+  dat_T <- osmdata::osmdata_sf(qry)
+
+  qry <- myqry (bbox = bbox)
+  qry <- osmdata::add_osm_feature (qry, key = "highway", value="primary")
+  dat_H1 <- osmdata::osmdata_sf(qry)
+
+  qry <- myqry (bbox = bbox)
+  qry <- osmdata::add_osm_feature (qry, key = "highway", value="secondary")
+  dat_H2 <- osmdata::osmdata_sf(qry)
+
+  qry <- myqry (bbox = bbox)
+  qry <- osmdata::add_osm_feature (qry, key = "highway", value="tertiary")
+  dat_H3 <- osmdata::osmdata_sf(qry)
+
+  qry <- myqry (bbox = bbox)
+  qry <- osmdata::add_osm_feature (qry, key = "natural", value="coastline")
+  dat_Coast <- osmdata::osmdata_sf(qry)
+
+  return(list(highways.m=dat_M, highways.tk=dat_T, highways.p=dat_H1, highways.s=dat_H2, highways.t=dat_H3, coast=dat_Coast))
+}
+
+```
+```{r}
+greatermelb <- get_bbox(c(143.785314, -37.033592, 145.652990, -38.527013))
+bbox<-greatermelb
+l <- getGM(greatermelb)
+print(l$coast)
+```
+Note that the coastline has several types of structure. We need to work on the lines.
+```{r}
+cl <- osm_line2poly(l$coast$osm_lines, bbox)
+names(cl)
+```
+If all goes well, the result of `osm_line2poly` contains 3 components - a set of sea polygons, a set of land polygons
+and a set of island polygons. The island polygons are separate to those originally queried.
+
+Now plot them. In this case we've used sea colour as background and filled the land.
+
+```{r}
+  map <- osm_basemap (bbox = bbox, bg = 'cadetblue2')
+
+  map <- add_osm_objects (map, cl$land, col = 'lightyellow1')
+  
+  #map <- add_osm_objects (map, cl$sea[[1]], col = 'cadetblue2')
+  map <- add_osm_objects (map, cl$islands, col='orange')
+  map <- add_osm_objects (map, l$coast$osm_polygons, col='purple')
+
+  map <- add_osm_objects (map, l$highways.m$osm_lines, col = 'gray40')
+  map <- add_osm_objects (map, l$highways.tk$osm_lines, col = 'gray50')
+  
+  map <- add_osm_objects (map, l$highways.p$osm_lines, col = 'gray60')
+  map <- add_osm_objects (map, l$highways.s$osm_lines, col = 'gray80', size=0.5)
+  map <- add_osm_objects (map, l$highways.t$osm_lines, col = 'gray90', size=0.25)
+```
+
+```{r eval=FALSE}
+  print_osm_map (map)
+
+```
+```{r, echo=FALSE}
+  print_osm_map (map,filename = 'melb_a1.png', width = 600,
+               units = 'px', dpi = map_dpi)
+
+```
+![](melb_a1.png)
+The gaudy colours differentiate the source of polygons. Purple islands were returned by the original
+osm query. Orange ones were constructed from fragments by `osm_line2poly`.
+
+# Test cases
+```{r, echo=FALSE}
+  getCoast <- function(bbox)
+  {
+    qry <- opq(bbox)
+    qry <- add_osm_feature(qry, key = "natural", value = "coastline")
+    return(osmdata_sf(qry))
+  }
+  testPlot <- function(coast, bbox)
+  {
+    if (!dev.cur()) dev.off()
+    map <- osm_basemap(bbox=bbox)
+    map <- add_osm_objects(map, coast$osm_lines)
+    print_osm_map(map)
+  }
+  testPlotPoly <- function(coast, bbox, fname)
+  {
+    coastp <- osm_line2poly(coast$osm_lines, bbox=bbox)
+    map <- osm_basemap(bbox=bbox)
+    map <- add_osm_objects(map, coastp$sea, col='cadetblue2')
+    map <- add_osm_objects(map, coastp$land, col='sienna2')
+    print_osm_map(map,filename = fname, width = 200,
+               units = 'px', dpi = map_dpi)
+  }
+
+```
+Fetch the test data. A variable name with `WE` indicates that the coast enters the bounding box
+on the western side and exits on the east. The land is on the left when following that path.
+```{r}
+    bbWE <- get_bbox (c(142.116906, -38.352713, 142.205162, -38.409661))
+    coastWE <- getCoast(bbWE)
+
+    bbEW <- get_bbox(c(144.603127, -38.104003, 144.685557, -38.135596))
+    coastEW <- getCoast(bbEW)
+
+    bbNS <- get_bbox(c(143.807998, -39.770986, 143.906494, -39.918643))
+    coastNS <- getCoast(bbNS)
+
+    bbSN <- get_bbox(c(144.073544, -39.854586, 144.149318, -39.960047))
+    coastSN <- getCoast(bbSN)
+
+    bbWW <- get_bbox(c(144.904865, -37.858295, 144.923679, -37.874367))
+    coastWW <- getCoast(bbWW)
+
+    bbEE <- get_bbox(c(144.643383, -38.294671, 144.692197, -38.336022))
+    coastEE <- getCoast(bbEE)
+
+    bbNN <- get_bbox(c(145.856321, -38.831642, 146.050920, -38.914031))
+    coastNN <- getCoast(bbNN)
+
+    bbSS <- get_bbox(c(146.363768, -38.770345, 146.486389, -38.837287))
+    coastSS <- getCoast(bbSS)
+
+    bbEN <- get_bbox(c(144.738212, -38.337690, 144.758053, -38.346966))
+    coastEN <- getCoast(bbEN)
+
+    bbEWWS <- get_bbox(c(144.693077, -38.307526, 144.729113, -38.343997 ))
+    coastEWWS <- getCoast(bbEWWS)
+
+    bbWS <- get_bbox(c(143.164906 ,-38.704885, 143.2075563, -38.7462058 ))
+    coastWS <- getCoast(bbWS)
+
+```
+
+```{r}
+testPlotPoly(coastWE, bbWE, "testWE.png")
+```
+![](testWE.png)
+```{r}
+testPlotPoly(coastEW, bbEW, "testEW.png")
+```
+![](testEW.png)
+
+```{r}
+testPlotPoly(coastNS, bbNS, "testNS.png")
+```
+![](testNS.png)
+
+```{r}
+testPlotPoly(coastSN, bbSN, "testSN.png")
+```
+![](testSN.png)
+
+```{r}
+testPlotPoly(coastWW, bbWW, "testWW.png")
+```
+![](testWW.png)
+
+```{r}
+testPlotPoly(coastEE, bbEE, "testEE.png")
+```
+![](testEE.png)
+
+```{r}
+testPlotPoly(coastNN, bbNN, "testNN.png")
+```
+![](testNN.png)
+
+```{r}
+testPlotPoly(coastSS, bbSS, "testSS.png")
+```
+![](testSS.png)
+
+```{r}
+testPlotPoly(coastEN, bbEN, "testEN.png")
+```
+![](testEN.png)
+
+```{r}
+testPlotPoly(coastEWWS, bbEWWS, "testEWWS.png")
+```
+![](testEWWS.png)
+
+```{r}
+testPlotPoly(coastWS, bbWS, "testWS.png")
+```
+![](testWS.png)
