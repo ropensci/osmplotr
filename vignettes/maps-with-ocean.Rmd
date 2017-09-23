@@ -35,7 +35,7 @@ map_dpi <- 72 # dpi res for all maps
 myqry <- function(bbox)
 {
   qry <- osmdata::opq (bbox = bbox)
-  qry$prefix <- "[out:xml][timeout:300];\n(\n"
+  qry$prefix <- "[out:xml][timeout:600];\n(\n"
   return(qry)
 }
 getGM <- function(bbox)
@@ -72,12 +72,22 @@ getGM <- function(bbox)
 greatermelb <- get_bbox(c(143.785314, -37.033592, 145.652990, -38.527013))
 bbox<-greatermelb
 l <- getGM(greatermelb)
+# This is a big query - check if it has worked
+if (nrow(l$coast$osm_lines)>0) {
+  MapFetched <- TRUE
+} else {
+  MapFetched <- FALSE
+  warning("OSM query probably failed. Some maps will be missing")
+}
 print(l$coast)
 ```
-Note that the coastline has several types of structure. We need to work on the lines.
+Note that the coastline has several types of structure. We need to work on the lines. Also note that
+this is a very large osm query and it sometimes fails. Check the print above. 
 ```{r}
+if (MapFetched) {
 cl <- osm_line2poly(l$coast$osm_lines, bbox)
 names(cl)
+}
 ```
 If all goes well, the result of `osm_line2poly` contains 3 components - a set of sea polygons, a set of land polygons
 and a set of island polygons. The island polygons are separate to those originally queried.
@@ -85,6 +95,8 @@ and a set of island polygons. The island polygons are separate to those original
 Now plot them. In this case we've used sea colour as background and filled the land.
 
 ```{r}
+if (MapFetched) {
+
   map <- osm_basemap (bbox = bbox, bg = 'cadetblue2')
 
   map <- add_osm_objects (map, cl$land, col = 'lightyellow1')
@@ -99,6 +111,7 @@ Now plot them. In this case we've used sea colour as background and filled the l
   map <- add_osm_objects (map, l$highways.p$osm_lines, col = 'gray60')
   map <- add_osm_objects (map, l$highways.s$osm_lines, col = 'gray80', size=0.5)
   map <- add_osm_objects (map, l$highways.t$osm_lines, col = 'gray90', size=0.25)
+}
 ```
 
 ```{r eval=FALSE}
@@ -106,11 +119,15 @@ Now plot them. In this case we've used sea colour as background and filled the l
 
 ```
 ```{r, echo=FALSE}
+if (MapFetched) {
   print_osm_map (map,filename = 'melb_a1.png', width = 600,
                units = 'px', dpi = map_dpi)
+}
 
 ```
+
 ![](melb_a1.png)
+
 The gaudy colours differentiate the source of polygons. Purple islands were returned by the original
 osm query. Orange ones were constructed from fragments by `osm_line2poly`.
 
@@ -131,6 +148,10 @@ osm query. Orange ones were constructed from fragments by `osm_line2poly`.
   }
   testPlotPoly <- function(coast, bbox, fname)
   {
+    if (nrow(coast$osm_lines)==0) {
+      warning("osm query probably failed - not plotting")
+      invisible(NULL)
+    }
     coastp <- osm_line2poly(coast$osm_lines, bbox=bbox)
     map <- osm_basemap(bbox=bbox)
     map <- add_osm_objects(map, coastp$sea, col='cadetblue2')

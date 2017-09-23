@@ -51,6 +51,8 @@ osm_line2poly <- function (obj, bbox)
   if (!is (obj$geometry, "sfc_LINESTRING"))
     stop ("obj must be class 'sf' with fields of class 'sfc_LINESTRING'")
   
+  if (nrow(obj) == 0)
+    stop("obj is empty - check osm query results")
   g <- obj$geom
   
   ## Clip the lines
