@@ -103,14 +103,19 @@ if (MapFetched) {
   
   #map <- add_osm_objects (map, cl$sea[[1]], col = 'cadetblue2')
   map <- add_osm_objects (map, cl$islands, col='orange')
-  map <- add_osm_objects (map, l$coast$osm_polygons, col='purple')
+  if (nrow(l$coast$osm_polygons) > 0)
+    map <- add_osm_objects (map, l$coast$osm_polygons, col='purple')
 
-  map <- add_osm_objects (map, l$highways.m$osm_lines, col = 'gray40')
-  map <- add_osm_objects (map, l$highways.tk$osm_lines, col = 'gray50')
-  
-  map <- add_osm_objects (map, l$highways.p$osm_lines, col = 'gray60')
-  map <- add_osm_objects (map, l$highways.s$osm_lines, col = 'gray80', size=0.5)
-  map <- add_osm_objects (map, l$highways.t$osm_lines, col = 'gray90', size=0.25)
+  if (nrow(l$highways.m$osm_lines) > 0)
+    map <- add_osm_objects (map, l$highways.m$osm_lines, col = 'gray40')
+  if (nrow(l$highways.tk$osm_lines) > 0)
+    map <- add_osm_objects (map, l$highways.tk$osm_lines, col = 'gray50')
+  if (nrow(l$highways.p$osm_lines) > 0)
+    map <- add_osm_objects (map, l$highways.p$osm_lines, col = 'gray60')
+  if (nrow(l$highways.s$osm_lines) > 0)
+    map <- add_osm_objects (map, l$highways.s$osm_lines, col = 'gray80', size=0.5)
+  if (nrow(l$highways.t$osm_lines) > 0)
+    map <- add_osm_objects (map, l$highways.t$osm_lines, col = 'gray90', size=0.25)
 }
 ```
 
