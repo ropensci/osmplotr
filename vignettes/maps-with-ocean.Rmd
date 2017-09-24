@@ -23,11 +23,16 @@ are partly outside the bounding box, as polygons are easily fillable.
 This vignette contains the test cases used when developing the `osm_line2poly` function, as well as the larger
 example that raised the issue in the first place.
 
+Package checks on CRAN and the various continuous integration services don't play nicely with OSM queries, so 
+most of this vignette is disabled.
+
 # Greater Melbourne.
 
 This was the task that first prompted the work. It performs large queries to OSM, and the timeout has 
 been reset.
-```{r GMFuncs, echo=FALSE}
+```{r GMFuncs, echo=FALSE, message=FALSE}
+## Set this to true to fetch from OSM servers. FALSE for cran or TravisCI checks
+FetchOSM=FALSE
 library(osmplotr)
 library(osmdata)
 map_dpi <- 72 # dpi res for all maps
@@ -68,7 +73,7 @@ getGM <- function(bbox)
 }
 
 ```
-```{r}
+```{r, eval=FetchOSM}
 greatermelb <- get_bbox(c(143.785314, -37.033592, 145.652990, -38.527013))
 bbox<-greatermelb
 l <- getGM(greatermelb)
@@ -79,11 +84,9 @@ if (nrow(l$coast$osm_lines)>0) {
   MapFetched <- FALSE
   warning("OSM query probably failed. Some maps will be missing")
 }
-print(l$coast)
 ```
-Note that the coastline has several types of structure. We need to work on the lines. Also note that
-this is a very large osm query and it sometimes fails. Check the print above. 
-```{r}
+Note that the coastline has several types of structure. We need to work on the lines.
+```{r, eval=FetchOSM}
 if (MapFetched) {
 cl <- osm_line2poly(l$coast$osm_lines, bbox)
 names(cl)
@@ -94,28 +97,22 @@ and a set of island polygons. The island polygons are separate to those original
 
 Now plot them. In this case we've used sea colour as background and filled the land.
 
-```{r}
+```{r, eval=FetchOSM}
 if (MapFetched) {
-
+  
   map <- osm_basemap (bbox = bbox, bg = 'cadetblue2')
-
+  
   map <- add_osm_objects (map, cl$land, col = 'lightyellow1')
   
   #map <- add_osm_objects (map, cl$sea[[1]], col = 'cadetblue2')
   map <- add_osm_objects (map, cl$islands, col='orange')
-  if (nrow(l$coast$osm_polygons) > 0)
-    map <- add_osm_objects (map, l$coast$osm_polygons, col='purple')
-
-  if (nrow(l$highways.m$osm_lines) > 0)
-    map <- add_osm_objects (map, l$highways.m$osm_lines, col = 'gray40')
-  if (nrow(l$highways.tk$osm_lines) > 0)
-    map <- add_osm_objects (map, l$highways.tk$osm_lines, col = 'gray50')
-  if (nrow(l$highways.p$osm_lines) > 0)
-    map <- add_osm_objects (map, l$highways.p$osm_lines, col = 'gray60')
-  if (nrow(l$highways.s$osm_lines) > 0)
-    map <- add_osm_objects (map, l$highways.s$osm_lines, col = 'gray80', size=0.5)
-  if (nrow(l$highways.t$osm_lines) > 0)
-    map <- add_osm_objects (map, l$highways.t$osm_lines, col = 'gray90', size=0.25)
+  map <- add_osm_objects (map, l$coast$osm_polygons, col='purple')
+  
+  map <- add_osm_objects (map, l$highways.m$osm_lines, col = 'gray40')
+  map <- add_osm_objects (map, l$highways.tk$osm_lines, col = 'gray50')
+  map <- add_osm_objects (map, l$highways.p$osm_lines, col = 'gray60')
+  map <- add_osm_objects (map, l$highways.s$osm_lines, col = 'gray80', size=0.5)
+  map <- add_osm_objects (map, l$highways.t$osm_lines, col = 'gray90', size=0.25)
 }
 ```
 
@@ -123,7 +120,7 @@ if (MapFetched) {
   print_osm_map (map)
 
 ```
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FetchOSM}
 if (MapFetched) {
   print_osm_map (map,filename = 'melb_a1.png', width = 600,
                units = 'px', dpi = map_dpi)
@@ -171,7 +168,7 @@ osm query. Orange ones were constructed from fragments by `osm_line2poly`.
 ```
 Fetch the test data. A variable name with `WE` indicates that the coast enters the bounding box
 on the western side and exits on the east. The land is on the left when following that path.
-```{r}
+```{r, eval=FetchOSM}
     bbWE <- get_bbox (c(142.116906, -38.352713, 142.205162, -38.409661))
     coastWE <- getCoast(bbWE)
 
@@ -207,56 +204,56 @@ on the western side and exits on the east. The land is on the left when followin
 
 ```
 
-```{r}
+```{r, eval=FetchOSM}
 testPlotPoly(coastWE, bbWE, "testWE.png")
 ```
 ![](testWE.png)
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastEW, bbEW, "testEW.png")
 ```
 ![](testEW.png)
 
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastNS, bbNS, "testNS.png")
 ```
 ![](testNS.png)
 
-```{r}
+```{r, eval=FetchOSM}
 testPlotPoly(coastSN, bbSN, "testSN.png")
 ```
 ![](testSN.png)
 
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastWW, bbWW, "testWW.png")
 ```
 ![](testWW.png)
 
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastEE, bbEE, "testEE.png")
 ```
 ![](testEE.png)
 
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastNN, bbNN, "testNN.png")
 ```
 ![](testNN.png)
 
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastSS, bbSS, "testSS.png")
 ```
 ![](testSS.png)
 
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastEN, bbEN, "testEN.png")
 ```
 ![](testEN.png)
 
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastEWWS, bbEWWS, "testEWWS.png")
 ```
 ![](testEWWS.png)
 
-```{r}
+```{r,eval=FetchOSM}
 testPlotPoly(coastWS, bbWS, "testWS.png")
 ```
 ![](testWS.png)
