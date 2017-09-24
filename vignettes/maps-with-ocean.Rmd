@@ -153,18 +153,21 @@ osm query. Orange ones were constructed from fragments by `osm_line2poly`.
   }
   testPlotPoly <- function(coast, bbox, fname)
   {
-    if (nrow(coast$osm_lines)==0) {
+    ## trouble doing this check properly on Travis
+    if (nrow(coast$osm_lines) > 0) {
+      coastp <- osm_line2poly(coast$osm_lines, bbox=bbox)
+      map <- osm_basemap(bbox=bbox)
+      map <- add_osm_objects(map, coastp$sea, col='cadetblue2')
+      map <- add_osm_objects(map, coastp$land, col='sienna2')
+      print_osm_map(map,filename = fname, width = 200,
+                    units = 'px', dpi = map_dpi)
+    } else {
       warning("osm query probably failed - not plotting")
       invisible(NULL)
     }
-    coastp <- osm_line2poly(coast$osm_lines, bbox=bbox)
-    map <- osm_basemap(bbox=bbox)
-    map <- add_osm_objects(map, coastp$sea, col='cadetblue2')
-    map <- add_osm_objects(map, coastp$land, col='sienna2')
-    print_osm_map(map,filename = fname, width = 200,
-               units = 'px', dpi = map_dpi)
+    
   }
-
+  
 ```
 Fetch the test data. A variable name with `WE` indicates that the coast enters the bounding box
 on the western side and exits on the east. The land is on the left when following that path.
