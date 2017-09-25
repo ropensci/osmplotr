@@ -106,7 +106,7 @@ osm_line2poly <- function (obj, bbox)
   if (length(startidx) >= 1) {
     ## Need to test this with disconnected bits
     linkorders <- lapply(startidx, unrollRec, V=m2)
-    linkorders <- lapply(linkorders, na.omit)
+    linkorders <- lapply(linkorders, function(X)return(X[!is.na(X)]))
     links <- lapply(linkorders, function(X)HdTl[X,,drop=FALSE])
     HdTl <- HdTl[-unlist(linkorders), ,drop=FALSE]
     links <- lapply(links, lookupWays)
