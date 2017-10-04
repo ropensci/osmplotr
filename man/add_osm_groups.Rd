@@ -41,7 +41,7 @@ functions: determines width of lines for (polygon, line), and sizes of
 points.  Respective defaults are (0, 0.5, 0.5).}
 
 \item{shape}{Shape of points or lines (the latter passed as \code{linetype});
-see \code{?ggplot2::shape}.}
+see \code{\link[ggplot2]{shape}}.}
 
 \item{border_width}{If given, draws convex hull borders around entire groups
 in same colours as groups (try values around 1-2).}
