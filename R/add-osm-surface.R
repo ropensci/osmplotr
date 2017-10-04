@@ -46,6 +46,8 @@
 #' allows the limits of \code{dat} to be used precisely when adding colourbars
 #' with \code{\link{add_colourbar}}.
 #'
+#' @importFrom ggplot2 aes geom_polygon scale_fill_gradientn
+#' scale_colour_gradientn geom_point geom_path
 #' @export
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_colourbar}}.
@@ -392,16 +394,16 @@ map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) #nolint
         size <- rep (size, 2) # else size [2] specifies bg size
 
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, fill = z)
-    map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
+    aes <- aes (x = lon, y = lat, group = id, fill = z)
+    map <- map + geom_polygon (data = xy, mapping = aes,
                                         size = size [1]) +
-                ggplot2::scale_fill_gradientn (colours = cols)
+                scale_fill_gradientn (colours = cols)
 
     if (!missing (bg))
     {
         xy <- xy0 [xy0$inp == 0, ]
-        aes <- ggplot2::aes (x = lon, y = lat, group = id)
-        map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
+        aes <- aes (x = lon, y = lat, group = id)
+        map <- map + geom_polygon (data = xy, mapping = aes,
                                             size = size [2], fill = bg)
     }
 
@@ -424,17 +426,17 @@ map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolin
         shape <- rep (shape, 2)
 
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
-    map <- map + ggplot2::geom_path (data = xy, mapping = aes,
+    aes <- aes (x = lon, y = lat, group = id, colour = z)
+    map <- map + geom_path (data = xy, mapping = aes,
                                      size = size [1],
                                      linetype = shape [1]) +
-            ggplot2::scale_colour_gradientn (colours = cols)
+            scale_colour_gradientn (colours = cols)
 
     if (!missing (bg))
     {
         xy <- xy0 [xy0$inp == 0, ]
-        aes <- ggplot2::aes (x = lon, y = lat, group = id)
-        map <- map + ggplot2::geom_path (data = xy, mapping = aes, col = bg,
+        aes <- aes (x = lon, y = lat, group = id)
+        map <- map + geom_path (data = xy, mapping = aes, col = bg,
                                          size = size [2],
                                          linetype = shape [2])
     }
@@ -458,16 +460,16 @@ map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #noli
         shape <- rep (shape, 2)
 
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
-    map <- map + ggplot2::geom_point (data = xy, mapping = aes,
+    aes <- aes (x = lon, y = lat, group = id, colour = z)
+    map <- map + geom_point (data = xy, mapping = aes,
                                       size = size [1], shape = shape [1]) +
-            ggplot2::scale_colour_gradientn (colours = cols)
+            scale_colour_gradientn (colours = cols)
 
     if (!missing (bg))
     {
         xy <- xy0 [xy0$inp == 0, ]
-        aes <- ggplot2::aes (x = lon, y = lat, group = id)
-        map <- map + ggplot2::geom_point (data = xy, mapping = aes,
+        aes <- aes (x = lon, y = lat, group = id)
+        map <- map + geom_point (data = xy, mapping = aes,
                                           col = bg, size = size [2],
                                           shape = shape [2])
     }

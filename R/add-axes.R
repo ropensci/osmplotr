@@ -14,6 +14,7 @@
 #' @param ... Mechanism to allow many parameters to be passed with alternative
 #' names (\code{color} for \code{colour} and \code{xyz} for \code{fontxyz}.
 #' @return Modified version of \code{map} with axes added.
+#' @importFrom ggplot2 aes geom_polygon geom_segment geom_label
 #' @export
 #'
 #' @seealso \code{\link{osm_basemap}}.
@@ -122,9 +123,9 @@ add_axis_rectangle <- function (map, xaxs_pos, yaxs_pos, xrange, yrange,
                                          yr[2], yr[3], yr[3])))
 
     lon <- lat <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, size = 0)
+    aes <- aes (x = lon, y = lat, size = 0)
 
-    map + ggplot2::geom_polygon (data = rdat, mapping = aes,
+    map + geom_polygon (data = rdat, mapping = aes,
                                  inherit.aes = FALSE,
                                  fill = rgb (1, 1, 1, alpha),
                                  colour = 'transparent')
@@ -142,9 +143,9 @@ add_tick_rectangles_h <- function (map, xp, xaxs_pos, yaxs_pos,
     rdat <- data.frame (cbind ("id" = rep (seq (xp), each = 5),
                                "lon" = x, "lat" = y))
 
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, size = 0)
+    aes <- aes (x = lon, y = lat, group = id, size = 0)
 
-    map + ggplot2::geom_polygon (data = rdat, mapping = aes,
+    map + geom_polygon (data = rdat, mapping = aes,
                                  inherit.aes = FALSE,
                                  fill = rgb (1, 1, 1, alpha),
                                  colour = 'transparent')
@@ -161,8 +162,8 @@ add_tick_rectangles_v <- function (map, yp, xaxs_pos, yaxs_pos,
     y <- as.numeric (rbind (y0, y0, y1, y1, y0))
     rdat <- data.frame (cbind ("id" = rep (seq (yp), each = 5),
                                "lon" = x, "lat" = y))
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, size = 0)
-    map <- map + ggplot2::geom_polygon (data = rdat, mapping = aes,
+    aes <- aes (x = lon, y = lat, group = id, size = 0)
+    map <- map + geom_polygon (data = rdat, mapping = aes,
                                         inherit.aes = FALSE,
                                         fill = rgb (1, 1, 1, alpha),
                                         colour = 'transparent')
@@ -174,8 +175,8 @@ add_horizontal_axis <- function (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = max (xrange),
                           y1 = xaxs_pos [1], y2 = xaxs_pos [1])
     x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
-    aes <- ggplot2::aes (x = x1, y = y1, xend = x2, yend = y2)
-    map <- map + ggplot2::geom_segment (data = segdat, colour = colour,
+    aes <- aes (x = x1, y = y1, xend = x2, yend = y2)
+    map <- map + geom_segment (data = segdat, colour = colour,
                                         mapping = aes)
 
     # ticks and labels
@@ -183,12 +184,12 @@ add_horizontal_axis <- function (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
                           y1 = xaxs_pos [1], y2 = xaxs_pos [2])
     labdat <- data.frame (x = xp, y = xaxs_pos [2])
 
-    map + ggplot2::geom_segment (data = segdat, colour = colour,
-                                 mapping = ggplot2::aes (x = x1, y = y1,
+    map + geom_segment (data = segdat, colour = colour,
+                                 mapping = aes (x = x1, y = y1,
                                                          xend = x2,
                                                          yend = y2)) +
-            ggplot2::geom_label (data = labdat,
-                                 mapping = ggplot2::aes (x = x, y = y,
+            geom_label (data = labdat,
+                                 mapping = aes (x = x, y = y,
                                                          label = x),
                                  alpha = alpha,
                                  size = fontsize,
@@ -205,8 +206,8 @@ add_vertical_axis <- function (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [1],
                           y1 = xaxs_pos [1], y2 = max (yrange))
     x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
-    aes <- ggplot2::aes (x = x1, y = y1, xend = x2, yend = y2)
-    map <- map + ggplot2::geom_segment (data = segdat, colour = colour,
+    aes <- aes (x = x1, y = y1, xend = x2, yend = y2)
+    map <- map + geom_segment (data = segdat, colour = colour,
                                         mapping = aes)
 
     # ticks and labels
@@ -214,12 +215,12 @@ add_vertical_axis <- function (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
                           y1 = yp, y2 = yp)
     labdat <- data.frame (x = yaxs_pos [2], y = yp)
 
-    map + ggplot2::geom_segment (data = segdat, colour = colour,
-                                 mapping = ggplot2::aes (x = x1, y = y1,
+    map + geom_segment (data = segdat, colour = colour,
+                                 mapping = aes (x = x1, y = y1,
                                                 xend = x2,
                                                 yend = y2)) +
-            ggplot2::geom_label (data = labdat,
-                                 mapping = ggplot2::aes (x = x, y = y,
+            geom_label (data = labdat,
+                                 mapping = aes (x = x, y = y,
                                                          label = y),
                                  alpha = alpha,
                                  size = fontsize,

@@ -36,6 +36,7 @@
 #' @param rotate Passed to \code{colour_mat} to rotate colours by the specified
 #' number of degrees clockwise.
 #' @return Modified version of \code{map} with groups added.
+#' @importFrom ggplot2 aes geom_polygon geom_path
 #' @export
 #'
 #' @section Note:
@@ -205,7 +206,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     if (!missing (bg))
         cols <- c (cols, bg)
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id)
+    aes <- aes (x = lon, y = lat, group = id)
 
     if (grepl ('polygon', obj_type))
         map <- map_plus_spPolydf_grps (map, xyflat, aes, cols, size) #nolint
@@ -748,7 +749,7 @@ map_plus_spPolydf_grps <- function (map, xy, aes, cols, size) #nolint
     else if (!is.numeric (size))
         size <- 0
 
-    map + ggplot2::geom_polygon (data = xy, mapping = aes, fill = cols [xy$col],
+    map + geom_polygon (data = xy, mapping = aes, fill = cols [xy$col],
                                  size = size)
 }
 
@@ -767,7 +768,7 @@ map_plus_spLinedf_grps <- function (map, xyflat, aes, cols, size, shape) #nolint
     else if (!is.numeric (shape))
         shape <- 1
 
-    map + ggplot2::geom_path (data = xyflat, mapping = aes,
+    map + geom_path (data = xyflat, mapping = aes,
                               colour = cols [xyflat$col], size = size,
                               linetype = shape)
 }
@@ -805,8 +806,8 @@ map_plus_hulls <- function (map, border_width, groups, xyflat, cols)
         bdry <- data.frame (do.call (rbind, bdry))
         names (bdry) <- c ("id", "x", "y")
 
-        aes <- ggplot2::aes (x = x, y = y, group = id)
-        map <- map + ggplot2::geom_polygon (data = bdry, mapping = aes,
+        aes <- aes (x = x, y = y, group = id)
+        map <- map + geom_polygon (data = bdry, mapping = aes,
                                             colour = cols [bdry$id],
                                             fill = "transparent",
                                             size = border_width)
