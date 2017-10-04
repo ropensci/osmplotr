@@ -43,11 +43,8 @@ osm_basemap <- function (bbox, structures, bg = 'gray20')
     map_theme <- set_map_theme (bg = bg)
 
     lon <- lat <- NA
-    # coord_map uses mapproj::mapproject, but this can't be added as a
-    # dependency because it's not explicitly called, so coord_equal is a
-    # workaround.
     map <- ggplot2::ggplot () + map_theme +
-                ggplot2::coord_equal (xlim = range (bbox[1, ]),
+                ggplot2::coord_map (xlim = range (bbox[1, ]),
                                     ylim = range (bbox[2, ])) +
                 ggplot2::aes (x = lon, y = lat) +
                 ggplot2::scale_x_continuous (expand = c(0, 0)) +
