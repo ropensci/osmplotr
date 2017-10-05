@@ -46,27 +46,27 @@ osm_basemap <- function (bbox, structures, bg = 'gray20')
     map_theme <- set_map_theme (bg = bg)
 
     lon <- lat <- NA
-    map <- ggplot () + map_theme +
-                coord_map (xlim = range (bbox[1, ]),
+    map <- ggplot2::ggplot () + map_theme +
+                ggplot2::coord_map (xlim = range (bbox[1, ]),
                                     ylim = range (bbox[2, ])) +
-                aes (x = lon, y = lat) +
-                scale_x_continuous (expand = c(0, 0)) +
-                scale_y_continuous (expand = c(0, 0))
+                ggplot2::aes (x = lon, y = lat) +
+                ggplot2::scale_x_continuous (expand = c(0, 0)) +
+                ggplot2::scale_y_continuous (expand = c(0, 0))
 
     return (map)
 }
 
 set_map_theme <- function (bg)
 {
-    theme <- theme_minimal ()
-    theme$panel.background <- element_rect (fill = bg, size = 0)
-    theme$line <- element_blank ()
-    theme$axis.text <- element_blank ()
-    theme$axis.title <- element_blank ()
-    theme$plot.margin <- margin (rep (unit (0, 'null'), 4))
-    theme$plot.margin <- margin (rep (unit (-0.5, 'line'), 4))
+    theme <- ggplot2::theme_minimal ()
+    theme$panel.background <- ggplot2::element_rect (fill = bg, size = 0)
+    theme$line <- ggplot2::element_blank ()
+    theme$axis.text <- ggplot2::element_blank ()
+    theme$axis.title <- ggplot2::element_blank ()
+    theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, 'null'), 4))
+    theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, 'line'), 4))
     theme$legend.position <- 'none'
-    theme$axis.ticks.length <- unit (0, 'null')
+    theme$axis.ticks.length <- ggplot2::unit (0, 'null')
 
     return (theme)
 }

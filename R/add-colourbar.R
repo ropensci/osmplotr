@@ -104,36 +104,36 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
 
     # ---------- LAYER#1: semi-transparent underlay
     cbu <- colourbar_underlay (cbxy, vertical, expand)
-    aes <- aes (x = x, y = y, size = 0)
+    aes <- ggplot2::aes (x = x, y = y, size = 0)
     pcol <- rgb (1, 1, 1, alpha)
     # geom_path has rounded corners, geom_poly does not, and size = 5 *should*
     # ensure it covers the inside of most bars
-    map <- map + geom_path (data = cbu$rdat, mapping = aes,
+    map <- map + ggplot2::geom_path (data = cbu$rdat, mapping = aes,
                                      inherit.aes = FALSE,
                                      colour = pcol, size = 5)
 
     # ---------- LAYER#2: colourbar
-    aes <- aes (x = x, y = y)
+    aes <- ggplot2::aes (x = x, y = y)
     args <- colourbar_tile_args (cbu$cbxy, vertical, cols, aes)
-    map <- map + do.call (geom_tile, args)
+    map <- map + do.call (ggplot2::geom_tile, args)
 
     # ---------- LAYER#3: outline around colourbar
     rdat <- colourbar_outline (cbxy, vertical, expand)
-    map <- map + geom_path (data = rdat, mapping = aes,
+    map <- map + ggplot2::geom_path (data = rdat, mapping = aes,
                                      colour = text_col)
 
     # ---------- LAYERS#4-5: ticks and labels
     tl <- colourbar_ticks_labels (map, cbu, zlims, vertical)
     z <- tl$z
 
-    gs <- geom_segment
-    glab <- geom_label
+    gs <- ggplot2::geom_segment
+    glab <- ggplot2::geom_label
 
     x2 <- y2 <- NULL # suppress 'no visible binding' error
     map + gs (data = tl$segdat, colour = text_col,
-                     mapping = aes (x = x1, y = y1,
+                     mapping = ggplot2::aes (x = x1, y = y1,
                                              xend = x2, yend = y2)) +
-        glab (data = tl$labdat, mapping = aes (x = x, y = y,
+        glab (data = tl$labdat, mapping = ggplot2::aes (x = x, y = y,
                                                         label = z),
               alpha = alpha, size = fontsize, colour = text_col,
               fontface = fontface, family = fontfamily, inherit.aes = FALSE,

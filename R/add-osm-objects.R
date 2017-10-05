@@ -80,7 +80,7 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, hcol,
             xy1 <- xy [which (xy$id == 1), ]
             xy_not1 <- xy [which (xy$id != 1), ]
 
-            map <- map + geom_polygon (aes (group = id),
+            map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
                                                 data = xy1, size = size,
                                                 fill = col, colour = border)
 
@@ -96,7 +96,7 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, hcol,
                     n <- length (which (xy_not1$id == ids [i]))
                     hcols <- c (hcols, rep (hcol [i], n))
                 }
-                map <- map + geom_polygon (aes (group = id),
+                map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
                                                     data = xy_not1,
                                                     fill = hcols)
             }
@@ -105,7 +105,7 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, hcol,
     {
         xy <- geom_to_xy (obj, obj_type)
         xy <- list2df (xy)
-        map <- map + geom_polygon (aes (group = id),
+        map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
                                                       data = xy, size = size,
                                                       fill = col,
                                                       colour = border)
@@ -113,14 +113,14 @@ add_osm_objects <- function (map, obj, col = 'gray40', border = NA, hcol,
     {
         xy <- geom_to_xy (obj, obj_type)
         xy <- list2df (xy, islines = TRUE)
-        map <- map + geom_path (data = xy,
-                                   aes (x = lon, y = lat),
+        map <- map + ggplot2::geom_path (data = xy,
+                                   ggplot2::aes (x = lon, y = lat),
                                    colour = col, size = size, linetype = shape)
     } else if (grepl ('point', obj_type))
     {
         xy <- geom_to_xy (obj, obj_type)
-        map <- map + geom_point (data = xy,
-                                    aes (x = lon, y = lat),
+        map <- map + ggplot2::geom_point (data = xy,
+                                    ggplot2::aes (x = lon, y = lat),
                                     col = col, size = size, shape = shape)
     } else
         stop ("obj is not a spatial class")
