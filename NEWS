@@ -1,10 +1,11 @@
-osmplotr v0.4.0
+osmplotr v0.3.0.99
 ===============
 
 Major changes
 -------
 * New function 'osm_line2poly' enables plotting polygonal shapes delineated only
   by lines, through tracing around the bounding box to form full polygons.
+* New vignette to describe this functionality, "maps-with-ocean".
 
 Minor changes
 -------

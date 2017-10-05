@@ -9,131 +9,122 @@ output:
         #number_sections: true
         theme: flatly
 vignette: >
-  %\VignetteIndexEntry{Basic Maps}
+  %\VignetteIndexEntry{Maps with Ocean}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-# Introduction
+# 1 Introduction
 
-Queries to OpenStreetMap can return segments of coastline which can be plotted easily with `osmplotr`. However
-it is sometimes desirable to colour the ocean or land separately. This requires constructing polygons that
-are partly outside the bounding box, as polygons are easily fillable.
+It may often be desirable to separately colour two or more portions of a map
+that are separated by a line object. This is not directly possible because only
+polygons can be filled with colour, not lines. The `osm_line2poly()` function
+comes to the rescue here by converting a line to a polygon surrounding a given
+plotting region. The classic example where this arises is with coastlines. These
+are always represented in OpenStreetMap as line objects, preventing any ability
+to simply colour land and ocean separately.
 
-This vignette contains the test cases used when developing the `osm_line2poly` function, as well as the larger
-example that raised the issue in the first place.
+This vignette illustrates the general principles of the `osm_line2poly()`
+function, along with several ancilliary issues such as plotting coastal islands.
+Although this functionality has been primarily developed with coastlines in
+mind, the `osm_line2poly()` function has been designed in a suffciiently general
+manner to be readily adaptible to any other cases where such line-to-polygon
+conversion may be desirable.
 
-Package checks on CRAN and the various continuous integration services don't play nicely with OSM queries, so 
-most of this vignette is disabled.
+This vignette explores the example of the coastline around Greater Melbourne,
+Australia, first demonstrating how to extract coastline and convert it to land
+and sea polygons, and then demonstrating how these areas may be delinated on a
+plot.
 
-# Greater Melbourne.
+# 2 Data Extraction and Conversion
 
-This was the task that first prompted the work. It performs large queries to OSM, and the timeout has 
-been reset.
-```{r GMFuncs, echo=FALSE, message=FALSE}
-## Set this to true to fetch from OSM servers. FALSE for cran or TravisCI checks
-FetchOSM=FALSE
-library(osmplotr)
-library(osmdata)
+We use [`osmdata`](https://cran.r-project.org/package=osmdata) to extract the
+coastline within the bounding box of Greater Melbourne.
+```{r, echo = FALSE}
 map_dpi <- 72 # dpi res for all maps
-
-myqry <- function(bbox)
-{
-  qry <- osmdata::opq (bbox = bbox)
-  qry$prefix <- "[out:xml][timeout:600];\n(\n"
-  return(qry)
-}
-getGM <- function(bbox)
-{
-  qry <- myqry (bbox = bbox)
-  qry <- osmdata::add_osm_feature (qry, key = "highway", value="motorway")
-  dat_M <- osmdata::osmdata_sf(qry)
-
-  qry <- myqry (bbox = bbox)
-  qry <- osmdata::add_osm_feature (qry, key = "highway", value="trunk")
-  dat_T <- osmdata::osmdata_sf(qry)
-
-  qry <- myqry (bbox = bbox)
-  qry <- osmdata::add_osm_feature (qry, key = "highway", value="primary")
-  dat_H1 <- osmdata::osmdata_sf(qry)
-
-  qry <- myqry (bbox = bbox)
-  qry <- osmdata::add_osm_feature (qry, key = "highway", value="secondary")
-  dat_H2 <- osmdata::osmdata_sf(qry)
-
-  qry <- myqry (bbox = bbox)
-  qry <- osmdata::add_osm_feature (qry, key = "highway", value="tertiary")
-  dat_H3 <- osmdata::osmdata_sf(qry)
-
-  qry <- myqry (bbox = bbox)
-  qry <- osmdata::add_osm_feature (qry, key = "natural", value="coastline")
-  dat_Coast <- osmdata::osmdata_sf(qry)
-
-  return(list(highways.m=dat_M, highways.tk=dat_T, highways.p=dat_H1, highways.s=dat_H2, highways.t=dat_H3, coast=dat_Coast))
-}
-
+fetch_osm <- FALSE
 ```
-```{r, eval=FetchOSM}
-greatermelb <- get_bbox(c(143.785314, -37.033592, 145.652990, -38.527013))
-bbox<-greatermelb
-l <- getGM(greatermelb)
-# This is a big query - check if it has worked
-if (nrow(l$coast$osm_lines)>0) {
-  MapFetched <- TRUE
-} else {
-  MapFetched <- FALSE
-  warning("OSM query probably failed. Some maps will be missing")
-}
-```
-Note that the coastline has several types of structure. We need to work on the lines.
-```{r, eval=FetchOSM}
-if (MapFetched) {
-cl <- osm_line2poly(l$coast$osm_lines, bbox)
-names(cl)
-}
-```
-If all goes well, the result of `osm_line2poly` contains 3 components - a set of sea polygons, a set of land polygons
-and a set of island polygons. The island polygons are separate to those originally queried.
+```{r GMFuncs, message=FALSE, eval = fetch_osm}
+library (osmplotr)
+library (osmdata)
+library (magrittr)
 
-Now plot them. In this case we've used sea colour as background and filled the land.
-
-```{r, eval=FetchOSM}
-if (MapFetched) {
-  
-  map <- osm_basemap (bbox = bbox, bg = 'cadetblue2')
-  
-  map <- add_osm_objects (map, cl$land, col = 'lightyellow1')
-  
-  #map <- add_osm_objects (map, cl$sea[[1]], col = 'cadetblue2')
-  map <- add_osm_objects (map, cl$islands, col='orange')
-  map <- add_osm_objects (map, l$coast$osm_polygons, col='purple')
-  
-  map <- add_osm_objects (map, l$highways.m$osm_lines, col = 'gray40')
-  map <- add_osm_objects (map, l$highways.tk$osm_lines, col = 'gray50')
-  map <- add_osm_objects (map, l$highways.p$osm_lines, col = 'gray60')
-  map <- add_osm_objects (map, l$highways.s$osm_lines, col = 'gray80', size=0.5)
-  map <- add_osm_objects (map, l$highways.t$osm_lines, col = 'gray90', size=0.25)
-}
+bbox <- osmdata::getbb ("greater melbourne, australia")
+coast <- opq (bbox = bbox) %>%
+    add_osm_feature (key = "natural", value = "coastline") %>%
+    osmdata_sf (quiet = FALSE)
+```
+This coastline object consists of several types of structure
+```{r, eval = FALSE}
+coast
+```
+```{r, echo = FALSE}
+message (paste0 ("Object of class 'osmdata' with:\n",
+"                 $bbox : -38.49937,144.44405,-37.40175,146.1925\n",
+"        $overpass_call : The call submitted to the overpass API\n",
+"            $timestamp : [ Thurs 5 Oct 2017 10:23:18 ]\n",
+"           $osm_points : 'sf' Simple Features Collection with 13635 points\n",
+"            $osm_lines : 'sf' Simple Features Collection with 73 linestrings\n",
+"         $osm_polygons : 'sf' Simple Features Collection with 12 polygons\n",
+"       $osm_multilines : 'sf' Simple Features Collection with 0 multilinestrings\n",
+"    $osm_multipolygons : 'sf' Simple Features Collection with 0 multipolygons"))
+```
+Because OpenStreetMap represents coastline as line objects, all coastline data
+is contained within the `$osm_lines` object. The `osm_line2poly()` function can
+then converte these lines to polygons which can be used to plot filled areas.
+```{r, eval = fetch_osm}
+coast_poly <- osm_line2poly (coast$osm_lines, bbox)
+names(coast_poly)
+```
+```{r, echo = FALSE}
+c ("sea", "land", "islands")
+```
+Note that reflecting its envisioned primary usage, the function always returns
+objects named `"sea"`, `"land"`, and `"islands"`. For usages other than
+coastline, these names will of course reflect other kinds of object.  The
+`"islands"` item contains any polygons which are separate to those originally
+queried. Each item of this list is an `sf::data.frame` object:
+```{r, eval = FALSE}
+class (coast_poly$sea)
+```
+```{r, echo = FALSE}
+c ("sf", "data.frame")
 ```
 
-```{r eval=FALSE}
-  print_osm_map (map)
+# 3 Plotting
 
+The `list` items returned by `osm_line2poly()` may then be used to provide a map
+background which distinguishes ocean from land. Here we first colour the entire
+map using the background colour for the ocean, and overlay the land and island
+polygons on top of that.
+
+```{r, eval = fetch_osm}
+map <- osm_basemap (bbox = bbox, bg = "cadetblue2") %>%
+  add_osm_objects (coast_poly$land, col = "lightyellow1") %>%
+  add_osm_objects (coast_poly$islands, col="orange") %>%
+  add_osm_objects (coast$osm_polygons, col="purple", border = "black") %>%
+  add_osm_objects (coast$osm_lines, col="black") %>%
+  print_osm_map ()
 ```
-```{r, echo=FALSE, eval=FetchOSM}
-if (MapFetched) {
-  print_osm_map (map,filename = 'melb_a1.png', width = 600,
+```{r, echo=FALSE, eval = fetch_osm}
+print_osm_map (map, filename = 'melb_a1.png', width = 600,
                units = 'px', dpi = map_dpi)
-}
-
 ```
 
 ![](melb_a1.png)
 
-The gaudy colours differentiate the source of polygons. Purple islands were returned by the original
-osm query. Orange ones were constructed from fragments by `osm_line2poly`.
+The gaudy colours differentiate the source of polygons. Purple islands were
+returned by the original osm query, while the orange ones were constructed from
+fragments by `osm_line2poly`.
 
-# Test cases
+# Further Demonstrations
+
+The `osm_line2poly()` function works by identifying lines which extend at at
+least two points beyond a given bounding box. For coastline, OpenStreetMap is
+designed so that land always lies to the left side in the direction of the
+line, enabling water and land to be systematically distinguished. The following
+test cases demonstrate the reliability of this distinction.
+
 ```{r, echo=FALSE}
   getCoast <- function(bbox)
   {
@@ -166,9 +157,35 @@ osm query. Orange ones were constructed from fragments by `osm_line2poly`.
   }
   
 ```
+```{r, eval = fetch_osm}
+test_plot <- function (bbox)
+{
+    dat <- opq (bbox) %>%
+        add_osm_feature (key = "natural", value = "coastline") %>%
+        osmdata_sf (quiet = FALSE)
+    coast <- osm_line2poly (dat$osm_lines, bbox)
+    osm_basemap (bbox = bbox) %>%
+        add_osm_objects(coast$sea, col = 'cadetblue2') %>%
+        add_osm_objects(coast$land, col = 'sienna2')
+}
+```
+```{r, eval = fetch_osm, echo = FALSE}
+test_plot <- function (bbox, filename, map_dpi)
+{
+    dat <- opq (bbox) %>%
+        add_osm_feature (key = "natural", value = "coastline") %>%
+        osmdata_sf (quiet = FALSE)
+    coast <- osm_line2poly (dat$osm_lines, bbox)
+    osm_basemap (bbox = bbox) %>%
+        add_osm_objects(coast$sea, col = 'cadetblue2') %>%
+        add_osm_objects(coast$land, col = 'sienna2') %>%
+        print_osm_map (file = filename, width = 200,
+                       units = "px", dpi = map_dpi)
+}
+```
 Fetch the test data. A variable name with `WE` indicates that the coast enters the bounding box
 on the western side and exits on the east. The land is on the left when following that path.
-```{r, eval=FetchOSM}
+```{r, eval = fetch_osm}
     bbWE <- get_bbox (c(142.116906, -38.352713, 142.205162, -38.409661))
     coastWE <- getCoast(bbWE)
 
@@ -204,56 +221,56 @@ on the western side and exits on the east. The land is on the left when followin
 
 ```
 
-```{r, eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastWE, bbWE, "testWE.png")
 ```
 ![](testWE.png)
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastEW, bbEW, "testEW.png")
 ```
 ![](testEW.png)
 
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastNS, bbNS, "testNS.png")
 ```
 ![](testNS.png)
 
-```{r, eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastSN, bbSN, "testSN.png")
 ```
 ![](testSN.png)
 
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastWW, bbWW, "testWW.png")
 ```
 ![](testWW.png)
 
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastEE, bbEE, "testEE.png")
 ```
 ![](testEE.png)
 
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastNN, bbNN, "testNN.png")
 ```
 ![](testNN.png)
 
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastSS, bbSS, "testSS.png")
 ```
 ![](testSS.png)
 
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastEN, bbEN, "testEN.png")
 ```
 ![](testEN.png)
 
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastEWWS, bbEWWS, "testEWWS.png")
 ```
 ![](testEWWS.png)
 
-```{r,eval=FetchOSM}
+```{r, eval = fetch_osm}
 testPlotPoly(coastWS, bbWS, "testWS.png")
 ```
 ![](testWS.png)

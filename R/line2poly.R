@@ -1,3 +1,5 @@
+
+
 #' osm_line2poly
 #'
 #' Converts \code{sf::sfc_LINSTRING} objects to polygons by connecting end
@@ -48,278 +50,279 @@
 #' }
 osm_line2poly <- function (obj, bbox)
 {
-  if (!is (obj$geometry, "sfc_LINESTRING"))
-    stop ("obj must be class 'sf' with fields of class 'sfc_LINESTRING'")
-  
-  if (nrow(obj) == 0)
-    stop("obj is empty - check osm query results")
-  g <- obj$geom
-  
-  ## Clip the lines
-  clipOne <- function(out, bbox)
-  {
-    # Then reduce out to only that portion within bb, plus one point either side
+    if (!is (obj$geometry, "sfc_LINESTRING"))
+        stop ("obj must be class 'sf' with fields of class 'sfc_LINESTRING'")
+
+    if (nrow(obj) == 0)
+        stop("obj is empty - check osm query results")
+    g <- obj$geom
+
+    if (is.vector (bbox))
+        bbox <- matrix (bbox, nrow = 2)
+
+    # These geometries can contain several coastline "ways" that need to be
+    # linked together. There may be multiple sets of these (think) peninsulas
+    # being crossed by bounding box.  There can also be ways that link to form
+    # polygons, and they need to be filtered separately.
+
+    # Note that really strange things can happen, depending on the scale.  It is
+    # possible for parts of a coastline to be connected outside the bounding
+    # box, which means we need to be extra careful when clipping.
+
+    # Look for the ones that aren't loops first, then deal with the loops
+    # We identify link points using the rownames from osm as the key.
+
+    # Get the first and last rowname from each line segment
+    head_tail <- t (sapply (g, function (X) rownames (X) [c (1, nrow (X))]))
+
+    m2 <- match (head_tail [, 2], head_tail [, 1])
+    m1 <- match (head_tail [, 1], head_tail [, 2])
+
+    # NA in m2 indicates the end of a chain.
+    # NA in m1 indicates the start of a chain
+    startidx <- which (is.na (m1))
+    if (length (startidx) >= 1)
+    {
+        # Need to test this with disconnected bits
+        linkorders <- lapply (startidx, function (i) unroll_rec (i), V = m2)
+        linkorders <- lapply (linkorders, function (X) X [!is.na (X)])
+        links <- lapply (linkorders, function (X) head_tail [X, , drop = FALSE]) #nolint
+        head_tail <- head_tail [-unlist (linkorders), , drop = FALSE] #nolint
+        links <- lapply (links, function (i) lookup_ways (i), g)
+    }
+
+    # Now we deal with loops.  Keep extracting loops until nothing left
+    to_become_polygons <- list()
+    lidx <- 1
+    while (nrow (head_tail) > 0)
+    {
+        m2 <- match(head_tail [, 2], head_tail [, 1])
+        l1 <- unroll_rec_loop (1, m2)
+        to_become_polygons [[lidx]] <- head_tail [l1, ]
+        lidx <- lidx + 1
+        head_tail <- head_tail [-l1, ]
+    }
+    to_become_polygons <- lapply (to_become_polygons, function (i)
+                                  lookup_ways (i), g)
+    to_become_polygons <- lapply (to_become_polygons, function (i)
+                                  make_sf (i), g)
+    to_become_polygons <- do.call (rbind, to_become_polygons)
+    # Don't need to clip the polygons against the bounding box - they'll already
+    # be inside, otherwise they wouldn't have been registered as polygons.  Even
+    # if they aren't inside, we should be able to fill them
+
+    #  if (length (g) > 0)
+    #    message ("Not all line segments align continuously.")
+
+    # polygon formed by expanding bbox through combination of increasing or
+    # decreasing longitudes or latitudes. Requires explicit combinations for
+    # each case. Note that bb is arranged thus:
+    #   bb [1, 1]           bb [1, 2]
+    #       |                   |
+    #       O-------------------O  <- bb [2, 2]
+    #       |                   |
+    #       |                   |
+    #       O-------------------O  <- bb [2, 1]
+    #
+    # The three required combinations for starting at -lon are then like this,
+    # where double lines are the bbox, and single lines the expansion
+    #
+    # out[1,1],bb[2,2]      out[n,1],bb[2,2]
+    #   |---O====================O---|
+    #   |   ||                  ||   |
+    # 1-|   ||                  ||   |-N
+    #   |   ||                  ||   |
+    #   |---O====================O---|
+    # out[1,1],bb[2,1]      out[n,1],bb[2,1]
+    #
+    #
+    # out[1,1],bb[2,2]      bb[1,2],bb[2,2]
+    #   |---O====================O
+    #   |   ||                  ||
+    # 1-|   ||                  ||
+    #   |   ||                  ||
+    #   |   O====================O
+    #   |             |          |
+    #   |-------------N----------|
+    # out[1,1],out[n,2]     bb[1,2],out[n,2]
+    #
+    #
+    # out[1,1],out[n,2]     bb[1,2],out[n,2]
+    #   |------------N-----------|
+    #   |            |           |
+    #   |   O====================O
+    #   |   ||                  ||
+    # 1-|   ||                  ||
+    #   |   ||                  ||
+    #   |---O====================O
+    # out[1,1],bb[2,1]      bb[1,2],bb[2,1]
+    #
+    # And N can be outside the same edge as 1!
+    #
+    # ... explicit cases for each of the other 3 starting points (+lon, +/- lat)
+    # then follow by extension.
+
+    bbxcorners_rh <- c("NE", "SE", "SW", "NW")
+    bbxcoords <- rbind(c(bbox[1, 2], bbox[2, 2]),
+                       c(bbox[1, 2], bbox[2, 1]),
+                       c(bbox[1, 1], bbox[2, 1]),
+                       c(bbox[1, 1], bbox[2, 2])
+                       )
+    rownames(bbxcoords) <- bbxcorners_rh
+
+    if (length(links) >= 1) {
+        links <- lapply (links, function (i) clip_one (i), bbox = bbox)
+        linkpoly <- lapply (links, function (i) make_poly (i),
+                            bbox = bbox, g = g)
+        p1 <- lapply (linkpoly, "[[", "p1")
+        p2 <- lapply (linkpoly, "[[", "p2")
+
+    } else {
+        warning("No open curves found - check for polygons")
+    }
+
+    res <- NULL
+    if (!is.null (p1) & !is.null (p2)) {
+        res <- list (sea = do.call(rbind, p1), land = do.call(rbind, p2))
+    }
+    if (length(to_become_polygons) >= 1) {
+        res$islands <- to_become_polygons
+    }
+    return (res)
+}
+
+# Clip one line by reducing it to only that portion within the bb, plus one
+# point either side
+clip_one <- function (out, bbox)
+{
     indx <-  (out [, 1] >= bbox [1, 1] & out [, 1] <= bbox [1, 2] &
-                out [, 2] >= bbox [2, 1] & out [, 2] <= bbox [2, 2])
-    ## Need to deal with curves that join outside the bbox.
-    ## Need to dilate the indx vector by 1 (max with left and right shifted 
-    ## versions of itself)
-    indx <- as.logical(pmax(indx, c(indx[-1], FALSE), c(FALSE, indx[-length(indx)])))
-    out <- out [indx, ]
-    return(out)
-  }
-  
-  ## These geometries can contain several coastline "ways" that
-  ## need to be linked together. There may be multiple sets of these (think)
-  ## peninsulas being crossed by bounding box.
-  ## There can also be ways that link to form polygons, and they
-  ## need to be filtered separately.
-  
-  ## Note that really strange things can happen, depending on the scale.
-  ## It is possible for parts of a coastline to be connected outside
-  ## the bounding box, which means we need to be extra careful when 
-  ## clipping.
-  ## box before attempting to connect them. Very likely to lead to other problems
-  
-  ## Look for the ones that aren't loops first, then deal with the loops
-  ##
-  ## We identify link points using the rownames from osm as the key.
-  
-  ## Get the first and last rowname from each line segment
-  HdTl <- t(sapply(g, function(X)rownames(X)[c(1, nrow(X))]))
-  
-  ## Use this one later for recalling the complete line geometry
-  HdTl.orig <- HdTl
-  m2 <- match(HdTl[,2], HdTl[,1])
-  m1 <- match(HdTl[,1], HdTl[,2])
-  
-  lookupWays <- function(L) {
-    gg <- g[rownames(L)]
-    gg <- do.call(rbind, lapply(gg, as.matrix))
-    rr <- duplicated(rownames(gg))
-    gg <- gg[!rr,]
-    return(gg)
-  }
-  ## NA in m2 indicates the end of a chain.
-  ## NA in m1 indicates the start of a chain
-  startidx <- which(is.na(m1))
-  if (length(startidx) >= 1) {
-    ## Need to test this with disconnected bits
-    linkorders <- lapply(startidx, unrollRec, V=m2)
-    linkorders <- lapply(linkorders, function(X)return(X[!is.na(X)]))
-    links <- lapply(linkorders, function(X)HdTl[X,,drop=FALSE])
-    HdTl <- HdTl[-unlist(linkorders), ,drop=FALSE]
-    links <- lapply(links, lookupWays)
-  }
-  
-  ## Now we deal with loops
-  ## Keep extracting loops until nothing left
-  ToBecomePolygons <- list()
-  lidx <- 1
-  while (nrow(HdTl) > 0) {
-    m2 <- match(HdTl[,2], HdTl[,1])
-    l1 <- unrollRecLoop(1, m2)
-    ToBecomePolygons[[lidx]] <- HdTl[l1,]
-    lidx <- lidx+1
-    HdTl <- HdTl[-l1,]
-  }
-  ToBecomePolygons <- lapply(ToBecomePolygons, lookupWays)
-  ToBecomePolygons <- lapply(ToBecomePolygons, make_sf, g)
-  ToBecomePolygons <- do.call(rbind, ToBecomePolygons)
-  ## Don't need to clip the polygons against the bounding box - they'll
-  ## already be inside, otherwise they wouldn't have been registered as polygons.
-  ## Even if they aren't inside, we should be able to fill them
-  ##
-  
-  #  if (length (g) > 0)
-  #    message ("Not all line segments align continuously.")
-  
-  # polygon formed by expanding bbox through combination of increasing or
-  # decreasing longitudes or latitudes. Requires explicit combinations for
-  # each case. Note that bb is arranged thus:
-  #   bb [1, 1]           bb [1, 2]
-  #       |                   |
-  #       O-------------------O  <- bb [2, 2]
-  #       |                   |
-  #       |                   |
-  #       O-------------------O  <- bb [2, 1]
-  #
-  # The three required combinations for starting at -lon are then like this,
-  # where double lines are the bbox, and single lines the expansion
-  #
-  # out[1,1],bb[2,2]      out[n,1],bb[2,2]
-  #   |---O====================O---|
-  #   |   ||                  ||   |
-  # 1-|   ||                  ||   |-N
-  #   |   ||                  ||   |
-  #   |---O====================O---|
-  # out[1,1],bb[2,1]      out[n,1],bb[2,1]
-  #
-  #
-  # out[1,1],bb[2,2]      bb[1,2],bb[2,2]
-  #   |---O====================O
-  #   |   ||                  ||
-  # 1-|   ||                  ||
-  #   |   ||                  ||
-  #   |   O====================O
-  #   |             |          |
-  #   |-------------N----------|
-  # out[1,1],out[n,2]     bb[1,2],out[n,2]
-  #
-  #
-  # out[1,1],out[n,2]     bb[1,2],out[n,2]
-  #   |------------N-----------|
-  #   |            |           |
-  #   |   O====================O
-  #   |   ||                  ||
-  # 1-|   ||                  ||
-  #   |   ||                  ||
-  #   |---O====================O
-  # out[1,1],bb[2,1]      bb[1,2],bb[2,1]
-  #
-  # And N can be outside the same edge as 1!
-  #
-  # ... explicit cases for each of the other 3 starting points (+lon, +/- lat)
-  # then follow by extension.
-  
-  ## for use with the bbox checks
-  compass <- c("W", "S", "E", "N")
-  dim(compass) <- c(2,2)
-  
-  directions <- 1:4
-  names(directions) <- c("N", "E", "S", "W")
-  
-  bbxcornersRH <- c("NE", "SE", "SW", "NW")
-  bbxcoords <- rbind(c(bbox[1, 2], bbox[2, 2]),
-                     c(bbox[1, 2], bbox[2, 1]),
-                     c(bbox[1, 1], bbox[2, 1]),
-                     c(bbox[1, 1], bbox[2, 2])
-  )
-  rownames(bbxcoords) <- bbxcornersRH
-  classifyPtDir <- function(P, bbox)
-  {
-    ## return whether a point is N,S,E,W of bounding box - i.e. which edge
-    ## Could be a pathological corner case, which we'll ignore for now.
-    
-    lt <- P < bbox[,"min"]
-    gt <- P > bbox[,"max"]
-    
-    td <- cbind(lt, gt)
-    return(directions[compass[td]])
-  }
-  makePoly <- function(out, bbox)
-  {
-    ## Turn this into a function because we might have several curves to close
+              out [, 2] >= bbox [2, 1] & out [, 2] <= bbox [2, 2])
+    # Need to deal with curves that join outside the bbox.  Need to dilate the
+    # indx vector by 1 (max with left and right shifted versions of itself)
+    indx <- as.logical (pmax (indx, c(indx [-1], FALSE),
+                              c (FALSE, indx [-length (indx)])))
+    out [indx, ]
+}
+
+
+lookup_ways <- function (L, g) {
+    gg <- g [rownames (L)]
+    gg <- do.call (rbind, lapply (gg, as.matrix))
+    rr <- duplicated (rownames (gg))
+    gg <- gg [!rr, ]
+    return (gg)
+}
+
+# For reordering the ways
+unroll_rec_loop <- function(firstpos, V)
+{
+    ## Recursive version - not for polygons/loops
+    idx <- V[firstpos[length(firstpos)]]
+    if (V[idx] %in% firstpos) return(c(firstpos, idx))
+    else return(Recall(c(firstpos, idx), V))
+}
+
+unroll_rec <- function(firstpos, V)
+{
+    ## Recursive version - not for polygons/loops
+    idx <- V[firstpos[length(firstpos)]]
+    # if (is.na(idx)) return(firstpos) # check this one
+    if (is.na(V[idx])) return(c(firstpos, idx))
+    else return(Recall(c(firstpos, idx), V))
+}
+
+# return whether a point is N,S,E,W of bounding box - i.e. which edge Could be a
+# pathological corner case, which we'll ignore for now.
+classify_pt_dir <- function(pt, bbox)
+{
+    directions <- 1:4
+    names(directions) <- c("N", "E", "S", "W")
+    compass <- c("W", "S", "E", "N")
+    dim(compass) <- c(2, 2)
+
+    lt <- pt < bbox [, "min"]
+    gt <- pt > bbox [, "max"]
+
+    td <- cbind (lt, gt)
+    return (directions [compass [td]])
+}
+
+wrp <- function(idxs)
+{
+    (idxs - 1) %% 4 + 1
+}
+
+make_poly <- function (out, bbox, g)
+{
     p1 <- p2 <- NULL
     n <- nrow (out)
-    
-    FstPt <- out[1,]
-    LstPt <- out[n,]
-    
-    ## Figure out which edges of the BB we cross (N,S,E,W)
-    FstPtD <- classifyPtDir(FstPt, bbox)
-    LstPtD <- classifyPtDir(LstPt, bbox)
-    ## We need these to generate a list of corners going clockwise and anticlockwise.
-    ## Remember that the corner i is clockwise from edge i.
-    
-    ## Modify the bbox by extending the corners. Just line up the extremes, much as done for clipping
-    
+
+    first_pt <- out [1, ]
+    last_pt <- out [n, ]
+
+    # Figure out which edges of the BB we cross (N,S,E,W)
+    first_pt_dir <- classify_pt_dir (first_pt, bbox)
+    last_pt_dir <- classify_pt_dir (last_pt, bbox)
+    # We need these to generate a list of corners going clockwise and
+    # anticlockwise.  Remember that the corner i is clockwise from edge i.
+
+    # Modify the bbox by extending the corners. Just line up the extremes, much
+    # as done for clipping
+
     bb <- bbox # makes following code slightly easier to read
-    
-    bb["x", "min"] <- min(c(bb["x", "min"], out[,1]))
-    bb["x", "max"] <- max(c(bb["x", "max"], out[,1]))
-    bb["y", "min"] <- min(c(bb["y", "min"], out[,2]))
-    bb["y", "max"] <- max(c(bb["y", "max"], out[,2]))
-    
-    bb21 <- bb[2, 1]
-    bb12 <- bb[1, 2]
-    bb22 <- bb[2, 2]
-    bb11 <- bb[1, 1]
-    
-    ext.corners <- rbind(c(bb12, bb22),
-                         c(bb12, bb21),
-                         c(bb11, bb21),
-                         c(bb11, bb22))
-    
-    Wrp <- function(idxs)
+
+    bb ["x", "min"] <- min (c (bb ["x", "min"], out [, 1]))
+    bb ["x", "max"] <- max (c (bb ["x", "max"], out [, 1]))
+    bb ["y", "min"] <- min (c (bb ["y", "min"], out [, 2]))
+    bb ["y", "max"] <- max (c (bb ["y", "max"], out [, 2]))
+
+    bb21 <- bb [2, 1]
+    bb12 <- bb [1, 2]
+    bb22 <- bb [2, 2]
+    bb11 <- bb [1, 1]
+
+    ext_corners <- rbind (c (bb12, bb22), c (bb12, bb21),
+                          c (bb11, bb21), c (bb11, bb22))
+
+    # create lists of corners in each direction
+    if (last_pt_dir == first_pt_dir) {
+        # Special rules if loop from one edge Need to check whether Lst is
+        # clockwise from Fst or not, as the intersection edge doesn't tell us.
+
+        v_first_last <- last_pt - first_pt
+        v_edge <- ext_corners [first_pt_dir, ] -
+            ext_corners [wrp (first_pt_dir - 1), ]
+        dp <- sign (sum (v_first_last * v_edge))
+        if (dp < 0)
+        {
+            ## Anticlockwise coast (relative to bb corners)
+            cw_indx <- c (wrp (last_pt_dir - 1), last_pt_dir )
+            ccw_indx <- (last_pt_dir - 1):(last_pt_dir - 4)
+            ccw_indx <- wrp (ccw_indx)
+            ccw_indx <- ccw_indx [1:which.max (ccw_indx == first_pt_dir)]
+        } else
+        {
+            cw_indx <- last_pt_dir:(last_pt_dir + 4)
+            cw_indx <- wrp (cw_indx)
+            cw_indx <- cw_indx [1:which.max (cw_indx == wrp (first_pt_dir - 1))]
+            ccw_indx <- c (last_pt_dir, wrp (last_pt_dir - 1))
+        }
+
+    } else
     {
-      (idxs - 1) %% 4 + 1
-    }
-    
-    ## create lists of corners in each direction
-    if (LstPtD==FstPtD) {
-      ## Special rules if loop from one edge
-      ## Need to check whether Lst is clockwise from Fst or not,
-      ## as the intersection edge doesn't tell us.
-      
-      vFL <- LstPt - FstPt
-      vEdge <- ext.corners[FstPtD, ] - ext.corners[Wrp(FstPtD-1),]
-      DP <- sign(sum(vFL * vEdge))
-      if (DP < 0) {
-        ## Anticlockwise coast (relative to bb corners)
-        CWIdx <- c(Wrp(LstPtD-1), LstPtD )
-        CCWIdx <- (LstPtD-1):(LstPtD - 4)
-        CCWIdx <- Wrp(CCWIdx)
-        CCWIdx <- CCWIdx[1:which.max(CCWIdx==FstPtD)]
-      } else {
-        CWIdx <- LstPtD:(LstPtD + 4)
-        CWIdx <- Wrp(CWIdx)
-        CWIdx <- CWIdx[1:which.max(CWIdx==Wrp(FstPtD-1))]
-        CCWIdx <- c(LstPtD, Wrp(LstPtD - 1))
-      }
-      
-    } else {
-      CWIdx <- LstPtD:(LstPtD + 4)
-      CWIdx <- Wrp(CWIdx)
-      CWIdx <- CWIdx[1:which.max(CWIdx==FstPtD)]
-      
-      CCWIdx <- (LstPtD-1):(LstPtD - 4)
-      CCWIdx <- Wrp(CCWIdx)
-      CCWIdx <- CCWIdx[1:which.max(CCWIdx==FstPtD)]
-    }
-    
-    p1 <- rbind(out, ext.corners[CWIdx, ], out[1, ])
-    p2 <- rbind(out, ext.corners[CCWIdx, ], out[1, ])
-    
-    return(list(p1=make_sf(p1, g), p2=make_sf(p2, g)))
-  }
-  
-  if (length(links) >= 1) {
-    links <- lapply(links, clipOne, bbox=bbox)
-    linkpoly <- lapply(links, makePoly, bbox=bbox)
-    p1 <- lapply(linkpoly, "[[", "p1")
-    p2 <- lapply(linkpoly, "[[", "p2")
-    
-  } else {
-    warning("No open curves found - check for polygons")
-  }
-  
-  res <- NULL
-  if (!is.null (p1) & !is.null (p2)) {
-    res <- list (sea=do.call(rbind, p1), land=do.call(rbind, p2))
-  }
-  if (length(ToBecomePolygons) >= 1) {
-    res$islands <- ToBecomePolygons
-  }
-  return (res)
-}
+        cw_indx <- last_pt_dir:(last_pt_dir + 4)
+        cw_indx <- wrp (cw_indx)
+        cw_indx <- cw_indx [1:which.max (cw_indx == first_pt_dir)]
 
-## For reordering the ways
-unrollRecLoop <- function(firstpos, V)
-{
-  ## Recursive version - not for polygons/loops
-  idx <- V[firstpos[length(firstpos)]]
-  if (V[idx] %in% firstpos) return(c(firstpos, idx))
-  else return(Recall(c(firstpos, idx), V))
-}
+        ccw_indx <- (last_pt_dir - 1):(last_pt_dir - 4)
+        ccw_indx <- wrp (ccw_indx)
+        ccw_indx <- ccw_indx [1:which.max (ccw_indx == first_pt_dir)]
+    }
 
-unrollRec <- function(firstpos, V)
-{
-  ## Recursive version - not for polygons/loops
-  idx <- V[firstpos[length(firstpos)]]
-  # if (is.na(idx)) return(firstpos) # check this one
-  if (is.na(V[idx])) return(c(firstpos, idx))
-  else return(Recall(c(firstpos, idx), V))
+    p1 <- rbind (out, ext_corners [cw_indx, ], out [1, ])
+    p2 <- rbind (out, ext_corners [ccw_indx, ], out [1, ])
+
+    return (list (p1 = make_sf (p1, g), p2 = make_sf (p2, g)))
 }
 
 # The df bits directly adapted from same fn in osmdata/get-osmdata.R in

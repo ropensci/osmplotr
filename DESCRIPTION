@@ -1,8 +1,9 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.0
+Version: 0.3.0.99
 Authors@R: c(
     person("Mark", "Padgham", email="mark.padgham@email.com", role=c("aut", "cre")),
+    person("Richard", "Beare", role="aut"),
     person("Finkelstein", "Noam", role=c("ctb","cph"),
         comment="Author of included stub.R code"),
     person ("Bartnik", "Lukasz", role=c("ctb","cph"),
