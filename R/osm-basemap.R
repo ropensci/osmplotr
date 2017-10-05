@@ -16,6 +16,7 @@
 #' @return A \code{ggplot2} object containing the base \code{map}.
 #' @importFrom ggplot2 ggplot coord_map aes scale_x_continuous
 #' scale_y_continuous theme_minimal element_rect element_blank margin unit
+#' @importFrom mapproj mapproject
 #' @export
 #'
 #' @seealso \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
