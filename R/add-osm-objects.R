@@ -14,8 +14,9 @@
 #' functions: determines width of lines for (polygon, line), and sizes of
 #' points.  Respective defaults are (0, 0.5, 0.5).
 #' @param shape Shape of points or lines (the latter passed as \code{linetype});
-#' see \code{?ggplot2::shape}.
+#' see \code{\link[ggplot2]{shape}}.
 #' @return modified version of \code{map} to which objects have been added.
+#' @importFrom ggplot2 geom_polygon geom_path aes geom_point
 #' @export
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{extract_osm_objects}}.

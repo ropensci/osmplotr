@@ -18,6 +18,7 @@ Imports:
     ggm,
     ggplot2,
     httr,
+    mapproj,
     methods,
     osmdata,
     rgeos,

@@ -27,7 +27,7 @@
 #' functions: determines width of lines for (polygon, line), and sizes of
 #' points.  Respective defaults are (0, 0.5, 0.5).
 #' @param shape Shape of points or lines (the latter passed as \code{linetype});
-#' see \code{?ggplot2::shape}.
+#' see \code{\link[ggplot2]{shape}}.
 #' @param border_width If given, draws convex hull borders around entire groups
 #' in same colours as groups (try values around 1-2).
 #' @param colmat If \code{TRUE} generates colours according to
@@ -36,6 +36,7 @@
 #' @param rotate Passed to \code{colour_mat} to rotate colours by the specified
 #' number of degrees clockwise.
 #' @return Modified version of \code{map} with groups added.
+#' @importFrom ggplot2 aes geom_polygon geom_path
 #' @export
 #'
 #' @section Note:

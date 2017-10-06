@@ -14,6 +14,7 @@
 #' @param ... Mechanism to allow many parameters to be passed with alternative
 #' names (\code{color} for \code{colour} and \code{xyz} for \code{fontxyz}.
 #' @return Modified version of \code{map} with axes added.
+#' @importFrom ggplot2 aes geom_polygon geom_segment geom_label
 #' @export
 #'
 #' @seealso \code{\link{osm_basemap}}.

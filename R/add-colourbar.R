@@ -25,6 +25,7 @@
 #' @param ... Mechanism to allow many parameters to be passed with alternative
 #' names (such as \code{xyz} for \code{fontxyz}).
 #' @return Modified version of \code{map} with colourbar added.
+#' @importFrom ggplot2 aes geom_path geom_tile geom_segment geom_label
 #' @export
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_surface}}.
