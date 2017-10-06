@@ -48,8 +48,7 @@
 #'     add_osm_objects (coast$sea, col = "lightsteelblue") %>%
 #'     print_osm_map ()
 #' }
-osm_line2poly <- function (obj, bbox)
-{
+osm_line2poly <- function (obj, bbox) {
     if (!is (obj$geometry, "sfc_LINESTRING"))
         stop ("obj must be class 'sf' with fields of class 'sfc_LINESTRING'")
 
@@ -80,8 +79,7 @@ osm_line2poly <- function (obj, bbox)
     # NA in m2 indicates the end of a chain.
     # NA in m1 indicates the start of a chain
     startidx <- which (is.na (m1))
-    if (length (startidx) >= 1)
-    {
+    if (length (startidx) >= 1) {
         # Need to test this with disconnected bits
         linkorders <- lapply (startidx, unroll_rec, V = m2)
         linkorders <- lapply (linkorders, function (X) X [!is.na (X)])
@@ -93,18 +91,17 @@ osm_line2poly <- function (obj, bbox)
     # Now we deal with loops.  Keep extracting loops until nothing left
     to_become_polygons <- list()
     lidx <- 1
-    while (nrow (head_tail) > 0)
-    {
+    while (nrow (head_tail) > 0) {
         m2 <- match(head_tail [, 2], head_tail [, 1])
         l1 <- unroll_rec_loop (1, m2)
         to_become_polygons [[lidx]] <- head_tail [l1, ]
         lidx <- lidx + 1
         head_tail <- head_tail [-l1, ]
     }
-    to_become_polygons <- lapply (to_become_polygons, 
-                                  lookup_ways, g=g)
     to_become_polygons <- lapply (to_become_polygons,
-                                  make_sf, g=g)
+                                  lookup_ways, g = g)
+    to_become_polygons <- lapply (to_become_polygons,
+                                  make_sf, g = g)
     to_become_polygons <- do.call (rbind, to_become_polygons)
     # Don't need to clip the polygons against the bounding box - they'll already
     # be inside, otherwise they wouldn't have been registered as polygons.  Even
@@ -118,10 +115,10 @@ osm_line2poly <- function (obj, bbox)
     # each case. Note that bb is arranged thus:
     #   bb [1, 1]           bb [1, 2]
     #       |                   |
-    #       O-------------------O  <- bb [2, 2]
+    #       O-------------------O  bb [2, 2]
     #       |                   |
     #       |                   |
-    #       O-------------------O  <- bb [2, 1]
+    #       O-------------------O  bb [2, 1]
     #
     # The three required combinations for starting at -lon are then like this,
     # where double lines are the bbox, and single lines the expansion
@@ -192,8 +189,7 @@ osm_line2poly <- function (obj, bbox)
 
 # Clip one line by reducing it to only that portion within the bb, plus one
 # point either side
-clip_one <- function (out, bbox)
-{
+clip_one <- function (out, bbox) {
     indx <-  (out [, 1] >= bbox [1, 1] & out [, 1] <= bbox [1, 2] &
               out [, 2] >= bbox [2, 1] & out [, 2] <= bbox [2, 2])
     # Need to deal with curves that join outside the bbox.  Need to dilate the
@@ -213,27 +209,23 @@ lookup_ways <- function (L, g) {
 }
 
 # For reordering the ways
-unroll_rec_loop <- function(firstpos, V)
-{
-    ## Recursive version - not for polygons/loops
+unroll_rec_loop <- function(firstpos, V) {
+    ## Recursive version. Not for polygons or loops
     idx <- V[firstpos[length(firstpos)]]
     if (V[idx] %in% firstpos) return(c(firstpos, idx))
     else return(Recall(c(firstpos, idx), V))
 }
 
-unroll_rec <- function(firstpos, V)
-{
-    ## Recursive version - not for polygons/loops
+unroll_rec <- function(firstpos, V) {
+    ## Recursive version. Not for polygons or loops
     idx <- V[firstpos[length(firstpos)]]
-    # if (is.na(idx)) return(firstpos) # check this one
     if (is.na(V[idx])) return(c(firstpos, idx))
     else return(Recall(c(firstpos, idx), V))
 }
 
 # return whether a point is N,S,E,W of bounding box - i.e. which edge Could be a
 # pathological corner case, which we'll ignore for now.
-classify_pt_dir <- function(pt, bbox)
-{
+classify_pt_dir <- function(pt, bbox) {
     directions <- 1:4
     names(directions) <- c("N", "E", "S", "W")
     compass <- c("W", "S", "E", "N")
@@ -246,13 +238,11 @@ classify_pt_dir <- function(pt, bbox)
     return (directions [compass [td]])
 }
 
-wrp <- function(idxs)
-{
+wrp <- function(idxs) {
     (idxs - 1) %% 4 + 1
 }
 
-make_poly <- function (out, bbox, g)
-{
+make_poly <- function (out, bbox, g) {
     p1 <- p2 <- NULL
     n <- nrow (out)
 
@@ -292,23 +282,19 @@ make_poly <- function (out, bbox, g)
         v_edge <- ext_corners [first_pt_dir, ] -
             ext_corners [wrp (first_pt_dir - 1), ]
         dp <- sign (sum (v_first_last * v_edge))
-        if (dp < 0)
-        {
+        if (dp < 0) {
             ## Anticlockwise coast (relative to bb corners)
             cw_indx <- c (wrp (last_pt_dir - 1), last_pt_dir )
             ccw_indx <- (last_pt_dir - 1):(last_pt_dir - 4)
             ccw_indx <- wrp (ccw_indx)
             ccw_indx <- ccw_indx [1:which.max (ccw_indx == first_pt_dir)]
-        } else
-        {
+        } else {
             cw_indx <- last_pt_dir:(last_pt_dir + 4)
             cw_indx <- wrp (cw_indx)
             cw_indx <- cw_indx [1:which.max (cw_indx == wrp (first_pt_dir - 1))]
             ccw_indx <- c (last_pt_dir, wrp (last_pt_dir - 1))
         }
-
-    } else
-    {
+    } else {
         cw_indx <- last_pt_dir:(last_pt_dir + 4)
         cw_indx <- wrp (cw_indx)
         cw_indx <- cw_indx [1:which.max (cw_indx == first_pt_dir)]
@@ -326,8 +312,7 @@ make_poly <- function (out, bbox, g)
 
 # The df bits directly adapted from same fn in osmdata/get-osmdata.R in
 # simplified form; the initial "sfg" and "sfc" bits also cribbed from osmdata
-make_sf <- function (x, g)
-{
+make_sf <- function (x, g) {
     x <- list (x)
     class (x) <- c ("XY", "POLYGON", "sfg")
 
