@@ -59,7 +59,6 @@ osm_line2poly <- function (obj, bbox)
 
     if (is.vector (bbox))
         bbox <- matrix (bbox, nrow = 2)
-
     # These geometries can contain several coastline "ways" that need to be
     # linked together. There may be multiple sets of these (think) peninsulas
     # being crossed by bounding box.  There can also be ways that link to form
@@ -84,11 +83,11 @@ osm_line2poly <- function (obj, bbox)
     if (length (startidx) >= 1)
     {
         # Need to test this with disconnected bits
-        linkorders <- lapply (startidx, function (i) unroll_rec (i), V = m2)
+        linkorders <- lapply (startidx, unroll_rec, V = m2)
         linkorders <- lapply (linkorders, function (X) X [!is.na (X)])
         links <- lapply (linkorders, function (X) head_tail [X, , drop = FALSE]) #nolint
         head_tail <- head_tail [-unlist (linkorders), , drop = FALSE] #nolint
-        links <- lapply (links, function (i) lookup_ways (i), g)
+        links <- lapply (links, lookup_ways, g)
     }
 
     # Now we deal with loops.  Keep extracting loops until nothing left
@@ -102,10 +101,10 @@ osm_line2poly <- function (obj, bbox)
         lidx <- lidx + 1
         head_tail <- head_tail [-l1, ]
     }
-    to_become_polygons <- lapply (to_become_polygons, function (i)
-                                  lookup_ways (i), g)
-    to_become_polygons <- lapply (to_become_polygons, function (i)
-                                  make_sf (i), g)
+    to_become_polygons <- lapply (to_become_polygons, 
+                                  lookup_ways, g=g)
+    to_become_polygons <- lapply (to_become_polygons,
+                                  make_sf, g=g)
     to_become_polygons <- do.call (rbind, to_become_polygons)
     # Don't need to clip the polygons against the bounding box - they'll already
     # be inside, otherwise they wouldn't have been registered as polygons.  Even
@@ -171,8 +170,8 @@ osm_line2poly <- function (obj, bbox)
     rownames(bbxcoords) <- bbxcorners_rh
 
     if (length(links) >= 1) {
-        links <- lapply (links, function (i) clip_one (i), bbox = bbox)
-        linkpoly <- lapply (links, function (i) make_poly (i),
+        links <- lapply (links, clip_one, bbox = bbox)
+        linkpoly <- lapply (links, make_poly,
                             bbox = bbox, g = g)
         p1 <- lapply (linkpoly, "[[", "p1")
         p2 <- lapply (linkpoly, "[[", "p2")
