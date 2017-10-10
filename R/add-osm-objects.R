@@ -144,6 +144,9 @@ list2df <- function (xy, islines = FALSE)
     else # Add id column to each:
         for (i in seq (xy))
             xy [[i]] <- cbind (i, xy [[i]])
+    # multiline/polygon names can be very long, prompting a strange R warning
+    # when rbind'ing them, so
+    names (xy) <- NULL
     # And rbind them to a single matrix.
     xy <-  do.call (rbind, xy)
     # And then to a data.frame, for which duplicated row names flag warnings
