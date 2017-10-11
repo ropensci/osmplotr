@@ -81,11 +81,11 @@ osm_line2poly <- function (obj, bbox)
     if (length (startidx) >= 1)
     {
         # Need to test this with disconnected bits
-        linkorders <- lapply (startidx, function (X) unroll_rec (X), V = m2)
+        linkorders <- lapply (startidx, unroll, V = m2)
         linkorders <- lapply (linkorders, function (X) X [!is.na (X)])
         links <- lapply (linkorders, function (X) head_tail [X, , drop = FALSE]) #nolint
         head_tail <- head_tail [-unlist (linkorders), , drop = FALSE] #nolint
-        links <- lapply (links, function (X) lookup_ways (X), g)
+        links <- lapply (links, lookup_ways, g=g)
     }
 
     # Now we deal with loops.  Keep extracting loops until nothing left
@@ -94,7 +94,7 @@ osm_line2poly <- function (obj, bbox)
     while (nrow (head_tail) > 0)
     {
         m2 <- match(head_tail [, 2], head_tail [, 1])
-        l1 <- unroll_rec_loop (1, m2)
+        l1 <- unroll_loop (1, m2)
         to_become_polygons [[lidx]] <- head_tail [l1, ]
         lidx <- lidx + 1
         head_tail <- head_tail [-l1, ]
@@ -169,7 +169,7 @@ osm_line2poly <- function (obj, bbox)
 
     if (length(links) >= 1)
     {
-        links <- lapply (links, function (X) clip_one (X), bbox = bbox)
+        links <- lapply (links, clip_one, bbox = bbox)
         linkpoly <- lapply (links, make_poly,
                             bbox = bbox, g = g)
         p1 <- lapply (linkpoly, "[[", "p1")
@@ -194,8 +194,7 @@ osm_line2poly <- function (obj, bbox)
 
 # Clip one line by reducing it to only that portion within the bb, plus one
 # point either side
-clip_one <- function (out, bbox)
-{
+clip_one <- function (out, bbox) {
     indx <-  (out [, 1] >= bbox [1, 1] & out [, 1] <= bbox [1, 2] &
               out [, 2] >= bbox [2, 1] & out [, 2] <= bbox [2, 2])
     # Need to deal with curves that join outside the bbox.  Need to dilate the
@@ -206,8 +205,7 @@ clip_one <- function (out, bbox)
 }
 
 
-lookup_ways <- function (L, g)
-{
+lookup_ways <- function (L, g) {
     gg <- g [rownames (L)]
     gg <- do.call (rbind, lapply (gg, as.matrix))
     rr <- duplicated (rownames (gg))
@@ -216,21 +214,30 @@ lookup_ways <- function (L, g)
 }
 
 # For reordering the ways
-unroll_rec_loop <- function(firstpos, V)
-{
-    ## Recursive version. Not for polygons or loops
-    idx <- V[firstpos[length(firstpos)]]
-    if (V[idx] %in% firstpos) return(c(firstpos, idx))
-    else return(Recall(c(firstpos, idx), V))
+unroll <- function(firstpos, V) {
+  res <- firstpos
+  a <- V [firstpos]
+  while (!is.na (a)) {
+    res <- c(res, a)
+    a <- V [a]
+  }
+  return(res)
 }
 
-unroll_rec <- function(firstpos, V)
-{
-    ## Recursive version. Not for polygons or loops
-    idx <- V[firstpos[length(firstpos)]]
-    if (is.na(V[idx])) return(c(firstpos, idx))
-    else return(Recall(c(firstpos, idx), V))
+unroll_loop <- function(firstpos, V) {
+  ## iterative index following, for loops
+  res <- firstpos
+  a <- V [firstpos]
+  visted <- rep (FALSE, length(V))
+  visted [firstpos] <- TRUE
+  while (!visted [a]) {
+    res <- c(res, a)
+    visted [a] <- TRUE
+    a <- V [a]
+  }
+  return(res)
 }
+
 
 # return whether a point is N,S,E,W of bounding box - i.e. which edge Could be a
 # pathological corner case, which we'll ignore for now.
