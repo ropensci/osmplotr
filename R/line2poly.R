@@ -46,8 +46,7 @@
 #'     add_osm_objects (coast$sea, col = "lightsteelblue") %>%
 #'     print_osm_map ()
 #' }
-osm_line2poly <- function (obj, bbox)
-{
+osm_line2poly <- function (obj, bbox) {
     if (!is (obj$geometry, "sfc_LINESTRING"))
         stop ("obj must be class 'sf' with fields of class 'sfc_LINESTRING'")
 
@@ -78,21 +77,19 @@ osm_line2poly <- function (obj, bbox)
     # NA in m2 indicates the end of a chain.
     # NA in m1 indicates the start of a chain
     startidx <- which (is.na (m1))
-    if (length (startidx) >= 1)
-    {
+    if (length (startidx) >= 1) {
         # Need to test this with disconnected bits
         linkorders <- lapply (startidx, unroll, V = m2)
         linkorders <- lapply (linkorders, function (X) X [!is.na (X)])
         links <- lapply (linkorders, function (X) head_tail [X, , drop = FALSE]) #nolint
         head_tail <- head_tail [-unlist (linkorders), , drop = FALSE] #nolint
-        links <- lapply (links, lookup_ways, g=g)
+        links <- lapply (links, lookup_ways, g = g)
     }
 
     # Now we deal with loops.  Keep extracting loops until nothing left
     to_become_polygons <- list()
     lidx <- 1
-    while (nrow (head_tail) > 0)
-    {
+    while (nrow (head_tail) > 0) {
         m2 <- match(head_tail [, 2], head_tail [, 1])
         l1 <- unroll_loop (1, m2)
         to_become_polygons [[lidx]] <- head_tail [l1, ]
@@ -167,26 +164,22 @@ osm_line2poly <- function (obj, bbox)
                        )
     rownames(bbxcoords) <- bbxcorners_rh
 
-    if (length(links) >= 1)
-    {
+    if (length(links) >= 1) {
         links <- lapply (links, clip_one, bbox = bbox)
         linkpoly <- lapply (links, make_poly,
                             bbox = bbox, g = g)
         p1 <- lapply (linkpoly, "[[", "p1")
         p2 <- lapply (linkpoly, "[[", "p2")
 
-    } else
-    {
+    } else {
         warning("No open curves found - check for polygons")
     }
 
     res <- NULL
-    if (!is.null (p1) & !is.null (p2))
-    {
+    if (!is.null (p1) & !is.null (p2)) {
         res <- list (sea = do.call(rbind, p1), land = do.call(rbind, p2))
     }
-    if (length(to_become_polygons) >= 1)
-    {
+    if (length(to_become_polygons) >= 1) {
         res$islands <- to_become_polygons
     }
     return (res)
@@ -241,8 +234,7 @@ unroll_loop <- function(firstpos, V) {
 
 # return whether a point is N,S,E,W of bounding box - i.e. which edge Could be a
 # pathological corner case, which we'll ignore for now.
-classify_pt_dir <- function(pt, bbox)
-{
+classify_pt_dir <- function(pt, bbox) {
     directions <- 1:4
     names(directions) <- c("N", "E", "S", "W")
     compass <- c("W", "S", "E", "N")
@@ -255,13 +247,11 @@ classify_pt_dir <- function(pt, bbox)
     return (directions [compass [td]])
 }
 
-wrp <- function(idxs)
-{
+wrp <- function(idxs) {
     (idxs - 1) %% 4 + 1
 }
 
-make_poly <- function (out, bbox, g)
-{
+make_poly <- function (out, bbox, g) {
     p1 <- p2 <- NULL
     n <- nrow (out)
 
@@ -293,8 +283,7 @@ make_poly <- function (out, bbox, g)
                           c (bb11, bb21), c (bb11, bb22))
 
     # create lists of corners in each direction
-    if (last_pt_dir == first_pt_dir)
-    {
+    if (last_pt_dir == first_pt_dir) {
         # Special rules if loop from one edge Need to check whether Lst is
         # clockwise from Fst or not, as the intersection edge doesn't tell us.
 
@@ -302,22 +291,19 @@ make_poly <- function (out, bbox, g)
         v_edge <- ext_corners [first_pt_dir, ] -
             ext_corners [wrp (first_pt_dir - 1), ]
         dp <- sign (sum (v_first_last * v_edge))
-        if (dp < 0)
-        {
+        if (dp < 0) {
             ## Anticlockwise coast (relative to bb corners)
             cw_indx <- c (wrp (last_pt_dir - 1), last_pt_dir )
             ccw_indx <- (last_pt_dir - 1):(last_pt_dir - 4)
             ccw_indx <- wrp (ccw_indx)
             ccw_indx <- ccw_indx [1:which.max (ccw_indx == first_pt_dir)]
-        } else
-        {
+        } else {
             cw_indx <- last_pt_dir:(last_pt_dir + 4)
             cw_indx <- wrp (cw_indx)
             cw_indx <- cw_indx [1:which.max (cw_indx == wrp (first_pt_dir - 1))]
             ccw_indx <- c (last_pt_dir, wrp (last_pt_dir - 1))
         }
-    } else
-    {
+    } else {
         cw_indx <- last_pt_dir:(last_pt_dir + 4)
         cw_indx <- wrp (cw_indx)
         cw_indx <- cw_indx [1:which.max (cw_indx == first_pt_dir)]
@@ -335,8 +321,7 @@ make_poly <- function (out, bbox, g)
 
 # The df bits directly adapted from same fn in osmdata/get-osmdata.R in
 # simplified form; the initial "sfg" and "sfc" bits also cribbed from osmdata
-make_sf <- function (x, g)
-{
+make_sf <- function (x, g) {
     x <- list (x)
     class (x) <- c ("XY", "POLYGON", "sfg")
 
