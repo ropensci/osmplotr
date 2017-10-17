@@ -648,10 +648,9 @@ membs_multiple_groups <- function (coords)
 
     # Then split coords into 2 lists, one for non-split objects and one
     # containing those listed in split_objs
-    coords_split <- lapply (split_objs, function (i) coords [[i]])
-    indx <- seq (coords) [!seq (coords) %in% split_objs]
-    coords <- lapply (indx, function (i) coords [[i]])
-    # Then make new lists of xy and memberships by spliiting objects in
+    coords_split <- coords [split_objs]
+    coords <- coords [-split_objs] 
+    # Then make new lists of xy and memberships by spliting objects in
     # coords_split. These lists are of unknown length, requiring an
     # unsightly double loop.
     xy <- list ()
