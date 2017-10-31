@@ -556,9 +556,6 @@ membs_single_group <- function (groups, coords, obj_trim, cent_bdry)
     membs <- sapply (coords, function (i)
                      {
                          temp <- i [, 3:ncol (i), drop = FALSE]
-                         if (!is.matrix (temp))
-                             temp <- matrix (temp, ncol = 1,
-                                             nrow = length (temp))
                          temp [temp > 1] <- 1
                          n <- colSums (temp)
                          if (max (n) < 3) # must have > 2 elements in group
@@ -611,9 +608,6 @@ membs_multiple_groups_bdry <- function (coords, boundary)
     membs <- lapply (coords, function (i)
                      {
                          temp <- i [, 3:ncol (i), drop = FALSE]
-                         if (!is.matrix (temp))
-                             temp <- matrix (temp, ncol = 1,
-                                             nrow = length (temp))
                          temp [temp > 1] <- 1
                          n <- colSums (temp)
                          if (boundary < 0)
@@ -642,10 +636,7 @@ membs_multiple_groups <- function (coords)
 {
     split_objs <- sapply (coords, function (i)
                           {
-                              temp <- i [, 3:ncol (i)]
-                              if (!is.matrix (temp))
-                                  temp <- matrix (temp, ncol = 1,
-                                                  nrow = length (temp))
+                              temp <- i [, 3:ncol (i), drop = FALSE]
                               temp [temp > 1] <- 1
                               n <- colSums (temp)
                               if (max (n) > 0 & max (n) < nrow (temp))
@@ -657,20 +648,17 @@ membs_multiple_groups <- function (coords)
 
     # Then split coords into 2 lists, one for non-split objects and one
     # containing those listed in split_objs
-    coords_split <- lapply (split_objs, function (i) coords [[i]])
-    indx <- seq (coords) [!seq (coords) %in% split_objs]
-    coords <- lapply (indx, function (i) coords [[i]])
-    # Then make new lists of xy and memberships by spliiting objects in
+    coords_split <- coords [split_objs]
+    coords <- coords [-split_objs] 
+    # Then make new lists of xy and memberships by spliting objects in
     # coords_split. These lists are of unknown length, requiring an
     # unsightly double loop.
     xy <- list ()
     membs <- NULL
     for (i in coords_split)
     {
-        temp <- i [, 3:ncol (i)]
+        temp <- i [, 3:ncol (i), drop = FALSE]
         temp [temp > 1] <- 1
-        if (!is.matrix (temp))
-            temp <- matrix (temp, ncol = 1, nrow = length (temp))
         n <- colSums (temp)
         if (max (n) < 3)
         {
@@ -701,10 +689,7 @@ membs_multiple_groups <- function (coords)
     xy <- c (xy, lapply (coords, function (i) i [, 1:2]))
     membs2 <- sapply (coords, function (i)
                       {
-                          temp <- i [, 3:ncol (i)]
-                          if (!is.matrix (temp))
-                              temp <- matrix (temp, ncol = 1,
-                                              nrow = length (temp))
+                          temp <- i [, 3:ncol (i), drop = FALSE]
                           temp [temp > 1] <- 1
                           n <- colSums (temp)
                           if (max (n) < nrow (temp))
