@@ -1,0 +1,141 @@
+---
+title: "OSM maps using tidyverse approaches"
+author: "Richard Beare"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        #number_sections: true
+        theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Maps with Ocean}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+This vignette explores the possibility of using a ggplot2-style approach to
+plotting maps using OpenStreetMap data fetched by `osmdata`. The `osmplotr` package
+already provides extensive display options using `ggplot2`, but some flexibility has been
+sacrificed to keep things simple for the user. The following facilities in `sf` and the
+development version of `ggplot2` make it interesting to test the idea of a "standard" ggplot2
+interface for osm data:
+
+1. `osmdata` presents osm objects in a simple features (sf) style data frame.
+1. a *geom_sf* for displaying simple features is available in the development version of ggplot2.
+1. extensive support for `dplyr`-like verbs for manipulating simple feature data frames in the `sf`
+package.
+
+How will the approach differ to `osmplotr`? The current approach applies spatial grouping and
+assignment of continuous values (surfaces) as a map is being produced - i.e. a base map, 
+osm data and grouping information are combined in a function to produce a map layer. 
+This means that many useful defaults can be provided. The "pure" ggplot2 way is to separate
+the assignment of groups from the display - the data frame containing osm data would be
+extended by adding new columns with grouping and surface data, which means that columns can
+be used in arbitrary mappings to display properties. For example, something that is difficult
+to do in the current framework, such as colour roads by group and apply transparency according
+to a continuous variable (such as speed limit), is easy to do (in principle) if the `ggplot2`
+framework is applied.
+
+The points above mean that testing this idea is a relatively low-cost exercise.
+
+There is a good chance that some capabilities in the existing system may not translate
+well, but it seems to be worth a try.
+
+# Dependencies
+
+```{r, eval=FALSE}
+devtools::install_github("tidyverse/ggplot2")
+```
+
+
+# Utility functions
+
+There are conflicts between `geom_sf` and `osm_basemap`, so we use a slightly modified versions
+here.
+```{r}
+library(knitr)
+read_chunk("osmtidy.R")
+```
+```{r osmbasemap, echo=FALSE}
+
+```
+
+I'll add other utilities as I'm playing around
+
+# Spatial Grouping
+
+Start without integrating anything much. Just demonstrate that it is possible. Lets assume that
+all the groups will be sf polygons.
+
+The current approach provides several definitions for inclusion in a spatial group -
+basically whether the object is entirely inside or crossing the region boundary. There is also the
+notion of distance to the nearest group when a background group isn't desired. I suspect these
+two notions should be separated for implementation using the sf tools.
+
+```{r SpatialGroupsFns, echo=FALSE, message=FALSE, warning=FALSE}
+
+```
+## One group
+
+```{r SpatialGroupsEx1, message=FALSE, warning=FALSE}
+
+```
+
+Straight away we can experiment with other views - e.g. transparency from building size!
+
+```{r SpatialGroupsEx2}
+
+```
+
+With some additional manipulation, we can keep the background constant grey.
+
+```{r SpatialGroupsEx3}
+
+```
+
+and we can completely change the appearance by fiddling with the calls to ggplot:
+
+```{r SpatialGroupsEx4}
+
+```
+
+Even though some of these calls look more complex, we have gained huge flexibility because
+the data frame is assembled outside the plotting routine, and ggplot allows us to change
+the mapping between visible elements and columns in the data frame.
+
+## Multiple groups.
+
+Now for a sanity check - does the code work with multiple foreground groups, and with
+the _overlap_ membership option:
+
+```{r MultiSpatialGroups}
+
+```
+
+```{r MultiSpatialGroupsEx1}
+
+```
+
+And now we can check just how cool the ability to change aesthetic mapping is:
+
+```{r MultiSpatialGroupsEx2}
+
+```
+
+In this last example the line thickness and transparency for the coloured groups is dependent
+on the building area, although transparency will only matter if there's something behind. Actually,
+I don't think that polygon edges use transparency in the same way as lines.
+
+```{r MultiSpatialGroupsEx3}
+
+```
+
+# Surfaces
+
+
+
+
+
