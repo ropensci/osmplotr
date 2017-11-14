@@ -133,6 +133,22 @@ I don't think that polygon edges use transparency in the same way as lines.
 
 ```
 
+# High precision groups
+
+The spatial grouping procedures above have a two methods for defining group membership - 
+entirely inside or partly inside the polygon. Using simple features we should be able to
+go crazy and split objects into pieces. This will break the original osm structure, but
+could be useful in some cases.
+
+This test implementation is probably fragile, and causes warnings because there isn't an easy 
+way to divide up arbitrary attributes. Best not to call it with any more than osm ids in the
+input frame.
+
+```{r HighPrecGroupsA}
+
+```
+Note that the building have been split at group boundaries. Not sure if this is useful.
+
 # Surfaces
 
 

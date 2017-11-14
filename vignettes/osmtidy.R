@@ -54,6 +54,7 @@ osm_basemap2 <- function (bbox, structures, bg = 'gray20')
   
   lon <- lat <- NA
   map <- ggplot2::ggplot () + map_theme +
+    ## xlim stuff appears to need to be added with coord_sf at the end
     ## This causes warnings from the sf geom.
     #ggplot2::coord_map (xlim = range (bbox[1, ]),
     #                    ylim = range (bbox[2, ])) +
@@ -116,6 +117,65 @@ add_osm_group_column <- function(osmdata, regions,
   return(osmdata)
 }
 
+
+#' split into groups, producing new data frame with objects broken at
+#' group boundaries
+#'
+#' @param osmdata 
+#' @param regions 
+#' @param colname 
+#' @param backgroundfactor 
+#'
+#' @details Probably fragile if groups are empty. Also if there are extra columns
+#' in the input osmdata.
+#' 
+#' @return modified sf dataframe
+#' @export
+#'
+#' @examples
+split_osm_objects <- function(osmdata, regions, 
+                               colname="SpatialGroups", 
+                               backgroundfactor="bg") {
+  if (length(names(regions)) == 0) {
+    stop("Regions must be a named list")
+  }
+  rlist <- do.call(sf::st_sfc, list(regions, crs=sf::st_crs(osmdata)))
+  w <- sf::st_within(osmdata, rlist, sparse=FALSE)
+  tobreak <- sf::st_overlaps(osmdata, rlist, sparse=FALSE)
+
+  bg.nosplit <- !apply(w|tobreak, MARGIN=1, any)
+  
+  breakbygroup <- lapply(1:length(regions), function(idx) {
+    osmdata[ tobreak[,idx], ]
+  })
+  insidegroups <- lapply(1:length(regions), function(idx) {
+    a <- st_intersection(breakbygroup[[idx]], rlist[idx])
+    a[[colname]] <- names(regions)[idx]
+    a
+  })
+
+  outsidegroups <- lapply(1:length(regions), function(idx) {
+    a <- st_difference(breakbygroup[[idx]], st_geometry(insidegroups[[idx]]))
+    a[[colname]] <- backgroundfactor
+    a
+  })
+  insidegroups <- do.call(rbind, insidegroups)
+  outsidegroups <- do.call(rbind, outsidegroups)
+  ## group membership for the ones not being split
+  w <- cbind(bg.nosplit, w)
+  ## keep the rows that weren't split
+  k <- rowSums(w) > 0
+  
+  colnames(w) <- c(backgroundfactor, names(regions))
+  w <- w[k,]
+  m1 <- as.character(factor(w %*% (1:ncol(w)), labels=colnames(w)))
+
+  results.not.split <- osmdata[k,]
+  results.not.split[[colname]] <- m1
+  ## Now the objects that were split
+  results.split <- rbind(insidegroups, outsidegroups)
+  return(rbind(results.not.split, results.split))
+}
 ## ---- SpatialGroupsEx1 ----
 library(osmplotr)
 library(ggplot2)
@@ -140,11 +200,13 @@ lon.map1 <- osm_basemap2 (bbox = bbox,
                           bg = 'gray20')
 lon.map1+geom_sf(data=datB_g1, aes(fill=SpatialGroups), colour=NA) + 
   scale_fill_manual(values=c("gray40", "orange")) +
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
   theme(panel.grid.major = element_line(colour = 'transparent')) 
 
 ## ---- SpatialGroupsEx2 ----
 lon.map1+geom_sf(data=datB_g1, aes(fill=SpatialGroups, alpha=sqrt(as.numeric(AREA))), colour=NA) + 
   scale_fill_manual(values=c("gray40", "orange")) +
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
   theme(panel.grid.major = element_line(colour = 'transparent')) 
 
 ## ---- SpatialGroupsEx3 ----
@@ -156,6 +218,7 @@ datB_g1 <- within(datB_g1, {
 
 lon.map1 + geom_sf(data=datB_g1, aes(fill=SpatialGroups, alpha=fgArea), colour=NA) + 
   scale_fill_manual(values=c("gray40", "orange")) +
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
   theme(panel.grid.major = element_line(colour = 'transparent')) 
 
 ## ---- SpatialGroupsEx4 ----
@@ -163,6 +226,7 @@ lon.map1 + geom_sf(data=datB_g1, aes(fill=SpatialGroups, alpha=fgArea), colour=N
 lon.map1 +
   geom_sf(data=filter(datB_g1, SpatialGroups=="G1"), aes(alpha=fgArea), fill="orange", colour=NA) + 
   geom_sf(data=filter(datB_g1, SpatialGroups=="bg"), fill="NA", colour="gray50", size=0.1) + 
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
    theme(panel.grid.major = element_line(colour = 'transparent')) 
 
 ## ---- MultiSpatialGroups ----
@@ -170,7 +234,7 @@ pts2 <- cbind (c (-0.111, -0.1145, -0.1145, -0.111),
                c (51.517, 51.517, 51.519, 51.519))
 pts2.sf <- sf::st_polygon(list(rbind(pts2, pts2[1,])))
 
-datB_g2 <- add_osm_group_column(dat_B, list(G1=pts.sf, g2=pts2.sf), membership="overlap")
+datB_g2 <- add_osm_group_column(dat_B, list(G1=pts.sf, G2=pts2.sf), membership="overlap")
 
 datB_g2 <- mutate(datB_g2, AREA=st_area(geometry), 
                   fgArea=sqrt(as.numeric(AREA)))
@@ -181,12 +245,14 @@ lon.map2 <- osm_basemap2 (bbox = bbox,
                           bg = 'gray20')
 lon.map2+geom_sf(data=datB_g2, aes(fill=SpatialGroups), colour=NA) + 
   scale_fill_manual(values=c("gray40", "orange", "tomato")) +
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
   theme(panel.grid.major = element_line(colour = 'transparent')) 
 ## ---- MultiSpatialGroupsEx2 ----
 lon.map2 +
   geom_sf(data=filter(datB_g2, SpatialGroups!="bg"), aes(alpha=fgArea, fill=SpatialGroups), colour=NA) + 
   scale_fill_manual(values=c("orange", "tomato")) +
   geom_sf(data=filter(datB_g2, SpatialGroups=="bg"), fill="NA", colour="gray60", size=0.1) + 
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
   theme(panel.grid.major = element_line(colour = 'transparent')) 
 
 ## ---- MultiSpatialGroupsEx3 ----
@@ -196,4 +262,16 @@ lon.map2 +
           aes(alpha=fgArea, colour=SpatialGroups, size=fgArea), fill=NA) + 
   scale_colour_manual(values=c("orange", "tomato")) +
   geom_sf(data=filter(datB_g2, SpatialGroups=="bg"), fill="NA", colour="gray60", size=0.1) + 
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
   theme(panel.grid.major = element_line(colour = 'transparent')) 
+
+## ---- HighPrecGroupsA ----
+
+datB_s2 <- split_osm_objects(dat_B, list(G1=pts.sf, G2=pts2.sf))
+
+lon.map2 +
+  scale_colour_manual(values=c("gray40", "orange", "tomato")) +
+  geom_sf(data=datB_s2, aes(colour=SpatialGroups), fill=NA) + 
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
+  theme(panel.grid.major = element_line(colour = 'transparent')) 
+  
