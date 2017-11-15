@@ -133,6 +133,12 @@ I don't think that polygon edges use transparency in the same way as lines.
 
 ```
 
+## No background - assignment to nearest group
+```{r,MultiSpatialGroupsClosest}
+
+
+```
+
 # High precision groups
 
 The spatial grouping procedures above have a two methods for defining group membership - 

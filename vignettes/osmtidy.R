@@ -86,34 +86,47 @@ set_map_theme2 <- function (bg)
 #' Add a group column to an osm sf data frame
 #'
 #' @details Names from the region list are used to construct factor levels. A 
-#' background label is included. No checking to ensure regions don't overlap
+#' background label is included for "within" and "overlaps" options. Backgroundfactor
+#' is ignored for "closest" membership. No checking to ensure regions don't overlap
 #' @param osmdata 
 #' @param regions a named list of sf polygons.
 #' @param colname the output column name
-#' 
+#' @param membership rule used to define group membership. 
+#' @param crs coordinate reference system in which to compute distances. Only used with "closest" membership.
 #' @return the input dataframe with an extra column named colname
 #' @export
 #'
 #' @examples
 add_osm_group_column <- function(osmdata, regions, 
-                                 membership=c("within", "overlaps"), 
+                                 membership=c("within", "overlaps", "closest"), 
                                  colname="SpatialGroups", 
-                                 backgroundfactor="bg") {
+                                 backgroundfactor="bg", 
+                                 crs=3857) {
   membership <- match.arg(membership)
   if (length(names(regions)) == 0) {
     stop("Regions must be a named list")
   }
   rlist <- do.call(sf::st_sfc, list(regions, crs=sf::st_crs(osmdata)))
-  w <- sf::st_within(osmdata, rlist, sparse=FALSE)
-  if (membership == "overlaps") {
-    # also accepting objects that cross the boundary
-    w <- w | sf::st_overlaps(osmdata, rlist, sparse=FALSE)
-  }
-  bg <- !apply(w, MARGIN=1, any)
-  w <- cbind(bg, w)
-  colnames(w) <- c(backgroundfactor, names(regions))
   
-  osmdata[[colname]] <- factor(w %*% (1:ncol(w)), labels=colnames(w))
+  if (membership=="closest") {
+    ## Need to force a transform so that distance works
+    a <- st_set_crs(st_set_crs(osmdata, NA), crs)
+    b <- st_set_crs(st_set_crs(rlist, NA), crs)
+    d <- sf::st_distance(a, b)
+    w <- apply(d, MARGIN=1, which.min)
+    osmdata[[colname]] <- factor(w, labels=names(regions))
+  } else {
+    w <- sf::st_within(osmdata, rlist, sparse=FALSE)
+    if (membership == "overlaps") {
+      # also accepting objects that cross the boundary
+      w <- w | sf::st_overlaps(osmdata, rlist, sparse=FALSE)
+    }
+    bg <- !apply(w, MARGIN=1, any)
+    w <- cbind(bg, w)
+    colnames(w) <- c(backgroundfactor, names(regions))
+    
+    osmdata[[colname]] <- factor(w %*% (1:ncol(w)), labels=colnames(w))
+  }
   return(osmdata)
 }
 
@@ -126,7 +139,7 @@ add_osm_group_column <- function(osmdata, regions,
 #' @param colname 
 #' @param backgroundfactor 
 #'
-#' @details Probably fragile if groups are empty. Also if there are extra columns
+#' @details Needs a better name. Probably fragile if groups are empty. Also if there are extra columns
 #' in the input osmdata.
 #' 
 #' @return modified sf dataframe
@@ -238,6 +251,15 @@ datB_g2 <- add_osm_group_column(dat_B, list(G1=pts.sf, G2=pts2.sf), membership="
 
 datB_g2 <- mutate(datB_g2, AREA=st_area(geometry), 
                   fgArea=sqrt(as.numeric(AREA)))
+
+## ---- MultiSpatialGroupsClosest ----
+datB_g2_cl <- add_osm_group_column(dat_B, list(G1=pts.sf, G2=pts2.sf), membership="closest")
+lon.map2 <- osm_basemap2 (bbox = bbox,
+                          bg = 'gray20')
+lon.map2+geom_sf(data=datB_g2_cl, aes(fill=SpatialGroups), colour=NA) + 
+  scale_fill_manual(values=c("orange", "tomato")) +
+  coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
+  theme(panel.grid.major = element_line(colour = 'transparent')) 
 
 ## ---- MultiSpatialGroupsEx1 ----
 
