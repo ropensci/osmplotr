@@ -142,6 +142,8 @@ add_osm_group_column <- function(osmdata, regions,
 #' @details Needs a better name. Probably fragile if groups are empty. Also if there are extra columns
 #' in the input osmdata.
 #' 
+#' Probably should allow regions to be an sf object
+#' 
 #' @return modified sf dataframe
 #' @export
 #'
@@ -188,6 +190,57 @@ split_osm_objects <- function(osmdata, regions,
   ## Now the objects that were split
   results.split <- rbind(insidegroups, outsidegroups)
   return(rbind(results.not.split, results.split))
+}
+
+## straight from osmplotr
+get_surface_z <- function (dat, method, grid_size)
+{
+  if ('z' %in% colnames (dat))
+    z <- dat [, 'z']
+  else
+    z <- dat [, 3]
+  
+  if ('x' %in% colnames (dat))
+    x <- dat [, 'x']
+  else
+    x <- dat [, pmatch ('lon', colnames (dat))]
+  
+  if ('y' %in% colnames (dat))
+    y <- dat [, 'y']
+  else
+    y <- dat [, pmatch ('lat', colnames (dat))]
+  
+  xlims <- range (x) # used below to convert to indices into z-matrix
+  ylims <- range (y)
+  
+  indx <- which (!is.na (z))
+  x <- x [indx]
+  y <- y [indx]
+  marks <- z [indx]
+  
+  xyp <- spatstat::ppp (x, y, xrange = range (x), yrange = range(y),
+                        marks = marks)
+  if (method == 'idw')
+    z <- spatstat::idw (xyp, at = "pixels", dimyx = grid_size)$v
+  else if (method == 'smooth')
+    z <- spatstat::Smooth (xyp, at = "pixels", dimyx = grid_size,
+                           diggle = TRUE)$v
+  return(z)
+  list ('xlims' = xlims, 'ylims' = ylims, 'x' = x, 'y' = y, 'z' =  t (z))
+}
+
+add_osm_surface_column <- function(osmdata, dat, 
+                                   colname="Surface",
+                                   method=c("idw", "smooth"), 
+                                   grid_size=100) {
+  ## Steps :
+  ## Interpolate data onto a grid - might need spatstat
+  ## use st_interpolate_aw
+  method <- match.arg(method)
+  
+  surface <- get_surface_z(dat = dat, method=method, grid_size = grid_size)
+  return(surface)
+  g <- st_interpolate_aw()
 }
 ## ---- SpatialGroupsEx1 ----
 library(osmplotr)
@@ -297,3 +350,13 @@ lon.map2 +
   coord_sf(xlim=range(bbox[1, ]), ylim=range (bbox[2, ])) +
   theme(panel.grid.major = element_line(colour = 'transparent')) 
   
+## ---- SurfaceSetup ----
+n <- 5
+x <- seq (bbox [1, 1], bbox [1, 2], length.out = n)
+y <- seq (bbox [2, 1], bbox [2, 2], length.out = n)
+dat <- data.frame (
+  x = as.vector (array (x, dim = c(n, n))),
+  y = as.vector (t (array (y, dim = c(n, n)))),
+  z = x * y
+)
+
