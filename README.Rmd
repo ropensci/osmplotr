@@ -1,5 +1,6 @@
 ---
 title: "osmplotr, an R package for making maps with OpenStreetMap data"
+keywords: "open street map, openstreetmap, OSM, map, visualisation, visualization"
 output:
   rmarkdown::html_vignette:
     self_contained: no
