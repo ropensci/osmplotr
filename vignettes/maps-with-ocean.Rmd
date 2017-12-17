@@ -87,8 +87,7 @@ The strategy implemented in `sf_land` is:
 1. Polygonize.
 1. Identify parts of the resulting polygons that are not from the bounding box (i.e original ways)
 1. Check whether the direction or points in those sections has changed. SF always creates clockwise polygons while OSM ways have land on the left, so those polygons with way points in a reversed direction are land.
-1. Sequential set difference between each land polygon and all the sea polygons.
-1. Union of the modified land polygons.
+1. Pairwise, non empty, intersections between land polygons until there are no intersecting pairs.
 
 ```{r, echo=FALSE}
 
@@ -185,6 +184,37 @@ set_map_theme2 <- function (bg)
     coord_sf(xlim=range(bbox.F[1, ]), ylim=range(bbox.F[2, ])) +
     theme(panel.grid.major = element_line(colour = 'transparent'), panel.border = element_rect( fill = NA))
 ```
+
+# A related area
+This map is the one that lead me to discover problems with the first attempt in this PR. A slightly different BB around Frankston.
+
+```{r, message=FALSE}
+#library(ggmap)
+#frankston <- get_map("Frankston, Victoria, Australia", zoom=10)
+#bb <- attr(frankston, "bb")
+## Change this to fit our data
+#bbox.Fgg <- rbind(c(min= bb$ll.lon, max = bb$ur.lon),
+#                  c(min= bb$ll.lat, max = bb$ur.lat))
+
+bbox.Fgg <-rbind(c(min= 144.69623, max = 145.57514),
+                c(min= -38.50326, max = -37.81218))
+rownames(bbox.Fgg) <- c("x", "y")
+osm.Fgg <- getCoast(bbox.Fgg)
+land.fgg <- sf_land(osm.Fgg, bbox.Fgg)
+lon.fgg <- osm_basemap2(bbox = bbox.Fgg,
+                         bg = 'slategrey')
+coast.Fgg <- rbind(osm.Fgg$osm_lines, osm.Fgg$osm_polygons)
+
+lon.fgg <- lon.fgg +
+  geom_sf(data=st_sf(land.fgg), fill='green', colour=NA) +
+  geom_sf(data=coast.Fgg, colour='red', fill=NA, size=0.2) 
+lon.fgg + guides(size=FALSE) +
+  coord_sf(xlim=range(bbox.Fgg[1, ]), ylim=range(bbox.Fgg[2, ])) +
+  theme(panel.grid.major = element_line(colour = 'transparent'), panel.border = element_rect( fill = NA))
+
+
+```
+
 
 # Test cases from old attempt
 

@@ -17,6 +17,42 @@ sequential_dif <- function(lp, seaset) {
   return(lp)
 }
 
+
+#' Determin which polygons intersect, compute those intersections, return them along with the isolated ones
+#'
+#' @param polygons 
+#' Complex because we don't want to produce nothing at the end. Thus can't chuck all the pairs in.
+#' Only option I can come up with is to perform an intersection, then check. Heuristics would probably
+#' make things faster, like starting with bigger polygons. May happen by default. Could also optimise
+#' a bit by performing graph-clustering first, then doing this within each cluster, but I suspect that 
+#' multiple clusters are rare, due to the way the bounding box is usually selected.
+#' @return the land polygons
+#' @export
+#'
+#' @examples
+
+doIntersect <- function(polygons) {
+  finalP <- polygons
+  while(TRUE) {
+    ii <- st_intersects(finalP, finalP)
+    iil <- lengths(ii)
+    if (all(iil==1)) {
+      ## only self intersections
+      break
+    }
+    ## Pick an intersecting pair, compute the intersection, repeat
+    pairA <- which.max(iil > 1)
+    pairB <- ii[[pairA]]
+    pairB <- pairB[which.max(pairB != pairA)]
+    
+    tempPolys <- finalP[-c(pairA, pairB)]
+    ip <- st_intersection(finalP[pairA], finalP[pairB])
+    finalP <- c(tempPolys, ip)
+  }
+
+  return(finalP)
+}
+
 #' Create land polygons for plotting
 #'
 #' @param osmd result of a coastline osm query
@@ -88,10 +124,11 @@ sf_land <- function(osmd, bbox) {
       seapolys <- polys[same]
       ## Now need to take difference  between each land polygon and all sea polygons (sequentially)
       ## Then union the land polygons
+      # landpolys.dif <- purrr::map(1:length(landpolys), ~sequential_dif(landpolys[.x], seapolys))
+      # landpolys <- st_union(do.call(c, landpolys.dif))
       
-      landpolys.dif <- purrr::map(1:length(landpolys), ~sequential_dif(landpolys[.x], seapolys))
-      landpolys <- st_union(do.call(c, landpolys.dif))
-      res <- landpolys
+      # figure out which land polygons intersect, and take the intersection of them
+      res <- doIntersect(landpolys)
     }
     res <- c(res, closed)
     return(res)
