@@ -73,7 +73,7 @@ get_key_vals <- function (structures)
     keys <- structures
     values <- rep ('', length (keys))
     val_list <- c ('grass', 'park', 'tree', 'water')
-    key_list <- c ('landuse', 'leisure', 'natural', 'ntural')
+    key_list <- c ('landuse', 'leisure', 'natural', 'natural')
 
     for (i in seq (val_list))
         if (any (structures == val_list [i]))
