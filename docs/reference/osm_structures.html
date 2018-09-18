@@ -18,13 +18,30 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="osm_structures — osm_structures" />
+
+<meta property="og:description" content="For the given vector of structure types returns a data.frame
+containing two columns of corresponding OpenStreetMap key-value pairs,
+one column of unambiguous suffixes to be appended to the objects returned by
+extract_osm_objects, and one column specifying colours. This
+data.frame may be subsequently modified as desired, and ultimately
+passed to make_osm_map to automate map production." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +64,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">osmplotr</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">osmplotr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -70,6 +91,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -77,31 +99,35 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>osm_structures</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/osmplotr/blob/master/R/osm-structures.R'><code>R/osm-structures.R</code></a></small>
+    <div class="hidden name"><code>osm_structures.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>For the given vector of structure types returns a <code>data.frame</code>
 containing two columns of corresponding OpenStreetMap <code>key-value</code> pairs,
 one column of unambiguous suffixes to be appended to the objects returned by
-<code>extract_osm_objects</code>, and one column specifying colours. This
+<code><a href='extract_osm_objects.html'>extract_osm_objects</a></code>, and one column specifying colours. This
 <code>data.frame</code> may be subsequently modified as desired, and ultimately
-passed to <code>make_osm_map</code> to automate map production.</p>
+passed to <code><a href='make_osm_map.html'>make_osm_map</a></code> to automate map production.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>osm_structures</span>(<span class='kw'>structures</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"building"</span>, <span class='st'>"amenity"</span>, <span class='st'>"waterway"</span>, <span class='st'>"grass"</span>,
   <span class='st'>"natural"</span>, <span class='st'>"park"</span>, <span class='st'>"highway"</span>, <span class='st'>"boundary"</span>, <span class='st'>"tree"</span>), <span class='kw'>col_scheme</span> <span class='kw'>=</span> <span class='st'>"dark"</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>structures</th>
       <td><p>The vector of types of structures (defaults listed in
-<code>extract_osm_objects</code>).</p></td>
+<code><a href='extract_osm_objects.html'>extract_osm_objects</a></code>).</p></td>
     </tr>
     <tr>
       <th>col_scheme</th>
@@ -117,7 +143,7 @@ corresponding prefixes, and colours.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code>make_osm_map</code>.</p>
+    <div class='dont-index'><p><code><a href='make_osm_map.html'>make_osm_map</a></code>.</p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -135,10 +161,11 @@ corresponding prefixes, and colours.</p>
 #&gt; 10 background                          gray20</div><div class='input'><span class='co'># user-defined structures:</span>
 <span class='no'>structures</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span> (<span class='st'>'highway'</span>, <span class='st'>'park'</span>, <span class='st'>'ameniiy'</span>, <span class='st'>'tree'</span>)
 <span class='no'>structs</span> <span class='kw'>&lt;-</span> <span class='fu'>osm_structures</span> (<span class='kw'>structures</span> <span class='kw'>=</span> <span class='no'>structures</span>, <span class='kw'>col_scheme</span> <span class='kw'>=</span> <span class='st'>'light'</span>)
-<span class='co'># make_osm_map returns potentially modified list of data</span>
-<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>make_osm_map</span> (<span class='kw'>osm_data</span> <span class='kw'>=</span> <span class='no'>london</span>, <span class='kw'>structures</span> <span class='kw'>=</span> <span class='no'>structs</span>)
+<span class='co'># make_osm_map returns potentially modified list of data</span></div><span class='co'># NOT RUN {</span>
+<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='make_osm_map.html'>make_osm_map</a></span> (<span class='kw'>osm_data</span> <span class='kw'>=</span> <span class='no'>london</span>, <span class='kw'>structures</span> <span class='kw'>=</span> <span class='no'>structs</span>)
 <span class='co'># map contains updated $osm_data and actual map in $map</span>
-<span class='fu'>print_osm_map</span> (<span class='no'>dat</span>$<span class='no'>map</span>)</div></pre>
+<span class='fu'><a href='print_osm_map.html'>print_osm_map</a></span> (<span class='no'>dat</span>$<span class='no'>map</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -157,15 +184,18 @@ corresponding prefixes, and colours.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Mark Padgham.</p>
+  <p>Developed by Mark Padgham, Richard Beare.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

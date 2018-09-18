@@ -8,14 +8,17 @@
 <title>Data Maps • osmplotr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Data Maps">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -24,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">osmplotr</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">osmplotr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -55,185 +62,170 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Data Maps</h1>
                         <h4 class="author">Mark Padgham</h4>
             
-            <h4 class="date">2017-09-19</h4>
-          </div>
+            <h4 class="date">2018-09-18</h4>
+      
+      <small class="dont-index">Source: <a href="https://github.com/ropensci/osmplotr/blob/master/vignettes/data-maps.Rmd"><code>vignettes/data-maps.Rmd</code></a></small>
+      <div class="hidden name"><code>data-maps.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <p>This vignette extends from the vignette (<a href="https://cran.r-project.org/package=osmplotr">Basic maps</a>) to demonstrate how <code>osmplotr</code> enables the graphical properties of OpenStreetMap objects to be modified according to user-provided data. Categorical data can be plotted by highlighting defined regions with different colours using <code>add_osm_groups</code>, while continuous data can be plotted with <code>add_osm_surface</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span> (osmplotr)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span> (osmplotr)</a></code></pre></div>
 <p>As in the first vignette, maps produced in this vignette contain data for a small portion of central London, U.K.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bbox &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/get_bbox">get_bbox</a></span> (<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.13</span>, <span class="fl">51.51</span>, <span class="op">-</span><span class="fl">0.11</span>, <span class="fl">51.52</span>))</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">bbox &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_bbox.html">get_bbox</a></span> (<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.13</span>, <span class="fl">51.51</span>, <span class="fl">-0.11</span>, <span class="fl">51.52</span>))</a></code></pre></div>
 <div id="categorical-data-add_osm_groups" class="section level1">
 <h1 class="hasAnchor">
 <a href="#categorical-data-add_osm_groups" class="anchor"></a>1. Categorical data: <code>add_osm_groups</code>
 </h1>
 <p>The function <code>add_osm_groups</code> enables spatially-defined groups to be plotted in different colours. The two primary arguments are <code>obj</code>, which defines the OSM structure to be used for plotting the regions, and <code>groups</code> which is a list of geometric coordinates defining the desired regions. An example of an <code>obj</code> is the Simple Features (<a href="https://cran.r-project.org/package=sf"><code>sf</code></a>) <code>data.frame</code> of building polygons downloaded in the first vignette with the following line</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat_B &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/extract_osm_objects">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'building'</span>, <span class="dt">bbox =</span> bbox)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">dat_B &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_osm_objects.html">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'building'</span>, <span class="dt">bbox =</span> bbox)</a></code></pre></div>
 <p>These data may be obtained by simply combining the data provided with the package of residential and non-residential buildings to give all buildings as</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat_B &lt;-<span class="st"> </span><span class="kw">rbind</span> (london<span class="op">$</span>dat_BNR, london<span class="op">$</span>dat_BR)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dat_B &lt;-<span class="st"> </span><span class="kw">rbind</span> (london<span class="op">$</span>dat_BNR, london<span class="op">$</span>dat_BR)</a></code></pre></div>
 <p>The most direct way to define <code>groups</code> is through specifying coordinates of boundary points:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pts &lt;-<span class="st"> </span><span class="kw">cbind</span> (<span class="kw">c</span> (<span class="op">-</span><span class="fl">0.115</span>, <span class="op">-</span><span class="fl">0.125</span>, <span class="op">-</span><span class="fl">0.125</span>, <span class="op">-</span><span class="fl">0.115</span>),
-              <span class="kw">c</span> (<span class="fl">51.513</span>, <span class="fl">51.513</span>, <span class="fl">51.517</span>, <span class="fl">51.517</span>))
-
-map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-                    <span class="dt">bg =</span> <span class="st">'gray20'</span>)
-
-map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, 
-                       dat_B, 
-                       <span class="dt">groups =</span> pts, 
-                       <span class="dt">cols =</span> <span class="st">'orange'</span>, 
-                       <span class="dt">bg =</span> <span class="st">'gray40'</span>)
-
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
-<div class="figure">
-<img src="map_b1.png">
-</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">pts &lt;-<span class="st"> </span><span class="kw">cbind</span> (<span class="kw">c</span> (<span class="op">-</span><span class="fl">0.115</span>, <span class="fl">-0.125</span>, <span class="fl">-0.125</span>, <span class="fl">-0.115</span>),</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">              <span class="kw">c</span> (<span class="fl">51.513</span>, <span class="fl">51.513</span>, <span class="fl">51.517</span>, <span class="fl">51.517</span>))</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">map &lt;-<span class="st"> </span><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">                    <span class="dt">bg =</span> <span class="st">'gray20'</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">map &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (map, </a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">                       dat_B, </a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">                       <span class="dt">groups =</span> pts, </a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">                       <span class="dt">cols =</span> <span class="st">'orange'</span>, </a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">                       <span class="dt">bg =</span> <span class="st">'gray40'</span>)</a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> (map)</a></code></pre></div>
+<p><img src="map_b1.png"></p>
 <p>Multiple groups can be defined by passing a list of multiple sets of point coordinates to the <code>groups</code> argument of <code>add_osm_groups</code>, and specifying corresponding colours.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pts2 &lt;-<span class="st"> </span><span class="kw">cbind</span> (<span class="kw">c</span> (<span class="op">-</span><span class="fl">0.111</span>, <span class="op">-</span><span class="fl">0.1145</span>, <span class="op">-</span><span class="fl">0.1145</span>, <span class="op">-</span><span class="fl">0.111</span>),
-               <span class="kw">c</span> (<span class="fl">51.517</span>, <span class="fl">51.517</span>, <span class="fl">51.519</span>, <span class="fl">51.519</span>))
-
-map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-                    <span class="dt">bg =</span> <span class="st">'gray20'</span>)
-
-map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, 
-                       dat_B, 
-                       <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),
-                       <span class="dt">cols =</span> <span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>), 
-                       <span class="dt">bg =</span> <span class="st">'gray40'</span>)
-
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
-<div class="figure">
-<img src="map_b2.png">
-</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">pts2 &lt;-<span class="st"> </span><span class="kw">cbind</span> (<span class="kw">c</span> (<span class="op">-</span><span class="fl">0.111</span>, <span class="fl">-0.1145</span>, <span class="fl">-0.1145</span>, <span class="fl">-0.111</span>),</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">               <span class="kw">c</span> (<span class="fl">51.517</span>, <span class="fl">51.517</span>, <span class="fl">51.519</span>, <span class="fl">51.519</span>))</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">map &lt;-<span class="st"> </span><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">                    <span class="dt">bg =</span> <span class="st">'gray20'</span>)</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">map &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (map, </a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">                       dat_B, </a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">                       <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),</a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">                       <span class="dt">cols =</span> <span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>), </a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">                       <span class="dt">bg =</span> <span class="st">'gray40'</span>)</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> (map)</a></code></pre></div>
+<p><img src="map_b2.png"></p>
 <p>The <code>bg</code> argument specifies the colour of any objects lying outside the boundaries of the specified groups. If this argument is not given, then all objects are assigned to the nearest group, so that the groups fill the entire map.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-                    <span class="dt">bg =</span> <span class="st">'gray20'</span>)
-
-map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (map, 
-                       dat_B, 
-                       <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),
-                       <span class="dt">cols =</span> <span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>))
-
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> (map)</code></pre></div>
-<div class="figure">
-<img src="map_b3.png">
-</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">map &lt;-<span class="st"> </span><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">                    <span class="dt">bg =</span> <span class="st">'gray20'</span>)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">map &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (map, </a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">                       dat_B, </a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">                       <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">                       <span class="dt">cols =</span> <span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>))</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> (map)</a></code></pre></div>
+<p><img src="map_b3.png"></p>
 <p>Now that you’ve seen the general workflow of <code>osmplotr</code>, let’s repeat the previous code, but streamline it with <code>magrittr</code>’s <code>%&gt;%</code> function. This allows us to pipe the functions together instead of re-assigning the <code>map</code> variable.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(magrittr)
-
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span>(<span class="dt">bbox =</span> bbox,
-            <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span>(dat_B,
-                 <span class="dt">groups =</span> <span class="kw">list</span>(pts, pts2),
-                 <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">'orange'</span>, <span class="st">'tomato'</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span>()</code></pre></div>
-<div class="figure">
-<img src="map_b3_pipe.png">
-</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">library</span>(magrittr)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span>(<span class="dt">bbox =</span> bbox,</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">            <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span>(dat_B,</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">                 <span class="dt">groups =</span> <span class="kw">list</span>(pts, pts2),</a>
+<a class="sourceLine" id="cb8-7" data-line-number="7">                 <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">'orange'</span>, <span class="st">'tomato'</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span>()</a></code></pre></div>
+<p><img src="map_b3_pipe.png"></p>
 <div id="hulls-around-groups" class="section level2">
 <h2 class="hasAnchor">
 <a href="#hulls-around-groups" class="anchor"></a>1.1 Hulls around groups</h2>
 <p><code>add_osm_groups</code> includes the argument <code>make_hull</code> which specifies whether convex hulls should be fitted around the points defining the provided <code>groups</code>, or whether the <code>groups</code> already define their own boundaries (the default behaviour). If a point is added internal to the four points defining the first of the above groups, then the group boundary will connect to that point and create a concave shape.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pts &lt;-<span class="st"> </span><span class="kw">rbind</span> (pts, <span class="kw">c</span> (<span class="op">-</span><span class="fl">0.12</span>, <span class="fl">51.515</span>))
-
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> pts, 
-                  <span class="dt">cols =</span> <span class="st">'orange'</span>, 
-                  <span class="dt">bg =</span> <span class="st">'gray40'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b5.png">
-</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">pts &lt;-<span class="st"> </span><span class="kw">rbind</span> (pts, <span class="kw">c</span> (<span class="op">-</span><span class="fl">0.12</span>, <span class="fl">51.515</span>))</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">                  <span class="dt">groups =</span> pts, </a>
+<a class="sourceLine" id="cb9-7" data-line-number="7">                  <span class="dt">cols =</span> <span class="st">'orange'</span>, </a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">                  <span class="dt">bg =</span> <span class="st">'gray40'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b5.png"></p>
 <p>The previous points started in the south-east and ended in the north-east, and thus the concave boundary extends in between the two easterly points. Setting <code>make_hull = TRUE</code> defines groups by the convex hulls surrounding them, which in this case would revert this map to the initial map with the group defined by a regular, convex perimeter.</p>
 </div>
 <div id="inclusive-exclusive-and-bisected-polygons" class="section level2">
 <h2 class="hasAnchor">
 <a href="#inclusive-exclusive-and-bisected-polygons" class="anchor"></a>1.2 Inclusive, exclusive, and bisected polygons</h2>
 <p>The highlighted regions of the previous maps are irregular because the default behaviour of <code>add_osm_groups</code> is to include within a group only those OSM objects which lie entirely within a group boundary. <code>add_osm_groups</code> has a <code>boundary</code> argument which defines whether objects should be assigned to groups inclusively (<code>boundary &gt; 0</code>) or exclusively (<code>boundary &lt; 0</code>), or whether they should be precisely bisected by a group boundary (<code>boundary = 0</code>). The previous maps illustrate the default option (<code>boundary = -1</code>), while the two other options produce the following maps.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2), 
-                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>,
-                  <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">'orange'</span>, <span class="st">'tomato'</span>), 
-                  <span class="dt">bg =</span> <span class="st">'gray40'</span>,
-                  <span class="dt">boundary =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b6.png">
-</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2), </a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">                  <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">'orange'</span>, <span class="st">'tomato'</span>), </a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">                  <span class="dt">bg =</span> <span class="st">'gray40'</span>,</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">                  <span class="dt">boundary =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b6.png"></p>
 <p>The inclusive option (<code>boundary&gt;0</code>) includes all objects which have any points lying within a boundary, meaning more objects are included resulting in larger regions than the previous default exclusive option. Precisely bisecting boundaries produces the following map.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2), 
-                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>,
-                  <span class="dt">cols =</span> <span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>), 
-                  <span class="dt">bg =</span> <span class="st">'gray40'</span>,
-                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b7.png">
-</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2), </a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">                  <span class="dt">cols =</span> <span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>), </a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">                  <span class="dt">bg =</span> <span class="st">'gray40'</span>,</a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b7.png"></p>
 <p>The ability to combine different kinds of boundaries is particularly useful when highlighting areas which partially contain large polygons such as parks. The parks within the following maps were downloaded with</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat_P &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/extract_osm_objects">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'park'</span>, <span class="dt">bbox =</span> bbox)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">dat_P &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_osm_objects.html">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'park'</span>, <span class="dt">bbox =</span> bbox)</a></code></pre></div>
 <p>(Noting that, as described in the first vignette, <a href="https://cran.r-project.org/package=osmplotr">Basic maps</a>, both <code>extract_osm_objects</code> and <code>make_osm_map</code> convert several common keys to appropriate <code>key-value</code> pairs, so</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_structures">osm_structures</a></span> (<span class="dt">structure =</span> <span class="st">'park'</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="../reference/osm_structures.html">osm_structures</a></span> (<span class="dt">structure =</span> <span class="st">'park'</span>)</a></code></pre></div>
 <pre><code>##    structure     key value suffix      cols
 ## 1       park leisure  park      P #647864FF
 ## 2 background                         gray20</code></pre>
 <p>reveals that this <code>key</code> is actually converted to <code>key = 'leisure'</code> and <code>value = 'park'</code>.) These data are also provided with the package as <code>london$dat_P</code>.</p>
 <p>Plotting buildings inclusively within each group and overlaying parks bisected by the group boundaries produces the following map:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">col_park_in &lt;-<span class="st"> </span><span class="kw">rgb</span> (<span class="dv">50</span>, <span class="dv">255</span>, <span class="dv">50</span>, <span class="dt">maxColorValue =</span> <span class="dv">255</span>)
-col_park_out &lt;-<span class="st"> </span><span class="kw">rgb</span> (<span class="dv">50</span>, <span class="dv">155</span>, <span class="dv">50</span>, <span class="dt">maxColorValue =</span> <span class="dv">255</span>)
-
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2), 
-                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>,
-                  <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">'orange'</span>, <span class="st">'tomato'</span>), 
-                  <span class="dt">bg =</span> <span class="st">'gray40'</span>,
-                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_P, 
-                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),
-                  <span class="dt">cols =</span> <span class="kw">rep</span> (col_park_in, <span class="dv">2</span>),
-                  <span class="dt">bg =</span> col_park_out,
-                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b8.png">
-</div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">col_park_in &lt;-<span class="st"> </span><span class="kw">rgb</span> (<span class="dv">50</span>, <span class="dv">255</span>, <span class="dv">50</span>, <span class="dt">maxColorValue =</span> <span class="dv">255</span>)</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">col_park_out &lt;-<span class="st"> </span><span class="kw">rgb</span> (<span class="dv">50</span>, <span class="dv">155</span>, <span class="dv">50</span>, <span class="dt">maxColorValue =</span> <span class="dv">255</span>)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2), </a>
+<a class="sourceLine" id="cb15-8" data-line-number="8">                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">                  <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">'orange'</span>, <span class="st">'tomato'</span>), </a>
+<a class="sourceLine" id="cb15-10" data-line-number="10">                  <span class="dt">bg =</span> <span class="st">'gray40'</span>,</a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_P, </a>
+<a class="sourceLine" id="cb15-13" data-line-number="13">                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),</a>
+<a class="sourceLine" id="cb15-14" data-line-number="14">                  <span class="dt">cols =</span> <span class="kw">rep</span> (col_park_in, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb15-15" data-line-number="15">                  <span class="dt">bg =</span> col_park_out,</a>
+<a class="sourceLine" id="cb15-16" data-line-number="16">                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-17" data-line-number="17"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b8.png"></p>
 <p>Bisection divides single polygons to form one polygon of points lying within a given boundary and one polygon of points lying outside the boundary. The two resultant polygons are often separated by visible gaps between locations at which they are defined. Because the layers of a plot are progressively overlaid, such gaps can be avoided by initially plotting underlying layers using <code>add_osm_objects</code> prior to grouping objects:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (dat_P, 
-                   <span class="dt">col =</span> col_park_out) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_P, 
-                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),
-                  <span class="dt">cols =</span> <span class="kw">rep</span> (col_park_in, <span class="dv">2</span>), 
-                  <span class="dt">bg =</span> col_park_out,
-                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2), 
-                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>,
-                  <span class="dt">cols =</span> <span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>), 
-                  <span class="dt">bg =</span> <span class="st">'gray40'</span>,
-                  <span class="dt">boundary =</span> <span class="dv">0</span>)
-
-map <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b9.png">
-</div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">map &lt;-<span class="st"> </span><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_objects.html">add_osm_objects</a></span> (dat_P, </a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">                   <span class="dt">col =</span> col_park_out) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_P, </a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7">                  <span class="dt">cols =</span> <span class="kw">rep</span> (col_park_in, <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb16-8" data-line-number="8">                  <span class="dt">bg =</span> col_park_out,</a>
+<a class="sourceLine" id="cb16-9" data-line-number="9">                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb16-11" data-line-number="11">                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2), </a>
+<a class="sourceLine" id="cb16-12" data-line-number="12">                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb16-13" data-line-number="13">                  <span class="dt">cols =</span> <span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>), </a>
+<a class="sourceLine" id="cb16-14" data-line-number="14">                  <span class="dt">bg =</span> <span class="st">'gray40'</span>,</a>
+<a class="sourceLine" id="cb16-15" data-line-number="15">                  <span class="dt">boundary =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb16-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb16-17" data-line-number="17">map <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-18" data-line-number="18"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b9.png"></p>
 <p>Bisections with <code>boundary = 0</code> will only be as accurate as the underlying OSM data. This example was chosen to highlight that bisection may be inaccurate if actual OSM points do not lie near to a desired bisection line. The larger a map, the less visually evident are likely to be any such inaccuracies. Finally, note that the plot order was changed to allow the building within the park to be overlaid upon the grass surfaces. Plot order, whether controlled manually or with <code>make_osm_map</code>, may often have to be tweaked to appropriately visualise all objects.</p>
 <p>The <code>boundary</code> argument has no effect if <code>bg</code> is not given, because in this case all objects will be assigned to a group and there will be no boundaries between groups and other, non-grouped objects.</p>
 </div>
@@ -242,167 +234,155 @@ map <span class="op">%&gt;%</span>
 <a href="#adjusting-colours-with-adjust_colours" class="anchor"></a>1.3 Adjusting colours with <code>adjust_colours</code>
 </h2>
 <p>The <code>adjust_colours</code> function allows different groups to be highlighted with slightly different colours for different kinds of OSM objects. For example, the following code adds highways to the above map in slightly darkened versions of the highlight colours (using <code>boundary = 1</code>, so any highways with any points lying within the bounding box are included in the groups):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#create separate data for all highways and primary highways</span>
-dat_H &lt;-<span class="st"> </span><span class="kw">rbind</span> (london<span class="op">$</span>dat_H, london<span class="op">$</span>dat_HP)
-dat_HP &lt;-<span class="st"> </span>london<span class="op">$</span>dat_HP
-
-<span class="co"># darken colours by aboud 20%</span>
-cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours</a></span> (<span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>), 
-                            <span class="dt">adj =</span> <span class="op">-</span><span class="fl">0.2</span>)
-
-map <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_HP, 
-                <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),
-                <span class="dt">make_hull =</span> <span class="ot">TRUE</span>, 
-                <span class="dt">cols =</span> cols_adj,
-                <span class="dt">bg =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours</a></span>(<span class="st">'gray40'</span>, 
-                                    <span class="dt">adj =</span> <span class="op">-</span><span class="fl">0.4</span>),
-                <span class="dt">boundary =</span> <span class="dv">1</span>, <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_H, 
-                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),
-                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>, 
-                  <span class="dt">cols =</span> cols_adj,
-                  <span class="dt">bg =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours</a></span> (<span class="st">'gray40'</span>, 
-                                       <span class="dt">adj =</span> <span class="op">-</span><span class="fl">0.2</span>),
-                  <span class="dt">boundary =</span> <span class="dv">1</span>, 
-                  <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b10.png">
-</div>
-<p>And of course <code><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours ('gray40', adj = -0.2)</a></code> is nothing other than ‘gray32’, and <code>adj = -0.4</code> gives ‘gray24’.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">#create separate data for all highways and primary highways</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">dat_H &lt;-<span class="st"> </span><span class="kw">rbind</span> (london<span class="op">$</span>dat_H, london<span class="op">$</span>dat_HP)</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">dat_HP &lt;-<span class="st"> </span>london<span class="op">$</span>dat_HP</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co"># darken colours by aboud 20%</span></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adjust_colours.html">adjust_colours</a></span> (<span class="kw">c</span> (<span class="st">'orange'</span>, <span class="st">'tomato'</span>), </a>
+<a class="sourceLine" id="cb17-7" data-line-number="7">                            <span class="dt">adj =</span> <span class="fl">-0.2</span>)</a>
+<a class="sourceLine" id="cb17-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb17-9" data-line-number="9">map <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_HP, </a>
+<a class="sourceLine" id="cb17-11" data-line-number="11">                <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),</a>
+<a class="sourceLine" id="cb17-12" data-line-number="12">                <span class="dt">make_hull =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb17-13" data-line-number="13">                <span class="dt">cols =</span> cols_adj,</a>
+<a class="sourceLine" id="cb17-14" data-line-number="14">                <span class="dt">bg =</span> <span class="kw"><a href="../reference/adjust_colours.html">adjust_colours</a></span>(<span class="st">'gray40'</span>, </a>
+<a class="sourceLine" id="cb17-15" data-line-number="15">                                    <span class="dt">adj =</span> <span class="fl">-0.4</span>),</a>
+<a class="sourceLine" id="cb17-16" data-line-number="16">                <span class="dt">boundary =</span> <span class="dv">1</span>, <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-17" data-line-number="17"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_H, </a>
+<a class="sourceLine" id="cb17-18" data-line-number="18">                  <span class="dt">groups =</span> <span class="kw">list</span> (pts, pts2),</a>
+<a class="sourceLine" id="cb17-19" data-line-number="19">                  <span class="dt">make_hull =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb17-20" data-line-number="20">                  <span class="dt">cols =</span> cols_adj,</a>
+<a class="sourceLine" id="cb17-21" data-line-number="21">                  <span class="dt">bg =</span> <span class="kw"><a href="../reference/adjust_colours.html">adjust_colours</a></span> (<span class="st">'gray40'</span>, </a>
+<a class="sourceLine" id="cb17-22" data-line-number="22">                                       <span class="dt">adj =</span> <span class="fl">-0.2</span>),</a>
+<a class="sourceLine" id="cb17-23" data-line-number="23">                  <span class="dt">boundary =</span> <span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb17-24" data-line-number="24">                  <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-25" data-line-number="25"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b10.png"></p>
+<p>And of course <code><a href="../reference/adjust_colours.html">adjust_colours ('gray40', adj = -0.2)</a></code> is nothing other than ‘gray32’, and <code>adj = -0.4</code> gives ‘gray24’.</p>
 </div>
 <div id="dark-on-light-highlights" class="section level2">
 <h2 class="hasAnchor">
 <a href="#dark-on-light-highlights" class="anchor"></a>1.4 Dark-on-Light Highlights</h2>
 <p>A particularly effective way to highlight single regions within a map is through using dark colours upon otherwise light coloured maps.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray95'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> pts, 
-                  <span class="dt">cols =</span> <span class="st">'gray40'</span>, 
-                  <span class="dt">bg =</span> <span class="st">'gray85'</span>,
-                  <span class="dt">boundary =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_H, 
-                  <span class="dt">groups =</span> pts, 
-                  <span class="dt">cols =</span> <span class="st">'gray20'</span>, 
-                  <span class="dt">bg =</span> <span class="st">'gray70'</span>,
-                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_HP, 
-                  <span class="dt">groups =</span> pts, 
-                  <span class="dt">cols =</span> <span class="st">'gray10'</span>, 
-                  <span class="dt">bg =</span> <span class="st">'white'</span>,
-                  <span class="dt">boundary =</span> <span class="dv">0</span>, 
-                  <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b11.png">
-</div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray95'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">                  <span class="dt">groups =</span> pts, </a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">                  <span class="dt">cols =</span> <span class="st">'gray40'</span>, </a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">                  <span class="dt">bg =</span> <span class="st">'gray85'</span>,</a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">                  <span class="dt">boundary =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb18-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_H, </a>
+<a class="sourceLine" id="cb18-8" data-line-number="8">                  <span class="dt">groups =</span> pts, </a>
+<a class="sourceLine" id="cb18-9" data-line-number="9">                  <span class="dt">cols =</span> <span class="st">'gray20'</span>, </a>
+<a class="sourceLine" id="cb18-10" data-line-number="10">                  <span class="dt">bg =</span> <span class="st">'gray70'</span>,</a>
+<a class="sourceLine" id="cb18-11" data-line-number="11">                  <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb18-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_HP, </a>
+<a class="sourceLine" id="cb18-13" data-line-number="13">                  <span class="dt">groups =</span> pts, </a>
+<a class="sourceLine" id="cb18-14" data-line-number="14">                  <span class="dt">cols =</span> <span class="st">'gray10'</span>, </a>
+<a class="sourceLine" id="cb18-15" data-line-number="15">                  <span class="dt">bg =</span> <span class="st">'white'</span>,</a>
+<a class="sourceLine" id="cb18-16" data-line-number="16">                  <span class="dt">boundary =</span> <span class="dv">0</span>, </a>
+<a class="sourceLine" id="cb18-17" data-line-number="17">                  <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb18-18" data-line-number="18"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b11.png"></p>
 </div>
 <div id="visualising-clustering-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#visualising-clustering-data" class="anchor"></a>1.5 Visualising clustering data</h2>
 <p>One of the most likely uses of <code>add_osm_groups</code> is to visualise statistical clusters. Clustering algorithms will generally produce membership lists which may be mapped onto spatial locations. Each cluster can be defined as a matrix of points in a single list of <code>groups</code>. A general approach is illustrated here with <code>groups</code> defined by single, randomly generated points.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span> (<span class="dv">2</span>)
-ngroups &lt;-<span class="st"> </span><span class="dv">12</span>
-x &lt;-<span class="st"> </span>bbox [<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span> (ngroups) <span class="op">*</span><span class="st"> </span><span class="kw">diff</span> (bbox [<span class="dv">1</span>, ])
-y &lt;-<span class="st"> </span>bbox [<span class="dv">2</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span> (ngroups) <span class="op">*</span><span class="st"> </span><span class="kw">diff</span> (bbox [<span class="dv">2</span>, ])
-groups &lt;-<span class="st"> </span><span class="kw">as.list</span> (<span class="kw">data.frame</span> (<span class="kw">t</span> (<span class="kw">cbind</span> (x, y))))</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">set.seed</span> (<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">ngroups &lt;-<span class="st"> </span><span class="dv">12</span></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">x &lt;-<span class="st"> </span>bbox [<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span> (ngroups) <span class="op">*</span><span class="st"> </span><span class="kw">diff</span> (bbox [<span class="dv">1</span>, ])</a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">y &lt;-<span class="st"> </span>bbox [<span class="dv">2</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">runif</span> (ngroups) <span class="op">*</span><span class="st"> </span><span class="kw">diff</span> (bbox [<span class="dv">2</span>, ])</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">groups &lt;-<span class="st"> </span><span class="kw">as.list</span> (<span class="kw">data.frame</span> (<span class="kw">t</span> (<span class="kw">cbind</span> (x, y))))</a></code></pre></div>
 <p>(The last line just transforms each row of the matrix into a list item.) Having generated the points, a map of corresponding clusters can be generated by the following simple code.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray95'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> groups,
-                  <span class="dt">cols =</span> <span class="kw">rainbow</span> (<span class="kw">length</span> (groups))) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b12.png">
-</div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">             <span class="dt">bg =</span> <span class="st">'gray95'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">                  <span class="dt">groups =</span> groups,</a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">                  <span class="dt">cols =</span> <span class="kw">rainbow</span> (<span class="kw">length</span> (groups))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b12.png"></p>
 <p>Although individual groups will generally be defined by collections of multiple points, this example illustrates that they can also be defined by single points. In such cases, the <code>bg</code> option should of course be absent, so that all remaining points are allocated to the nearest groups.</p>
 <p>This map also illustrates the kind of visual mess that may arise in attempts to specify colours, particularly because the sequence of colours passed to <code>add_osm_groups</code> will generally not map on to any particular spatial order, so even if a pleasing colour scheme is submitted, the results may still be less than desirable. Although it may be possible to devise pleasing schemes for small numbers of groups, manually defined colour schemes are likely to become impractical for larger numbers of groups.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray95'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> groups, 
-                  <span class="dt">border_width =</span> <span class="dv">2</span>,
-                  <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="kw">length</span> (groups))) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b13.png">
-</div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">             <span class="dt">bg =</span> <span class="st">'gray95'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">                  <span class="dt">groups =</span> groups, </a>
+<a class="sourceLine" id="cb21-5" data-line-number="5">                  <span class="dt">border_width =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">                  <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="kw">length</span> (groups))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b13.png"></p>
 <p>Note the submitting any positive values to the additional <code>border_width</code> argument causes <code>add_osm_groups</code> to drawn convex hull borders around the different groups. Even this is not sufficient, however, to render the result particularly visually pleasing or intelligible. To overcome this, <code>add_osm_groups</code> includes an option described in the following section to generate spatially sensible colour schemes for colouring distinct groups.</p>
 </div>
 <div id="the-colour-matrix-colouring-several-regions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-colour-matrix-colouring-several-regions" class="anchor"></a>1.6 The Colour Matrix: Colouring Several Regions</h2>
 <p>An additional argument which may be passed to <code>add_osm_groups</code> is <code>colmat</code>, an abbreviation of ‘colour matrix’. If set to true (the default is <code>FALSE</code>), group colours are specified by the function <code>colour_mat</code>. This function takes a vector of four or more colours as input, wraps them around the four corners of a rectangular grid, and spatially interpolates a chromatically regular grid between these corners. To visual different schemes, it has a <code>plot</code> argument:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cmat &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/colour_mat">colour_mat</a></span> (<span class="kw">rainbow</span> (<span class="dv">4</span>), <span class="dt">plot =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">cmat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/colour_mat.html">colour_mat</a></span> (<span class="kw">rainbow</span> (<span class="dv">4</span>), <span class="dt">plot =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p><img src="data-maps_files/figure-html/unnamed-chunk-11-1.png" width="384"></p>
 <p>This grid illustrates the default colours, <code>rainbow (4)</code>. The two-dimensional colour field produced by <code>colour_mat</code> may also be rotated by a specified number of degrees using the <code>rotate</code> argument.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cmat &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/colour_mat">colour_mat</a></span> (<span class="kw">rainbow</span> (<span class="dv">4</span>), <span class="dt">n =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">8</span>), <span class="dt">rotate =</span> <span class="dv">90</span>, <span class="dt">plot =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">cmat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/colour_mat.html">colour_mat</a></span> (<span class="kw">rainbow</span> (<span class="dv">4</span>), <span class="dt">n =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">8</span>), <span class="dt">rotate =</span> <span class="dv">90</span>, <span class="dt">plot =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p><img src="data-maps_files/figure-html/unnamed-chunk-13-1.png" width="384"></p>
 <p>This example also illustrates that the size of colour matrices may also be arbitrarily specified. Using the <code>colmat</code> option in <code>add_osm_groups</code> enables the previous maps to be redrawn like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray95'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> groups, 
-                  <span class="dt">border_width =</span> <span class="dv">2</span>,
-                  <span class="dt">colmat =</span> <span class="ot">TRUE</span>,
-                  <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">'red'</span>, <span class="st">'green'</span>, <span class="st">'yellow'</span>, <span class="st">'blue'</span>), 
-                  <span class="dt">rotate =</span> <span class="dv">180</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b14.png">
-</div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">             <span class="dt">bg =</span> <span class="st">'gray95'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">                  <span class="dt">groups =</span> groups, </a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">                  <span class="dt">border_width =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6">                  <span class="dt">colmat =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb24-7" data-line-number="7">                  <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">'red'</span>, <span class="st">'green'</span>, <span class="st">'yellow'</span>, <span class="st">'blue'</span>), </a>
+<a class="sourceLine" id="cb24-8" data-line-number="8">                  <span class="dt">rotate =</span> <span class="dv">180</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b14.png"></p>
 <p>Note both that when <code>add_osm_groups</code> is called with <code>colmat = TRUE</code>, then <code>cols</code> need only be of length 4, to specify the four corners of the colour matrix, and also that the <code>rotate</code> argument can be submitted to <code>add_osm_groups</code> and passed on to <code>colour_mat</code>.</p>
 </div>
 <div id="bounding-areas-within-named-highways" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bounding-areas-within-named-highways" class="anchor"></a>1.7 Bounding areas within named highways</h2>
 <p>As explained in the first vignette, <a href="https://cran.r-project.org/package=osmplotr">Basic maps</a>, the function <code>connect_highways</code> takes a list of OSM highway names and a bounding box, and returns the boundary of a polygon encircling the named highways. This can be used to highlight selected regions simply by naming the highways which encircle them, producing maps which look like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Monmouth.St'</span>, <span class="st">'Short.?s.Gardens'</span>, <span class="st">'Endell.St'</span>, <span class="st">'Long.Acre'</span>,
-               <span class="st">'Upper.Saint.Martin'</span>)
-highways1 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/connect_highways">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox)
-highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Endell.St'</span>, <span class="st">'High.Holborn'</span>, <span class="st">'Drury.Lane'</span>, <span class="st">'Long.Acre'</span>)
-highways2 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/connect_highways">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox)
-highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Drury.Lane'</span>, <span class="st">'High.Holborn'</span>, <span class="st">'Kingsway'</span>, <span class="st">'Great.Queen.St'</span>)
-highways3 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/connect_highways">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox)</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Monmouth.St'</span>, <span class="st">'Short.?s.Gardens'</span>, <span class="st">'Endell.St'</span>, <span class="st">'Long.Acre'</span>,</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">               <span class="st">'Upper.Saint.Martin'</span>)</a>
+<a class="sourceLine" id="cb25-3" data-line-number="3">highways1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/connect_highways.html">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox)</a>
+<a class="sourceLine" id="cb25-4" data-line-number="4">highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Endell.St'</span>, <span class="st">'High.Holborn'</span>, <span class="st">'Drury.Lane'</span>, <span class="st">'Long.Acre'</span>)</a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">highways2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/connect_highways.html">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox)</a>
+<a class="sourceLine" id="cb25-6" data-line-number="6">highways &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'Drury.Lane'</span>, <span class="st">'High.Holborn'</span>, <span class="st">'Kingsway'</span>, <span class="st">'Great.Queen.St'</span>)</a>
+<a class="sourceLine" id="cb25-7" data-line-number="7">highways3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/connect_highways.html">connect_highways</a></span> (<span class="dt">highways =</span> highways, <span class="dt">bbox =</span> bbox)</a></code></pre></div>
 <p>Note the use of the <a href="https://en.wikipedia.org/wiki/Regular_expression">regex</a> character <code>?</code> in the first list of highway names, denoting the previous character as optional. This is necessary here because there are OSM sections named both “Shorts Gardens” and “Short’s Gardens”.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span> (highways1); <span class="kw">nrow</span> (highways1); <span class="kw">nrow</span> (highways2); <span class="kw">nrow</span> (highways3)</code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw">class</span> (highways1); <span class="kw">nrow</span> (highways1); <span class="kw">nrow</span> (highways2); <span class="kw">nrow</span> (highways3)</a></code></pre></div>
 <pre><code>## [1] "matrix"</code></pre>
 <pre><code>## [1] 41</code></pre>
 <pre><code>## [1] 33</code></pre>
 <pre><code>## [1] 53</code></pre>
 <p><code>connect_highways</code> returns a list of <code>SpatialPoints</code> representing the shortest path that sequentially connects all of the listed highways. (Connecting all listed highways may not necessarily be possible, in which case warnings will be issued. As described in the first vignette, <a href="https://cran.r-project.org/package=osmplotr">Basic maps</a>, <code>connect_highways</code> also has a <code>plot</code> option allowing problematic cases to be visually inspected and hopefully corrected.)</p>
 <p>These lists of highway coordinates can then be used to highlight the areas they encircle. First group the highways and establish a colour scheme for the map:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">groups &lt;-<span class="st"> </span><span class="kw">list</span> (highways1, highways2, highways3)
-cols_B &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'red'</span>, <span class="st">'orange'</span>, <span class="st">'tomato'</span>) <span class="co"># for the 3 groups</span>
-cols_H &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours</a></span> (cols_B, <span class="op">-</span><span class="fl">0.2</span>)
-bg_B &lt;-<span class="st"> 'gray40'</span>
-bg_H &lt;-<span class="st"> 'gray60'</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">groups &lt;-<span class="st"> </span><span class="kw">list</span> (highways1, highways2, highways3)</a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">cols_B &lt;-<span class="st"> </span><span class="kw">c</span> (<span class="st">'red'</span>, <span class="st">'orange'</span>, <span class="st">'tomato'</span>) <span class="co"># for the 3 groups</span></a>
+<a class="sourceLine" id="cb31-3" data-line-number="3">cols_H &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adjust_colours.html">adjust_colours</a></span> (cols_B, <span class="fl">-0.2</span>)</a>
+<a class="sourceLine" id="cb31-4" data-line-number="4">bg_B &lt;-<span class="st"> 'gray40'</span></a>
+<a class="sourceLine" id="cb31-5" data-line-number="5">bg_H &lt;-<span class="st"> 'gray60'</span></a></code></pre></div>
 <p>And then plot the map.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (dat_P, 
-                   <span class="dt">col =</span> col_park_out) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_B, 
-                  <span class="dt">groups =</span> groups, 
-                  <span class="dt">boundary =</span> <span class="dv">1</span>,
-                  <span class="dt">bg =</span> bg_B, 
-                  <span class="dt">cols =</span> cols_B) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_H, 
-                  <span class="dt">groups =</span> groups, 
-                  <span class="dt">boundary =</span> <span class="dv">1</span>,
-                  <span class="dt">bg =</span> bg_H, 
-                  <span class="dt">cols =</span> cols_H) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_groups">add_osm_groups</a></span> (dat_HP, 
-                  <span class="dt">groups =</span> groups, 
-                  <span class="dt">boundary =</span> <span class="dv">0</span>,
-                  <span class="dt">cols =</span> cols_H, 
-                  <span class="dt">bg =</span> bg_H, 
-                  <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b15.png">
-</div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_objects.html">add_osm_objects</a></span> (dat_P, </a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">                   <span class="dt">col =</span> col_park_out) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">                  <span class="dt">groups =</span> groups, </a>
+<a class="sourceLine" id="cb32-6" data-line-number="6">                  <span class="dt">boundary =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb32-7" data-line-number="7">                  <span class="dt">bg =</span> bg_B, </a>
+<a class="sourceLine" id="cb32-8" data-line-number="8">                  <span class="dt">cols =</span> cols_B) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_H, </a>
+<a class="sourceLine" id="cb32-10" data-line-number="10">                  <span class="dt">groups =</span> groups, </a>
+<a class="sourceLine" id="cb32-11" data-line-number="11">                  <span class="dt">boundary =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb32-12" data-line-number="12">                  <span class="dt">bg =</span> bg_H, </a>
+<a class="sourceLine" id="cb32-13" data-line-number="13">                  <span class="dt">cols =</span> cols_H) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_groups.html">add_osm_groups</a></span> (dat_HP, </a>
+<a class="sourceLine" id="cb32-15" data-line-number="15">                  <span class="dt">groups =</span> groups, </a>
+<a class="sourceLine" id="cb32-16" data-line-number="16">                  <span class="dt">boundary =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb32-17" data-line-number="17">                  <span class="dt">cols =</span> cols_H, </a>
+<a class="sourceLine" id="cb32-18" data-line-number="18">                  <span class="dt">bg =</span> bg_H, </a>
+<a class="sourceLine" id="cb32-19" data-line-number="19">                  <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-20" data-line-number="20"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b15.png"></p>
 <p>These encircling highways are included in the <code>london</code> data provided with <code>osmplotr</code>.</p>
 </div>
 </div>
@@ -412,15 +392,15 @@ bg_H &lt;-<span class="st"> 'gray60'</span></code></pre></div>
 </h1>
 <p>The <code>add_osm_surface</code> function enables a continuous data surface to be overlaid on a map. User-provided data is spatially interpolated across a map region and OSM items coloured according to a specified continuous colour gradient. The data must be provided as a data frame with three columns, ‘(x,y,z)’, where ‘(x,y)’ are the coordinates of points at which data are given, and ‘z’ are the values to be spatially interpolated across the map.</p>
 <p>A simple data frame can be constructed as</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">5</span>
-x &lt;-<span class="st"> </span><span class="kw">seq</span> (bbox [<span class="dv">1</span>, <span class="dv">1</span>], bbox [<span class="dv">1</span>, <span class="dv">2</span>], <span class="dt">length.out =</span> n)
-y &lt;-<span class="st"> </span><span class="kw">seq</span> (bbox [<span class="dv">2</span>, <span class="dv">1</span>], bbox [<span class="dv">2</span>, <span class="dv">2</span>], <span class="dt">length.out =</span> n)
-dat &lt;-<span class="st"> </span><span class="kw">data.frame</span> (
-    <span class="dt">x =</span> <span class="kw">as.vector</span> (<span class="kw">array</span> (x, <span class="dt">dim =</span> <span class="kw">c</span>(n, n))),
-    <span class="dt">y =</span> <span class="kw">as.vector</span> (<span class="kw">t</span> (<span class="kw">array</span> (y, <span class="dt">dim =</span> <span class="kw">c</span>(n, n)))),
-    <span class="dt">z =</span> x <span class="op">*</span><span class="st"> </span>y
-    )
-<span class="kw">head</span> (dat)</code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">x &lt;-<span class="st"> </span><span class="kw">seq</span> (bbox [<span class="dv">1</span>, <span class="dv">1</span>], bbox [<span class="dv">1</span>, <span class="dv">2</span>], <span class="dt">length.out =</span> n)</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">y &lt;-<span class="st"> </span><span class="kw">seq</span> (bbox [<span class="dv">2</span>, <span class="dv">1</span>], bbox [<span class="dv">2</span>, <span class="dv">2</span>], <span class="dt">length.out =</span> n)</a>
+<a class="sourceLine" id="cb33-4" data-line-number="4">dat &lt;-<span class="st"> </span><span class="kw">data.frame</span> (</a>
+<a class="sourceLine" id="cb33-5" data-line-number="5">    <span class="dt">x =</span> <span class="kw">as.vector</span> (<span class="kw">array</span> (x, <span class="dt">dim =</span> <span class="kw">c</span>(n, n))),</a>
+<a class="sourceLine" id="cb33-6" data-line-number="6">    <span class="dt">y =</span> <span class="kw">as.vector</span> (<span class="kw">t</span> (<span class="kw">array</span> (y, <span class="dt">dim =</span> <span class="kw">c</span>(n, n)))),</a>
+<a class="sourceLine" id="cb33-7" data-line-number="7">    <span class="dt">z =</span> x <span class="op">*</span><span class="st"> </span>y</a>
+<a class="sourceLine" id="cb33-8" data-line-number="8">    )</a>
+<a class="sourceLine" id="cb33-9" data-line-number="9"><span class="kw">head</span> (dat)</a></code></pre></div>
 <pre><code>##        x       y         z
 ## 1 -0.130 51.5100 -6.696300
 ## 2 -0.125 51.5100 -6.439063
@@ -429,89 +409,81 @@ dat &lt;-<span class="st"> </span><span class="kw">data.frame</span> (
 ## 5 -0.110 51.5100 -5.667200
 ## 6 -0.130 51.5125 -6.696300</code></pre>
 <p>And then passed to <code>add_osm_surface</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox,
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_B, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b16.png">
-</div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox,</a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb35-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb35-4" data-line-number="4">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb35-5" data-line-number="5">                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb35-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b16.png"></p>
 <p>At present, <code>add_osm_surface</code> generates an warning if it is applied more than once to any one kind of <code>Spatial</code> object (polygons or lines), as illustrated in the following code (in which both <code>dat_H</code> and <code>dat_HP</code> are of class <code>SpatialLinesDataFrame</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_HP, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_H, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>))</code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb36-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_HP, </a>
+<a class="sourceLine" id="cb36-3" data-line-number="3">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb36-4" data-line-number="4">                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb36-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_H, </a>
+<a class="sourceLine" id="cb36-6" data-line-number="6">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb36-7" data-line-number="7">                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>))</a></code></pre></div>
 <pre><code>## Scale for 'colour' is already present. Adding another scale for
 ## 'colour', which will replace the existing scale.</code></pre>
-<p><img src="data-maps_files/figure-html/unnamed-chunk-18-1.png" width="672"> This is because <code>add_osm_surface</code> creates new <code>ggplot2</code> aesthetic schemes for each kind of object, and these schemes are not intended to be modified or replaced within a single plot. The above map may still be printed, but the warning means that the last provided colour scheme will be applied to all objects of that class. This means that <code>osmplotr</code> can only overlay two distinct colour schemes: one for all objects of class <code>SpatialLines</code>, and a potentially different one for all objects of class <code>SpatialPolygons</code>.</p>
+<p><img src="data-maps_files/figure-html/unnamed-chunk-18-1.png" width="700"> This is because <code>add_osm_surface</code> creates new <code>ggplot2</code> aesthetic schemes for each kind of object, and these schemes are not intended to be modified or replaced within a single plot. The above map may still be printed, but the warning means that the last provided colour scheme will be applied to all objects of that class. This means that <code>osmplotr</code> can only overlay two distinct colour schemes: one for all objects of class <code>SpatialLines</code>, and a potentially different one for all objects of class <code>SpatialPolygons</code>.</p>
 <p>Of course, any number of additional objects may be overlaid with <code>add_osm_objects</code>, for example,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours</a></span> (<span class="kw">heat.colors</span> (<span class="dv">30</span>), <span class="op">-</span><span class="fl">0.2</span>)
-
-map &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_B, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_HP, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> cols_adj, 
-                   <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (dat_P, 
-                   <span class="dt">col =</span> <span class="kw">rgb</span> (<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_objects">add_osm_objects</a></span> (dat_H, 
-                   <span class="dt">col =</span> <span class="st">'gray60'</span>) 
-
-map <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b17.png">
-</div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adjust_colours.html">adjust_colours</a></span> (<span class="kw">heat.colors</span> (<span class="dv">30</span>), <span class="fl">-0.2</span>)</a>
+<a class="sourceLine" id="cb38-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb38-3" data-line-number="3">map &lt;-<span class="st"> </span><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb38-4" data-line-number="4">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb38-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb38-6" data-line-number="6">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb38-7" data-line-number="7">                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb38-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_HP, </a>
+<a class="sourceLine" id="cb38-9" data-line-number="9">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb38-10" data-line-number="10">                   <span class="dt">cols =</span> cols_adj, </a>
+<a class="sourceLine" id="cb38-11" data-line-number="11">                   <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb38-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_objects.html">add_osm_objects</a></span> (dat_P, </a>
+<a class="sourceLine" id="cb38-13" data-line-number="13">                   <span class="dt">col =</span> <span class="kw">rgb</span> (<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb38-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_objects.html">add_osm_objects</a></span> (dat_H, </a>
+<a class="sourceLine" id="cb38-15" data-line-number="15">                   <span class="dt">col =</span> <span class="st">'gray60'</span>) </a>
+<a class="sourceLine" id="cb38-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb38-17" data-line-number="17">map <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb38-18" data-line-number="18"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b17.png"></p>
 <div id="colourbar-legends-for-data-surfaces" class="section level2">
 <h2 class="hasAnchor">
 <a href="#colourbar-legends-for-data-surfaces" class="anchor"></a>2.1 Colourbar legends for data surfaces</h2>
 <p>A colourbar legend for the surface may be added with <code>add_colourbar</code>. As with <code>add_axes</code>, this function is provided separately to allow colourbars to be overlaid only after all desired map items have been added. The only parameters required for <code>add_colourbar</code> are the limits of the data (<code>zlims</code>) and the colours (along with the <code>map</code>, a modified version of which is returned).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_colourbar">add_colourbar</a></span> (<span class="dt">cols =</span> <span class="kw">terrain.colors</span> (<span class="dv">100</span>), 
-                 <span class="dt">zlims =</span> <span class="kw">range</span> (dat<span class="op">$</span>z)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b18.png">
-</div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">map <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/add_colourbar.html">add_colourbar</a></span> (<span class="dt">cols =</span> <span class="kw">terrain.colors</span> (<span class="dv">100</span>), </a>
+<a class="sourceLine" id="cb39-3" data-line-number="3">                 <span class="dt">zlims =</span> <span class="kw">range</span> (dat<span class="op">$</span>z)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b18.png"></p>
 <p>Note that the colours submitted to <code>add_colourbar</code> need not be the same as those used to plot the surface. (Although using different colours is rarely likely to be useful.) As for <code>add_axes</code>, and explained in the first vignette, <a href="https://cran.r-project.org/package=osmplotr">Basic maps</a>, the transparency of the boxes surrounding the elements of the colourbar may be controlled by specifying the value of <code>alpha</code>. Both alignment and position may also be adjusted, as illustrated in this example.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours</a></span> (<span class="kw">heat.colors</span> (<span class="dv">30</span>), <span class="op">-</span><span class="fl">0.2</span>)
-
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_B, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_HP, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> cols_adj, 
-                   <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">%&gt;%</span>
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_colourbar">add_colourbar</a></span> (<span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">100</span>), 
-               <span class="dt">zlims =</span> <span class="kw">range</span> (dat<span class="op">$</span>z),
-               <span class="dt">alpha =</span> <span class="fl">0.9</span>,
-               <span class="dt">vertical =</span> <span class="ot">FALSE</span>,
-               <span class="dt">barwidth =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.12</span>), 
-               <span class="dt">barlength =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.9</span>),
-               <span class="dt">text_col =</span> <span class="st">"blue"</span>, 
-               <span class="dt">fontsize =</span> <span class="dv">5</span>, 
-               <span class="dt">fontface =</span> <span class="dv">3</span>,
-               <span class="dt">fontfamily =</span> <span class="st">"Times"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_axes">add_axes</a></span> (<span class="dt">colour =</span> <span class="st">"blue"</span>, 
-            <span class="dt">fontsize =</span> <span class="dv">5</span>, 
-            <span class="dt">fontface =</span> <span class="dv">3</span>,
-            <span class="dt">fontfamily =</span> <span class="st">"Times"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b19.png">
-</div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adjust_colours.html">adjust_colours</a></span> (<span class="kw">heat.colors</span> (<span class="dv">30</span>), <span class="fl">-0.2</span>)</a>
+<a class="sourceLine" id="cb40-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb40-3" data-line-number="3"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb40-4" data-line-number="4">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb40-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb40-6" data-line-number="6">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb40-7" data-line-number="7">                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb40-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_HP, </a>
+<a class="sourceLine" id="cb40-9" data-line-number="9">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb40-10" data-line-number="10">                   <span class="dt">cols =</span> cols_adj, </a>
+<a class="sourceLine" id="cb40-11" data-line-number="11">                   <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb40-12" data-line-number="12"><span class="kw"><a href="../reference/add_colourbar.html">add_colourbar</a></span> (<span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">100</span>), </a>
+<a class="sourceLine" id="cb40-13" data-line-number="13">               <span class="dt">zlims =</span> <span class="kw">range</span> (dat<span class="op">$</span>z),</a>
+<a class="sourceLine" id="cb40-14" data-line-number="14">               <span class="dt">alpha =</span> <span class="fl">0.9</span>,</a>
+<a class="sourceLine" id="cb40-15" data-line-number="15">               <span class="dt">vertical =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb40-16" data-line-number="16">               <span class="dt">barwidth =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.12</span>), </a>
+<a class="sourceLine" id="cb40-17" data-line-number="17">               <span class="dt">barlength =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.9</span>),</a>
+<a class="sourceLine" id="cb40-18" data-line-number="18">               <span class="dt">text_col =</span> <span class="st">"blue"</span>, </a>
+<a class="sourceLine" id="cb40-19" data-line-number="19">               <span class="dt">fontsize =</span> <span class="dv">5</span>, </a>
+<a class="sourceLine" id="cb40-20" data-line-number="20">               <span class="dt">fontface =</span> <span class="dv">3</span>,</a>
+<a class="sourceLine" id="cb40-21" data-line-number="21">               <span class="dt">fontfamily =</span> <span class="st">"Times"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb40-22" data-line-number="22"><span class="st">  </span><span class="kw"><a href="../reference/add_axes.html">add_axes</a></span> (<span class="dt">colour =</span> <span class="st">"blue"</span>, </a>
+<a class="sourceLine" id="cb40-23" data-line-number="23">            <span class="dt">fontsize =</span> <span class="dv">5</span>, </a>
+<a class="sourceLine" id="cb40-24" data-line-number="24">            <span class="dt">fontface =</span> <span class="dv">3</span>,</a>
+<a class="sourceLine" id="cb40-25" data-line-number="25">            <span class="dt">fontfamily =</span> <span class="st">"Times"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb40-26" data-line-number="26"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b19.png"></p>
 <p>Both <code>barwidth</code> and <code>barlength</code> can be specified in terms of one or two numbers. A single value for <code>barwidth</code> determines its relative width (0-1) from the border (the right side if <code>vertical = TRUE</code> or the top if <code>vertical = FALSE</code>), while two values determine the relative start and end positions of the sides of the bar. A single value for <code>barlength</code> produces a bar of the given length centred in the middle of the map, while two values determine its respective upper and lower points (for <code>vertical = TRUE</code>) or left and right points (for <code>vertical = FALSE</code>).</p>
 <p>This example also demonstrates how colours, sizes, and other font characteristics of text labels can be specified (with <code>text_col</code> determining the colour of all elements of the colourbar other than the gradient itself). Finally, as for <code>add_axes</code>, the text labels of colourbars are not currently able to be rotated because <code>ggplot2</code> does not permit rotation for the <code>geom_label</code> function used to produce these labels.</p>
 </div>
@@ -520,28 +492,26 @@ map <span class="op">%&gt;%</span>
 <a href="#surfaces-and-data-perimeters" class="anchor"></a>2.1 Surfaces and data perimeters</h2>
 <p>It may often be that user-provided data only extend across a portion of a map, leaving a perimeter beyond the data boundary for which interpolation should not be applied. <code>add_osm_surface</code> has a <code>bg</code> parameter specifying a background colour for objects beyond the perimeter of the data surface. Passing this parameter to <code>add_osm_surface</code> causes objects beyond the data perimeter to be coloured within this ‘background’ colour.</p>
 <p>To illustrate, trim the above data to within a circular range of the centre of the map.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">sqrt</span> ( (dat<span class="op">$</span>x <span class="op">-</span><span class="st"> </span><span class="kw">mean</span> (dat<span class="op">$</span>x)) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(dat<span class="op">$</span>y <span class="op">-</span><span class="st"> </span><span class="kw">mean</span> (dat<span class="op">$</span>y)) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
-<span class="kw">range</span> (d)</code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">d &lt;-<span class="st"> </span><span class="kw">sqrt</span> ( (dat<span class="op">$</span>x <span class="op">-</span><span class="st"> </span><span class="kw">mean</span> (dat<span class="op">$</span>x)) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(dat<span class="op">$</span>y <span class="op">-</span><span class="st"> </span><span class="kw">mean</span> (dat<span class="op">$</span>y)) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb41-2" data-line-number="2"><span class="kw">range</span> (d)</a></code></pre></div>
 <pre><code>## [1] 0.00000000 0.01118034</code></pre>
 <p>Remove from <code>dat</code> all rows translating to <code>d&gt;0.01</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span>dat [<span class="kw">which</span> (d <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.01</span>), ]
-cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/adjust_colours">adjust_colours</a></span> (<span class="kw">heat.colors</span> (<span class="dv">30</span>), <span class="op">-</span><span class="fl">0.2</span>)
-
-<span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_B, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>),
-                   <span class="dt">bg =</span> <span class="st">"gray40"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_HP, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> cols_adj,
-                   <span class="dt">size =</span> <span class="kw">c</span> (<span class="fl">1.5</span>, <span class="fl">0.5</span>), 
-                   <span class="dt">bg =</span> <span class="st">"gray70"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
-<div class="figure">
-<img src="map_b20.png">
-</div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">dat &lt;-<span class="st"> </span>dat [<span class="kw">which</span> (d <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.01</span>), ]</a>
+<a class="sourceLine" id="cb43-2" data-line-number="2">cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="../reference/adjust_colours.html">adjust_colours</a></span> (<span class="kw">heat.colors</span> (<span class="dv">30</span>), <span class="fl">-0.2</span>)</a>
+<a class="sourceLine" id="cb43-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb43-4" data-line-number="4"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb43-5" data-line-number="5">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb43-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_B, </a>
+<a class="sourceLine" id="cb43-7" data-line-number="7">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb43-8" data-line-number="8">                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>),</a>
+<a class="sourceLine" id="cb43-9" data-line-number="9">                   <span class="dt">bg =</span> <span class="st">"gray40"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb43-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_HP, </a>
+<a class="sourceLine" id="cb43-11" data-line-number="11">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb43-12" data-line-number="12">                   <span class="dt">cols =</span> cols_adj,</a>
+<a class="sourceLine" id="cb43-13" data-line-number="13">                   <span class="dt">size =</span> <span class="kw">c</span> (<span class="fl">1.5</span>, <span class="fl">0.5</span>), </a>
+<a class="sourceLine" id="cb43-14" data-line-number="14">                   <span class="dt">bg =</span> <span class="st">"gray70"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb43-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
+<p><img src="map_b20.png"></p>
 <p>(The perimeter is irregular because of the positions of the points in <code>dat</code>.)</p>
 </div>
 <div id="further-control-of-surface-appearance" class="section level2">
@@ -549,35 +519,32 @@ cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdoc
 <a href="#further-control-of-surface-appearance" class="anchor"></a>2.3 Further control of surface appearance</h2>
 <p>The final <code>add_osm_surface</code> call in the above code (for <code>dat_HP</code>) illustrates additional parameters that may be passed for further control of map appearance. In this case, the two <code>size</code> parameters control the size of the lines within the data surface and beyond its perimeter. Single values may also be passed, in which case they determine the width of lines in both cases. One or two <code>shape</code> parameters may also be passed, with these also determining the shapes of <code>SpatialPoints</code>, as illustrated in the next example, which overlays trees on the map.</p>
 <p>Both lines and points use the same <code>ggplot2</code> colour gradient, and so adding the second of these again generates an error and means that the actual colour scheme will be determined by the final call to add either lines or points.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat_T &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/extract_osm_objects">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'tree'</span>, <span class="dt">bbox =</span> bbox)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/osm_basemap">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, 
-             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_HP, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">terrain.colors</span> (<span class="dv">30</span>),
-                   <span class="dt">size =</span> <span class="kw">c</span> (<span class="fl">1.5</span>, <span class="fl">0.5</span>), 
-                   <span class="dt">bg =</span> <span class="st">"gray70"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_H, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">terrain.colors</span> (<span class="dv">30</span>),
-                   <span class="dt">size =</span> <span class="kw">c</span> (<span class="dv">1</span>, <span class="fl">0.5</span>), 
-                   <span class="dt">bg =</span> <span class="st">"gray70"</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/add_osm_surface">add_osm_surface</a></span> (dat_T, 
-                   <span class="dt">dat =</span> dat, 
-                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>),
-                   <span class="dt">bg =</span> <span class="st">"lawngreen"</span>, 
-                   <span class="dt">size =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">2</span>), 
-                   <span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">8</span>, <span class="dv">1</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/osmplotr/topics/print_osm_map">print_osm_map</a></span> ()</code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">dat_T &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_osm_objects.html">extract_osm_objects</a></span> (<span class="dt">key =</span> <span class="st">'tree'</span>, <span class="dt">bbox =</span> bbox)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="kw"><a href="../reference/osm_basemap.html">osm_basemap</a></span> (<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb45-2" data-line-number="2">             <span class="dt">bg =</span> <span class="st">'gray20'</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_HP, </a>
+<a class="sourceLine" id="cb45-4" data-line-number="4">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb45-5" data-line-number="5">                   <span class="dt">cols =</span> <span class="kw">terrain.colors</span> (<span class="dv">30</span>),</a>
+<a class="sourceLine" id="cb45-6" data-line-number="6">                   <span class="dt">size =</span> <span class="kw">c</span> (<span class="fl">1.5</span>, <span class="fl">0.5</span>), </a>
+<a class="sourceLine" id="cb45-7" data-line-number="7">                   <span class="dt">bg =</span> <span class="st">"gray70"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_H, </a>
+<a class="sourceLine" id="cb45-9" data-line-number="9">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb45-10" data-line-number="10">                   <span class="dt">cols =</span> <span class="kw">terrain.colors</span> (<span class="dv">30</span>),</a>
+<a class="sourceLine" id="cb45-11" data-line-number="11">                   <span class="dt">size =</span> <span class="kw">c</span> (<span class="dv">1</span>, <span class="fl">0.5</span>), </a>
+<a class="sourceLine" id="cb45-12" data-line-number="12">                   <span class="dt">bg =</span> <span class="st">"gray70"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="../reference/add_osm_surface.html">add_osm_surface</a></span> (dat_T, </a>
+<a class="sourceLine" id="cb45-14" data-line-number="14">                   <span class="dt">dat =</span> dat, </a>
+<a class="sourceLine" id="cb45-15" data-line-number="15">                   <span class="dt">cols =</span> <span class="kw">heat.colors</span> (<span class="dv">30</span>),</a>
+<a class="sourceLine" id="cb45-16" data-line-number="16">                   <span class="dt">bg =</span> <span class="st">"lawngreen"</span>, </a>
+<a class="sourceLine" id="cb45-17" data-line-number="17">                   <span class="dt">size =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb45-18" data-line-number="18">                   <span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">8</span>, <span class="dv">1</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-19" data-line-number="19"><span class="st">  </span><span class="kw"><a href="../reference/print_osm_map.html">print_osm_map</a></span> ()</a></code></pre></div>
 <pre><code>## Scale for 'colour' is already present. Adding another scale for
 ## 'colour', which will replace the existing scale.
 ## Scale for 'colour' is already present. Adding another scale for
 ## 'colour', which will replace the existing scale.</code></pre>
-<div class="figure">
-<img src="map_b21.png">
-</div>
+<p><img src="map_b21.png"></p>
 <p>The first two colour specifications (<code>terrain.colors</code>) have been ignored, and all added items are coloured according to the final value of <code>heat.colors (30)</code>. Other aspects such as line sizes and point shapes are nevertheless respected.</p>
-</div>
 </div>
 </div>
   </div>
@@ -613,15 +580,17 @@ cols_adj &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdoc
 
 
       <footer><div class="copyright">
-  <p>Developed by Mark Padgham.</p>
+  <p>Developed by Mark Padgham, Richard Beare.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

@@ -18,13 +18,39 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="london — london" />
+
+<meta property="og:description" content="A list of Simple Features (sf) data.frame objects
+containing OpenStreetMap polygons, lines, and points for various
+OpenStreetMap structures in a small part of central London, U.K.  (bbox
+= -0.13, 51.51, -0.11, 51.52). The list includes:
+dat_H: 974 non-primary highways as linestrings
+dat_HP: 159 primary highways as linestrings
+dat_BNR: 1,716 non-residential buildings as polygons
+dat_BR: 43 residential buildings as polygons
+dat_BC: 67 commerical buildings as polygons
+dat_A: 372 amenities as polygons
+dat_P: 13 parks as polygons
+dat_T: 688 trees as points
+dat_RFH: 1 polygon representing Royal Festival Hall
+dat_ST: 1 polygon representing 150 Stamford Street
+" />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +73,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">osmplotr</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">osmplotr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -70,6 +100,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -77,12 +108,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>london</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/osmplotr/blob/master/R/osmplotr.R'><code>R/osmplotr.R</code></a></small>
+    <div class="hidden name"><code>london.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>A list of <code>Simple Features</code> (<code>sf</code>) <code>data.frame</code> objects
 containing OpenStreetMap polygons, lines, and points for various
@@ -100,6 +134,7 @@ OpenStreetMap structures in a small part of central London, U.K.  (<code>bbox
 <li><p><code>dat_ST</code>: 1 polygon representing 150 Stamford Street</p></li>
 </ol>
     
+    </div>
 
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -128,15 +163,18 @@ their names, geometries, and their OSM identification numbers.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Mark Padgham.</p>
+  <p>Developed by Mark Padgham, Richard Beare.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+
