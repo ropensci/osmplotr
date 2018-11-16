@@ -43,6 +43,7 @@ articles:
     contents:
     - basic-maps
     - data-maps
+    - maps-with-ocean
 
 navbar:
   title: osmplotr

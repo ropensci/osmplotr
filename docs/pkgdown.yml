@@ -1,0 +1,8 @@
+pandoc: 2.3.1
+pkgdown: 1.1.0
+pkgdown_sha: ~
+articles:
+  basic-maps: basic-maps.html
+  data-maps: data-maps.html
+  maps-with-ocean: maps-with-ocean.html
+
