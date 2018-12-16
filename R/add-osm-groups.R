@@ -108,7 +108,7 @@
 #' }
 
 add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
-                            boundary = -1, size, shape, border_width,
+                            boundary = -1, size, shape, border_width = 1,
                             colmat, rotate)
 {
     # ---------------  sanity checks and warnings  ---------------
@@ -761,42 +761,38 @@ map_plus_spLinedf_grps <- function (map, xyflat, aes, cols, size, shape) #nolint
 #' draw convex hulls around groups on map
 #'
 #' @noRd
-map_plus_hulls <- function (map, border_width, groups, xyflat, cols)
+map_plus_hulls <- function (map, border_width = 1, groups, xyflat, cols)
 {
 
     id <- NULL # suppress R CMD check note for aes (..,`group = id`) below
-    if (!missing (border_width)) # draw hulls around entire groups
+    if (!is.numeric (border_width))
+        return (map)
+
+    bdry <- list ()
+    for (i in seq (groups))
     {
-        if (!is.numeric (border_width))
-            return (map)
-
-        bdry <- list ()
-        for (i in seq (groups))
+        indx <- which (xyflat$col == i) # col = group membership
+        if (length (indx) > 1)
         {
-            indx <- which (xyflat$col == i) # col = group membership
-            if (length (indx) > 1)
-            {
-                x <- xyflat$lon [indx]
-                y <- xyflat$lat [indx]
-                indx <- which (!duplicated (cbind (x, y)))
-                x <- x [indx]
-                y <- y [indx]
-                xy2 <- spatstat::ppp (x, y, xrange = range (x),
-                                      yrange = range (y))
-                ch <- spatstat::convexhull (xy2)
-                bdry [[i]] <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
-            }
-            bdry [[i]] <- cbind (i, bdry [[i]])
+            x <- xyflat$lon [indx]
+            y <- xyflat$lat [indx]
+            indx <- which (!duplicated (cbind (x, y)))
+            x <- x [indx]
+            y <- y [indx]
+            xy2 <- spatstat::ppp (x, y, xrange = range (x),
+                                  yrange = range (y))
+            ch <- spatstat::convexhull (xy2)
+            bdry [[i]] <- cbind (i, ch$bdry[[1]]$x, ch$bdry[[1]]$y)
         }
-        bdry <- data.frame (do.call (rbind, bdry))
-        names (bdry) <- c ("id", "x", "y")
-
-        aes <- ggplot2::aes (x = x, y = y, group = id)
-        map <- map + ggplot2::geom_polygon (data = bdry, mapping = aes,
-                                            colour = cols [bdry$id],
-                                            fill = "transparent",
-                                            size = border_width)
     }
+    bdry <- data.frame (do.call (rbind, bdry))
+    names (bdry) <- c ("id", "x", "y")
+
+    aes <- ggplot2::aes (x = x, y = y, group = id)
+    map <- map + ggplot2::geom_polygon (data = bdry, mapping = aes,
+                                        colour = cols [bdry$id],
+                                        fill = "transparent",
+                                        size = border_width)
 
     return (map)
 }
