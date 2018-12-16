@@ -36,9 +36,9 @@ structures$cols [2] <- adjust_colours (structures$cols [2], adj = -0.2)
 # Plot these structures:
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 \dontrun{
-dat_B <- extract_osm_objects (value = 'building', bbox = bbox)
-dat_H <- extract_osm_objects (value = 'highway', bbox = bbox)
-dat_P <- extract_osm_objects (value = 'park', bbox = bbox)
+dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
+dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
+dat_P <- extract_osm_objects (key = 'park', bbox = bbox)
 }
 # These data are also included in the 'london' data of 'osmplotr'
 osm_data <- list (dat_B = london$dat_BNR, dat_H = london$dat_HP, dat_P = london$dat_P)
