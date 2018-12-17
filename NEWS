@@ -1,3 +1,13 @@
+osmplotr v0.3.1.099
+===============
+
+Major changes
+-------
+
+Minor changes
+-------
+* 'verbose' parameter of 'extract_osm_objects' renamed to 'quiet'
+
 osmplotr v0.3.1
 ===============
 

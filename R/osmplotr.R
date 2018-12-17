@@ -71,7 +71,7 @@
 #' @importFrom grDevices bmp jpeg pictex png postscript svg tiff 
 #' @importFrom httr content GET
 #' @importFrom methods slot as is hasArg
-#' @importFrom osmdata add_feature opq osmdata_sf osmdata_sp
+#' @importFrom osmdata add_osm_feature opq osmdata_sf osmdata_sp
 #' @importFrom rgeos gIntersection
 #' @importFrom sp coordinates point.in.polygon Line SpatialLines SpatialPoints 
 #' @importFrom spatstat convexhull idw ppp Smooth

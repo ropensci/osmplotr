@@ -5,7 +5,7 @@
 \title{extract_osm_objects}
 \usage{
 extract_osm_objects(bbox, key, value, extra_pairs, return_type,
-  sf = TRUE, geom_only = FALSE, verbose = FALSE)
+  sf = TRUE, geom_only = FALSE, quiet = FALSE)
 }
 \arguments{
 \item{bbox}{the bounding box within which all key-value objects should be
@@ -36,7 +36,7 @@ otherwise Spatial (\code{sp}) objects.}
 \item{geom_only}{If \code{TRUE}, return only those OSM data describing the
 geometric object; otherwise return all data describing each object.}
 
-\item{verbose}{If \code{TRUE}, provides notification of progress.}
+\item{quiet}{If \code{FALSE}, provides notification of progress.}
 }
 \value{
 Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
