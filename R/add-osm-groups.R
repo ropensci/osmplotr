@@ -779,10 +779,12 @@ map_plus_hulls <- function (map, border_width = 1, groups, xyflat, cols)
             indx <- which (!duplicated (cbind (x, y)))
             x <- x [indx]
             y <- y [indx]
-            xy2 <- spatstat::ppp (x, y, xrange = range (x),
-                                  yrange = range (y))
-            ch <- spatstat::convexhull (xy2)
-            bdry [[i]] <- cbind (i, ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+            if (length (x) > 2) {
+                xy2 <- spatstat::ppp (x, y, xrange = range (x),
+                                      yrange = range (y))
+                ch <- spatstat::convexhull (xy2)
+                bdry [[i]] <- cbind (i, ch$bdry[[1]]$x, ch$bdry[[1]]$y)
+            }
         }
     }
     bdry <- data.frame (do.call (rbind, bdry))
