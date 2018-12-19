@@ -8,11 +8,8 @@ required, rather than their sizes.
 
 ## Test environments
 
-This submission generates NO notes on:
+Other than that above, this submission generates NO notes on:
 * Linux (via Travis-ci): R-oldrel, R-release, R-devel
 * OSX (via Travis-ci): R-oldrel R-release
 * Windows Visual Studio 2015 x64 (via appveyor)
 * win-builder: R-oldrelease, R-release, R-devel
-
-Package also checked using both local memory sanitzer and `rocker/r-devel-san`
-with clean results. 

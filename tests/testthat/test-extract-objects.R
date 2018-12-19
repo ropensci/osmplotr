@@ -25,9 +25,9 @@ if (curl::has_internet () & test_all)
 {
     test_that ('invalid key', {
                bbox <- get_bbox (c (-0.12, 51.51, -0.11, 51.52))
-               expect_warning (suppressMessages (
+               expect_error (suppressMessages (
                             extract_osm_objects (bbox = bbox, key = 'aaa')),
-                               'No valid data returned')
+                               'argument is of length zero')
     })
 
     test_that ('valid key', {
