@@ -6,7 +6,8 @@
 
 .onLoad <- function(libname, pkgname) {
     if (!requireNamespace ("sf"))
-        msg <- paste0 ("NOTE: 'sf' package must be loaded for 'sf' methods ",
-                       "to work")
-    packageStartupMessage(msg)
+    {
+        packageStartupMessage ("NOTE: 'sf' package must be loaded for 'sf' ",
+                               "methods to work")
+    }
 }
