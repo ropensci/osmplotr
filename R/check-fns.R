@@ -16,6 +16,10 @@ get_obj_type <- function (obj)
 {
     if (is (obj, 'sf'))
     {
+        if(!inherits(obj$geometry, "sfc")) 
+            warning("object class is sf, but the geometry column class is '",
+            toString(class(obj$geometry)), "' instead of 'sfc'.\n",
+            "This can occur e.g. after subsetting sf objects without the sf package loaded.")
         i <- which (grepl ('sfc_', class (obj$geometry)))
         obj_type <- tolower (strsplit (class (obj$geometry) [i],
                                        'sfc_') [[1]] [2])
