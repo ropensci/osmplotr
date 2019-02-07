@@ -20,7 +20,7 @@
 #' \code{return_type = 'line'} will, for example, always return a
 #' SpatialLinesDataFrame. If not specified, defaults to 'sensible' values (for
 #' example, \code{lines} for highways, \code{points} for trees, \code{polygons}
-#' for bulidings).
+#' for buildings).
 #' @param sf If \code{TRUE}, return Simple Features (\code{sf}) objects;
 #' otherwise Spatial (\code{sp}) objects.
 #' @param geom_only If \code{TRUE}, return only those OSM data describing the
