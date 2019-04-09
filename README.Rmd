@@ -93,13 +93,13 @@ devtools::load_all ('.', export_all = FALSE)
 devtools::load_all ("../osmdata", export_all = FALSE)
 bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
 q0 <- opq (bbox)
-q1 <- add_feature (q0, key = "building")
+q1 <- add_osm_feature (q0, key = "building")
 dat_B <- osmdata_sp (q1, quiet = FALSE)$osm_polygons
-q1 <- add_feature (q0, key = "highway")
+q1 <- add_osm_feature (q0, key = "highway")
 dat_H <- osmdata_sp (q1, quiet = FALSE)$osm_lines
-q1 <- add_feature (q0, key = "leisure", value = "park")
+q1 <- add_osm_feature (q0, key = "leisure", value = "park")
 dat_P <- osmdata_sp (q1, quiet = FALSE)$osm_polygons
-q1 <- add_feature (q0, key = "landuse", value = "grass")
+q1 <- add_osm_feature (q0, key = "landuse", value = "grass")
 dat_G <- osmdata_sp (q1, quiet = FALSE)$osm_polygons
 london2 <- list (dat_B = dat_B, dat_H = dat_H, dat_P = dat_P, dat_G = dat_G)
 save (london2, file = "london2.rda")
