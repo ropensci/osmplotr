@@ -155,8 +155,8 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
         }
     }
 
-    if (nrow (obj) == 0)
-        warning ('No valid data returned')
+    if (NROW (obj) == 0)
+        warning ('No valid data returned. (Maybe try a different 'return_type')')
 
     if (geom_only)
     {
