@@ -2,7 +2,7 @@
 % Please edit documentation in R/add-osm-surface.R
 \name{add_osm_surface}
 \alias{add_osm_surface}
-\title{add_osm_suface}
+\title{add_osm_surface}
 \usage{
 add_osm_surface(map, obj, dat, method = "idw", grid_size = 100,
   cols = heat.colors(30), bg, size, shape)
