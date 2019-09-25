@@ -28,7 +28,7 @@ to the overpass API.}
 \code{return_type = 'line'} will, for example, always return a
 SpatialLinesDataFrame. If not specified, defaults to 'sensible' values (for
 example, \code{lines} for highways, \code{points} for trees, \code{polygons}
-for bulidings).}
+for buildings).}
 
 \item{sf}{If \code{TRUE}, return Simple Features (\code{sf}) objects;
 otherwise Spatial (\code{sp}) objects.}
