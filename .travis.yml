@@ -3,22 +3,16 @@ cache: packages
 
 matrix:
     include:
-        - r: oldrel
-          os: linux
-          dist: trusty # 14.04
         - r: release
-          os: linux
-          dist: trusty
-          env: R_CODECOV=true
+          after_success:
+              - Rscript -e "covr::codecov()"
         - r: devel
-          os: linux
-          dist: trusty
         - r: oldrel
-          os: osx
-        - r: release
-          os: osx
-          #- r: devel
-          #os: osx
+        - os: osx
+          r: release
+    allow_failures:
+        - os: osx
+          r: release
 
 addons:
   apt:
@@ -36,6 +30,3 @@ notifications:
     on_failure: change
 
 r_packages: covr
-
-after_success:
-      - Rscript -e 'covr::codecov()'
