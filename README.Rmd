@@ -30,7 +30,7 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 [![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/onboarding/issues/27)
 
-![](./figure/map1.png)
+![](./man/figures/map1.png)
 
 R package to produce visually impressive customisable images of OpenStreetMap
 (OSM) data downloaded internally from the 
@@ -90,7 +90,7 @@ devtools::load_all ('.', export_all = FALSE)
     ```
 
 ```{r london2, echo = FALSE, eval = FALSE}
-devtools::load_all ("../osmdata", export_all = FALSE)
+library (osmdata)
 bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
 q0 <- opq (bbox)
 q1 <- add_osm_feature (q0, key = "building")
@@ -152,7 +152,7 @@ print_osm_map (map)
 print_osm_map (map, file = 'map2.png', width = 600, units = 'px', dpi = 72)
 ```
 
-![](./figure/map2.png)
+![](./man/figures/map2.png)
 
 ---------------
 
@@ -180,7 +180,7 @@ print_osm_map (map)
 ```{r map3-print, eval = FALSE, echo = FALSE}
 print_osm_map (map, filename = 'map3.png', width = 600, units = 'px', dpi = 72)
 ```
-![](./figure/map3.png)
+![](./man/figures/map3.png)
 
 Note the `border = 0` argument on the last call divides the park polygons
 precisely along the border. The same map highlighted in dark-on-light:
@@ -193,7 +193,7 @@ print_osm_map (map)
 ```{r map4-print, eval = FALSE, echo = FALSE}
 print_osm_map (map, filename = 'map4.png', width = 600, units = 'px', dpi = 72)
 ```
-![](./figure/map4.png)
+![](./man/figures/map4.png)
 
 ---------------
 
@@ -225,7 +225,7 @@ print_osm_map (map)
 ```{r map5-print, eval = FALSE, echo = FALSE}
 print_osm_map (map, filename = 'map5.png', width = 600, units = 'px', dpi = 72)
 ```
-![](./figure/map5.png)
+![](./man/figures/map5.png)
 
 ---------------
 
@@ -268,7 +268,7 @@ print_osm_map (map)
 ```{r map6-print, eval = FALSE, echo = FALSE}
 print_osm_map (map, filename = 'map6.png', width = 600, units = 'px', dpi = 72)
 ```
-![](./figure/map6.png)
+![](./man/figures/map6.png)
 
 
 ---------------
@@ -328,7 +328,7 @@ map2 <- map2 + ggplot2::geom_text (dat = lab_dat, mapping = aes, size = 45,
 print_osm_map (map2, filename = 'map1.png', width = 800, units = 'px',
                dpi = 72)
 ```
-![](./figure/map7.png)
+![](./man/figures/map7.png)
 
 ---------------
 

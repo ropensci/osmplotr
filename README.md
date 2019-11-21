@@ -1,4 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 [![Build
 Status](https://travis-ci.org/ropensci/osmplotr.svg?branch=master)](https://travis-ci.org/ropensci/osmplotr)
 [![Build
@@ -9,7 +10,7 @@ Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 [![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/onboarding/issues/27)
 
-![](./figure/map1.png)
+![](./man/figures/map1.png)
 
 R package to produce visually impressive customisable images of
 OpenStreetMap (OSM) data downloaded internally from the [overpass
@@ -117,7 +118,7 @@ map <- add_osm_objects (map, dat_G, col = 'darkseagreen1')
 print_osm_map (map)
 ```
 
-![](./figure/map2.png)
+![](./man/figures/map2.png)
 
 ------------------------------------------------------------------------
 
@@ -147,7 +148,7 @@ map <- add_osm_groups (map, london$dat_P, groups = pts, cols = 'darkseagreen1',
 print_osm_map (map)
 ```
 
-![](./figure/map3.png)
+![](./man/figures/map3.png)
 
 Note the `border = 0` argument on the last call divides the park
 polygons precisely along the border. The same map highlighted in
@@ -160,7 +161,7 @@ map <- add_osm_groups (map, dat_H, groups = pts, cols = 'gray20', bg = 'gray70')
 print_osm_map (map)
 ```
 
-![](./figure/map4.png)
+![](./man/figures/map4.png)
 
 ------------------------------------------------------------------------
 
@@ -192,7 +193,7 @@ map <- add_osm_groups (map, dat_B, groups = groups,
 print_osm_map (map)
 ```
 
-![](./figure/map5.png)
+![](./man/figures/map5.png)
 
 ------------------------------------------------------------------------
 
@@ -237,7 +238,7 @@ map <- add_osm_groups (map, dat_H, groups = groups, boundary = 0,
 print_osm_map (map)
 ```
 
-![](./figure/map6.png)
+![](./man/figures/map6.png)
 
 ------------------------------------------------------------------------
 
@@ -269,7 +270,7 @@ map <- add_axes (map)
 print_osm_map (map)
 ```
 
-![](./figure/map7.png)
+![](./man/figures/map7.png)
 
 ------------------------------------------------------------------------
 
