@@ -10,7 +10,11 @@ Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 [![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/onboarding/issues/27)
 
+<!--
 ![](./man/figures/map1.png)
+-->
+
+<img src="man/figures/map1.png" width = "100%"/>
 
 R package to produce visually impressive customisable images of
 OpenStreetMap (OSM) data downloaded internally from the [overpass
@@ -118,7 +122,11 @@ map <- add_osm_objects (map, dat_G, col = 'darkseagreen1')
 print_osm_map (map)
 ```
 
+<!--
 ![](./man/figures/map2.png)
+-->
+
+<img src="man/figures/map2.png" width = "80%"/>
 
 ------------------------------------------------------------------------
 
@@ -148,7 +156,11 @@ map <- add_osm_groups (map, london$dat_P, groups = pts, cols = 'darkseagreen1',
 print_osm_map (map)
 ```
 
+<!--
 ![](./man/figures/map3.png)
+-->
+
+<img src="man/figures/map3.png" width = "80%"/>
 
 Note the `border = 0` argument on the last call divides the park
 polygons precisely along the border. The same map highlighted in
@@ -161,7 +173,11 @@ map <- add_osm_groups (map, dat_H, groups = pts, cols = 'gray20', bg = 'gray70')
 print_osm_map (map)
 ```
 
+<!--
 ![](./man/figures/map4.png)
+-->
+
+<img src="man/figures/map4.png" width = "80%"/>
 
 ------------------------------------------------------------------------
 
@@ -193,7 +209,11 @@ map <- add_osm_groups (map, dat_B, groups = groups,
 print_osm_map (map)
 ```
 
+<!--
 ![](./man/figures/map5.png)
+-->
+
+<img src="man/figures/map5.png" width = "80%"/>
 
 ------------------------------------------------------------------------
 
@@ -238,7 +258,11 @@ map <- add_osm_groups (map, dat_H, groups = groups, boundary = 0,
 print_osm_map (map)
 ```
 
+<!--
 ![](./man/figures/map6.png)
+-->
+
+<img src="man/figures/map6.png" width = "80%"/>
 
 ------------------------------------------------------------------------
 
@@ -270,7 +294,11 @@ map <- add_axes (map)
 print_osm_map (map)
 ```
 
+<!--
 ![](./man/figures/map7.png)
+-->
+
+<img src="man/figures/map7.png" width = "80%"/>
 
 ------------------------------------------------------------------------
 

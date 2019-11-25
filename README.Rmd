@@ -30,7 +30,10 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 [![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/onboarding/issues/27)
 
+<!--
 ![](./man/figures/map1.png)
+-->
+<img src="man/figures/map1.png" width = "100%"/>
 
 R package to produce visually impressive customisable images of OpenStreetMap
 (OSM) data downloaded internally from the 
@@ -152,7 +155,10 @@ print_osm_map (map)
 print_osm_map (map, file = 'map2.png', width = 600, units = 'px', dpi = 72)
 ```
 
+<!--
 ![](./man/figures/map2.png)
+-->
+<img src="man/figures/map2.png" width = "80%"/>
 
 ---------------
 
@@ -180,7 +186,10 @@ print_osm_map (map)
 ```{r map3-print, eval = FALSE, echo = FALSE}
 print_osm_map (map, filename = 'map3.png', width = 600, units = 'px', dpi = 72)
 ```
+<!--
 ![](./man/figures/map3.png)
+-->
+<img src="man/figures/map3.png" width = "80%"/>
 
 Note the `border = 0` argument on the last call divides the park polygons
 precisely along the border. The same map highlighted in dark-on-light:
@@ -193,7 +202,10 @@ print_osm_map (map)
 ```{r map4-print, eval = FALSE, echo = FALSE}
 print_osm_map (map, filename = 'map4.png', width = 600, units = 'px', dpi = 72)
 ```
+<!--
 ![](./man/figures/map4.png)
+-->
+<img src="man/figures/map4.png" width = "80%"/>
 
 ---------------
 
@@ -225,7 +237,10 @@ print_osm_map (map)
 ```{r map5-print, eval = FALSE, echo = FALSE}
 print_osm_map (map, filename = 'map5.png', width = 600, units = 'px', dpi = 72)
 ```
+<!--
 ![](./man/figures/map5.png)
+-->
+<img src="man/figures/map5.png" width = "80%"/>
 
 ---------------
 
@@ -268,7 +283,10 @@ print_osm_map (map)
 ```{r map6-print, eval = FALSE, echo = FALSE}
 print_osm_map (map, filename = 'map6.png', width = 600, units = 'px', dpi = 72)
 ```
+<!--
 ![](./man/figures/map6.png)
+-->
+<img src="man/figures/map6.png" width = "80%"/>
 
 
 ---------------
@@ -328,7 +346,10 @@ map2 <- map2 + ggplot2::geom_text (dat = lab_dat, mapping = aes, size = 45,
 print_osm_map (map2, filename = 'map1.png', width = 800, units = 'px',
                dpi = 72)
 ```
+<!--
 ![](./man/figures/map7.png)
+-->
+<img src="man/figures/map7.png" width = "80%"/>
 
 ---------------
 
