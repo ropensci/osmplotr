@@ -4,8 +4,16 @@
 \alias{extract_osm_objects}
 \title{extract_osm_objects}
 \usage{
-extract_osm_objects(bbox, key, value, extra_pairs, return_type,
-  sf = TRUE, geom_only = FALSE, quiet = FALSE)
+extract_osm_objects(
+  bbox,
+  key,
+  value,
+  extra_pairs,
+  return_type,
+  sf = TRUE,
+  geom_only = FALSE,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{bbox}{the bounding box within which all key-value objects should be

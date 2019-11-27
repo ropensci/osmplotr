@@ -4,9 +4,20 @@
 \alias{add_colourbar}
 \title{add_colorbar}
 \usage{
-add_colourbar(map, barwidth = 0.02, barlength = 0.7, zlims, cols,
-  vertical = TRUE, alpha = 0.4, text_col = "black", fontsize = 3,
-  fontface, fontfamily, ...)
+add_colourbar(
+  map,
+  barwidth = 0.02,
+  barlength = 0.7,
+  zlims,
+  cols,
+  vertical = TRUE,
+  alpha = 0.4,
+  text_col = "black",
+  fontsize = 3,
+  fontface,
+  fontfamily,
+  ...
+)
 }
 \arguments{
 \item{map}{A \code{ggplot2} object to which the colourbar is to be added.}

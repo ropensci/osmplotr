@@ -4,8 +4,15 @@
 \alias{print_osm_map}
 \title{print_osm_map}
 \usage{
-print_osm_map(map, width, height, filename, device, units = c("in", "cm",
-  "mm", "px"), dpi = 300)
+print_osm_map(
+  map,
+  width,
+  height,
+  filename,
+  device,
+  units = c("in", "cm", "mm", "px"),
+  dpi = 300
+)
 }
 \arguments{
 \item{map}{The map to be printed; a \code{ggplot2} object produced by

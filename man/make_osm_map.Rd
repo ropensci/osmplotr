@@ -4,8 +4,12 @@
 \alias{make_osm_map}
 \title{make_osm_map}
 \usage{
-make_osm_map(bbox, osm_data, structures = osm_structures(),
-  dat_prefix = "dat_")
+make_osm_map(
+  bbox,
+  osm_data,
+  structures = osm_structures(),
+  dat_prefix = "dat_"
+)
 }
 \arguments{
 \item{bbox}{The bounding box for the map.  A 2-by-2 matrix of 4 elements with

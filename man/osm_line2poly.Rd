@@ -53,8 +53,8 @@ coast <- extract_osm_objects (bbox = bb, key = "natural", value = "coastline",
                               return_type = "line")
 coast <- osm_line2poly (coast, bbox = bb)
 # The following map then colours in just the ocean:
-map <- osm_basemap (bbox = bb) \%>\%
-    add_osm_objects (coast$sea, col = "lightsteelblue") \%>\%
+map <- osm_basemap (bbox = bb) %>%
+    add_osm_objects (coast$sea, col = "lightsteelblue") %>%
     print_osm_map ()
 }
 }

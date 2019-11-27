@@ -3,7 +3,6 @@
 \docType{package}
 \name{osmplotr}
 \alias{osmplotr}
-\alias{osmplotr-package}
 \title{osmplotr.}
 \description{
 Produces customisable images of OpenStreetMap (OSM) data and enables data

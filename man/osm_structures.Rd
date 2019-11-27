@@ -4,8 +4,11 @@
 \alias{osm_structures}
 \title{osm_structures}
 \usage{
-osm_structures(structures = c("building", "amenity", "waterway", "grass",
-  "natural", "park", "highway", "boundary", "tree"), col_scheme = "dark")
+osm_structures(
+  structures = c("building", "amenity", "waterway", "grass", "natural", "park",
+    "highway", "boundary", "tree"),
+  col_scheme = "dark"
+)
 }
 \arguments{
 \item{structures}{The vector of types of structures (defaults listed in

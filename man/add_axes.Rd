@@ -4,8 +4,16 @@
 \alias{add_axes}
 \title{add_axes}
 \usage{
-add_axes(map, colour = "black", pos = c(0.02, 0.03), alpha = 0.4,
-  fontsize = 3, fontface, fontfamily, ...)
+add_axes(
+  map,
+  colour = "black",
+  pos = c(0.02, 0.03),
+  alpha = 0.4,
+  fontsize = 3,
+  fontface,
+  fontfamily,
+  ...
+)
 }
 \arguments{
 \item{map}{A \code{ggplot2} object to which the axes are to be added.}
