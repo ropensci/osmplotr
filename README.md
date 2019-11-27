@@ -5,16 +5,15 @@ Status](https://travis-ci.org/ropensci/osmplotr.svg?branch=master)](https://trav
 [![Build
 status](https://ci.appveyor.com/api/projects/status/github/ropensci/osmplotr?svg=true)](https://ci.appveyor.com/project/ropensci/osmplotr)
 [![codecov](https://codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/osmplotr)
+[![Project Status:
+Active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+
+![](man/figures/map1.png)
+
 [![CRAN
 Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
 [![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/onboarding/issues/27)
-
-<!--
-![](./man/figures/map1.png)
--->
-
-<img src="man/figures/map1.png" width = "100%"/>
 
 R package to produce visually impressive customisable images of
 OpenStreetMap (OSM) data downloaded internally from the [overpass
