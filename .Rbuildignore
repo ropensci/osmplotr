@@ -19,3 +19,4 @@ figure/
 ^CODE_OF_CONDUCT.md$
 ^CONTRIBUTING.md$
 ^cran-comments.md$
+^codemeta\.json$
