@@ -317,9 +317,9 @@ ways:
 ------------------------------------------------------------------------
 
 See package vignettes ([basic
-maps](https://ropensci.github.io/osmplotr/articles/basic-maps.html) and
+maps](https://docs.ropensci.org/osmplotr/articles/basic-maps.html) and
 [data
-maps](https://ropensci.github.io/osmplotr/articles/data-maps.html)) for
+maps](https://docs.ropensci.org/osmplotr/articles/data-maps.html)) for
 a lot more detail and further capabilities of `osmplotr`. Please note
 that this project is released with a [Contributor Code of
 Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
