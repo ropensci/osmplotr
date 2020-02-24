@@ -1,5 +1,8 @@
 {
-  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+  "@context": [
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "http://schema.org"
+  ],
   "@type": "SoftwareSourceCode",
   "identifier": "osmplotr",
   "description": "Bespoke images of 'OpenStreetMap' ('OSM') data and data\n    visualisation using 'OSM' objects.",
@@ -7,14 +10,14 @@
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.2.1",
+  "version": "0.3.2.2",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.1",
+    "version": "3.6.2",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.1 (2019-07-05)",
+  "runtimePlatform": "R version 3.6.2 (2019-12-12)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -288,13 +291,29 @@
   ],
   "releaseNotes": "https://github.com/ropensci/osmplotr/blob/master/NEWS",
   "readme": "https://github.com/ropensci/osmplotr/blob/master/README.md",
-  "fileSize": "3774.928KB",
-  "contIntegration": ["https://travis-ci.org/ropensci/osmplotr", "https://ci.appveyor.com/project/ropensci/osmplotr", "https://codecov.io/gh/ropensci/osmplotr"],
+  "fileSize": "7329.938KB",
+  "contIntegration": [
+    "https://travis-ci.org/ropensci/osmplotr",
+    "https://ci.appveyor.com/project/ropensci/osmplotr",
+    "https://codecov.io/gh/ropensci/osmplotr"
+  ],
   "review": {
     "@type": "Review",
     "url": "https://github.com/ropensci/onboarding/issues/27",
     "provider": "http://ropensci.org"
   },
-  "keywords": ["osm", "openstreetmap", "overpass-api", "overpass", "data-visualisation", "highlighting-clusters", "r", "rstats", "r-package", "peer-reviewed"],
-  "relatedLink": "https://CRAN.R-project.org/package=osmplotr"
+  "keywords": [
+    "osm",
+    "openstreetmap",
+    "overpass-api",
+    "overpass",
+    "data-visualisation",
+    "highlighting-clusters",
+    "r",
+    "rstats",
+    "r-package",
+    "peer-reviewed"
+  ],
+  "relatedLink": "https://CRAN.R-project.org/package=osmplotr",
+  "developmentStatus": "http://www.repostatus.org/#active"
 }

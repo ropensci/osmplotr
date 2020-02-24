@@ -147,12 +147,16 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
 
 
     if (grepl ('polygon', obj_type))
+    {
         map <- map_plus_spPolydf_srfc (map = map, xy = xy, xy0 = xy0, #nolint
                                        cols = cols, bg = bg, size = size)
-    else if (grepl ('line', obj_type))
+    } else if (grepl ('line', obj_type))
+    {
         map <- map_plus_spLinesdf_srfc (map, xy, xy0, cols, bg, size, shape) #nolint
-    else if (grepl ('point', obj_type))
+    } else if (grepl ('point', obj_type))
+    {
         map <- map_plus_spPointsdf_srfc (map, xy, xy0, cols, bg, size, shape) #nolint
+    }
 
     return (map)
 }
@@ -393,11 +397,16 @@ map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) #nolint
     if (length (size) == 1)
         size <- rep (size, 2) # else size [2] specifies bg size
 
+    xyz <- (xy$z - min (xy$z)) / diff (range (xy$z))
+    cols_z <- 1 + floor ((length (cols) - 1) * xyz)
+    xy$mycolour <- cols [cols_z]
+
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, fill = z)
-    map <- map + ggplot2::geom_polygon (data = xy, mapping = aes,
-                                        size = size [1]) +
-                ggplot2::scale_fill_gradientn (colours = cols)
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, fill = mycolour)
+    map <- map + ggplot2::geom_polygon (data = xy,
+                                        mapping = aes,
+                                        size = size [1],
+                                        fill = xy$mycolour)
 
     if (!missing (bg))
     {
@@ -425,12 +434,17 @@ map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolin
     if (length (shape) == 1)
         shape <- rep (shape, 2)
 
+    xyz <- (xy$z - min (xy$z)) / diff (range (xy$z))
+    cols_z <- 1 + floor ((length (cols) - 1) * xyz)
+    xy$mycolour <- cols [cols_z]
+
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
-    map <- map + ggplot2::geom_path (data = xy, mapping = aes,
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, col = mycolour)
+    map <- map + ggplot2::geom_path (data = xy,
+                                     col = xy$mycolour,
+                                     mapping = aes,
                                      size = size [1],
-                                     linetype = shape [1]) +
-            ggplot2::scale_colour_gradientn (colours = cols)
+                                     linetype = shape [1])
 
     if (!missing (bg))
     {
@@ -459,11 +473,17 @@ map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #noli
     if (length (shape) == 1)
         shape <- rep (shape, 2)
 
+    xyz <- (xy$z - min (xy$z)) / diff (range (xy$z))
+    cols_z <- 1 + floor ((length (cols) - 1) * xyz)
+    xy$mycolour <- cols [cols_z]
+
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = z)
-    map <- map + ggplot2::geom_point (data = xy, mapping = aes,
-                                      size = size [1], shape = shape [1]) +
-            ggplot2::scale_colour_gradientn (colours = cols)
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = mycolour)
+    map <- map + ggplot2::geom_point (data = xy,
+                                      mapping = aes,
+                                      size = size [1],
+                                      shape = shape [1],
+                                      col = xy$mycolour)
 
     if (!missing (bg))
     {
