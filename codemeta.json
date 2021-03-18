@@ -14,10 +14,9 @@
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.2",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.2 (2019-12-12)",
+  "runtimePlatform": "R version 4.0.4 (2021-02-15)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -278,8 +277,33 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "spatstat.core",
+      "name": "spatstat.core",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=spatstat.core"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "spatstat.geom",
+      "name": "spatstat.geom",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=spatstat.geom"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "spatstat",
       "name": "spatstat",
+      "version": ">= 2.0-0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -291,16 +315,12 @@
   ],
   "releaseNotes": "https://github.com/ropensci/osmplotr/blob/master/NEWS",
   "readme": "https://github.com/ropensci/osmplotr/blob/master/README.md",
-  "fileSize": "7329.938KB",
-  "contIntegration": [
-    "https://travis-ci.org/ropensci/osmplotr",
-    "https://ci.appveyor.com/project/ropensci/osmplotr",
-    "https://codecov.io/gh/ropensci/osmplotr"
-  ],
+  "fileSize": "17081.145KB",
+  "contIntegration": ["https://travis-ci.org/ropensci/osmplotr", "https://ci.appveyor.com/project/ropensci/osmplotr", "https://codecov.io/gh/ropensci/osmplotr"],
   "review": {
     "@type": "Review",
-    "url": "https://github.com/ropensci/onboarding/issues/27",
-    "provider": "http://ropensci.org"
+    "url": "https://github.com/ropensci/software-review/issues/27",
+    "provider": "https://ropensci.org"
   },
   "keywords": [
     "osm",
@@ -314,6 +334,6 @@
     "r-package",
     "peer-reviewed"
   ],
-  "relatedLink": "https://CRAN.R-project.org/package=osmplotr",
+  "relatedLink": ["https://CRAN.R-project.org/package=osmplotr", "https://docs.ropensci.org/osmplotr"],
   "developmentStatus": "http://www.repostatus.org/#active"
 }

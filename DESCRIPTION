@@ -23,7 +23,9 @@ Imports:
     osmdata,
     rgeos,
     sp,
-    spatstat
+    spatstat.core,
+    spatstat.geom,
+    spatstat (>= 2.0-0)
 Suggests:
     devtools,
     knitr,
@@ -38,4 +40,4 @@ BugReports: https://github.com/ropensci/osmplotr/issues
 LazyData: true
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.0.0
+RoxygenNote: 7.1.1

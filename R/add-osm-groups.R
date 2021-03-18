@@ -357,18 +357,18 @@ groups_are_holes <- function (groups)
             indx <- which (!duplicated (cbind (x1, y1)))
             x1 <- x1 [indx]
             y1 <- y1 [indx]
-            xy1 <- spatstat::ppp (x1, y1,
-                                  xrange = range (x1), yrange = range (y1))
-            ch1 <- spatstat::convexhull (xy1)
+            xy1 <- spatstat.geom::ppp (x1, y1,
+                                       xrange = range (x1), yrange = range (y1))
+            ch1 <- spatstat.geom::convexhull (xy1)
             bdry1 <- cbind (ch1$bdry[[1]]$x, ch1$bdry[[1]]$y)
             x2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [, 1]
             y2 <- sp::coordinates (groups [[group_pairs [2, i] ]]) [, 2]
             indx <- which (!duplicated (cbind (x2, y2)))
             x2 <- x2 [indx]
             y2 <- y2 [indx]
-            xy2 <- spatstat::ppp (x2, y2,
-                                  xrange = range (x2), yrange = range (y2))
-            ch2 <- spatstat::convexhull (xy2)
+            xy2 <- spatstat.geom::ppp (x2, y2,
+                                       xrange = range (x2), yrange = range (y2))
+            ch2 <- spatstat.geom::convexhull (xy2)
             bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
 
             indx <- sapply (bdry1, function (x)
@@ -465,9 +465,9 @@ group_centroids_bdrys <- function (groups, make_hull, cols, cmat, obj_trim, map)
             y <- groups [[i]] [, 2]
             if (length (x) > 2)
             {
-                xy <- spatstat::ppp (x, y,
-                                     xrange = range (x), yrange = range (y))
-                ch <- spatstat::convexhull (xy)
+                xy <- spatstat.geom::ppp (x, y,
+                                          xrange = range (x), yrange = range (y))
+                ch <- spatstat.geom::convexhull (xy)
                 bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
             } else
             {
@@ -780,9 +780,9 @@ map_plus_hulls <- function (map, border_width = 1, groups, xyflat, cols)
             x <- x [indx]
             y <- y [indx]
             if (length (x) > 2) {
-                xy2 <- spatstat::ppp (x, y, xrange = range (x),
-                                      yrange = range (y))
-                ch <- spatstat::convexhull (xy2)
+                xy2 <- spatstat.geom::ppp (x, y, xrange = range (x),
+                                           yrange = range (y))
+                ch <- spatstat.geom::convexhull (xy2)
                 bdry [[i]] <- cbind (i, ch$bdry[[1]]$x, ch$bdry[[1]]$y)
             }
         }

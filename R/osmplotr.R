@@ -63,20 +63,7 @@
 #'
 #' @name osmplotr
 #' @docType package
-#' @importFrom curl has_internet
-#' @importFrom e1071 allShortestPaths extractPath
-#' @importFrom ggm fundCycles
-#' @importFrom graphics lines plot plot.new par rect text
-#' @importFrom grDevices dev.cur dev.new dev.off rainbow rgb col2rgb heat.colors
-#' @importFrom grDevices bmp jpeg pictex png postscript svg tiff 
-#' @importFrom httr content GET
-#' @importFrom methods slot as is hasArg
-#' @importFrom osmdata add_osm_feature opq osmdata_sf osmdata_sp
-#' @importFrom rgeos gIntersection
-#' @importFrom sp coordinates point.in.polygon Line SpatialLines SpatialPoints 
-#' @importFrom spatstat convexhull idw ppp Smooth
-#' @importFrom stats runif
-#' @importFrom utils combn head setTxtProgressBar tail txtProgressBar
+#' @import spatstat
 NULL
 
 #' london 
