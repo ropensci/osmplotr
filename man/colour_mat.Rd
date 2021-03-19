@@ -39,12 +39,12 @@ ngroups <- 6
 x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
 y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
 groups <- cbind (x, y)
-groups <- apply (groups, 1, function (i) 
+groups <- apply (groups, 1, function (i)
                  sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
 # plot a basemap and add groups
 map <- osm_basemap (bbox = bbox, bg = "gray20")
-map <- add_osm_groups (map, obj = london$dat_BNR, group = groups, cols = rainbow (4),
-                       colmat = TRUE, rotate = 90)
+map <- add_osm_groups (map, obj = london$dat_BNR, group = groups,
+                       cols = rainbow (4), colmat = TRUE, rotate = 90)
 print_osm_map (map)
 }
 \seealso{
