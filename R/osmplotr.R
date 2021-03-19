@@ -63,6 +63,11 @@
 #'
 #' @name osmplotr
 #' @docType package
+#' @importFrom grDevices col2rgb dev.cur dev.new heat.colors rgb rainbow
+#' @importFrom graphics lines par plot.new rect text
+#' @importFrom methods hasArg is slot
+#' @importFrom stats runif
+#' @importFrom utils combn head setTxtProgressBar tail txtProgressBar
 #' @import spatstat
 NULL
 
