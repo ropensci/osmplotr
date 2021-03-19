@@ -22,8 +22,8 @@ A single set of \code{SpatialPoints} containing the lat-lon
 coordinates of the cyclic line connecting all given streets.
 }
 \description{
-Takes a list of highways names which must enclose an internal area, and returns
-a \code{SpatialLines} object containing a sequence of OSM nodes which
+Takes a list of highways names which must enclose an internal area, and
+returns a \code{SpatialLines} object containing a sequence of OSM nodes which
 cyclically connect all highways. Will fail if the streets do not form a
 cycle.
 }
@@ -43,23 +43,25 @@ problems!
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 \dontrun{
-highways <- c ('Monmouth.St', 'Short.?s.Gardens', 'Endell.St', 'Long.Acre',
-               'Upper.Saint.Martin')
-# Note that dots signify "anything", including whitespace and apostrophes, and
-# that '?' denotes optional previous character and so here matches both 
-# "Shorts Gardens" and "Short's Gardens"
+highways <- c ("Monmouth.St", "Short.?s.Gardens", "Endell.St", "Long.Acre",
+               "Upper.Saint.Martin")
+# Note that dots signify "anything", including whitespace and apostrophes,
+# and that '?' denotes optional previous character and so here matches
+# both "Shorts Gardens" and "Short's Gardens"
 highways1 <- connect_highways (highways = highways, bbox = bbox, plot = TRUE)
-highways <- c ('Endell.St', 'High.Holborn', 'Drury.Lane', 'Long.Acre')
+highways <- c ("Endell.St", "High.Holborn", "Drury.Lane", "Long.Acre")
 highways2 <- connect_highways (highways = highways, bbox = bbox, plot = TRUE)
 
 # Use of 'connect_highways' to highlight a region on a map
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-# dat_B <- extract_osm_data (key = 'building', value = '!residential', bbox = bbox)
+map <- osm_basemap (bbox = bbox, bg = "gray20")
+# dat_B <- extract_osm_data (key = "building",
+#                            value = "!residential",
+#                            bbox = bbox)
 # Those data are part of 'osmplotr':
 dat_BNR <- london$dat_BNR # Non-residential buildings
 groups <- list (highways1, highways2)
 map <- add_osm_groups (map, obj = dat_BNR, groups = groups,
-                       cols = c('red', 'blue'), bg = 'gray40')
+                       cols = c("red", "blue"), bg = "gray40")
 print_osm_map (map)
 }
 }
