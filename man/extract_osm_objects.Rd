@@ -60,10 +60,15 @@ Downloads OSM XML objects and converts to \code{sp} objects
 bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
 dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
 dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
-dat_BR <- extract_osm_objects (key = 'building', value = 'residential',
+dat_BR <- extract_osm_objects (key = 'building',
+                               value = 'residential',
                                bbox = bbox)
-dat_HP <- extract_osm_objects (key = 'highway', value = 'primary', bbox = bbox)
-dat_HNP <- extract_osm_objects (key = 'highway', value = '!primary', bbox = bbox)
+dat_HP <- extract_osm_objects (key = 'highway',
+                               value = 'primary',
+                               bbox = bbox)
+dat_HNP <- extract_osm_objects (key = 'highway',
+                                value = '!primary',
+                                bbox = bbox)
 extra_pairs <- c ('name', 'Royal.Festival.Hall')
 dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
                             bbox = bbox)

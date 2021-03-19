@@ -38,46 +38,51 @@
 #' bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
 #' dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
 #' dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
-#' dat_BR <- extract_osm_objects (key = 'building', value = 'residential',
+#' dat_BR <- extract_osm_objects (key = 'building',
+#'                                value = 'residential',
 #'                                bbox = bbox)
-#' dat_HP <- extract_osm_objects (key = 'highway', value = 'primary', bbox = bbox)
-#' dat_HNP <- extract_osm_objects (key = 'highway', value = '!primary', bbox = bbox)
+#' dat_HP <- extract_osm_objects (key = 'highway',
+#'                                value = 'primary',
+#'                                bbox = bbox)
+#' dat_HNP <- extract_osm_objects (key = 'highway',
+#'                                 value = '!primary',
+#'                                 bbox = bbox)
 #' extra_pairs <- c ('name', 'Royal.Festival.Hall')
 #' dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
 #'                             bbox = bbox)
 #' }
 extract_osm_objects <- function (bbox, key, value, extra_pairs,
                                  return_type, sf = TRUE,
-                                 geom_only = FALSE, quiet = FALSE)
-{
-    check_arg (key, 'key', 'character')
+                                 geom_only = FALSE, quiet = FALSE) {
+
+    check_arg (key, "key", "character")
 
     bbox <- check_bbox_arg (bbox)
     if (!missing (value) & missing (key))
-        stop ('key must be provided for value')
+        stop ("key must be provided for value")
 
     q_keys <- key
     if (missing (value))
         q_vals <- NA
-    else
-    {
+    else {
+
         q_vals <- value
         # If primary value is negation, then repeat primary key
-        if (substring (q_vals, 1, 1) == '!')
-        {
+        if (substring (q_vals, 1, 1) == "!") {
+
             q_keys <- rep (q_keys, 2)
             q_vals <- c (NA, q_vals)
         }
     }
 
 
-    if (!missing (extra_pairs))
-    {
+    if (!missing (extra_pairs)) {
+
         if (!is.list (extra_pairs))
             extra_pairs <- list (extra_pairs)
         nprs <- vapply (extra_pairs, length, 1L)
         if (!all (nprs %in% 1:2))
-            stop ('Extra pairs must be just keys or key-val pairs')
+            stop ("Extra pairs must be just keys or key-val pairs")
 
         q_keys <- c (q_keys,
                      vapply (extra_pairs, function (x) x [1], character (1)))
@@ -85,11 +90,11 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
                      vapply (extra_pairs, function (x) x [2], character (1)))
     }
 
-    val_list <- c ('grass', 'park', 'tree', 'water')
-    key_list <- c ('landuse', 'leisure', 'natural', 'natural')
+    val_list <- c ("grass", "park", "tree", "water")
+    key_list <- c ("landuse", "leisure", "natural", "natural")
     indx <- which (q_keys %in% val_list)
-    if (length (indx) > 0)
-    {
+    if (length (indx) > 0) {
+
         indx2 <- match (q_keys [indx], val_list)
         q_keys [indx] <- key_list [indx2]
         q_vals [indx] <- val_list [indx2]
@@ -97,10 +102,10 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
 
     # default to non-exact matches
     qry <- osmdata::opq (bbox = bbox)
-    for (i in seq (q_keys))
-    {
+    for (i in seq (q_keys)) {
+
         key_exact <- FALSE
-        if (!is.na (q_vals [i]) & substring (q_vals [i], 1, 1) == '!')
+        if (!is.na (q_vals [i]) & substring (q_vals [i], 1, 1) == "!")
             key_exact <- TRUE
         if (is.na (q_vals [i]))
             qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
@@ -120,37 +125,37 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
     else
         obj <- osmdata::osmdata_sp (qry, quiet = quiet)
 
-    if (!missing (return_type))
-    {
+    if (!missing (return_type)) {
+
         return_type <- tolower (return_type)
-        if (substring (return_type, 1, 3) == 'poi')
+        if (substring (return_type, 1, 3) == "poi")
             obj <- obj$osm_points
-        else if (substring (return_type, 1, 1) == 'l')
+        else if (substring (return_type, 1, 1) == "l")
             obj <- obj$osm_lines
-        else if (substring (return_type, 1, 6) == 'multil')
+        else if (substring (return_type, 1, 6) == "multil")
             obj <- obj$osm_multilines
-        else if (substring (return_type, 1, 6) == 'multip')
+        else if (substring (return_type, 1, 6) == "multip")
             obj <- obj$osm_multipolygons
         else
             obj <- obj$osm_polygons
-    } else
-    {
-        if ('highway' %in% q_keys)
+    } else {
+
+        if ("highway" %in% q_keys)
             obj <- obj$osm_lines
-        else if ('building' %in% q_keys | 'landuse' %in% q_keys |
-                 'leisure' %in% q_keys |
-                 ('natural' %in% q_keys & 'water' %in% q_vals))
+        else if ("building" %in% q_keys | "landuse" %in% q_keys |
+                 "leisure" %in% q_keys |
+                 ("natural" %in% q_keys & "water" %in% q_vals))
             obj <- obj$osm_polygons
-        else if ('route' %in% q_keys)
+        else if ("route" %in% q_keys)
             obj <- obj$osm_multilines
-        else if ('boundary' %in% q_keys | 'waterway' %in% q_keys)
+        else if ("boundary" %in% q_keys | "waterway" %in% q_keys)
             obj <- obj$osm_multipolygons
-        else if ('natural' %in% q_keys & 'tree' %in% q_vals)
+        else if ("natural" %in% q_keys & "tree" %in% q_vals)
             obj <- obj$osm_points
-        else
-        {
-            message (paste0 ('Cannot determine return_type;',
-                             ' maybe specify explicitly?'))
+        else {
+
+            message (paste0 ("Cannot determine return_type;",
+                             " maybe specify explicitly?"))
             obj <- obj$osm_lines
         }
     }
@@ -158,15 +163,15 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
     if (NROW (obj) == 0)
         warning ("No valid data returned. (Maybe try a different 'return_type')")
 
-    if (geom_only)
-    {
-        if (sf)
-        {
-            indx <- match (c ('osm_id', 'geometry'), names(obj))
+    if (geom_only) {
+
+        if (sf) {
+
+            indx <- match (c ("osm_id", "geometry"), names(obj))
             obj <- obj [, indx]
-        } else
-        {
-            attr (obj, 'data') <- NULL
+        } else {
+
+            attr (obj, "data") <- NULL
         }
     }
 
