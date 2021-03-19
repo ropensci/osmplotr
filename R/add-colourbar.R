@@ -63,23 +63,23 @@
 add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
                            vertical = TRUE, alpha = 0.4,
                            text_col = "black", fontsize = 3,
-                           fontface, fontfamily, ...)
-{
+                           fontface, fontfamily, ...) {
+
     args <- list (...)
-    if (hasArg ("width")) barwidth <- args [['width']]
-    if (hasArg ("length")) barlength <- args [['length']]
-    if (hasArg ("colors")) cols <- args [['colors']]
-    if (hasArg ("colours")) cols <- args [['colours']]
-    if (hasArg ("color")) text_col <- args [['color']]
-    if (hasArg ("colour")) text_col <- args [['colour']]
-    if (hasArg ("size")) fontsize <- args [['size']]
-    if (hasArg ("face")) fontface <- args [['face']]
-    if (hasArg ("family")) fontfamily <- args [['family']]
+    if (hasArg ("width")) barwidth <- args [["width"]]
+    if (hasArg ("length")) barlength <- args [["length"]]
+    if (hasArg ("colors")) cols <- args [["colors"]]
+    if (hasArg ("colours")) cols <- args [["colours"]]
+    if (hasArg ("color")) text_col <- args [["color"]]
+    if (hasArg ("colour")) text_col <- args [["colour"]]
+    if (hasArg ("size")) fontsize <- args [["size"]]
+    if (hasArg ("face")) fontface <- args [["face"]]
+    if (hasArg ("family")) fontfamily <- args [["family"]]
 
     # ---------------  sanity checks and warnings  ---------------
     # ---------- map
     if (missing (map))
-        stop ('map must be supplied to add_axes')
+        stop ("map must be supplied to add_axes")
     if (missing (cols))
         stop ("cols must be specified in add_colourbar")
     check_map_arg (map)
@@ -146,28 +146,29 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
 #' initial coordinates for colourbar
 #'
 #' @noRd
-get_colourbar_xy <- function (map, cols, vertical, barwidth, barlength, expand)
-{
+get_colourbar_xy <- function (map, cols, vertical, barwidth,
+                              barlength, expand) {
+
     xrange <- map$coordinates$limits$x
     yrange <- map$coordinates$limits$y
 
     n <- length (cols)
-    if (!vertical)
-    {
+    if (!vertical) {
+
         zr <- xrange
         xrange <- yrange
         yrange <- zr
     }
 
-    if (length (barwidth) == 1)
-    {
+    if (length (barwidth) == 1) {
+
         # barwidth transformed to map scale
         barwidth <- diff (xrange) * barwidth
         # x0 is centre of bar, shifted by 1/2 barwidth + 2 * expand, so the
         # transparent underlay fits entirely within panel
         x0 <- xrange [2] - (1 / 2 + 2 * expand) * barwidth
-    } else
-    {
+    } else {
+
         # x0 not shifted by expand here, just by mean (barwidth)
         x0 <- xrange [2] - mean (barwidth) * diff (xrange)
         # with barwidth then converted to a single number
@@ -184,32 +185,32 @@ get_colourbar_xy <- function (map, cols, vertical, barwidth, barlength, expand)
     # increment, so the final range of the bar must be expanded
     bary <- range (y) + c (-1, 1) * (y [2] - y [1]) / 2
 
-    if (!vertical)
-    {
+    if (!vertical) {
+
         z <- x
         x <- y
         y <- z
     }
 
     #cb <- data.frame (x = x, y = y)
-    list ('x' = x, 'y' = y, 'bary' = bary, 'barwidth' = barwidth)
+    list ("x" = x, "y" = y, "bary" = bary, "barwidth" = barwidth)
 }
 
 
 #' coordinates for semi-transparent underlay of colourbar
 #'
 #' @noRd
-colourbar_underlay <- function (cbxy, vertical, expand)
-{
+colourbar_underlay <- function (cbxy, vertical, expand) {
+
     # The colour bar is also moved to middle of the underlay, away from the edge
     # by expand/2
-    if (vertical)
-    {
+    if (vertical) {
+
         x1 <- cbxy$x [1] + cbxy$barwidth * c (-1, 1) * (1 + 1 * expand) / 2
         y1 <- cbxy$bary
         cbxy$x <- mean (x1)
-    } else
-    {
+    } else {
+
         x1 <- cbxy$bary
         y1 <- cbxy$y [1] + cbxy$barwidth * c (-1, 1) * (1 + 1 * expand) / 2
         cbxy$y <- mean (y1)
@@ -220,15 +221,15 @@ colourbar_underlay <- function (cbxy, vertical, expand)
                     "y" = c (y1 [1], y1 [2], y1 [2], y1 [1], y1 [1], y1 [2])
                         )
 
-    list ('cbxy' = cbxy, 'rdat' = rdat, 'x1' = x1, 'y1' = y1)
+    list ("cbxy" = cbxy, "rdat" = rdat, "x1" = x1, "y1" = y1)
 }
 
-#' Get 
+#' Get title arguments of colourbar
 #'
 #' @noRd
-colourbar_tile_args <- function (cbxy, vertical, cols, aes)
-{
-    args <- list (data = data.frame ('x' = cbxy$x, 'y' = cbxy$y),
+colourbar_tile_args <- function (cbxy, vertical, cols, aes) {
+
+    args <- list (data = data.frame ("x" = cbxy$x, "y" = cbxy$y),
                   mapping = aes, fill = cols)
     if (vertical)
         args <- c (args, width = cbxy$barwidth)
@@ -241,10 +242,10 @@ colourbar_tile_args <- function (cbxy, vertical, cols, aes)
 #' coordinates for outline box of colourbar
 #'
 #' @noRd
-colourbar_outline <- function (cbxy, vertical, expand)
-{
-    makedat <- function (a, b, barwidth, expand)
-    {
+colourbar_outline <- function (cbxy, vertical, expand) {
+
+    makedat <- function (a, b, barwidth, expand) {
+
         bt <- max (b) + diff (b) [1] / 2
         bb <- min (b) - diff (b) [1] / 2
         data.frame (
@@ -254,8 +255,8 @@ colourbar_outline <- function (cbxy, vertical, expand)
     }
     if (vertical)
         rdat <- makedat (cbxy$x, cbxy$y, cbxy$barwidth, expand)
-    else
-    {
+    else {
+
         rdat <- makedat (cbxy$y, cbxy$x, cbxy$barwidth, expand)
         names (rdat) <- c ("y", "x")
     }
@@ -266,8 +267,8 @@ colourbar_outline <- function (cbxy, vertical, expand)
 #' parameters for ticks and labels
 #'
 #' @noRd
-colourbar_ticks_labels <- function (map, cbu, zlims, vertical)
-{
+colourbar_ticks_labels <- function (map, cbu, zlims, vertical) {
+
     # Note that the actual limits of geom_tile are increased by 1/2 an
     # increment, so:
     zlabs <- pretty (zlims)
@@ -275,8 +276,8 @@ colourbar_ticks_labels <- function (map, cbu, zlims, vertical)
     z <- cbu$cbxy$bary [1] + (zlabs - zlims [1]) *
         diff (cbu$cbxy$bary) / diff (zlims)
 
-    if (vertical)
-    {
+    if (vertical) {
+
         segdat <- data.frame (x1 = cbu$x1 [1], x2 = cbu$x1 [2], y1 = z, y2 = z)
         labdat <- data.frame (x = cbu$x1 [1], y = z, z = zlabs)
         nudge_x <- -0.005 * diff (map$coordinates$limits$x)
@@ -285,8 +286,8 @@ colourbar_ticks_labels <- function (map, cbu, zlims, vertical)
         nudge_y <- 0
         vjust <- 0.5
         hjust <- 1
-    } else
-    {
+    } else {
+
         segdat <- data.frame (x1 = z, x2 = z, y1 = cbu$y1 [1], y2 = cbu$y1 [2])
         labdat <- data.frame (x = z, y = cbu$y1 [1], z = zlabs)
         nudge_x <- 0
@@ -297,51 +298,51 @@ colourbar_ticks_labels <- function (map, cbu, zlims, vertical)
         hjust <- 0.5
     }
 
-    return (list ('z' = z, 'segdat' = segdat, 'labdat' = labdat,
-                  'nudge_x' = nudge_x, 'nudge_y' = nudge_y,
-                  'vjust' = vjust, 'hjust' = hjust))
+    return (list ("z" = z, "segdat" = segdat, "labdat" = labdat,
+                  "nudge_x" = nudge_x, "nudge_y" = nudge_y,
+                  "vjust" = vjust, "hjust" = hjust))
 }
 
-check_barwidth_arg <- function (barwidth)
-{
-    barwidth <- test_len2 (barwidth, 'barwidth')
-    barwidth <- test_numeric (barwidth, 'barwidth', 0.02)
-    barwidth <- test_range (barwidth, 'barwidth', c (0, 1), 0.02)
+check_barwidth_arg <- function (barwidth) {
+
+    barwidth <- test_len2 (barwidth, "barwidth")
+    barwidth <- test_numeric (barwidth, "barwidth", 0.02)
+    barwidth <- test_range (barwidth, "barwidth", c (0, 1), 0.02)
 
     return (sort (barwidth))
 }
 
-check_barlength_arg <- function (barlength)
-{
-    barlength <- test_len2 (barlength, 'barlength')
-    barlength <- test_numeric (barlength, 'barlength', 0.7)
-    barlength <- test_range (barlength, 'barlength', c (0, 1), 0.7)
+check_barlength_arg <- function (barlength) {
+
+    barlength <- test_len2 (barlength, "barlength")
+    barlength <- test_numeric (barlength, "barlength", 0.7)
+    barlength <- test_range (barlength, "barlength", c (0, 1), 0.7)
 
     return (sort (barlength))
 }
 
-check_fontsize_arg <- function (fontsize)
-{
-    fontsize <- test_len1 (fontsize, 'fontsize')
-    fontsize <- test_numeric (fontsize, 'fontsize', 3)
-    fontsize <- test_pos (fontsize, 'fontsize', 3)
+check_fontsize_arg <- function (fontsize) {
+
+    fontsize <- test_len1 (fontsize, "fontsize")
+    fontsize <- test_numeric (fontsize, "fontsize", 3)
+    fontsize <- test_pos (fontsize, "fontsize", 3)
 
     return (fontsize)
 }
 
-check_vertical_arg <- function (vertical)
-{
-    vertical <- test_len1 (vertical, 'vertical')
-    vertical <- test_logical (vertical, 'vertical', TRUE)
+check_vertical_arg <- function (vertical) {
+
+    vertical <- test_len1 (vertical, "vertical")
+    vertical <- test_logical (vertical, "vertical", TRUE)
 
     return (vertical)
 }
 
-check_alpha_arg <- function (alpha)
-{
-    alpha <- test_len1 (alpha, 'alpha')
-    alpha <- test_numeric (alpha, 'alpha', 0.4)
-    alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
+check_alpha_arg <- function (alpha) {
+
+    alpha <- test_len1 (alpha, "alpha")
+    alpha <- test_numeric (alpha, "alpha", 0.4)
+    alpha <- test_range (alpha, "alpha", c (0, 1), 0.4)
 
     return (alpha)
 }
