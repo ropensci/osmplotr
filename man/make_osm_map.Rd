@@ -27,16 +27,16 @@ returned from \code{\link{osm_structures}}, and potentially modified to alter
 lists of structures to be plotted, and their associated colours. Objects are
 overlaid on plot according to the order given in \code{structures}.}
 
-\item{dat_prefix}{Prefix for data structures (default \code{dat_}). Final data
-structures are created by appending the suffixes from
+\item{dat_prefix}{Prefix for data structures (default \code{dat_}). Final
+data structures are created by appending the suffixes from
 \code{\link{osm_structures}}.}
 }
 \value{
-List of two components: 
+List of two components:
 \enumerate{
   \item List of OSM structures each as
      \code{Spatial(Points/Lines/Polygons)DataFrame} and appended to
-     \code{osm_data} (which is \code{NULL} by default), and 
+     \code{osm_data} (which is \code{NULL} by default), and
   \item The \code{map} as a \code{ggplot2} object
 }
 }
@@ -53,8 +53,8 @@ some time.  Progress is dumped to screen.
 }
 
 \examples{
-structures <- c ('highway', 'park')
-structs <- osm_structures (structures = structures, col_scheme = 'light')
+structures <- c ("highway", "park")
+structs <- osm_structures (structures = structures, col_scheme = "light")
 # make_osm_map returns potentially modified list of data using the provided
 # 'london' data for highways and parks.
 dat <- make_osm_map (osm_data = london, structures = structs)
