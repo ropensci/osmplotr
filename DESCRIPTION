@@ -1,15 +1,28 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.2.002
-Authors@R: c(
-    person("Mark", "Padgham", email="mark.padgham@email.com", role=c("aut", "cre")),
-    person("Richard", "Beare", role="aut"),
-    person("Finkelstein", "Noam", role=c("ctb","cph"),
-        comment="Author of included stub.R code"),
-    person ("Bartnik", "Lukasz", role=c("ctb","cph"),
-        comment="Author of included stub.R code"))
+Version: 0.3.2.003
+Authors@R: 
+    c(person(given = "Mark",
+             family = "Padgham",
+             role = c("aut", "cre"),
+             email = "mark.padgham@email.com"),
+      person(given = "Richard",
+             family = "Beare",
+             role = "aut"),
+      person(given = "Finkelstein",
+             family = "Noam",
+             role = c("ctb", "cph"),
+             comment = "Author of included stub.R code"),
+      person(given = "Bartnik",
+             family = "Lukasz",
+             role = c("ctb", "cph"),
+             comment = "Author of included stub.R code"))
 Description: Bespoke images of 'OpenStreetMap' ('OSM') data and data
     visualisation using 'OSM' objects.
+License: GPL-3
+URL: https://docs.ropensci.org/osmplotr,
+    https://github.com/ropensci/osmplotr
+BugReports: https://github.com/ropensci/osmplotr/issues
 Depends:
     R (>= 3.2.3)
 Imports:
@@ -23,21 +36,19 @@ Imports:
     osmdata,
     rgeos,
     sp,
+    spatstat (>= 2.0-0),
     spatstat.core,
-    spatstat.geom,
-    spatstat (>= 2.0-0)
+    spatstat.geom
 Suggests:
     devtools,
     knitr,
     magrittr,
-    roxygen2,
     rmarkdown,
+    roxygen2,
     sf,
     testthat
-License: GPL-3
-URL: https://docs.ropensci.org/osmplotr, https://github.com/ropensci/osmplotr
-BugReports: https://github.com/ropensci/osmplotr/issues
-LazyData: true
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
-VignetteBuilder: knitr
+LazyData: true
 RoxygenNote: 7.1.1

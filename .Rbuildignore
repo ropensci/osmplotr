@@ -20,3 +20,4 @@ figure/
 ^CONTRIBUTING.md$
 ^cran-comments.md$
 ^codemeta\.json$
+^\.pre-commit-config\.yaml$
