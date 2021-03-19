@@ -6,22 +6,22 @@
 #'
 #' @param latlon A vector of (longitude, latitude, longitude, latitude) values.
 #' @return A 2-by-2 matrix of 4 elements with columns of min and max values, and
-#' rows of x and y values.  
+#' rows of x and y values.
 #' @export
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))
-get_bbox <- function (latlon)
-{
+get_bbox <- function (latlon) {
+
     if (missing (latlon))
         stop ("latlon must be supplied")
     if (!is.numeric (latlon))
         stop ("latlon is not numeric")
     if (length (latlon) < 4)
         stop ("latlon must have length = 4")
-    if (length (latlon) > 4)
-    {
-        warning ('latlon has length > 4; only first 4 elements will be used')
+    if (length (latlon) > 4) {
+
+        warning ("latlon has length > 4; only first 4 elements will be used")
         latlon <- latlon [1:4]
     }
 
