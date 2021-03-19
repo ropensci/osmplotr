@@ -11,6 +11,7 @@
 ^script\.R$
 ^docs$
 ^data-raw/
+^.github/
 figure/
 ^data/nomenclatura*
 ^paper\.md$
