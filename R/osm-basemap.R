@@ -1,7 +1,7 @@
 #' osm_basemap
 #'
 #' Generates a base OSM plot ready for polygon, line, and point objects to be
-#' overlain with \code{\link{add_osm_objects}}. 
+#' overlain with \code{\link{add_osm_objects}}.
 #'
 #' @param bbox bounding box (Latitude-longitude range) to be plotted.  A 2-by-2
 #' matrix of 4 elements with columns of min and max values, and rows of x and y
@@ -23,22 +23,22 @@
 #'
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-#' map <- osm_basemap (bbox = bbox, bg = 'gray20')
-#' map <- add_osm_objects (map, london$dat_BNR, col = 'gray40') 
+#' map <- osm_basemap (bbox = bbox, bg = "gray20")
+#' map <- add_osm_objects (map, london$dat_BNR, col = "gray40")
 #' print_osm_map (map)
-osm_basemap <- function (bbox, structures, bg = 'gray20')
-{
+osm_basemap <- function (bbox, structures, bg = "gray20") {
+
     # ---------------  sanity checks and warnings  ---------------
     bbox <- check_bbox_arg (bbox)
-    if (!missing (structures))
-    {
+    if (!missing (structures)) {
+
         check_structures_arg (structures)
-        bg <- structure$cols [which (structures$structure == 'background')]
+        bg <- structure$cols [which (structures$structure == "background")]
     }
     check_col_arg (bg)
-    if (length (bg) > 1)
-    {
-        warning ('bg has length > 1; only first element will be used')
+    if (length (bg) > 1) {
+
+        warning ("bg has length > 1; only first element will be used")
         bg <- bg [1]
     }
     # ---------------  end sanity checks and warnings  ---------------
@@ -56,17 +56,17 @@ osm_basemap <- function (bbox, structures, bg = 'gray20')
     return (map)
 }
 
-set_map_theme <- function (bg)
-{
+set_map_theme <- function (bg) {
+
     theme <- ggplot2::theme_minimal ()
-    theme$panel.background <- ggplot2::element_rect (fill = bg, size = 0)
+    theme$panel.background <- ggplot2::element_rect (fill = bg, size = 0)   # nolint
     theme$line <- ggplot2::element_blank ()
-    theme$axis.text <- ggplot2::element_blank ()
-    theme$axis.title <- ggplot2::element_blank ()
-    theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, 'null'), 4))
-    theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, 'line'), 4))
-    theme$legend.position <- 'none'
-    theme$axis.ticks.length <- ggplot2::unit (0, 'null')
+    theme$axis.text <- ggplot2::element_blank ()                            # nolint
+    theme$axis.title <- ggplot2::element_blank ()                           # nolint
+    theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, "null"), 4))
+    theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, "line"), 4))
+    theme$legend.position <- "none"                                         # nolint
+    theme$axis.ticks.length <- ggplot2::unit (0, "null")                    # nolint
 
     return (theme)
 }
