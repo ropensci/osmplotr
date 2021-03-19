@@ -33,7 +33,7 @@ repos:
           .*\.RData
           )$
           #-   id: lintr
-    -   id: readme-rmd-rendered
+          #-   id: readme-rmd-rendered
     -   id: parsable-R
     -   id: no-browser-statement
     -   id: deps-in-desc

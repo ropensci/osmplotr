@@ -62,11 +62,7 @@ the following functionality:
 
 But first the easy steps to map making:
 ```{r, echo = FALSE, message = FALSE, eval = TRUE}
-devtools::load_all ('.', export_all = FALSE)
-#devtools::document ('.')
-#devtools::check ('.')
-#devtools::build_vignettes ()
-#testthat::test_package ('.')
+library (osmplotr)
 ```
 
 

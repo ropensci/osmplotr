@@ -25,7 +25,6 @@ plotted by highlighting defined regions with different colours using
 library (osmplotr)
 ```
 ```{r, echo = FALSE, message = FALSE}
-devtools::load_all ("../.", export_all = FALSE)
 map_dpi <- 72 # dpi res for all maps
 ```
 As in the first vignette, maps produced in this vignette contain data for a
@@ -1176,4 +1175,3 @@ osm_basemap (bbox = bbox,
 The first two colour specifications (`terrain.colors`) have been ignored, and
 all added items are coloured according to the final value of `heat.colors (30)`.
 Other aspects such as line sizes and point shapes are nevertheless respected.
-

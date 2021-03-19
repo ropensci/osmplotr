@@ -31,9 +31,7 @@ U.K.
 
 A map can be generated using the following simple steps:
 ```{r, echo = FALSE, message = FALSE}
-#library (osmplotr)
-#devtools::install_github ("ropensci/osmplotr")
-devtools::load_all ("../.", export_all = FALSE)
+library (osmplotr)
 map_dpi <- 72 # dpi res for all maps
 ```
 
