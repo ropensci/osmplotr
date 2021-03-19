@@ -30,26 +30,30 @@ distinct from land. This function enables that by connecting the end points
 of coastline \code{LINESTRING} objects to form closed polygons.
 }
 \details{
-This is a tricky problem for a number of reasons, and the current implementation
-may not be correct, although it does successfully deal with a few tough situations.
-Some of the issues are: an osm coastline query returns a mixture of "ways" and polygons.
-Polygons correspond to islands, but not all islands are polygons. A "way" is a connected
-set of points with the land on the left. A piece of coastline in a bounding box
-may consist of multiple ways, which need to be connected together to create
-a polygon. Also, ways extend outside the query bounding box, and may join
-other ways that enter the bounding box (e.g ends of a peninsula). The degree
-to which this happens depends on the scale of the bounding box. Coastlines may
-enter at any bounding box edge and exit at any other, including the one they
-entered from.
+This is a tricky problem for a number of reasons, and the current
+implementation may not be correct, although it does successfully deal with a
+few tough situations. Some of the issues are: an osm coastline query returns
+a mixture of "ways" and polygons.
+
+Polygons correspond to islands, but not all islands are polygons. A "way" is
+a connected set of points with the land on the left. A piece of coastline in
+a bounding box may consist of multiple ways, which need to be connected
+together to create a polygon. Also, ways extend outside the query bounding
+box, and may join other ways that enter the bounding box (e.g ends of a
+peninsula). The degree to which this happens depends on the scale of the
+bounding box. Coastlines may enter at any bounding box edge and exit at any
+other, including the one they entered from.
 }
 \examples{
-# This example uses the \code{osmdata} package to extract data from 
+# This example uses the \code{osmdata} package to extract data from
 # a named bounding box
 \dontrun{
 library (magrittr)
 library (osmdata)
 bb <- osmdata::getbb ("melbourne, australia")
-coast <- extract_osm_objects (bbox = bb, key = "natural", value = "coastline",
+coast <- extract_osm_objects (bbox = bb,
+                              key = "natural",
+                              value = "coastline",
                               return_type = "line")
 coast <- osm_line2poly (coast, bbox = bb)
 # The following map then colours in just the ocean:

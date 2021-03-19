@@ -7,17 +7,19 @@
 #' distinct from land. This function enables that by connecting the end points
 #' of coastline \code{LINESTRING} objects to form closed polygons.
 #'
-#' This is a tricky problem for a number of reasons, and the current implementation
-#' may not be correct, although it does successfully deal with a few tough situations.
-#' Some of the issues are: an osm coastline query returns a mixture of "ways" and polygons.
-#' Polygons correspond to islands, but not all islands are polygons. A "way" is a connected
-#' set of points with the land on the left. A piece of coastline in a bounding box
-#' may consist of multiple ways, which need to be connected together to create
-#' a polygon. Also, ways extend outside the query bounding box, and may join
-#' other ways that enter the bounding box (e.g ends of a peninsula). The degree
-#' to which this happens depends on the scale of the bounding box. Coastlines may
-#' enter at any bounding box edge and exit at any other, including the one they
-#' entered from. 
+#' This is a tricky problem for a number of reasons, and the current
+#' implementation may not be correct, although it does successfully deal with a
+#' few tough situations. Some of the issues are: an osm coastline query returns
+#' a mixture of "ways" and polygons.
+#'
+#' Polygons correspond to islands, but not all islands are polygons. A "way" is
+#' a connected set of points with the land on the left. A piece of coastline in
+#' a bounding box may consist of multiple ways, which need to be connected
+#' together to create a polygon. Also, ways extend outside the query bounding
+#' box, and may join other ways that enter the bounding box (e.g ends of a
+#' peninsula). The degree to which this happens depends on the scale of the
+#' bounding box. Coastlines may enter at any bounding box edge and exit at any
+#' other, including the one they entered from.
 #'
 #' @param obj A Simple Features (\code{sf}) data frame of lines, typically as
 #' returned by \code{\link{extract_osm_objects}}, or by
@@ -32,13 +34,15 @@
 #' @export
 #'
 #' @examples
-#' # This example uses the \code{osmdata} package to extract data from 
+#' # This example uses the \code{osmdata} package to extract data from
 #' # a named bounding box
 #' \dontrun{
 #' library (magrittr)
 #' library (osmdata)
 #' bb <- osmdata::getbb ("melbourne, australia")
-#' coast <- extract_osm_objects (bbox = bb, key = "natural", value = "coastline",
+#' coast <- extract_osm_objects (bbox = bb,
+#'                               key = "natural",
+#'                               value = "coastline",
 #'                               return_type = "line")
 #' coast <- osm_line2poly (coast, bbox = bb)
 #' # The following map then colours in just the ocean:
@@ -46,8 +50,8 @@
 #'     add_osm_objects (coast$sea, col = "lightsteelblue") %>%
 #'     print_osm_map ()
 #' }
-osm_line2poly <- function (obj, bbox)
-{
+osm_line2poly <- function (obj, bbox) {
+
     if (!is (obj$geometry, "sfc_LINESTRING"))
         stop ("obj must be class 'sf' with fields of class 'sfc_LINESTRING'")
 
@@ -78,8 +82,8 @@ osm_line2poly <- function (obj, bbox)
     # NA in m2 indicates the end of a chain.
     # NA in m1 indicates the start of a chain
     startidx <- which (is.na (m1))
-    if (nrow (head_tail) > 1 & length (startidx) >= 1)
-    {
+    if (nrow (head_tail) > 1 & length (startidx) >= 1) {
+
         # Need to test this with disconnected bits
         linkorders <- lapply (startidx, function (x) unroll (x), V = m2)
         linkorders <- lapply (linkorders, function (x) x [!is.na (x)])
@@ -92,11 +96,11 @@ osm_line2poly <- function (obj, bbox)
     # Now we deal with loops.  Keep extracting loops until nothing left
     to_become_polygons <- list()
     lidx <- 1
-    while (nrow (head_tail) > 0)
-    {
+    while (nrow (head_tail) > 0) {
+
         m2 <- match(head_tail [, 2], head_tail [, 1])
-        if (any (!is.na (m2)))
-        {
+        if (any (!is.na (m2))) {
+
             l1 <- unroll_loop (1, m2)
             to_become_polygons [[lidx]] <- head_tail [l1, ]
             lidx <- lidx + 1
@@ -173,26 +177,26 @@ osm_line2poly <- function (obj, bbox)
     rownames(bbxcoords) <- bbxcorners_rh
 
     p1 <- p2 <- NULL
-    if (length(links) >= 1)
-    {
+    if (length(links) >= 1) {
+
         links <- lapply (links, function (x) clip_one (x), bbox = bbox)
         linkpoly <- lapply (links, make_poly,
                             bbox = bbox, g = g)
         p1 <- lapply (linkpoly, "[[", "p1")
         p2 <- lapply (linkpoly, "[[", "p2")
 
-    } else
-    {
+    } else {
+
         warning("No open curves found - check for polygons")
     }
 
     res <- NULL
-    if (!is.null (p1) & !is.null (p2))
-    {
+    if (!is.null (p1) & !is.null (p2)) {
+
         res <- list (sea = do.call(rbind, p1), land = do.call(rbind, p2))
     }
-    if (length(to_become_polygons) >= 1)
-    {
+    if (length(to_become_polygons) >= 1) {
+
         res$islands <- to_become_polygons
     }
     return (res)
@@ -200,8 +204,8 @@ osm_line2poly <- function (obj, bbox)
 
 # Clip one line by reducing it to only that portion within the bb, plus one
 # point either side
-clip_one <- function (out, bbox)
-{
+clip_one <- function (out, bbox) {
+
     indx <-  (out [, 1] >= bbox [1, 1] & out [, 1] <= bbox [1, 2] &
               out [, 2] >= bbox [2, 1] & out [, 2] <= bbox [2, 2])
     # Need to deal with curves that join outside the bbox.  Need to dilate the
@@ -212,9 +216,9 @@ clip_one <- function (out, bbox)
 }
 
 
-lookup_ways <- function (L, g)
-{
-    gg <- g [rownames (L)]
+lookup_ways <- function (ll, g) {
+
+    gg <- g [rownames (ll)]
     gg <- do.call (rbind, lapply (gg, as.matrix))
     rr <- duplicated (rownames (gg))
     gg <- gg [!rr, ]
@@ -222,30 +226,30 @@ lookup_ways <- function (L, g)
 }
 
 # For reordering the ways
-unroll <- function(firstpos, V)
-{
+unroll <- function(firstpos, v) {
+
   res <- firstpos
-  a <- V [firstpos]
-  while (!is.na (a))
-  {
+  a <- v [firstpos]
+  while (!is.na (a)) {
+
     res <- c(res, a)
-    a <- V [a]
+    a <- v [a]
   }
   return(res)
 }
 
-unroll_loop <- function(firstpos, V)
-{
+unroll_loop <- function(firstpos, v) {
+
   ## iterative index following, for loops
   res <- firstpos
-  a <- V [firstpos]
-  visted <- rep (FALSE, length(V))
+  a <- v [firstpos]
+  visted <- rep (FALSE, length (v))
   visted [firstpos] <- TRUE
-  while (!visted [a])
-  {
+  while (!visted [a]) {
+
     res <- c(res, a)
     visted [a] <- TRUE
-    a <- V [a]
+    a <- v [a]
   }
   return(res)
 }
@@ -253,8 +257,8 @@ unroll_loop <- function(firstpos, V)
 
 # return whether a point is N,S,E,W of bounding box - i.e. which edge Could be a
 # pathological corner case, which we'll ignore for now.
-classify_pt_dir <- function(pt, bbox)
-{
+classify_pt_dir <- function(pt, bbox) {
+
     directions <- 1:4
     names(directions) <- c("N", "E", "S", "W")
     compass <- c("W", "S", "E", "N")
@@ -267,13 +271,13 @@ classify_pt_dir <- function(pt, bbox)
     return (directions [compass [td]])
 }
 
-wrp <- function(idxs)
-{
+wrp <- function(idxs) {
+
     (idxs - 1) %% 4 + 1
 }
 
-make_poly <- function (out, bbox, g)
-{
+make_poly <- function (out, bbox, g) {
+
     p1 <- p2 <- NULL
     n <- nrow (out)
 
@@ -305,8 +309,8 @@ make_poly <- function (out, bbox, g)
                           c (bb11, bb21), c (bb11, bb22))
 
     # create lists of corners in each direction
-    if (last_pt_dir == first_pt_dir)
-    {
+    if (last_pt_dir == first_pt_dir) {
+
         # Special rules if loop from one edge Need to check whether Lst is
         # clockwise from Fst or not, as the intersection edge doesn't tell us.
 
@@ -314,22 +318,22 @@ make_poly <- function (out, bbox, g)
         v_edge <- ext_corners [first_pt_dir, ] -
             ext_corners [wrp (first_pt_dir - 1), ]
         dp <- sign (sum (v_first_last * v_edge))
-        if (dp < 0)
-        {
+        if (dp < 0) {
+
             ## Anticlockwise coast (relative to bb corners)
-            cw_indx <- c (wrp (last_pt_dir - 1), last_pt_dir )
+            cw_indx <- c (wrp (last_pt_dir - 1), last_pt_dir)
             ccw_indx <- (last_pt_dir - 1):(last_pt_dir - 4)
             ccw_indx <- wrp (ccw_indx)
             ccw_indx <- ccw_indx [1:which.max (ccw_indx == first_pt_dir)]
-        } else
-        {
+        } else {
+
             cw_indx <- last_pt_dir:(last_pt_dir + 4)
             cw_indx <- wrp (cw_indx)
             cw_indx <- cw_indx [1:which.max (cw_indx == wrp (first_pt_dir - 1))]
             ccw_indx <- c (last_pt_dir, wrp (last_pt_dir - 1))
         }
-    } else
-    {
+    } else {
+
         cw_indx <- last_pt_dir:(last_pt_dir + 4)
         cw_indx <- wrp (cw_indx)
         cw_indx <- cw_indx [1:which.max (cw_indx == first_pt_dir)]
@@ -347,8 +351,8 @@ make_poly <- function (out, bbox, g)
 
 # The df bits directly adapted from same fn in osmdata/get-osmdata.R in
 # simplified form; the initial "sfg" and "sfc" bits also cribbed from osmdata
-make_sf <- function (x, g)
-{
+make_sf <- function (x, g) {
+
     x <- list (x)
     class (x) <- c ("XY", "POLYGON", "sfg")
 
