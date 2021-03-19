@@ -1,9 +1,9 @@
-check_map_arg <- function (map)
-{
+check_map_arg <- function (map) {
+
     if (missing (map))
-        stop ('a non-null map must be provided', call. = FALSE)
-    if (!is (map, 'ggplot'))
-        stop ('map must be a ggplot2 object', call. = FALSE)
+        stop ("a non-null map must be provided", call. = FALSE)
+    if (!is (map, "ggplot"))
+        stop ("map must be a ggplot2 object", call. = FALSE)
 }
 
 #' get type of geometry object from either sf or sp objects
@@ -12,22 +12,24 @@ check_map_arg <- function (map)
 #' \code{sp} return plurals ('polygons', 'points')
 #'
 #' @noRd
-get_obj_type <- function (obj)
-{
-    if (is (obj, 'sf'))
-    {
-        if(!inherits(obj$geometry, "sfc")) 
+get_obj_type <- function (obj) {
+
+    if (is (obj, "sf")) {
+
+        if (!inherits(obj$geometry, "sfc"))
             warning("object class is sf, but the geometry column class is '",
-            toString(class(obj$geometry)), "' instead of 'sfc'.\n",
-            "This can occur e.g. after subsetting sf objects without the sf package loaded.")
-        i <- which (grepl ('sfc_', class (obj$geometry)))
+                    toString(class(obj$geometry)),
+                    "' instead of 'sfc'.\n",
+                    "This can occur e.g. after subsetting sf objects ",
+                    "without the sf package loaded.")
+        i <- which (grepl ("sfc_", class (obj$geometry)))
         obj_type <- tolower (strsplit (class (obj$geometry) [i],
-                                       'sfc_') [[1]] [2])
-    } else
-    {
+                                       "sfc_") [[1]] [2])
+    } else {
+
         obj_type <- tolower (strsplit (strsplit (class (obj),
-                                                 'Spatial') [[1]] [2],
-                                       'DataFrame') [[1]] [1])
+                                                 "Spatial") [[1]] [2],
+                                       "DataFrame") [[1]] [1])
     }
 
     return (obj_type)
@@ -39,40 +41,40 @@ get_obj_type <- function (obj)
 #' @note does same as stringi::stri_trans_totitle
 #'
 #' @noRd
-cap_first <- function (x)
-{
+cap_first <- function (x) {
+
     paste0 (toupper (substring (x, 1, 1)), substring (x, 2, nchar (x)))
 }
 
-check_obj_arg <- function (obj)
-{
+check_obj_arg <- function (obj) {
+
     if (missing (obj))
-        stop ('obj must be provided', call. = FALSE)
-    if (!(is (obj, 'Spatial') | is (obj, 'sf')))
-        stop ('obj must be a spatial object', call. = FALSE)
+        stop ("obj must be provided", call. = FALSE)
+    if (!(is (obj, "Spatial") | is (obj, "sf")))
+        stop ("obj must be a spatial object", call. = FALSE)
 }
 
-check_col_arg <- function (col)
-{
+check_col_arg <- function (col) {
+
     if (missing (col))
-        stop ('a non-null col must be provided')
+        stop ("a non-null col must be provided")
 
     # Note col2rbg (NA) = white
     tryCatch (
               col2rgb (col),
-              error = function (e)
-              {
+              error = function (e) {
+
                   e$message <-  paste0 ("Invalid colour: ", col)
                   stop (e)
               })
 }
 
-check_bbox_arg <- function (bbox)
-{
+check_bbox_arg <- function (bbox) {
+
     if (missing (bbox))
-        stop ('bbox must be provided')
-    if (is (bbox, 'sf')) # sf obj submitted to osm_basemap
-    {
+        stop ("bbox must be provided")
+    if (is (bbox, "sf")) { # sf obj submitted to osm_basemap
+
         if (is (bbox$geometry, "sfc_LINESTRING") |
             is (bbox$geometry, "sfc_POINT"))
             xy <- do.call (rbind, bbox$geometry)
@@ -87,48 +89,48 @@ check_bbox_arg <- function (bbox)
         colnames (bbox) <- c ("min", "max")
     }
     if (!is.numeric (bbox))
-        stop ('bbox is not numeric')
+        stop ("bbox is not numeric")
     if (length (bbox) < 4)
-        stop ('bbox must have length = 4')
-    if (length (bbox) > 4)
-    {
-        warning ('bbox has length > 4; only first 4 elements will be used')
+        stop ("bbox must have length = 4")
+    if (length (bbox) > 4) {
+
+        warning ("bbox has length > 4; only first 4 elements will be used")
         bbox <- matrix (bbox [1:4], 2, 2)
     }
 
     return (bbox)
 }
 
-check_structures_arg <- function (structures)
-{
-    if (!missing (structures))
-    {
+check_structures_arg <- function (structures) {
+
+    if (!missing (structures)) {
+
         if (!is.data.frame (structures))
-            stop ('structures must be a data frame')
-        ns <- c ('structure', 'key', 'value', 'suffix', 'cols')
+            stop ("structures must be a data frame")
+        ns <- c ("structure", "key", "value", "suffix", "cols")
         if (!all (names (structures) == ns))
-            stop ('structures not in recognised format')
+            stop ("structures not in recognised format")
     }
 }
 
 #' generic function to check argument conversion to given function type
 #'
 #' @noRd
-check_arg <- function (arg, arg_name, fn_type, na_okay = FALSE)
-{
+check_arg <- function (arg, arg_name, fn_type, na_okay = FALSE) {
+
     if (missing (arg))
-        stop (paste (arg_name, 'must be provided'))
+        stop (paste (arg_name, "must be provided"))
     else if (length (arg) == 0)
-        stop (paste (arg_name, 'can not be NULL'))
+        stop (paste (arg_name, "can not be NULL"))
     else if (!na_okay & is.na (arg))
-        stop (paste (arg_name, 'can not be NA'))
+        stop (paste (arg_name, "can not be NA"))
 
     adj <- tryCatch (
-                     do.call (paste0 ('as.', fn_type), list (arg)),
-                     warning = function (w)
-                     {
+                     do.call (paste0 ("as.", fn_type), list (arg)),
+                     warning = function (w) {
+
                          w$message <- paste (arg_name,
-                                              'can not be coerced to',
+                                              "can not be coerced to",
                                               fn_type)
                      })
 
