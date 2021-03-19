@@ -13,52 +13,53 @@
 #'
 #' @section Basic Plotting Functions (without data):
 #' \itemize{
-#' \item \code{\link{add_axes}}: Overlay longitudinal and latitudinal axes on plot
-#' \item \code{\link{add_osm_objects}}: Overlay arbitrary OSM objects  
+#' \item \code{\link{add_axes}}: Overlay longitudinal and latitudinal axes on
+#' plot
+#' \item \code{\link{add_osm_objects}}: Overlay arbitrary OSM objects
 #' \item \code{\link{make_osm_map}}: Automate map production with structures
-#' defined in \code{\link{osm_structures}}  
-#' \item \code{\link{osm_structures}}: Define structures and graphics schemes for
-#' automating map production  
+#' defined in \code{\link{osm_structures}}
+#' \item \code{\link{osm_structures}}: Define structures and graphics schemes
+#' for automating map production
 #' \item \code{\link{osm_basemap}}: Initiate a \code{ggplot2} object for an OSM
-#' map  
+#' map
 #' \item \code{\link{print_osm_map}}: Print a map to specified graphics
-#' device 
-#' } 
+#' device
+#' }
 #'
 #' @section Advanced Plotting Functions (with data):
 #' \itemize{
 #' \item \code{\link{add_osm_groups}}: Overlay groups of objects using specified
-#' colour scheme  
+#' colour scheme
 #' \item \code{\link{add_osm_surface}}: Overlay data surface by interpolating
-#' given data  
+#' given data
 #' \item \code{\link{add_colourbar}}: Overlay a scaled colourbar for data added
-#' with \code{\link{add_osm_surface}}  
+#' with \code{\link{add_osm_surface}}
 #' }
 #'
 #' @section Colour Manipulation Functions:
 #' \itemize{
 #' \item \code{\link{adjust_colours}}: Lighted or darken given colours by
-#' specified amount  
+#' specified amount
 #' \item \code{\link{colour_mat}}: Generate continuous 2D spatial matrix of
-#' colours  
+#' colours
 #' }
 #'
 #' @section Other Functions:
 #' \itemize{
-#' \item \code{\link{get_bbox}}: return bounding box from input vector  
+#' \item \code{\link{get_bbox}}: return bounding box from input vector
 #' }
 #'
 #' @section Data:
 #' \itemize{
-#' \item \code{\link{london}}: OSM Data from a small portion of central London  
+#' \item \code{\link{london}}: OSM Data from a small portion of central London
 #' }
 #'
 #' @section Vignettes:
 #' \itemize{
 #' \item \code{basic-maps}: Describes basics of downloading data and making
-#' custom maps 
+#' custom maps
 #' \item \code{data-maps}: Describes how map elements can be coloured according
-#' to user-provided data, whether categorical or continuous 
+#' to user-provided data, whether categorical or continuous
 #' }
 #'
 #' @name osmplotr
@@ -71,7 +72,7 @@
 #' @import spatstat
 NULL
 
-#' london 
+#' london
 #'
 #' A list of \code{Simple Features} (\code{sf}) \code{data.frame} objects
 #' containing OpenStreetMap polygons, lines, and points for various
@@ -86,7 +87,7 @@ NULL
 #'  \item \code{dat_A}: 372 amenities as polygons
 #'  \item \code{dat_P}: 13 parks as polygons
 #'  \item \code{dat_T}: 688 trees as points
-#'  \item \code{dat_RFH}: 1 polygon representing Royal Festival Hall 
+#'  \item \code{dat_RFH}: 1 polygon representing Royal Festival Hall
 #'  \item \code{dat_ST}: 1 polygon representing 150 Stamford Street
 #' }
 #'

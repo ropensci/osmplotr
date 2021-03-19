@@ -401,7 +401,7 @@ map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) #nolint
     xy$mycolour <- cols [cols_z]
 
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, fill = mycolour)
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, fill = xy$mycolour)
     map <- map + ggplot2::geom_polygon (data = xy,
                                         mapping = aes,
                                         size = size [1],
@@ -438,7 +438,7 @@ map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #nolin
     xy$mycolour <- cols [cols_z]
 
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, col = mycolour)
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, col = xy$mycolour)
     map <- map + ggplot2::geom_path (data = xy,
                                      col = xy$mycolour,
                                      mapping = aes,
@@ -477,7 +477,7 @@ map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) #noli
     xy$mycolour <- cols [cols_z]
 
     lon <- lat <- id <- z <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = mycolour)
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, colour = xy$mycolour)
     map <- map + ggplot2::geom_point (data = xy,
                                       mapping = aes,
                                       size = size [1],
