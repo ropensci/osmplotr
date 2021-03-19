@@ -22,7 +22,7 @@
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' map <- osm_basemap (bbox = bbox, bg = "gray20")
-#' map <- add_osm_objects (map, london$dat_BNR, col = "gray40") 
+#' map <- add_osm_objects (map, london$dat_BNR, col = "gray40")
 #' map <- add_axes (map)
 #' print (map)
 #'
@@ -30,44 +30,44 @@
 #' # produce a different result.
 #' map <- osm_basemap (bbox = bbox, bg = "gray20")
 #' map <- add_axes (map)
-#' map <- add_osm_objects (map, london$dat_BNR, col = "gray40") 
+#' map <- add_osm_objects (map, london$dat_BNR, col = "gray40")
 #' print_osm_map (map)
 
 add_axes <- function (map, colour = "black", pos = c(0.02, 0.03),
-                      alpha = 0.4, fontsize = 3, fontface, fontfamily, ...)
-{
+                      alpha = 0.4, fontsize = 3, fontface, fontfamily, ...) {
+
     args <- list (...)
-    if (hasArg ("color")) colour <- args [['color']]
-    if (hasArg ("position")) pos <- args [['position']]
-    if (hasArg ("size")) fontsize <- args [['size']]
-    if (hasArg ("face")) fontface <- args [['face']]
-    if (hasArg ("family")) fontfamily <- args [['family']]
+    if (hasArg ("color")) colour <- args [["color"]]
+    if (hasArg ("position")) pos <- args [["position"]]
+    if (hasArg ("size")) fontsize <- args [["size"]]
+    if (hasArg ("face")) fontface <- args [["face"]]
+    if (hasArg ("family")) fontfamily <- args [["family"]]
 
     # ---------------  sanity checks and warnings  ---------------
     # ---------- map
     if (missing (map))
-        stop ('map must be supplied to add_axes')
+        stop ("map must be supplied to add_axes")
     check_map_arg (map)
     # ---------- colour
     tryCatch (
               col2rgb (colour),
-              error = function (e)
-              {
+              error = function (e) {
+
                   e$message <-  paste0 ("Invalid colour: ", colour)
                   stop (e)
               })
     # ---------- pos
-    pos <- test_len2 (pos, 'pos')
-    pos <- test_numeric (pos, 'pos', c (0.02, 0.03))
-    pos <- test_range (pos, 'pos', c (0, 1), c (0.02, 0.03))
+    pos <- test_len2 (pos, "pos")
+    pos <- test_numeric (pos, "pos", c (0.02, 0.03))
+    pos <- test_range (pos, "pos", c (0, 1), c (0.02, 0.03))
     # ---------- alpha
-    alpha <- test_len1 (alpha, 'alpha')
-    alpha <- test_numeric (alpha, 'alpha', 0.4)
-    alpha <- test_range (alpha, 'alpha', c (0, 1), 0.4)
+    alpha <- test_len1 (alpha, "alpha")
+    alpha <- test_numeric (alpha, "alpha", 0.4)
+    alpha <- test_range (alpha, "alpha", c (0, 1), 0.4)
     # ---------- fontsize
-    fontsize <- test_len1 (fontsize, 'fontsize')
-    fontsize <- test_numeric (fontsize, 'fontsize', 3)
-    fontsize <- test_pos (fontsize, 'fontsize', 3)
+    fontsize <- test_len1 (fontsize, "fontsize")
+    fontsize <- test_numeric (fontsize, "fontsize", 3)
+    fontsize <- test_pos (fontsize, "fontsize", 3)
     # ---------------  end sanity checks and warnings  ---------------
 
     # The following are defaults from ggplot2/geom-label.R
@@ -112,8 +112,8 @@ add_axes <- function (map, colour = "black", pos = c(0.02, 0.03),
 #  (x1,y1)---(x2,y1)----------------------------(x3,y1)
 #
 add_axis_rectangle <- function (map, xaxs_pos, yaxs_pos, xrange, yrange,
-                                alpha = 0.4, expand = 1.0)
-{
+                                alpha = 0.4, expand = 1.0) {
+
     expand <- 1.0
     xr <- c (yaxs_pos [1] + c(-1, 1) * expand * diff (yaxs_pos), xrange [2])
     yr <- c (xaxs_pos [1] + c(-1, 1) * expand * diff (xaxs_pos), yrange [2])
@@ -128,13 +128,13 @@ add_axis_rectangle <- function (map, xaxs_pos, yaxs_pos, xrange, yrange,
     map + ggplot2::geom_polygon (data = rdat, mapping = aes,
                                  inherit.aes = FALSE,
                                  fill = rgb (1, 1, 1, alpha),
-                                 colour = 'transparent')
+                                 colour = "transparent")
 }
 
 # add rectangles around horizontal ticks
 add_tick_rectangles_h <- function (map, xp, xaxs_pos, yaxs_pos,
-                                   alpha = 0.4, expand = 1.0)
-{
+                                   alpha = 0.4, expand = 1.0) {
+
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     x0 <- xp - expand * diff (yaxs_pos)
     x1 <- xp + expand * diff (yaxs_pos)
@@ -148,13 +148,13 @@ add_tick_rectangles_h <- function (map, xp, xaxs_pos, yaxs_pos,
     map + ggplot2::geom_polygon (data = rdat, mapping = aes,
                                  inherit.aes = FALSE,
                                  fill = rgb (1, 1, 1, alpha),
-                                 colour = 'transparent')
+                                 colour = "transparent")
 }
 
 # add rectangles around vertical ticks
 add_tick_rectangles_v <- function (map, yp, xaxs_pos, yaxs_pos,
-                                   alpha = 0.4, expand = 1.0)
-{
+                                   alpha = 0.4, expand = 1.0) {
+
     lon <- lat <- id <- NULL # suppress 'no visible binding' error
     y0 <- yp - expand * diff (xaxs_pos)
     y1 <- yp + expand * diff (xaxs_pos)
@@ -166,12 +166,12 @@ add_tick_rectangles_v <- function (map, yp, xaxs_pos, yaxs_pos,
     map <- map + ggplot2::geom_polygon (data = rdat, mapping = aes,
                                         inherit.aes = FALSE,
                                         fill = rgb (1, 1, 1, alpha),
-                                        colour = 'transparent')
+                                        colour = "transparent")
 }
 
 add_horizontal_axis <- function (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
-                                 alpha, fontsize, fontface, fontfamily)
-{
+                                 alpha, fontsize, fontface, fontfamily) {
+
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = max (xrange),
                           y1 = xaxs_pos [1], y2 = xaxs_pos [1])
     x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
@@ -201,8 +201,8 @@ add_horizontal_axis <- function (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
 }
 
 add_vertical_axis <- function (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
-                               alpha, fontsize, fontface, fontfamily)
-{
+                               alpha, fontsize, fontface, fontfamily) {
+
     segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [1],
                           y1 = xaxs_pos [1], y2 = max (yrange))
     x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
