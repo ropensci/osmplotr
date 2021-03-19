@@ -42,9 +42,6 @@ Highways](#6%20highlighting%20with%20highways)
 
 But first the easy steps to map making:
 
-    #> Warning in fun(libname, pkgname): rgeos: versions of GEOS runtime 3.8.1-CAPI-1.13.3
-    #> and GEOS at installation 3.8.0-CAPI-1.13.1differ
-
 1.  Specify the bounding box for the desired region
 
     ``` r
@@ -54,19 +51,19 @@ But first the easy steps to map making:
 2.  Download the desired data—in this case, all building perimeters.
 
     ``` r
-    dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
+    dat_B <- extract_osm_objects (key = "building", bbox = bbox)
     ```
 
 3.  Initiate an `osm_basemap` with desired background (`bg`) colour
 
     ``` r
-    map <- osm_basemap (bbox = bbox, bg = 'gray20')
+    map <- osm_basemap (bbox = bbox, bg = "gray20")
     ```
 
 4.  Overlay objects on plot in the desired colour.
 
     ``` r
-    map <- add_osm_objects (map, dat_B, col = 'gray40')
+    map <- add_osm_objects (map, dat_B, col = "gray40")
     ```
 
 5.  Print the map to graphics device of choice
@@ -82,13 +79,13 @@ But first the easy steps to map making:
 First install the package
 
 ``` r
-install.packages ('osmplotr')
+install.packages ("osmplotr")
 ```
 
 or the development version
 
 ``` r
-devtools::install_github ('ropensci/osmplotr')
+devtools::install_github ("ropensci/osmplotr")
 ```
 
 And then load it in the usual way
@@ -105,17 +102,17 @@ Simple maps can be made by overlaying different kinds of OSM data in
 different colours:
 
 ``` r
-dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
-dat_P <- extract_osm_objects (key = 'park', bbox = bbox)
-dat_G <- extract_osm_objects (key = 'landuse', value = 'grass', bbox = bbox)
+dat_H <- extract_osm_objects (key = "highway", bbox = bbox)
+dat_P <- extract_osm_objects (key = "park", bbox = bbox)
+dat_G <- extract_osm_objects (key = "landuse", value = "grass", bbox = bbox)
 ```
 
 ``` r
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_objects (map, dat_B, col = 'gray40')
-map <- add_osm_objects (map, dat_H, col = 'gray80')
-map <- add_osm_objects (map, dat_P, col = 'darkseagreen')
-map <- add_osm_objects (map, dat_G, col = 'darkseagreen1')
+map <- osm_basemap (bbox = bbox, bg = "gray20")
+map <- add_osm_objects (map, dat_B, col = "gray40")
+map <- add_osm_objects (map, dat_H, col = "gray80")
+map <- add_osm_objects (map, dat_P, col = "darkseagreen")
+map <- add_osm_objects (map, dat_G, col = "darkseagreen1")
 print_osm_map (map)
 ```
 
@@ -144,11 +141,11 @@ only one here), while `bg` defines the colour of the remaining,
 background area.
 
 ``` r
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_groups (map, dat_B, groups = pts, cols = 'orange', bg = 'gray40')
-map <- add_osm_objects (map, london$dat_P, col = 'darkseagreen1')
-map <- add_osm_groups (map, london$dat_P, groups = pts, cols = 'darkseagreen1',
-                   bg = 'darkseagreen', boundary = 0)
+map <- osm_basemap (bbox = bbox, bg = "gray20")
+map <- add_osm_groups (map, dat_B, groups = pts, cols = "orange", bg = "gray40")
+map <- add_osm_objects (map, london$dat_P, col = "darkseagreen1")
+map <- add_osm_groups (map, london$dat_P, groups = pts, cols = "darkseagreen1",
+                   bg = "darkseagreen", boundary = 0)
 print_osm_map (map)
 ```
 
@@ -163,9 +160,9 @@ polygons precisely along the border. The same map highlighted in
 dark-on-light:
 
 ``` r
-map <- osm_basemap (bbox = bbox, bg = 'gray95')
-map <- add_osm_groups (map, dat_B, groups = pts, cols = 'gray40', bg = 'gray85')
-map <- add_osm_groups (map, dat_H, groups = pts, cols = 'gray20', bg = 'gray70')
+map <- osm_basemap (bbox = bbox, bg = "gray95")
+map <- add_osm_groups (map, dat_B, groups = pts, cols = "gray40", bg = "gray85")
+map <- add_osm_groups (map, dat_H, groups = pts, cols = "gray20", bg = "gray70")
 print_osm_map (map)
 ```
 
@@ -198,7 +195,7 @@ outside those defined groups to be allocated to the nearest groups, and
 thus produces an inclusive grouping extending across an entire region.
 
 ``` r
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
+map <- osm_basemap (bbox = bbox, bg = "gray20")
 map <- add_osm_groups (map, dat_B, groups = groups,
                        cols = rainbow (length (groups)), border_width = 2)
 print_osm_map (map)
@@ -220,20 +217,20 @@ highways encircling desired regions.
 ``` r
 # These highways extend beyond the previous, smaller bbox
 bbox_big <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
-highways <- c ('Davies.St', 'Berkeley.Sq', 'Berkeley.St', 'Piccadilly',
-               'Regent.St', 'Oxford.St')
+highways <- c ("Davies.St", "Berkeley.Sq", "Berkeley.St", "Piccadilly",
+               "Regent.St", "Oxford.St")
 highways1 <- connect_highways (highways = highways, bbox = bbox_big)
-highways <- c ('Regent.St', 'Oxford.St', 'Shaftesbury')
+highways <- c ("Regent.St", "Oxford.St", "Shaftesbury")
 highways2 <- connect_highways (highways = highways, bbox = bbox_big)
-highways <- c ('Piccadilly', 'Shaftesbury.Ave', 'Charing.Cross.R',
-               'Saint.Martin', 'Trafalgar.Sq', 'Cockspur.St',
-               'Pall.Mall', 'St.James')
+highways <- c ("Piccadilly", "Shaftesbury.Ave", "Charing.Cross.R",
+               "Saint.Martin", "Trafalgar.Sq", "Cockspur.St",
+               "Pall.Mall", "St.James")
 highways3 <- connect_highways (highways = highways, bbox = bbox_big)
-highways <- c ('Charing.Cross', 'Duncannon.St', 'Strand', 'Aldwych',
-               'Kingsway', 'High.Holborn', 'Shaftesbury.Ave')
+highways <- c ("Charing.Cross", "Duncannon.St", "Strand", "Aldwych",
+               "Kingsway", "High.Holborn", "Shaftesbury.Ave")
 highways4 <- connect_highways (highways = highways, bbox = bbox_big)
-highways <- c ('Kingsway', 'Holborn', 'Farringdon.St', 'Strand',
-               'Fleet.St', 'Aldwych')
+highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
+               "Fleet.St", "Aldwych")
 highways5 <- connect_highways (highways = highways, bbox = bbox_big)
 groups <- list (highways1, highways2, highways3, highways4, highways5)
 ```
@@ -242,13 +239,13 @@ And then passing these lists of groups returned by `connect_highways` to
 `add_osm_groups`, this time with some Wes Anderson flair.
 
 ``` r
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
+map <- osm_basemap (bbox = bbox, bg = "gray20")
 library (wesanderson)
-cols <- wes_palette ('Darjeeling', 5)
+cols <- wes_palette ("Darjeeling", 5)
 map <- add_osm_groups (map, dat_B, groups = groups, boundary = 1,
-                       cols = cols, bg = 'gray40', colmat = FALSE)
+                       cols = cols, bg = "gray40", colmat = FALSE)
 map <- add_osm_groups (map, dat_H, groups = groups, boundary = 0,
-                       cols = cols, bg = 'gray70', colmat = FALSE)
+                       cols = cols, bg = "gray70", colmat = FALSE)
 print_osm_map (map)
 ```
 
@@ -276,7 +273,7 @@ dat <- data.frame (x = xy [, 1], y = xy [, 2], z = z)
 ```
 
 ``` r
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
+map <- osm_basemap (bbox = bbox, bg = "gray20")
 cols <- gray (0:50 / 50)
 map <- add_osm_surface (map, dat_B, dat = dat, cols = cols)
 # Darken cols by ~20%
