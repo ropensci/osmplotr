@@ -1,5 +1,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+[![R build
+status](https://github.com/ropensci/osmplotr/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check)
 [![codecov](https://codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/osmplotr)
 [![Project Status:
 Active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
@@ -39,6 +41,9 @@ Highways](#6%20highlighting%20with%20highways)
 ## <a name="1 intro"></a>1. Quick Introduction
 
 But first the easy steps to map making:
+
+    #> Warning in fun(libname, pkgname): rgeos: versions of GEOS runtime 3.8.1-CAPI-1.13.3
+    #> and GEOS at installation 3.8.0-CAPI-1.13.1differ
 
 1.  Specify the bounding box for the desired region
 
