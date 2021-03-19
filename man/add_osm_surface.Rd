@@ -27,10 +27,9 @@ add_osm_surface(
 (longitude, latitude), and z are the values to be interpolated}
 
 \item{method}{Either \code{idw} (Inverse Distance Weighting as
-\code{spatstat::idw}; default), \code{Gaussian} for kernel
-smoothing (as \code{spatstat::Smooth.ppp}), or any other value to avoid
-interpolation. In this case, \code{dat} must be regularly spaced in \code{x}
-and \code{y}.}
+\code{spatstat.core::idw}; default), \code{Gaussian} for kernel smoothing (as
+\code{spatstat.core::Smooth.ppp}), or any other value to avoid interpolation.
+In this case, \code{dat} must be regularly spaced in \code{x} and \code{y}.}
 
 \item{grid_size}{size of interpolation grid}
 
@@ -61,7 +60,7 @@ initialised with \code{\link{osm_basemap}}. The surface is spatially
 interpolated between the values given in \code{dat}, which has to be a matrix or
 \code{data.frame} of 3 columns (x, y, z), where (x,y) are (longitude,
 latitude), and z are the values to be interpolated. Interpolation uses
-\code{spatstat::Smoothing.ppp}, which applies a Gaussian kernel smoother
+\code{spatstat.core::Smooth.ppp}, which applies a Gaussian kernel smoother
 optimised to the given data, and is effectively non-parametric.
 }
 \note{

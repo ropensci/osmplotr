@@ -4,7 +4,9 @@
 \name{london}
 \alias{london}
 \title{london}
-\format{A list of spatial objects}
+\format{
+A list of spatial objects
+}
 \description{
 A list of \code{Simple Features} (\code{sf}) \code{data.frame} objects
 containing OpenStreetMap polygons, lines, and points for various
