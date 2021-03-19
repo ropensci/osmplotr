@@ -83,7 +83,9 @@ bigger group are included.
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 # Download data using 'extract_osm_objects'
 \dontrun{
-dat_HP <- extract_osm_objects (key = 'highway', value = 'primary', bbox = bbox)
+dat_HP <- extract_osm_objects (key = 'highway',
+                               value = 'primary',
+                               bbox = bbox)
 dat_T <- extract_osm_objects (key = 'tree', bbox = bbox)
 dat_BNR <- extract_osm_objects (key = 'building', value = '!residential',
 bbox = bbox)
@@ -121,20 +123,27 @@ ngroups <- 6
 x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
 y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
 groups <- cbind (x, y)
-groups <- apply (groups, 1, function (i) 
-              sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
+groups <- apply (groups, 1, function (i)
+                 sp::SpatialPoints (
+                     matrix (i, nrow = 1, ncol = 2)))
 # plot a basemap and add groups
 map <- bmap ()
 cols <- rainbow (length (groups))
 \dontrun{
-map <- add_osm_groups (map, obj = london$dat_BNR, group = groups, cols = cols)
+map <- add_osm_groups (map,
+                       obj = london$dat_BNR,
+                       group = groups,
+                       cols = cols)
 cols <- adjust_colours (cols, -0.2)
 map <- add_osm_groups (map, obj = london$dat_H, groups = groups, cols = cols)
 print_osm_map (map)
 
 # Highlight convex hulls containing groups:
 map <- bmap ()
-map <- add_osm_groups (map, obj = london$dat_BNR, group = groups, cols = cols,
+map <- add_osm_groups (map,
+                       obj = london$dat_BNR,
+                       group = groups,
+                       cols = cols,
                        border_width = 2)
 print_osm_map (map)
 }
