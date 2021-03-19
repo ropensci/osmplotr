@@ -45,18 +45,20 @@ dat_HP <- extract_osm_objects (bbox = bbox, key = 'highway',
                                value = 'primary')
 dat_T <- extract_osm_objects (bbox = bbox, key = 'tree')
 }
-map <- add_osm_objects (map, obj = london$dat_BNR, col = "gray40", border = "yellow") 
+map <- add_osm_objects (map, obj = london$dat_BNR,
+                        col = "gray40", border = "yellow")
 map <- add_osm_objects (map, obj = london$dat_HP, col = "gray80",
                         size = 1, shape = 2)
-map <- add_osm_objects (map, london$dat_T, col = "green", size = 2, shape = 1)
+map <- add_osm_objects (map, london$dat_T, col = "green",
+                        size = 2, shape = 1)
 print_osm_map (map)
 
 # Polygons with different coloured borders
 map <- osm_basemap (bbox = bbox, bg = "gray20")
 map <- add_osm_objects (map, obj = london$dat_HP, col = "gray80")
 map <- add_osm_objects (map, london$dat_T, col = "green")
-map <- add_osm_objects (map, obj = london$dat_BNR, col = "gray40", border = "yellow", 
-                        size = 0.5)
+map <- add_osm_objects (map, obj = london$dat_BNR, col = "gray40",
+                        border = "yellow", size = 0.5)
 print_osm_map (map)
 }
 \seealso{
