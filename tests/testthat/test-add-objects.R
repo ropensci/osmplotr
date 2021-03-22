@@ -1,21 +1,21 @@
 context ("add-objects")
 
-test_that ('basemap', {
-           expect_error (add_osm_objects (), 'a non-null map must be provided')
-           expect_error (add_osm_objects (NULL), 'map must be a ggplot2 object')
+test_that ("basemap", {
+           expect_error (add_osm_objects (), "a non-null map must be provided")
+           expect_error (add_osm_objects (NULL), "map must be a ggplot2 object")
            expect_error (add_osm_objects (col = 1:4),
-                         'a non-null map must be provided')
+                         "a non-null map must be provided")
 })
 
-test_that ('obj', {
+test_that ("obj", {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox = bbox, bg = "gray20")
-           expect_error (add_osm_objects (map), 'obj must be provided')
+           expect_error (add_osm_objects (map), "obj must be provided")
            expect_error (add_osm_objects (map, NULL),
-                         'obj must be a spatial object')
+                         "obj must be a spatial object")
 })
 
-test_that ('col', {
+test_that ("col", {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            obj <- london$dat_BNR
@@ -29,7 +29,7 @@ test_that ('col', {
                          "a non-null col must be provided")
 })
 
-test_that ('border', {
+test_that ("border", {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            obj <- london$dat_BNR
@@ -41,7 +41,7 @@ test_that ('border', {
            expect_silent (add_osm_objects (map, obj, border = NA))
 })
 
-test_that ('size', {
+test_that ("size", {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            obj <- london$dat_BNR
@@ -67,7 +67,7 @@ test_that ('size', {
                          "size should be positive; defaulting to 0.5")
 })
 
-test_that ('shape', {
+test_that ("shape", {
            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            obj <- london$dat_BNR # shape is ignored
