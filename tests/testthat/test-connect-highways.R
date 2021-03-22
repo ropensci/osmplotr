@@ -1,9 +1,7 @@
 context ('connect-highways')
 
-# test_all used to switch off tests on CRAN
 test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
-             identical (Sys.getenv ("TRAVIS"), "true") |
-             identical (Sys.getenv ("APPVEYOR"), "True"))
+             identical (Sys.getenv ("GITHUB_WORKFLOW"), "test-coverage"))
 
 source ("../stub.R")
 

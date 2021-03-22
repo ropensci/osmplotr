@@ -1,9 +1,7 @@
 context ('extract-objects')
 
-# test_all used to switch off tests on CRAN
 test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
-             identical (Sys.getenv ("TRAVIS"), "true") |
-             identical (Sys.getenv ("APPVEYOR"), "True"))
+             identical (Sys.getenv ("GITHUB_WORKFLOW"), "test-coverage"))
 
 test_that ('missing objects', {
            expect_error (extract_osm_objects (), 'key must be provided')
