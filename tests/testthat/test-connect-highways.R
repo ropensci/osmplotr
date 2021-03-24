@@ -1,7 +1,8 @@
 context ("connect-highways")
 
-test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
-             identical (Sys.getenv ("GITHUB_WORKFLOW"), "test-coverage"))
+#test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
+#             identical (Sys.getenv ("GITHUB_WORKFLOW"), "test-coverage"))
+test_all <- identical (Sys.getenv ("MPADGE_LOCAL"), "true")
 
 source ("../stub.R")
 
@@ -38,18 +39,23 @@ if (curl::has_internet ()) { # otherwise all of these return errors not warnings
         })
 
         # This data for this test are stubbed because the dl fails too often
-        test_that ("highways do not connect", {
-                   load (system.file ("extdata", "hwys.rda",
-                                      package = "osmplotr"))
-                   i <- which (lapply (hwys,
-                                       function (i) length (names (i))) == 5)
-                   hwys <- hwys [[i]] # make sure it's the right set
-                   stub (connect_highways, "extract_highways",
-                         function (x, ...) hwys)
-                   expect_silent (connect_highways (highways = highways,
-                                                    bbox = bbox, plot = TRUE))
-                   dev.off (which = dev.cur ())
-        })
+        if (test_all) {
+
+            test_that ("highways do not connect", {
+                       load (system.file ("extdata", "hwys.rda",
+                                          package = "osmplotr"))
+                       i <- which (lapply (hwys,
+                                           function (i)
+                                               length (names (i))) == 5)
+                       hwys <- hwys [[i]] # make sure it's the right set
+                       stub (connect_highways, "extract_highways",
+                             function (x, ...) hwys)
+                       expect_silent (connect_highways (highways = highways,
+                                                        bbox = bbox,
+                                                        plot = TRUE))
+                       dev.off (which = dev.cur ())
+            })
+        }
     }
 } # end if has_internet
 
