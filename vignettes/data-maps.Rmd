@@ -21,7 +21,7 @@ plotted by highlighting defined regions with different colours using
 `add_osm_groups`, while continuous data can be plotted with `add_osm_surface`.
 
 
-```{r load, message = FALSE, eval = FALSE}
+```{r load, message = FALSE, eval = TRUE}
 library (osmplotr)
 ```
 ```{r, echo = FALSE, message = FALSE}
