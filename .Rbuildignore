@@ -9,7 +9,7 @@
 ^.*\.Rproj$
 ^aaa\.Rmd$
 ^script\.R$
-^docs$
+^maps/
 ^data-raw/
 ^.github/
 figure/
