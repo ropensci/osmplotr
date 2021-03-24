@@ -1,6 +1,6 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.2.053
+Version: 0.3.2.054
 Authors@R: 
     c(person(given = "Mark",
              family = "Padgham",
@@ -26,11 +26,9 @@ BugReports: https://github.com/ropensci/osmplotr/issues
 Depends:
     R (>= 3.2.3)
 Imports:
-    curl,
     e1071,
     ggm,
     ggplot2,
-    httr,
     mapproj,
     methods,
     osmdata,
@@ -40,11 +38,10 @@ Imports:
     spatstat.core,
     spatstat.geom
 Suggests:
+    curl,
     knitr,
     magrittr,
     rmarkdown,
-    roxygen2,
-    sf,
     testthat
 VignetteBuilder: 
     knitr
