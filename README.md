@@ -9,8 +9,8 @@ Active](http://www.repostatus.org/badges/latest/active.svg)](https://www.reposta
 ![](man/figures/map1.png)
 
 [![CRAN
-Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
+Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr/)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr/)
 [![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/software-review/issues/27)
 
 R package to produce visually impressive customisable images of
