@@ -9,10 +9,10 @@
 ^.*\.Rproj$
 ^aaa\.Rmd$
 ^script\.R$
-^maps/
-^data-raw/
-^.github/
-figure/
+^maps$
+^data-raw$
+^.github
+^\.github$
 ^data/nomenclatura*
 ^paper\.md$
 ^paper\.bib$
