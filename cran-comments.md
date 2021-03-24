@@ -1,15 +1,13 @@
-# CRAN notes for osmplotr_v0.3.0 submission
+# CRAN notes for osmplotr_v0.3.3 submission
 
-The single note regarding installed size of ~6MB is due to the vignettes. These
-produce many graphical files illustrating the package's functionality. Halving
-the current resolution of these images (from 72 to 36 dpi) only decreases the
-final package size by around 200 kB - it really is the sheer number of them
-required, rather than their sizes.
+This submission rectifies the previously failing checks due to the breakup of the `spatstat` package into new sub-packages.
+
+The single note regarding installed size of ~6MB is due to the vignettes. These produce many graphical files illustrating the package's functionality. Halving the current resolution of these images (from 72 to 36 dpi) only decreases the final package size by around 200 kB.
 
 ## Test environments
 
-Other than that above, this submission generates NO notes on:
-* Linux (via Travis-ci): R-oldrel, R-release, R-devel
-* OSX (via Travis-ci): R-oldrel R-release
-* Windows Visual Studio 2015 x64 (via appveyor)
-* win-builder: R-oldrelease, R-release, R-devel
+Other than the above, this submission generates NO notes on:
+
+- Linux (via github actions): R-release, R-oldrelease
+- Windows (via github actions): R-release, R-oldrelease, R-devel
+- win-builder: R-oldrelease, R-release, R-devel

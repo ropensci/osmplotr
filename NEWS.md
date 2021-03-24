@@ -1,5 +1,9 @@
-osmplotr v0.3.2.00x
+osmplotr v0.3.3
 ===============
+
+Minor changes
+-------
+- Changes in response to `spatstat` v2 updates
 
 Minor changes
 -------
