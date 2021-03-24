@@ -1,6 +1,6 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.2.047
+Version: 0.3.2.048
 Authors@R: 
     c(person(given = "Mark",
              family = "Padgham",
@@ -20,7 +20,7 @@ Authors@R:
 Description: Bespoke images of 'OpenStreetMap' ('OSM') data and data
     visualisation using 'OSM' objects.
 License: GPL-3
-URL: https://docs.ropensci.org/osmplotr,
+URL: https://docs.ropensci.org/osmplotr/,
     https://github.com/ropensci/osmplotr
 BugReports: https://github.com/ropensci/osmplotr/issues
 Depends:

@@ -4,14 +4,14 @@
 status](https://github.com/ropensci/osmplotr/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check)
 [![codecov](https://codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/osmplotr)
 [![Project Status:
-Active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+Active](http://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/)
 
 ![](man/figures/map1.png)
 
 [![CRAN
 Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr)
-[![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/onboarding/issues/27)
+[![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/software-review/issues/27)
 
 R package to produce visually impressive customisable images of
 OpenStreetMap (OSM) data downloaded internally from the [overpass
@@ -316,4 +316,4 @@ to abide by its terms.
 
 ------------------------------------------------------------------------
 
-[![ropensci\_footer](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
+[![ropensci\_footer](https://ropensci.org//public_images/github_footer.png)](https://ropensci.org/)
