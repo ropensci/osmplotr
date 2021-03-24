@@ -19,7 +19,7 @@ test_that ("add surface", {
            obj <- london$dat_BNR
            expect_error (add_osm_surface (map, obj), "dat can not be NULL")
            expect_error (add_osm_surface (map, obj, NULL),
-                         "\"data\" must be of a vector type, was \"NULL\"")
+                         "'data' must be of a vector type, was 'NULL'")
            expect_error (add_osm_surface (map, obj, 1),
                          "dat must have at least 3 columns")
            dat <- matrix (runif (12), nrow = 4)
