@@ -10,7 +10,7 @@
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.2.049",
+  "version": "0.3.2.50",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -301,9 +301,9 @@
       "sameAs": "https://CRAN.R-project.org/package=spatstat.geom"
     }
   ],
-  "releaseNotes": "https://github.com/ropensci/osmplotr/blob/master/NEWS",
+  "releaseNotes": "https://github.com/ropensci/osmplotr/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/osmplotr/blob/master/README.md",
-  "fileSize": "12710.266KB",
+  "fileSize": "12710.489KB",
   "contIntegration": "https://codecov.io/gh/ropensci/osmplotr",
   "review": {
     "@type": "Review",
@@ -324,7 +324,8 @@
   ],
   "relatedLink": [
     "https://CRAN.R-project.org/package=osmplotr",
-    "https://docs.ropensci.org/osmplotr"
+    "https://docs.ropensci.org/osmplotr",
+    "https://docs.ropensci.org/osmplotr/"
   ],
-  "developmentStatus": "http://www.repostatus.org/#active"
+  "developmentStatus": "https://www.repostatus.org/"
 }
