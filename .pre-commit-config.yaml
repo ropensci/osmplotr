@@ -54,5 +54,5 @@ repos:
         # `exclude: <regex>` to allow committing specific files.
     -   id: description version
         name: Version has been incremeneted in DESCRIPTION
-        entry: /home/smexus/bin/precommit/description
+        entry: .hooks/description
         language: script
