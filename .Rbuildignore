@@ -22,3 +22,4 @@
 ^cran-comments.md$
 ^codemeta\.json$
 ^\.pre-commit-config\.yaml$
+^\.hooks$
