@@ -67,4 +67,9 @@ print_osm_map (map)
 }
 \seealso{
 \code{\link{add_osm_groups}}.
+
+Other data-extraction: 
+\code{\link{extract_osm_objects}()},
+\code{\link{get_bbox}()}
 }
+\concept{data-extraction}

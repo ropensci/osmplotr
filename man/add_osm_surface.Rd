@@ -147,4 +147,8 @@ print_osm_map (map)
 }
 \seealso{
 \code{\link{osm_basemap}}, \code{\link{add_colourbar}}.
+
+Other maps-with-data: 
+\code{\link{add_osm_groups}()}
 }
+\concept{maps-with-data}

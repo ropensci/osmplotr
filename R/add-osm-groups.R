@@ -37,7 +37,6 @@
 #' number of degrees clockwise.
 #' @return Modified version of \code{map} with groups added.
 #' @importFrom ggplot2 aes geom_polygon geom_path
-#' @export
 #'
 #' @section Note:
 #' Any group that is entirely contained within any other group is assumed to
@@ -115,6 +114,8 @@
 #'                        border_width = 2)
 #' print_osm_map (map)
 #' }
+#' @family maps-with-data
+#' @export
 
 add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
                             boundary = -1, size, shape, border_width = 1,

@@ -12,7 +12,6 @@
 #' not explicitly provided).
 #' @param units Units for height and width of graphics device.
 #' @param dpi Resolution of graphics device (dots-per-inch).
-#' @export
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_objects}},
 #' \code{\link{make_osm_map}}.
@@ -25,6 +24,8 @@
 #' \dontrun{
 #' print_osm_map (map, file = "map.png", width = 500, units = "px")
 #' }
+#' @family construction
+#' @export
 print_osm_map <- function (map, width, height, filename, device,
                            units = c("in", "cm", "mm", "px"),
                            dpi = 300) {

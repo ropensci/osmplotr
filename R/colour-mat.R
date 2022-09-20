@@ -13,7 +13,6 @@
 #' degrees).
 #' @param plot plots the colour matrix.
 #' @return \code{Matrix} of colours.
-#' @export
 #'
 #' @seealso \code{\link{add_osm_groups}}.
 #'
@@ -36,6 +35,8 @@
 #' map <- add_osm_groups (map, obj = london$dat_BNR, group = groups,
 #'                        cols = rainbow (4), colmat = TRUE, rotate = 90)
 #' print_osm_map (map)
+#' @family colours
+#' @export
 
 colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE) {
 

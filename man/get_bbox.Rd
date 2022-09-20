@@ -21,3 +21,9 @@ passed as a \code{bbox} argument (to \code{\link{extract_osm_objects}},
 \examples{
 bbox <- get_bbox (c (-0.15, 51.5, -0.1, 51.52))
 }
+\seealso{
+Other data-extraction: 
+\code{\link{connect_highways}()},
+\code{\link{extract_osm_objects}()}
+}
+\concept{data-extraction}

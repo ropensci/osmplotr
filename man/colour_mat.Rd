@@ -49,4 +49,8 @@ print_osm_map (map)
 }
 \seealso{
 \code{\link{add_osm_groups}}.
+
+Other colours: 
+\code{\link{adjust_colours}()}
 }
+\concept{colours}

@@ -17,7 +17,6 @@
 #' see \code{\link[ggplot2]{shape}}.
 #' @return modified version of \code{map} to which objects have been added.
 #' @importFrom ggplot2 geom_polygon geom_path aes geom_point
-#' @export
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{extract_osm_objects}}.
 #'
@@ -48,6 +47,8 @@
 #' map <- add_osm_objects (map, obj = london$dat_BNR, col = "gray40",
 #'                         border = "yellow", size = 0.5)
 #' print_osm_map (map)
+#' @family construction
+#' @export
 
 add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
                              size, shape) {

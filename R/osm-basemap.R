@@ -17,7 +17,6 @@
 #' @importFrom ggplot2 ggplot coord_map aes scale_x_continuous
 #' scale_y_continuous theme_minimal element_rect element_blank margin unit
 #' @importFrom mapproj mapproject
-#' @export
 #'
 #' @seealso \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
 #'
@@ -26,6 +25,8 @@
 #' map <- osm_basemap (bbox = bbox, bg = "gray20")
 #' map <- add_osm_objects (map, london$dat_BNR, col = "gray40")
 #' print_osm_map (map)
+#' @family construction
+#' @export
 osm_basemap <- function (bbox, structures, bg = "gray20") {
 
     # ---------------  sanity checks and warnings  ---------------

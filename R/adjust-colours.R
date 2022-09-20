@@ -11,7 +11,6 @@
 #' @param plot If \code{TRUE}, generates a plot to allow visual comparison of
 #' original and adjusted colours.
 #' @return Corresponding vector of adjusted colours (as hexadecimal strings).
-#' @export
 #'
 #' @seealso \code{\link{osm_structures}}, \code{?col2rgb}.
 #'
@@ -39,6 +38,8 @@
 #'                      osm_data = osm_data,
 #'                      bbox = bbox)
 #' print_osm_map (dat$map)
+#' @family colours
+#' @export
 
 
 adjust_colours <- function (cols, adj = 0, plot = FALSE) {

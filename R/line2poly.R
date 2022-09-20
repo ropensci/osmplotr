@@ -31,7 +31,6 @@
 #' the bounding box will be extracted from the object coordinates.
 #' @return A list of three Simple Features (\code{sf}) data frames, labelled sea
 #' islands and land.
-#' @export
 #'
 #' @examples
 #' # This example uses the \code{osmdata} package to extract data from
@@ -50,6 +49,8 @@
 #'     add_osm_objects (coast$sea, col = "lightsteelblue") %>%
 #'     print_osm_map ()
 #' }
+#' @family map-extra
+#' @export
 osm_line2poly <- function (obj, bbox) {
 
     if (!is (obj$geometry, "sfc_LINESTRING"))

@@ -47,4 +47,11 @@ print_osm_map (map, file = "map.png", width = 500, units = "px")
 \seealso{
 \code{\link{osm_basemap}}, \code{\link{add_osm_objects}},
 \code{\link{make_osm_map}}.
+
+Other construction: 
+\code{\link{add_osm_objects}()},
+\code{\link{make_osm_map}()},
+\code{\link{osm_basemap}()},
+\code{\link{osm_structures}()}
 }
+\concept{construction}

@@ -14,7 +14,6 @@
 #' @return \code{data.frame} of structures, \code{key-value} pairs,
 #' corresponding prefixes, and colours.
 #'
-#' @export
 #'
 #' @seealso \code{\link{make_osm_map}}.
 #'
@@ -30,6 +29,8 @@
 #' # map contains updated $osm_data and actual map in $map
 #' print_osm_map (dat$map)
 #' }
+#' @family construction
+#' @export
 osm_structures <- function (structures = c ("building", "amenity", "waterway",
                                             "grass", "natural", "park",
                                             "highway", "boundary", "tree"),

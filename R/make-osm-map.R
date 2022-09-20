@@ -27,7 +27,6 @@
 #'      \code{osm_data} (which is \code{NULL} by default), and
 #'   \item The \code{map} as a \code{ggplot2} object
 #' }
-#' @export
 #'
 #' @section Note:
 #' If \code{osm_data} is not given, then data will be downloaded, which can take
@@ -47,6 +46,8 @@
 #' dat <- make_osm_map (bbox = bbox, structures = structs)
 #' print_osm_map (dat$map)
 #' }
+#' @family construction
+#' @export
 make_osm_map <- function (bbox, osm_data,
                           structures = osm_structures (), dat_prefix = "dat_") {
 

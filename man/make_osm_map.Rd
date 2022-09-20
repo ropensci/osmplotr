@@ -67,4 +67,11 @@ print_osm_map (dat$map)
 }
 \seealso{
 \code{\link{osm_basemap}}, \code{\link{add_osm_objects}}.
+
+Other construction: 
+\code{\link{add_osm_objects}()},
+\code{\link{osm_basemap}()},
+\code{\link{osm_structures}()},
+\code{\link{print_osm_map}()}
 }
+\concept{construction}

@@ -64,6 +64,8 @@
 #'
 #' @name osmplotr
 #' @docType package
+#' @aliases osmplotr-package
+#' @family package
 #' @importFrom grDevices col2rgb dev.cur dev.new heat.colors rgb rainbow
 #' @importFrom graphics lines par plot plot.new rect text
 #' @importFrom methods hasArg is slot
@@ -98,5 +100,6 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name london
+#' @family data
 #' @format A list of spatial objects
 NULL

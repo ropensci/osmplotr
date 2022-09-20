@@ -76,4 +76,9 @@ dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
 }
 \seealso{
 \code{\link{add_osm_objects}}.
+
+Other data-extraction: 
+\code{\link{connect_highways}()},
+\code{\link{get_bbox}()}
 }
+\concept{data-extraction}

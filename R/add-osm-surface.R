@@ -47,7 +47,6 @@
 #'
 #' @importFrom ggplot2 aes geom_polygon scale_fill_gradientn
 #' scale_colour_gradientn geom_point geom_path
-#' @export
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_colourbar}}.
 #'
@@ -122,6 +121,8 @@
 #'                       vertical = TRUE)
 #' print_osm_map (map)
 #' }
+#' @family maps-with-data
+#' @export
 add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
                              cols = heat.colors (30), bg, size, shape) {
 

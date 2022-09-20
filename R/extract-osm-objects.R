@@ -29,7 +29,6 @@
 #'
 #' @return Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
 #' or \code{SpatialPolygonsDataFrame}.
-#' @export
 #'
 #' @seealso \code{\link{add_osm_objects}}.
 #'
@@ -51,6 +50,8 @@
 #' dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
 #'                             bbox = bbox)
 #' }
+#' @family data-extraction
+#' @export
 extract_osm_objects <- function (bbox, key, value, extra_pairs,
                                  return_type, sf = TRUE,
                                  geom_only = FALSE, quiet = FALSE) {

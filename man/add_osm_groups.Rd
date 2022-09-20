@@ -150,4 +150,8 @@ print_osm_map (map)
 }
 \seealso{
 \code{\link{colour_mat}}, \code{\link{add_osm_objects}}.
+
+Other maps-with-data: 
+\code{\link{add_osm_surface}()}
 }
+\concept{maps-with-data}

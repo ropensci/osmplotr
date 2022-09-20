@@ -30,4 +30,5 @@ The vignette \code{basic-maps} details how these data were downloaded. Note
 that these internal versions have had all descriptive data removed other than
 their names, geometries, and their OSM identification numbers.
 }
+\concept{data}
 \keyword{datasets}

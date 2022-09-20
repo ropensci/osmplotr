@@ -51,4 +51,8 @@ print_osm_map (dat$map)
 }
 \seealso{
 \code{\link{osm_structures}}, \code{?col2rgb}.
+
+Other colours: 
+\code{\link{colour_mat}()}
 }
+\concept{colours}

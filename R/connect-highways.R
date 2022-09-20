@@ -14,7 +14,6 @@
 #' the final cycle overlaid.
 #' @return A single set of \code{SpatialPoints} containing the lat-lon
 #' coordinates of the cyclic line connecting all given streets.
-#' @export
 #'
 #' @note \enumerate{
 #' \item \code{connect_highways} is primarily intended to provide a means to
@@ -54,6 +53,8 @@
 #'                        cols = c("red", "blue"), bg = "gray40")
 #' print_osm_map (map)
 #' }
+#' @family data-extraction
+#' @export
 connect_highways <- function (highways, bbox, plot = FALSE) {
 
     if (missing (highways))
