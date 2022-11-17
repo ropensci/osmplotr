@@ -124,7 +124,7 @@ add_axis_rectangle <- function (map, xaxs_pos, yaxs_pos, xrange, yrange,
                                          yr[2], yr[3], yr[3])))
 
     lon <- lat <- NULL # suppress 'no visible binding' error
-    aes <- ggplot2::aes (x = lon, y = lat, size = 0)
+    aes <- ggplot2::aes (x = lon, y = lat, linewidth = 0)
 
     map + ggplot2::geom_polygon (data = rdat, mapping = aes,
                                  inherit.aes = FALSE,
