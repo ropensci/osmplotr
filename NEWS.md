@@ -1,3 +1,13 @@
+
+osmplotr v0.3.3.X (dev)
+===============
+
+Minor changes
+-------
+
+- Replace now obsolete 'spatstat.core' to 'spatstat.explore' dependency
+
+
 osmplotr v0.3.3
 ===============
 
