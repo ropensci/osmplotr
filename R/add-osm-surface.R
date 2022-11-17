@@ -6,7 +6,7 @@
 #' interpolated between the values given in \code{dat}, which has to be a matrix
 #' of \code{data.frame} of 3 columns (x, y, z), where (x,y) are (longitude,
 #' latitude), and z are the values to be interpolated. Interpolation uses
-#' \code{spatstat.core::Smooth.ppp}, which applies a Gaussian kernel smoother
+#' \code{spatstat.explore::Smooth.ppp}, which applies a Gaussian kernel smoother
 #' optimised to the given data, and is effectively non-parametric.
 #'
 #' @param map A \code{ggplot2} object to which the surface are to be added
@@ -16,8 +16,8 @@
 #' @param dat A matrix or data frame of 3 columns (x, y, z), where (x, y) are
 #' (longitude, latitude), and z are the values to be interpolated
 #' @param method Either \code{idw} (Inverse Distance Weighting as
-#' \code{spatstat.core::idw}; default), \code{Gaussian} for kernel smoothing (as
-#' \code{spatstat.core::Smooth.ppp}), or any other value to avoid interpolation.
+#' \code{spatstat.explore::idw}; default), \code{Gaussian} for kernel smoothing (as
+#' \code{spatstat.explore::Smooth.ppp}), or any other value to avoid interpolation.
 #' In this case, \code{dat} must be regularly spaced in \code{x} and \code{y}.
 #' @param grid_size size of interpolation grid
 #' @param cols Vector of colours for shading z-values (for example,
@@ -231,8 +231,8 @@ check_surface_dat <- function (dat) {
 #' confirm whether it is given or missing
 #' @param grid_size Size of interpolation grid as taken from 'add_osm_surface()'
 #' @param method Either 'idw' (Inverse Distance Weighting as
-#' \code{spatstat.core::idw}; default), otherwise uses 'Gaussian' for kernel
-#' smoothing (as \code{spatstat.core::Smooth.ppp})
+#' \code{spatstat.explore::idw}; default), otherwise uses 'Gaussian' for kernel
+#' smoothing (as \code{spatstat.explore::Smooth.ppp})
 #' @return A single data frame of object IDs, coordinates, and z-values
 #'
 #' @noRd
@@ -342,9 +342,9 @@ get_surface_z <- function (dat, method, grid_size) {
                                marks = marks)
 
     if (method == "idw")
-        z <- spatstat.core::idw (xyp, at = "pixels", dimyx = grid_size)$v
+        z <- spatstat.explore::idw (xyp, at = "pixels", dimyx = grid_size)$v
     else if (method == "smooth")
-        z <- spatstat.core::Smooth (xyp, at = "pixels", dimyx = grid_size,
+        z <- spatstat.explore::Smooth (xyp, at = "pixels", dimyx = grid_size,
                                     diggle = TRUE)$v
     else {
 
