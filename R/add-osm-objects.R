@@ -72,7 +72,7 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
 
     if (obj_type == "multipolygon") { # sf
 
-        for (i in seq (nrow (obj))) {
+        for (i in seq_len (nrow (obj))) {
 
             #xy <- lapply (obj$geometry [[i]], function (i) i [[1]])
             xy <- obj$geometry [[i]] [[1]]
@@ -125,8 +125,9 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
         map <- map + ggplot2::geom_point (data = xy,
                                     ggplot2::aes (x = lon, y = lat),
                                     col = col, size = size, shape = shape)
-    } else
+    } else {
         stop ("obj is not a spatial class")
+    }
 
     return (map)
 }
@@ -154,7 +155,7 @@ list2df <- function (xy, islines = FALSE) {
     xy <-  do.call (rbind, xy)
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
-    xy <-  data.frame (xy, row.names = seq (nrow (xy)))
+    xy <-  data.frame (xy, row.names = seq_len (nrow (xy)))
     if (islines) # remove terminal row of NAs
         xy <- xy [1:(nrow (xy) - 1), ]
     else
@@ -220,19 +221,21 @@ default_size <- function (obj, size) {
 #' @noRd
 geom_to_xy <- function (obj, obj_type) {
 
-    if (obj_type == "polygon") # sf
+    if (obj_type == "polygon") { # sf
         xy <- lapply (obj$geometry, function (i) i [[1]])
-    else if (obj_type == "linestring") # sf
+    } else if (obj_type == "linestring") { # sf
         xy <- lapply (obj$geometry, function (i) as.matrix (i))
-    else if (obj_type == "point") { # sf
+    } else if (obj_type == "point") { # sf
 
         xy <- data.frame (do.call (rbind, lapply (obj$geometry, as.numeric)))
         names (xy) <- c ("lon", "lat")
-    } else if (obj_type %in% c ("polygons", "lines")) # sp
-        xy <- lapply (slot (obj, obj_type), function (x)
-                      slot (slot (x, cap_first (obj_type)) [[1]], "coords"))
-    else if (obj_type == "points") # sp
+    } else if (obj_type %in% c ("polygons", "lines")) { # sp
+        xy <- lapply (slot (obj, obj_type), function (x) {
+                      slot (slot (x, cap_first (obj_type)) [[1]], "coords")
+                    })
+    } else if (obj_type == "points") { # sp
         xy <- data.frame (slot (obj, "coords"))
+    }
 
     return (xy)
 }
