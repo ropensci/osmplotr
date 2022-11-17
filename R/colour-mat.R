@@ -46,7 +46,7 @@ colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE) {
     if (is.null (cols)) return (NULL)
     else if (length (cols) < 4) stop ("cols must have length >= 4")
     if (any (is.na (cols))) stop ("One or more cols is NA")
-    if (class (cols) != "matrix") {
+    if (!methods::is (cols, "matrix")) {
 
         cols <- sapply (cols, function (i) {
                         tryCatch (

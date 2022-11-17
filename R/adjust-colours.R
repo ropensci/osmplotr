@@ -48,7 +48,7 @@ adjust_colours <- function (cols, adj = 0, plot = FALSE) {
     check_col_arg (cols)
     if (length (cols) == 0)
         stop ("cols must be non-null")
-    if (class (cols [1]) != "matrix")
+    if (!methods::is (cols [1], "matrix"))
         cols <- col2rgb (cols)
     # ---------- adj
     adj <- check_arg (adj, "adj", "numeric")
