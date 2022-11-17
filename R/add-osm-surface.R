@@ -16,9 +16,10 @@
 #' @param dat A matrix or data frame of 3 columns (x, y, z), where (x, y) are
 #' (longitude, latitude), and z are the values to be interpolated
 #' @param method Either \code{idw} (Inverse Distance Weighting as
-#' \code{spatstat.explore::idw}; default), \code{Gaussian} for kernel smoothing (as
-#' \code{spatstat.explore::Smooth.ppp}), or any other value to avoid interpolation.
-#' In this case, \code{dat} must be regularly spaced in \code{x} and \code{y}.
+#' \code{spatstat.explore::idw}; default), \code{Gaussian} for kernel smoothing
+#' (as \code{spatstat.explore::Smooth.ppp}), or any other value to avoid
+#' interpolation. In this case, \code{dat} must be regularly spaced in \code{x}
+#' and \code{y}.
 #' @param grid_size size of interpolation grid
 #' @param cols Vector of colours for shading z-values (for example,
 #' \code{terrain.colors (30)})
@@ -131,7 +132,7 @@ add_osm_surface <- function (map, obj, dat, method = "idw", grid_size = 100,
     check_obj_arg (obj)
     dat <- check_surface_dat (dat)
     # --------- cols
-    if (!(is.character (cols) | is.numeric (cols))) {
+    if (!(is.character (cols) || is.numeric (cols))) {
 
         warning ("cols will be coerced to character")
         cols <- as.character (cols)
@@ -176,15 +177,13 @@ check_surface_dat <- function (dat) {
 
     if (missing (dat))
         stop ("dat can not be NULL")
-    if (!is.numeric (as.matrix (dat)))
+    if (!is.numeric (as.matrix (dat))) {
         stop ("dat must be a numeric matrix or data.frame")
-    else {
+    } else {
 
         dat <- as.matrix (dat)
         if (ncol (dat) < 3) stop ("dat must have at least 3 columns")
-        wtxt <- paste0 ("dat should have columns of x/y, lon/lat, ",
-                        "or equivalent;",
-                        "presuming first 2 columns are lon, lat")
+
         if (is.null (colnames (dat))) {
 
             warning ("dat has no column names; presming [lon, lat, z]")
@@ -192,8 +191,8 @@ check_surface_dat <- function (dat) {
         } else {
 
             n2 <- sort (colnames (dat) [1:2])
-            if (!(n2 [1] == "x" | n2 [1] == "lat") ||
-                !(n2 [2] == "y" | n2 [2] == "lon")) {
+            if (!(n2 [1] == "x" || n2 [1] == "lat") ||
+                !(n2 [2] == "y" || n2 [2] == "lon")) {
 
                 warning ("dat should have columns of x/y, lon/lat, ",
                          "or equivalent;",
@@ -254,8 +253,9 @@ list2df_with_data <- function (map, obj, obj_type, xy_mn, dat, bg,
         ch <- spatstat.geom::convexhull (xyh)
         bdry <- cbind (ch$bdry[[1]]$x, ch$bdry[[1]]$y)
 
-        indx <- apply (xy_mn, 1, function (x)
-                   sp::point.in.polygon (x [1], x [2], bdry [, 1], bdry [, 2]))
+        indx <- apply (xy_mn, 1, function (x) {
+                   sp::point.in.polygon (x [1], x [2], bdry [, 1], bdry [, 2])
+                                   })
         # indx = 0 for outside polygon
     }
 
@@ -276,7 +276,7 @@ list2df_with_data <- function (map, obj, obj_type, xy_mn, dat, bg,
     # necessarily the bbox
     nx <- length (unique (xyz$x))
     ny <- length (unique (xyz$y))
-    if (method == "idw" | method == "smooth")
+    if (method == "idw" || method == "smooth")
         nx <- ny <- grid_size
     xy_mn [, 1] <- ceiling (nx * (xy_mn [, 1] - xyz$xlims [1]) /
                            diff (xyz$xlims))
@@ -285,7 +285,7 @@ list2df_with_data <- function (map, obj, obj_type, xy_mn, dat, bg,
 
     xy_mn <- set_extreme_vals (xy_mn, bg, nx, ny)
 
-    if (grepl ("polygon", obj_type) | grepl ("line", obj_type)) {
+    if (grepl ("polygon", obj_type) || grepl ("line", obj_type)) {
 
         for (i in seq (obj))
             obj [[i]] <- cbind (i, obj [[i]],
@@ -306,7 +306,7 @@ list2df_with_data <- function (map, obj, obj_type, xy_mn, dat, bg,
                 lat = obj [, 3],
                 z = obj [, 4],
                 inp = obj [, 5],
-                row.names = seq (nrow (obj))
+                row.names = seq_len (nrow (obj))
                 )
 }
 
@@ -341,12 +341,12 @@ get_surface_z <- function (dat, method, grid_size) {
     xyp <- spatstat.geom::ppp (x, y, xrange = range (x), yrange = range(y),
                                marks = marks)
 
-    if (method == "idw")
+    if (method == "idw") {
         z <- spatstat.explore::idw (xyp, at = "pixels", dimyx = grid_size)$v
-    else if (method == "smooth")
+    } else if (method == "smooth") {
         z <- spatstat.explore::Smooth (xyp, at = "pixels", dimyx = grid_size,
                                     diggle = TRUE)$v
-    else {
+    } else {
 
         # x and y might not necessarily be regular, so grid has to be manually
         # filled with z-values
