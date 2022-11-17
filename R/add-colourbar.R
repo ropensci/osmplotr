@@ -254,9 +254,10 @@ colourbar_outline <- function (cbxy, vertical, expand) {
                     y = c (bb, bt, bt, bb, bb)
                     )
     }
-    if (vertical)
+    if (vertical) {
+
         rdat <- makedat (cbxy$x, cbxy$y, cbxy$barwidth, expand)
-    else {
+    } else {
 
         rdat <- makedat (cbxy$y, cbxy$x, cbxy$barwidth, expand)
         names (rdat) <- c ("y", "x")

@@ -1,6 +1,6 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.3.012
+Version: 0.3.3.013
 Authors@R: 
     c(person(given = "Mark",
              family = "Padgham",
