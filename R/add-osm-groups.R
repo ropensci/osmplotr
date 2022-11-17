@@ -177,8 +177,8 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
         stop ("add_osm_groups not yet implemented for points")
 
     # Determine whether any groups are holes - not implemented at present
-    if (length (groups) > 1)
-        holes <- groups_are_holes (groups)
+    # if (length (groups) > 1)
+    #     holes <- groups_are_holes (groups)
 
     # convert sf/sp geometries to simple list of matrices
     obj <- geom_to_xy (obj, obj_type)
@@ -279,7 +279,7 @@ check_hull_arg <- function (make_hull, groups) {
 
         warning (paste0 ("make_hull has length > number of groups"))
         make_hull <- make_hull [seq (groups)]
-    } else if (length (make_hull) > 1 & length (make_hull) < length (groups)) {
+    } else if (length (make_hull) > 1 && length (make_hull) < length (groups)) {
 
         warning (paste0 ("make_hull should have length 1 or equal to numbers ",
                          "of groups; using first value only"))
@@ -289,8 +289,9 @@ check_hull_arg <- function (make_hull, groups) {
 
         if (length (groups) < 3)
             make_hull <- FALSE
-    } else if (max (sapply (groups, length)) < 3) # No groups have > 2 members
+    } else if (max (sapply (groups, length)) < 3) { # No groups have > 2 members
         make_hull <- FALSE
+    }
 
     return (make_hull)
 }
@@ -306,7 +307,7 @@ group_colours_default <- function (cols, groups, bg) {
         cols <- rep (cols, length.out = length (groups))
 
     ret <- list ("cols" = cols)
-    if (length (groups) == 1 & missing (bg)) {
+    if (length (groups) == 1 && missing (bg)) {
 
         warning ("There is only one group; using default bg")
         if (cols [1] != "gray40")
@@ -315,8 +316,9 @@ group_colours_default <- function (cols, groups, bg) {
             bg <- "white"
 
         ret ["bg"] <- bg
-    } else if (!missing (bg))
+    } else if (!missing (bg)) {
         ret ["bg"] <- bg
+    }
 
     return (ret)
 }
@@ -331,9 +333,9 @@ group_colours_colourmat <- function (cols, groups, rotate) {
     else if (length (cols) < 4)
         cols <- rainbow (4)
     ncols <- 20
-    if (missing (rotate))
+    if (missing (rotate)) {
         cmat <- colour_mat (ncols, cols = cols)
-    else {
+    } else {
 
         if (!is.numeric (rotate))
             rotate <- 0
@@ -356,11 +358,11 @@ groups_are_holes <- function (groups) {
 
     holes <- rep (FALSE, length (groups))
     group_pairs <- combn (length (groups), 2)
-    for (i in seq (ncol (group_pairs))) {
+    for (i in seq_len (ncol (group_pairs))) {
 
         n1 <- length (groups [[group_pairs [1, i] ]]) # nolint
         n2 <- length (groups [[group_pairs [2, i] ]]) # nolint
-        if (n1 > 2 & n2 > 2) { # otherwise can't be a hole
+        if (n1 > 2 && n2 > 2) { # otherwise can't be a hole
 
             x1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [, 1] # nolint
             y1 <- sp::coordinates (groups [[group_pairs [1, i] ]]) [, 2] # nolint
@@ -381,14 +383,16 @@ groups_are_holes <- function (groups) {
             ch2 <- spatstat.geom::convexhull (xy2)
             bdry2 <- cbind (ch2$bdry[[1]]$x, ch2$bdry[[1]]$y)
 
-            indx <- sapply (bdry1, function (x)
+            indx <- sapply (bdry1, function (x) {
                             sp::point.in.polygon (bdry2 [, 1], bdry2 [, 2],
-                                                  bdry1 [, 1], bdry1 [, 2]))
+                                                  bdry1 [, 1], bdry1 [, 2])
+                        })
             if (all (indx == 1))
                 holes [group_pairs [1, i]] <- TRUE
-            indx <- sapply (bdry2, function (x)
+            indx <- sapply (bdry2, function (x) {
                             sp::point.in.polygon (bdry1 [, 1], bdry1 [, 2],
-                                                  bdry2 [, 1], bdry2 [, 2]))
+                                                  bdry2 [, 1], bdry2 [, 2])
+                        })
             if (all (indx == 1))
                 holes [group_pairs [2, i]] <- TRUE
         }
@@ -430,16 +434,16 @@ trim_obj_to_map <- function (obj, map, obj_type) {
                                           i [, 2] > yrange [1] &
                                           i [, 1] < xrange [2] &
                                           i [, 2] < yrange [2])
-                           if (length (indx) < 2)
+                           if (length (indx) < 2) {
                                ret <- NULL
-                           else if (length (indx) < nrow (i)) {
+                           } else if (length (indx) < nrow (i)) {
 
                                ret <- i [indx, ]
                                if (grepl ("polygon", obj_type))
                                    ret <- rbind (ret, i [1, ])
-                           }
-                           else
+                           } else {
                                ret <- i
+                           }
 
                            return (ret)
                        })
@@ -469,8 +473,8 @@ group_centroids_bdrys <- function (groups, make_hull, cols,
 
     for (i in seq (groups)) {
 
-        if ((length (make_hull) == 1 & make_hull) |
-            (length (make_hull) > 1 & make_hull [i])) {
+        if ((length (make_hull) == 1 && make_hull) ||
+            (length (make_hull) > 1 && make_hull [i])) {
 
             x <- groups [[i]] [, 1]
             y <- groups [[i]] [, 2]
@@ -570,9 +574,9 @@ membs_single_group <- function (groups, coords, obj_trim, cent_bdry) {
                          temp <- i [, 3:ncol (i), drop = FALSE]
                          temp [temp > 1] <- 1
                          n <- colSums (temp)
-                         if (max (n) < 3) # must have > 2 elements in group
+                         if (max (n) < 3) { # must have > 2 elements in group
                              n <- 0
-                         else {
+                         } else {
 
                              indx <- which (n == max (n))
                              n <- indx [ceiling (runif (1) * length (indx))]
@@ -598,8 +602,9 @@ membs_single_group <- function (groups, coords, obj_trim, cent_bdry) {
             # Then the minimum distance for each stray object to any object
             # in group [i]:
             dists [, i] <- apply (dg, 1, min)
-        } else
+        } else {
             dists [, i] <- Inf
+        }
     }
     # Then simply extract the group holding the overall minimum dist:
     membs [indx] <- apply (dists, 1, which.min)
@@ -628,10 +633,11 @@ membs_multiple_groups_bdry <- function (coords, boundary) {
                                  n <- 0
                              else
                                  n <- which.max (n)
-                         } else if (boundary > 0 & max (n) > 0)
+                         } else if (boundary > 0 & max (n) > 0) {
                              n <- which.max (n)
-                         else
+                         } else {
                              n <- 0
+                         }
                          return (n)
                      })
 
