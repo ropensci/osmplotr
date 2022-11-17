@@ -83,12 +83,16 @@ bigger group are included.
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 # Download data using 'extract_osm_objects'
 \dontrun{
-dat_HP <- extract_osm_objects (key = 'highway',
-                               value = 'primary',
-                               bbox = bbox)
-dat_T <- extract_osm_objects (key = 'tree', bbox = bbox)
-dat_BNR <- extract_osm_objects (key = 'building', value = '!residential',
-bbox = bbox)
+dat_HP <- extract_osm_objects (
+    key = "highway",
+    value = "primary",
+    bbox = bbox
+)
+dat_T <- extract_osm_objects (key = "tree", bbox = bbox)
+dat_BNR <- extract_osm_objects (
+    key = "building", value = "!residential",
+    bbox = bbox
+)
 }
 # These data are also provided in
 dat_HP <- london$dat_HP
@@ -96,8 +100,7 @@ dat_T <- london$dat_T
 dat_BNR <- london$dat_BNR
 
 # Define a function to easily generate a basemap
-bmap <- function ()
-{
+bmap <- function () {
     map <- osm_basemap (bbox = bbox, bg = "gray20")
     map <- add_osm_objects (map, dat_HP, col = "gray70", size = 1)
     add_osm_objects (map, dat_T, col = "green")
@@ -105,46 +108,58 @@ bmap <- function ()
 
 # Highlight a single region using all objects lying partially inside the
 # boundary (via the boundary = 1 argument)
-pts <- sp::SpatialPoints (cbind (c (-0.115, -0.125, -0.125, -0.115),
-                                 c (51.505, 51.505, 51.515, 51.515)))
+pts <- sp::SpatialPoints (cbind (
+    c (-0.115, -0.125, -0.125, -0.115),
+    c (51.505, 51.505, 51.515, 51.515)
+))
 \dontrun{
-dat_H <- extract_osm_objects (key = 'highway', bbox = bbox) # all highways
+dat_H <- extract_osm_objects (key = "highway", bbox = bbox) # all highways
 map <- bmap ()
-map <- add_osm_groups (map, dat_BNR, groups = pts, cols = "gray90",
-                       bg = "gray40", boundary = 1)
-map <- add_osm_groups (map, dat_H, groups = pts, cols = "gray80",
-                       bg = "gray30", boundary = 1)
+map <- add_osm_groups (map, dat_BNR,
+    groups = pts, cols = "gray90",
+    bg = "gray40", boundary = 1
+)
+map <- add_osm_groups (map, dat_H,
+    groups = pts, cols = "gray80",
+    bg = "gray30", boundary = 1
+)
 print_osm_map (map)
 }
 
 # Generate random points to serve as group centres
 set.seed (2)
 ngroups <- 6
-x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
-y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
+x <- bbox [1, 1] + runif (ngroups) * diff (bbox [1, ])
+y <- bbox [2, 1] + runif (ngroups) * diff (bbox [2, ])
 groups <- cbind (x, y)
-groups <- apply (groups, 1, function (i)
-                 sp::SpatialPoints (
-                     matrix (i, nrow = 1, ncol = 2)))
+groups <- apply (groups, 1, function (i) {
+    sp::SpatialPoints (
+        matrix (i, nrow = 1, ncol = 2)
+    )
+})
 # plot a basemap and add groups
 map <- bmap ()
 cols <- rainbow (length (groups))
 \dontrun{
-map <- add_osm_groups (map,
-                       obj = london$dat_BNR,
-                       group = groups,
-                       cols = cols)
+map <- add_osm_groups (
+    map,
+    obj = london$dat_BNR,
+    group = groups,
+    cols = cols
+)
 cols <- adjust_colours (cols, -0.2)
 map <- add_osm_groups (map, obj = london$dat_H, groups = groups, cols = cols)
 print_osm_map (map)
 
 # Highlight convex hulls containing groups:
 map <- bmap ()
-map <- add_osm_groups (map,
-                       obj = london$dat_BNR,
-                       group = groups,
-                       cols = cols,
-                       border_width = 2)
+map <- add_osm_groups (
+    map,
+    obj = london$dat_BNR,
+    group = groups,
+    cols = cols,
+    border_width = 2
+)
 print_osm_map (map)
 }
 }
