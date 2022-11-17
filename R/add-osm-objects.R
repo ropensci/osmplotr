@@ -26,26 +26,46 @@
 #'
 #' \dontrun{
 #' # The 'london' data used below were downloaded as:
-#' dat_BNR <- extract_osm_objects (bbox = bbox, key = 'building',
-#'                                 value = '!residential')
-#' dat_HP <- extract_osm_objects (bbox = bbox, key = 'highway',
-#'                                value = 'primary')
-#' dat_T <- extract_osm_objects (bbox = bbox, key = 'tree')
+#' dat_BNR <- extract_osm_objects (
+#'     bbox = bbox,
+#'     key = "building",
+#'     value = "!residential"
+#' )
+#' dat_HP <- extract_osm_objects (
+#'     bbox = bbox,
+#'     key = "highway",
+#'     value = "primary"
+#' )
+#' dat_T <- extract_osm_objects (bbox = bbox, key = "tree")
 #' }
-#' map <- add_osm_objects (map, obj = london$dat_BNR,
-#'                         col = "gray40", border = "yellow")
-#' map <- add_osm_objects (map, obj = london$dat_HP, col = "gray80",
-#'                         size = 1, shape = 2)
-#' map <- add_osm_objects (map, london$dat_T, col = "green",
-#'                         size = 2, shape = 1)
+#' map <- add_osm_objects (
+#'     map,
+#'     obj = london$dat_BNR,
+#'     col = "gray40",
+#'     border = "yellow"
+#' )
+#' map <- add_osm_objects (
+#'     map,
+#'     obj = london$dat_HP,
+#'     col = "gray80",
+#'     size = 1, shape = 2
+#' )
+#' map <- add_osm_objects (
+#'     map,
+#'     london$dat_T,
+#'     col = "green",
+#'     size = 2, shape = 1
+#' )
 #' print_osm_map (map)
 #'
 #' # Polygons with different coloured borders
 #' map <- osm_basemap (bbox = bbox, bg = "gray20")
 #' map <- add_osm_objects (map, obj = london$dat_HP, col = "gray80")
 #' map <- add_osm_objects (map, london$dat_T, col = "green")
-#' map <- add_osm_objects (map, obj = london$dat_BNR, col = "gray40",
-#'                         border = "yellow", size = 0.5)
+#' map <- add_osm_objects (map,
+#'     obj = london$dat_BNR, col = "gray40",
+#'     border = "yellow", size = 0.5
+#' )
 #' print_osm_map (map)
 #' @family construction
 #' @export
@@ -57,8 +77,9 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
     check_map_arg (map)
     check_obj_arg (obj)
     check_col_arg (col)
-    if (length (col) == 0)
+    if (length (col) == 0) {
         stop ("a non-null col must be provided")
+    }
     check_col_arg (border)
     # ---------------  end sanity checks and warnings  ---------------
 
@@ -74,23 +95,30 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
 
         for (i in seq_len (nrow (obj))) {
 
-            #xy <- lapply (obj$geometry [[i]], function (i) i [[1]])
+            # xy <- lapply (obj$geometry [[i]], function (i) i [[1]])
             xy <- obj$geometry [[i]] [[1]]
             # if only one polygon in multipolygon, which can happen:
-            if (!is.list (xy))
+            if (!is.list (xy)) {
                 xy <- list (xy)
+            }
             xy <- list2df (xy)
             xy1 <- xy [which (xy$id == 1), ]
             xy_not1 <- xy [which (xy$id != 1), ]
 
-            map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
-                                                data = xy1, size = size,
-                                                fill = col, colour = border)
+            map <- map +
+                ggplot2::geom_polygon (
+                    ggplot2::aes (group = id),
+                    data = xy1,
+                    size = size,
+                    fill = col,
+                    colour = border
+                )
 
             if (nrow (xy_not1) > 0) {
 
-                if (missing (hcol))
+                if (missing (hcol)) {
                     hcol <- map$theme$panel.background$fill
+                }
                 hcol <- rep (hcol, length.out = length (unique (xy_not1$id)))
                 hcols <- NULL
                 ids <- unique (xy_not1$id)
@@ -99,32 +127,49 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
                     n <- length (which (xy_not1$id == ids [i]))
                     hcols <- c (hcols, rep (hcol [i], n))
                 }
-                map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
-                                                    data = xy_not1,
-                                                    fill = hcols)
+                map <- map +
+                    ggplot2::geom_polygon (
+                        ggplot2::aes (group = id),
+                        data = xy_not1,
+                        fill = hcols
+                    )
             }
         }
     } else if (grepl ("polygon", obj_type)) {
 
         xy <- geom_to_xy (obj, obj_type)
         xy <- list2df (xy)
-        map <- map + ggplot2::geom_polygon (ggplot2::aes (group = id),
-                                                      data = xy, size = size,
-                                                      fill = col,
-                                                      colour = border)
+        map <- map +
+            ggplot2::geom_polygon (
+                ggplot2::aes (group = id),
+                data = xy,
+                size = size,
+                fill = col,
+                colour = border
+            )
     } else if (grepl ("line", obj_type)) {
 
         xy <- geom_to_xy (obj, obj_type)
         xy <- list2df (xy, islines = TRUE)
-        map <- map + ggplot2::geom_path (data = xy,
-                                   ggplot2::aes (x = lon, y = lat),
-                                   colour = col, size = size, linetype = shape)
+        map <- map + 
+            ggplot2::geom_path (
+                data = xy,
+                ggplot2::aes (x = lon, y = lat),
+                colour = col,
+                size = size,
+                linetype = shape
+            )
     } else if (grepl ("point", obj_type)) {
 
         xy <- geom_to_xy (obj, obj_type)
-        map <- map + ggplot2::geom_point (data = xy,
-                                    ggplot2::aes (x = lon, y = lat),
-                                    col = col, size = size, shape = shape)
+        map <- map + 
+            ggplot2::geom_point (
+                data = xy,
+                ggplot2::aes (x = lon, y = lat),
+                col = col,
+                size = size,
+                shape = shape
+        )
     } else {
         stop ("obj is not a spatial class")
     }
@@ -143,23 +188,26 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
 #' @noRd
 list2df <- function (xy, islines = FALSE) {
 
-    if (islines) # lines have to be separated by NAs
+    if (islines) { # lines have to be separated by NAs
         xy <- lapply (xy, function (i) rbind (i, rep (NA, 2)))
-    else # Add id column to each:
-        for (i in seq (xy))
+    } else { # Add id column to each:
+        for (i in seq (xy)) {
             xy [[i]] <- cbind (i, xy [[i]])
+        }
+    }
     # multiline/polygon names can be very long, prompting a strange R warning
     # when rbind'ing them, so
     names (xy) <- NULL
     # And rbind them to a single matrix.
-    xy <-  do.call (rbind, xy)
+    xy <- do.call (rbind, xy)
     # And then to a data.frame, for which duplicated row names flag warnings
     # which are not relevant, so are suppressed by specifying new row names
-    xy <-  data.frame (xy, row.names = seq_len (nrow (xy)))
-    if (islines) # remove terminal row of NAs
+    xy <- data.frame (xy, row.names = seq_len (nrow (xy)))
+    if (islines) { # remove terminal row of NAs
         xy <- xy [1:(nrow (xy) - 1), ]
-    else
+    } else {
         names (xy) <- c ("id", "lon", "lat")
+    }
     return (xy)
 }
 
@@ -169,22 +217,28 @@ list2df <- function (xy, islines = FALSE) {
 default_shape <- function (obj_type, shape) {
 
     shape_default <- NULL
-    if (grepl ("line", obj_type))
+    if (grepl ("line", obj_type)) {
         shape_default <- 1
-    else if (grepl ("point", obj_type))
+    } else if (grepl ("point", obj_type)) {
         shape_default <- 19
+    }
 
     ret <- NULL
     if (!is.null (shape_default)) {
 
         if (!missing (shape)) {
 
-            if (!is.numeric (shape))
-                warning ("shape should be numeric; defaulting to ",
-                         shape_default)
-            else if (shape < 0)
-                warning ("shape should be positive; defaulting to ",
-                         shape_default)
+            if (!is.numeric (shape)) {
+                warning (
+                    "shape should be numeric; defaulting to ",
+                    shape_default
+                )
+            } else if (shape < 0) {
+                warning (
+                    "shape should be positive; defaulting to ",
+                    shape_default
+                )
+            }
         }
         ret <- shape_default
     }
@@ -198,12 +252,13 @@ default_shape <- function (obj_type, shape) {
 default_size <- function (obj, size) {
 
     size_default <- 0
-    if (!grepl ("polygon", get_obj_type (obj)))
+    if (!grepl ("polygon", get_obj_type (obj))) {
         size_default <- 0.5
+    }
 
-    if (missing (size))
+    if (missing (size)) {
         size <- size_default
-    else if (!is.numeric (size)) {
+    } else if (!is.numeric (size)) {
 
         warning ("size should be numeric; defaulting to ", size_default)
         size <- size_default
@@ -231,8 +286,8 @@ geom_to_xy <- function (obj, obj_type) {
         names (xy) <- c ("lon", "lat")
     } else if (obj_type %in% c ("polygons", "lines")) { # sp
         xy <- lapply (slot (obj, obj_type), function (x) {
-                      slot (slot (x, cap_first (obj_type)) [[1]], "coords")
-                    })
+            slot (slot (x, cap_first (obj_type)) [[1]], "coords")
+        })
     } else if (obj_type == "points") { # sp
         xy <- data.frame (slot (obj, "coords"))
     }
