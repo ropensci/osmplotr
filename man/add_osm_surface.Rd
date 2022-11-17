@@ -82,15 +82,15 @@ bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 dat_B <- london$dat_BNR # actuall non-residential buildings
 # Make a data surface across the map coordinates, and remove periphery
 n <- 5
-x <- seq (bbox [1,1], bbox [1,2], length.out = n)
-y <- seq (bbox [2,1], bbox [2,2], length.out = n)
+x <- seq (bbox [1, 1], bbox [1, 2], length.out = n)
+y <- seq (bbox [2, 1], bbox [2, 2], length.out = n)
 dat <- data.frame (
-    x = as.vector (array (x, dim = c(n, n))),
-    y = as.vector (t (array (y, dim = c(n, n)))),
+    x = as.vector (array (x, dim = c (n, n))),
+    y = as.vector (t (array (y, dim = c (n, n)))),
     z = x * y
-    )
+)
 \dontrun{
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
+map <- osm_basemap (bbox = bbox, bg = "gray20")
 map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
 print_osm_map (map)
 }
@@ -98,12 +98,17 @@ print_osm_map (map)
 # If data do not cover the entire map region, then the peripheral remainder
 # can be plotted by specifying the 'bg' colour. First remove periphery from
 # 'dat':
-d <- sqrt ((dat$x - mean (dat$x)) ^ 2 + (dat$y - mean (dat$y)) ^ 2)
-dat <- dat [which (d < 0.01),]
+d <- sqrt ((dat$x - mean (dat$x))^2 + (dat$y - mean (dat$y))^2)
+dat <- dat [which (d < 0.01), ]
 \dontrun{
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat,
-                        cols = heat.colors (30), bg = 'gray40')
+map <- osm_basemap (bbox = bbox, bg = "gray20")
+map <- add_osm_surface (
+    map,
+    dat_B,
+    dat = dat,
+    cols = heat.colors (30),
+    bg = "gray40"
+)
 print_osm_map (map)
 }
 
@@ -116,8 +121,14 @@ print_osm_map (map)
 dat_HP <- london$dat_HP
 cols <- adjust_colours (heat.colors (30), adj = -0.2) # darken by 20\%
 \dontrun{
-map <- add_osm_surface (map, dat_HP, dat, cols = cols,
-                        bg = 'gray60', size = c(1.5,0.5))
+map <- add_osm_surface (
+    map,
+    dat_HP,
+    dat,
+    cols = cols,
+    bg = "gray60",
+    size = c (1.5, 0.5)
+)
 print_osm_map (map)
 }
 
@@ -126,23 +137,45 @@ print_osm_map (map)
 # given value.
 dat_T <- london$dat_T # trees
 \dontrun{
-map <- osm_basemap (bbox = bbox, bg = 'gray20')
-map <- add_osm_surface (map, dat_B, dat = dat,
-                        cols = heat.colors (30), bg = 'gray40')
-map <- add_osm_surface (map, dat_HP, dat,
-                        cols = heat.colors (30), bg = 'gray60',
-                        size = c(1.5,0.5))
-map <- add_osm_surface (map, dat_T, dat, cols = topo.colors (30),
-                        bg = 'gray70', size = c(5,2), shape = c(8, 1))
+map <- osm_basemap (bbox = bbox, bg = "gray20")
+map <- add_osm_surface (
+    map,
+    dat_B,
+    dat = dat,
+    cols = heat.colors (30),
+    bg = "gray40"
+)
+map <- add_osm_surface (
+    map,
+    dat_HP,
+    dat,
+    cols = heat.colors (30),
+    bg = "gray60",
+    size = c (1.5, 0.5)
+)
+map <- add_osm_surface (
+    map,
+    dat_T,
+    dat,
+    cols = topo.colors (30),
+    bg = "gray70",
+    size = c (5, 2),
+    shape = c (8, 1)
+)
 print_osm_map (map) # 'dat_HP' is in 'topo.colors' not 'heat.colors'
 }
 
 # Add axes and colourbar
 \dontrun{
 map <- add_axes (map)
-map <- add_colourbar (map, cols = heat.colors (100), zlims = range (dat$z),
-                      barwidth = c(0.02), barlength = c(0.6,0.99),
-                      vertical = TRUE)
+map <- add_colourbar (
+    map,
+    cols = heat.colors (100),
+    zlims = range (dat$z),
+    barwidth = c (0.02),
+    barlength = c (0.6, 0.99),
+    vertical = TRUE
+)
 print_osm_map (map)
 }
 }
