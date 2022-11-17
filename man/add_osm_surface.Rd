@@ -27,9 +27,10 @@ add_osm_surface(
 (longitude, latitude), and z are the values to be interpolated}
 
 \item{method}{Either \code{idw} (Inverse Distance Weighting as
-\code{spatstat.explore::idw}; default), \code{Gaussian} for kernel smoothing (as
-\code{spatstat.explore::Smooth.ppp}), or any other value to avoid interpolation.
-In this case, \code{dat} must be regularly spaced in \code{x} and \code{y}.}
+\code{spatstat.explore::idw}; default), \code{Gaussian} for kernel smoothing
+(as \code{spatstat.explore::Smooth.ppp}), or any other value to avoid
+interpolation. In this case, \code{dat} must be regularly spaced in \code{x}
+and \code{y}.}
 
 \item{grid_size}{size of interpolation grid}
 
