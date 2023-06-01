@@ -62,11 +62,11 @@ if (curl::has_internet ()) { # otherwise all of these return errors not warnings
                     connect_highways, "extract_highways",
                     function (x, ...) hwys
                 )
-                expect_silent (connect_highways (
+                expect_warning (connect_highways (
                     highways = highways,
                     bbox = bbox,
                     plot = TRUE
-                ))
+                ), "GEOS support is provided by the sf and terra packages")
                 dev.off (which = dev.cur ())
             })
         }
