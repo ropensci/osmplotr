@@ -60,7 +60,7 @@
 #' }
 #' @family data-extraction
 #' @export
-extract_osm_objects <- function (bbox, key, value, extra_pairs,
+extract_osm_objects <- function (bbox, key = NULL, value, extra_pairs,
                                  return_type, sf = TRUE,
                                  geom_only = FALSE, quiet = FALSE) {
 
@@ -73,7 +73,7 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
 
     qkv <- get_q_key_vals (key, value, extra_pairs)
     q_keys <- qkv$key
-    q_vals <- qkv$value
+    q_vals <- qkv$vals
 
     # default to non-exact matches
     qry <- osmdata::opq (bbox = bbox)

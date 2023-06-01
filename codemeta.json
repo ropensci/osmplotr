@@ -10,7 +10,7 @@
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.3.034",
+  "version": "0.3.3.035",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",

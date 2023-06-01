@@ -4,7 +4,7 @@ test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
     identical (Sys.getenv ("GITHUB_WORKFLOW"), "test-coverage"))
 
 test_that ("missing objects", {
-    expect_error (extract_osm_objects (), "key must be provided")
+    expect_error (extract_osm_objects (), "key can not be NULL")
     expect_error (
         extract_osm_objects (key = "aaa"),
         "bbox must be provided"
@@ -23,11 +23,11 @@ test_that ("key missing", {
     )
     expect_error (
         extract_osm_objects (bbox = bbox),
-        "key must be provided"
+        "key can not be NULL"
     )
 })
 
-if (curl::has_internet () & test_all) {
+if (curl::has_internet () && test_all) {
 
     test_that ("invalid key", {
         bbox <- get_bbox (c (-0.12, 51.51, -0.11, 51.52))
