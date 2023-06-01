@@ -59,9 +59,11 @@ make_osm_map <- function (bbox, osm_data,
 
         structs_new <- seq (nrow (structures) - 1)
         osm_data <- list ()
-    } else
-        structs_new <- which (!sapply (sfx, function (i)
-                           any (paste0 (dat_prefix, i) %in% names (osm_data))))
+    } else {
+        structs_new <- which (!sapply (sfx, function (i) {
+            any (paste0 (dat_prefix, i) %in% names (osm_data))
+        }))
+    }
 
     if (length (structs_new) > 0) {
 
@@ -126,7 +128,7 @@ get_missing_osm_data <- function (osm_data, structures, bbox, dat_prefix) {
     pb <- txtProgressBar (max = 1, style = 3)
     t0 <- proc.time ()
     indx <- NULL
-    for (i in seq (nrow (structures))) {
+    for (i in seq_len (nrow (structures))) {
 
         if (structures$value [i] == "")
             dat <- extract_osm_objects (key = structures$key [i],

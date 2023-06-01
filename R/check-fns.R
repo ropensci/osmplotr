@@ -50,7 +50,7 @@ check_obj_arg <- function (obj) {
 
     if (missing (obj))
         stop ("obj must be provided", call. = FALSE)
-    if (!(is (obj, "Spatial") | is (obj, "sf")))
+    if (!(is (obj, "Spatial") || is (obj, "sf")))
         stop ("obj must be a spatial object", call. = FALSE)
 }
 
@@ -75,12 +75,12 @@ check_bbox_arg <- function (bbox) {
         stop ("bbox must be provided")
     if (is (bbox, "sf")) { # sf obj submitted to osm_basemap
 
-        if (is (bbox$geometry, "sfc_LINESTRING") |
+        if (is (bbox$geometry, "sfc_LINESTRING") ||
             is (bbox$geometry, "sfc_POINT"))
             xy <- do.call (rbind, bbox$geometry)
         else if (is (bbox$geometry, "sfc_POLYGON"))
             xy <- do.call (rbind, lapply (bbox$geometry, function (i) i [[1]]))
-        else if (is (bbox$geometry, "sfc_MULTIPOLYGON") |
+        else if (is (bbox$geometry, "sfc_MULTIPOLYGON") ||
                  is (bbox$geometry, "sfc_MULTILINESTRING"))
             xy <- do.call (rbind, lapply (bbox$geometry,
                                           function (i) i [[1]] [[1]]))
@@ -122,7 +122,7 @@ check_arg <- function (arg, arg_name, fn_type, na_okay = FALSE) {
         stop (paste (arg_name, "must be provided"))
     else if (length (arg) == 0)
         stop (paste (arg_name, "can not be NULL"))
-    else if (!na_okay & is.na (arg))
+    else if (!na_okay && is.na (arg))
         stop (paste (arg_name, "can not be NA"))
 
     adj <- tryCatch (

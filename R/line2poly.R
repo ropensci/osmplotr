@@ -83,7 +83,7 @@ osm_line2poly <- function (obj, bbox) {
     # NA in m2 indicates the end of a chain.
     # NA in m1 indicates the start of a chain
     startidx <- which (is.na (m1))
-    if (nrow (head_tail) > 1 & length (startidx) >= 1) {
+    if (nrow (head_tail) > 1 && length (startidx) >= 1) {
 
         # Need to test this with disconnected bits
         linkorders <- lapply (startidx, function (x) unroll (x), V = m2)
@@ -91,8 +91,9 @@ osm_line2poly <- function (obj, bbox) {
         links <- lapply (linkorders, function (x) head_tail [x, , drop = FALSE]) #nolint
         head_tail <- head_tail [-unlist (linkorders), , drop = FALSE] #nolint
         links <- lapply (links, function (x) lookup_ways (x), g = g)
-    } else
+    } else {
         links <- list ()
+    }
 
     # Now we deal with loops.  Keep extracting loops until nothing left
     to_become_polygons <- list()
@@ -106,8 +107,9 @@ osm_line2poly <- function (obj, bbox) {
             to_become_polygons [[lidx]] <- head_tail [l1, ]
             lidx <- lidx + 1
             head_tail <- head_tail [-l1, ]
-        } else
+        } else {
             head_tail <- head_tail [-1, ]
+        }
     }
     to_become_polygons <- lapply (to_become_polygons,
                                   lookup_ways, g = g)
@@ -192,7 +194,7 @@ osm_line2poly <- function (obj, bbox) {
     }
 
     res <- NULL
-    if (!is.null (p1) & !is.null (p2)) {
+    if (!is.null (p1) && !is.null (p2)) {
 
         res <- list (sea = do.call(rbind, p1), land = do.call(rbind, p2))
     }

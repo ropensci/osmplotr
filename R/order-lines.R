@@ -67,9 +67,9 @@ extend_ord_list <- function (xy, xy_ord) {
 # @return single int index into xy_ord
 which_ord <- function (xy_ord, xy, fn = "head") {
 
-    max (0, which (vapply (xy_ord, function (i)
-                           max (0, which_xy (i, xy = xy, fn = fn)),
-                           numeric (1)) > 0))
+    max (0, which (vapply (xy_ord, function (i) {
+        max (0, which_xy (i, xy = xy, fn = fn))
+        },  numeric (1)) > 0))
 }
 
 # which element of xy has head or tail of xy_ord [[i]]
@@ -77,9 +77,9 @@ which_ord <- function (xy_ord, xy, fn = "head") {
 # @return logical vector same length as xy
 which_xy <- function (xy, xy_ordi, fn = "head") {
 
-    vapply (xy, function (i)
-            do.call (fn, list (rownames (xy_ordi), 1)) %in% rownames (i),
-            logical (1))
+    vapply (xy, function (i) {
+        do.call (fn, list (rownames (xy_ordi), 1)) %in% rownames (i)
+    }, logical (1))
 }
 
 #' rbind_xy

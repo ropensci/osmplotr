@@ -151,7 +151,7 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
 
         xy <- geom_to_xy (obj, obj_type)
         xy <- list2df (xy, islines = TRUE)
-        map <- map + 
+        map <- map +
             ggplot2::geom_path (
                 data = xy,
                 ggplot2::aes (x = lon, y = lat),
@@ -162,7 +162,7 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
     } else if (grepl ("point", obj_type)) {
 
         xy <- geom_to_xy (obj, obj_type)
-        map <- map + 
+        map <- map +
             ggplot2::geom_point (
                 data = xy,
                 ggplot2::aes (x = lon, y = lat),

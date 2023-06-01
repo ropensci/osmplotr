@@ -59,14 +59,65 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
     check_arg (key, "key", "character")
 
     bbox <- check_bbox_arg (bbox)
-    if (!missing (value) & missing (key))
+    if (!missing (value) && missing (key))
         stop ("key must be provided for value")
 
-    q_keys <- key
-    if (missing (value))
-        q_vals <- NA
-    else {
+    qkv <- get_q_key_vals (key, value, extra_pairs)
+    q_keys <- qkv$key
+    q_vals <- qkv$value
 
+    # default to non-exact matches
+    qry <- osmdata::opq (bbox = bbox)
+    for (i in seq (q_keys)) {
+
+        key_exact <- FALSE
+        if (!is.na (q_vals [i]) && substring (q_vals [i], 1, 1) == "!")
+            key_exact <- TRUE
+        if (is.na (q_vals [i]))
+            qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
+                                         key_exact = key_exact,
+                                         value_exact = FALSE,
+                                         match_case = FALSE)
+        else
+            qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
+                                         value = q_vals [i],
+                                         key_exact = key_exact,
+                                         value_exact = FALSE,
+                                         match_case = FALSE)
+    }
+
+    if (sf)
+        obj <- osmdata::osmdata_sf (qry, quiet = quiet)
+    else
+        obj <- osmdata::osmdata_sp (qry, quiet = quiet)
+
+    obj <- get_obj_from_return_type (obj, return_type, q_keys, q_vals)
+
+    if (NROW (obj) == 0)
+        warning ("No valid data returned. ",
+                 "(Maybe try a different 'return_type')")
+
+    if (geom_only) {
+
+        if (sf) {
+
+            indx <- match (c ("osm_id", "geometry"), names(obj))
+            obj <- obj [, indx]
+        } else {
+
+            attr (obj, "data") <- NULL
+        }
+    }
+
+    return (obj)
+}
+
+get_q_key_vals <- function (key, value, extra_pairs) {
+
+    q_keys <- key
+    if (missing (value)) {
+        q_vals <- NA
+    } else {
         q_vals <- value
         # If primary value is negation, then repeat primary key
         if (substring (q_vals, 1, 1) == "!") {
@@ -101,81 +152,44 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
         q_vals [indx] <- val_list [indx2]
     }
 
-    # default to non-exact matches
-    qry <- osmdata::opq (bbox = bbox)
-    for (i in seq (q_keys)) {
+    return (list (keys = q_keys, vals = q_vals))
+}
 
-        key_exact <- FALSE
-        if (!is.na (q_vals [i]) & substring (q_vals [i], 1, 1) == "!")
-            key_exact <- TRUE
-        if (is.na (q_vals [i]))
-            qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
-                                         key_exact = key_exact,
-                                         value_exact = FALSE,
-                                         match_case = FALSE)
-        else
-            qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
-                                         value = q_vals [i],
-                                         key_exact = key_exact,
-                                         value_exact = FALSE,
-                                         match_case = FALSE)
-    }
-
-    if (sf)
-        obj <- osmdata::osmdata_sf (qry, quiet = quiet)
-    else
-        obj <- osmdata::osmdata_sp (qry, quiet = quiet)
+get_obj_from_return_type <- function (obj, return_type, q_keys, q_vals) {
 
     if (!missing (return_type)) {
 
         return_type <- tolower (return_type)
-        if (substring (return_type, 1, 3) == "poi")
+        if (substring (return_type, 1, 3) == "poi") {
             obj <- obj$osm_points
-        else if (substring (return_type, 1, 1) == "l")
+        } else if (substring (return_type, 1, 1) == "l") {
             obj <- obj$osm_lines
-        else if (substring (return_type, 1, 6) == "multil")
+        } else if (substring (return_type, 1, 6) == "multil") {
             obj <- obj$osm_multilines
-        else if (substring (return_type, 1, 6) == "multip")
+        } else if (substring (return_type, 1, 6) == "multip") {
             obj <- obj$osm_multipolygons
-        else
+        } else {
             obj <- obj$osm_polygons
+        }
     } else {
 
-        if ("highway" %in% q_keys)
+        if ("highway" %in% q_keys) {
             obj <- obj$osm_lines
-        else if ("building" %in% q_keys | "landuse" %in% q_keys |
-                 "leisure" %in% q_keys |
-                 ("natural" %in% q_keys & "water" %in% q_vals))
+        } else if ("building" %in% q_keys || "landuse" %in% q_keys ||
+                 "leisure" %in% q_keys ||
+                 ("natural" %in% q_keys && "water" %in% q_vals)) {
             obj <- obj$osm_polygons
-        else if ("route" %in% q_keys)
+        } else if ("route" %in% q_keys) {
             obj <- obj$osm_multilines
-        else if ("boundary" %in% q_keys | "waterway" %in% q_keys)
+        } else if ("boundary" %in% q_keys || "waterway" %in% q_keys) {
             obj <- obj$osm_multipolygons
-        else if ("natural" %in% q_keys & "tree" %in% q_vals)
+        } else if ("natural" %in% q_keys && "tree" %in% q_vals) {
             obj <- obj$osm_points
-        else {
+        } else {
 
             message (paste0 ("Cannot determine return_type;",
                              " maybe specify explicitly?"))
             obj <- obj$osm_lines
         }
     }
-
-    if (NROW (obj) == 0)
-        warning ("No valid data returned. ",
-                 "(Maybe try a different 'return_type')")
-
-    if (geom_only) {
-
-        if (sf) {
-
-            indx <- match (c ("osm_id", "geometry"), names(obj))
-            obj <- obj [, indx]
-        } else {
-
-            attr (obj, "data") <- NULL
-        }
-    }
-
-    return (obj)
 }

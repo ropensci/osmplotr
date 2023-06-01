@@ -137,8 +137,8 @@ connect_two_ways <- function (ways, es) {
     wi1 <- ways [[es$i1]]
     wi2 <- ways [[es$i2]]
     dmat <- array (NA, dim = c (length (wi1), length (wi2)))
-    for (i in seq (length (wi1)))
-        for (j in seq (length (wi2)))
+    for (i in seq_along (wi1))
+        for (j in seq_along (wi2))
             dmat [i, j] <- haversine (wi1 [[i]], wi2 [[j]]) [3]
     indx <- which (dmat == min (dmat), arr.ind = TRUE) [1, ] # there may be > 1
 

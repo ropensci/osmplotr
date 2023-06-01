@@ -41,8 +41,9 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     # Get suffixes for naming data objects
     indx_in <- which (!duplicated (structures))
     indx_out <- which (duplicated (structures))
-    lettrs <- sapply (structures [indx_in], function (x)
-                      toupper (substr (x, 1, 1)))
+    lettrs <- sapply (structures [indx_in], function (x) {
+        toupper (substr (x, 1, 1))
+    })
     lettrs <- unique_suffixes (lettrs, structures, indx_in)
     suffixes <- extend_suffixes (lettrs, structures, indx_in, indx_out)
 
@@ -65,7 +66,7 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
 
     dat <- data.frame (cbind (structures, kv$keys, kv$values, suffixes, cols),
                        stringsAsFactors = FALSE,
-                       row.names = seq (length (kv$keys)))
+                       row.names = seq_along (kv$keys))
     names (dat) <- c ("structure", "key", "value", "suffix", "cols")
     return (dat)
 }
@@ -143,7 +144,7 @@ unique_suffixes <- function (sfx, structures, indx_in) {
 
         matches_red <- list ()
         for (i in seq (matches))
-            if (length (matches [[i]]) > 1 &
+            if (length (matches [[i]]) > 1 &&
                 !all (matches [[i]] %in% unlist (matches_red)))
                 matches_red [[length (matches_red) + 1]] <- matches [[i]]
         for (i in seq (matches_red)) {

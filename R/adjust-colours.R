@@ -54,7 +54,7 @@ adjust_colours <- function (cols, adj = 0, plot = FALSE) {
     adj <- check_arg (adj, "adj", "numeric")
     if (is.character (adj))
         stop (adj)
-    else if (adj < -1 | adj > 1)
+    else if (adj < -1 || adj > 1)
         stop ("adj must be between -1 and 1")
     # ---------- plot
     plot <- check_arg (plot, "plot", "logical")
@@ -62,15 +62,17 @@ adjust_colours <- function (cols, adj = 0, plot = FALSE) {
         stop ("plot can not be coerced to logical")
     # ---------------  end sanity checks and warnings  ---------------
 
-    cols_old <- apply (cols, 2, function (x)
-                       rgb (x[1], x[2], x[3], maxColorValue = 255))
+    cols_old <- apply (cols, 2, function (x) {
+        rgb (x[1], x[2], x[3], maxColorValue = 255)
+    })
 
     if (adj > 0)
         cols <- cols + adj * (255 - cols)
     else
         cols <- cols + adj * cols
-    cols <- apply (cols, 2, function (x)
-                   rgb (x[1], x[2], x[3], maxColorValue = 255))
+    cols <- apply (cols, 2, function (x) {
+        rgb (x[1], x[2], x[3], maxColorValue = 255)
+    })
 
     if (plot)
         adj_colours_plot (cols, cols_old)

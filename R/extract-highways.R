@@ -51,13 +51,15 @@ extract_highways <- function (highway_names, bbox) {
 
 abbreviate_hwy_names <- function (highway_names, nletters = 2) {
 
-    hw_abbrvs <- sapply (highway_names, function (x)
-                      tolower (substring (x, 1, nletters)))
+    hw_abbrvs <- sapply (highway_names, function (x) {
+        tolower (substring (x, 1, nletters))
+    })
     while (any (duplicated (hw_abbrvs))) {
 
         nletters <- nletters + 1
-        hw_abbrvs <- sapply (highway_names, function (x)
-                          tolower (substring (x, 1, nletters)))
+        hw_abbrvs <- sapply (highway_names, function (x) {
+            tolower (substring (x, 1, nletters))
+        })
     }
 
     return (hw_abbrvs)

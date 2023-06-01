@@ -66,7 +66,7 @@ test_pos <- function (a, txt, value) {
 
 test_range <- function (a, txt, rng, value) {
 
-    if (any (a < rng [1]) | any (a > rng [2])) {
+    if (any (a < rng [1]) || any (a > rng [2])) {
 
         if (length (value) == 1)
             vstr <- "value"
