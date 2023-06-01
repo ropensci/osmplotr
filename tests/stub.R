@@ -36,12 +36,12 @@ NULL
 #' @rdname stub
 #'
 #' @examples
-#' f <- function() TRUE
-#' g <- function() f()
-#' stub(g, "f", FALSE)
+#' f <- function () TRUE
+#' g <- function () f ()
+#' stub (g, "f", FALSE)
 #'
 #' # now g() returns FALSE because f() has been stubbed out
-#' g()
+#' g ()
 #'
 `stub` <- function (where, what, how) {
 
@@ -56,13 +56,15 @@ NULL
     env <- new.env (parent = environment (where))
 
     if (grepl ("::", what)) {
-        elements  <- strsplit (what, "::")
-        what <- paste (elements [[1]][1], elements [[1]][2], sep = "XXX")
+        elements <- strsplit (what, "::")
+        what <- paste (elements [[1]] [1], elements [[1]] [2], sep = "XXX")
 
         stub_list <- c (what)
         if ("stub_list" %in% names (attributes (get ("::", env)))) {
-            stub_list <- c (stub_list,
-                            attributes (get ("::", env)) [["stub_list"]])
+            stub_list <- c (
+                stub_list,
+                attributes (get ("::", env)) [["stub_list"]]
+            )
         }
 
         create_new_name <- create_create_new_name_function (stub_list, env)
@@ -70,7 +72,7 @@ NULL
     }
 
     if (!is.function (how)) {
-        assign (what, function(...) how, env)
+        assign (what, function (...) how, env)
     } else {
         assign (what, how, env)
     }
@@ -84,7 +86,7 @@ create_create_new_name_function <- function (stub_list, env) { # nolint
 
     create_new_name <- function (pkg, func) {
 
-        pkg_name  <- deparse (substitute (pkg))
+        pkg_name <- deparse (substitute (pkg))
         func_name <- deparse (substitute (func))
         for (stub in stub_list) {
             if (paste (pkg_name, func_name, sep = "XXX") == stub) {

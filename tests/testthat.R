@@ -1,4 +1,4 @@
-library(testthat)
-library(osmplotr)
+library (testthat)
+library (osmplotr)
 
-test_check("osmplotr")
+test_check ("osmplotr")
