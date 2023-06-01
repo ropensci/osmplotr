@@ -25,15 +25,15 @@ are always represented in OpenStreetMap as line objects, preventing any ability
 to simply colour land and ocean separately.
 
 This vignette illustrates the general principles of the `osm_line2poly()`
-function, along with several ancilliary issues such as plotting coastal islands.
+function, along with several ancillary issues such as plotting coastal islands.
 Although this functionality has been primarily developed with coastlines in
-mind, the `osm_line2poly()` function has been designed in a suffciiently general
-manner to be readily adaptible to any other cases where such line-to-polygon
+mind, the `osm_line2poly()` function has been designed in a sufficiently general
+manner to be readily adaptable to any other cases where such line-to-polygon
 conversion may be desirable.
 
 This vignette explores the example of the coastline around Greater Melbourne,
 Australia, first demonstrating how to extract coastline and convert it to land
-and sea polygons, and then demonstrating how these areas may be delinated on a
+and sea polygons, and then demonstrating how these areas may be delineated on a
 plot.
 
 # 2 Data Extraction and Conversion
@@ -59,22 +59,24 @@ This coastline object consists of several types of structure
 coast
 ```
 ```{r, echo = FALSE}
-message (paste0 ("Object of class 'osmdata' with:\n",
-"                 $bbox : -38.49937,144.44405,-37.40175,146.1925\n",
-"        $overpass_call : The call submitted to the overpass API\n",
-"            $timestamp : [ Thurs 5 Oct 2017 10:23:18 ]\n",
-"           $osm_points : 'sf' Simple Features Collection with 13635 points\n",
-"            $osm_lines : 'sf' Simple Features Collection with 73 linestrings\n",
-"         $osm_polygons : 'sf' Simple Features Collection with 12 polygons\n",
-"       $osm_multilines : 'sf' Simple Features Collection with 0 multilinestrings\n",
-"    $osm_multipolygons : 'sf' Simple Features Collection with 0 multipolygons"))
+message (paste0 (
+    "Object of class 'osmdata' with:\n",
+    "                 $bbox : -38.49937,144.44405,-37.40175,146.1925\n",
+    "        $overpass_call : The call submitted to the overpass API\n",
+    "            $timestamp : [ Thurs 5 Oct 2017 10:23:18 ]\n",
+    "           $osm_points : 'sf' Simple Features Collection with 13635 points\n",
+    "            $osm_lines : 'sf' Simple Features Collection with 73 linestrings\n",
+    "         $osm_polygons : 'sf' Simple Features Collection with 12 polygons\n",
+    "       $osm_multilines : 'sf' Simple Features Collection with 0 multilinestrings\n",
+    "    $osm_multipolygons : 'sf' Simple Features Collection with 0 multipolygons"
+))
 ```
 Because OpenStreetMap represents coastline as line objects, all coastline data
 is contained within the `$osm_lines` object. The `osm_line2poly()` function can
-then converte these lines to polygons which can be used to plot filled areas.
+then convert these lines to polygons which can be used to plot filled areas.
 ```{r, eval = fetch_osm}
 coast_poly <- osm_line2poly (coast$osm_lines, bbox)
-names(coast_poly)
+names (coast_poly)
 ```
 ```{r, echo = FALSE}
 c ("sea", "land", "islands")
@@ -100,15 +102,17 @@ polygons on top of that.
 
 ```{r, eval = fetch_osm}
 map <- osm_basemap (bbox = bbox, bg = "cadetblue2") %>%
-  add_osm_objects (coast_poly$land, col = "lightyellow1") %>%
-  add_osm_objects (coast_poly$islands, col="orange") %>%
-  add_osm_objects (coast$osm_polygons, col="purple", border = "black") %>%
-  add_osm_objects (coast$osm_lines, col="black") %>%
-  print_osm_map ()
+    add_osm_objects (coast_poly$land, col = "lightyellow1") %>%
+    add_osm_objects (coast_poly$islands, col = "orange") %>%
+    add_osm_objects (coast$osm_polygons, col = "purple", border = "black") %>%
+    add_osm_objects (coast$osm_lines, col = "black") %>%
+    print_osm_map ()
 ```
 ```{r, echo=FALSE, eval = fetch_osm}
-print_osm_map (map, filename = 'melb_a1.png', width = 600,
-               units = 'px', dpi = map_dpi)
+print_osm_map (map,
+    filename = "melb_a1.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 
 ![](melb_a1.png)
@@ -126,151 +130,148 @@ line, enabling water and land to be systematically distinguished. The following
 test cases demonstrate the reliability of this distinction.
 
 ```{r, echo=FALSE}
-  getCoast <- function(bbox)
-  {
-    qry <- opq(bbox)
-    qry <- add_osm_feature(qry, key = "natural", value = "coastline")
-    return(osmdata_sf(qry))
-  }
-  testPlot <- function(coast, bbox)
-  {
-    if (!dev.cur()) dev.off()
-    map <- osm_basemap(bbox=bbox)
-    map <- add_osm_objects(map, coast$osm_lines)
-    print_osm_map(map)
-  }
-  testPlotPoly <- function(coast, bbox, fname)
-  {
+getCoast <- function (bbox) {
+    qry <- opq (bbox)
+    qry <- add_osm_feature (qry, key = "natural", value = "coastline")
+    return (osmdata_sf (qry))
+}
+testPlot <- function (coast, bbox) {
+    if (!dev.cur ()) dev.off ()
+    map <- osm_basemap (bbox = bbox)
+    map <- add_osm_objects (map, coast$osm_lines)
+    print_osm_map (map)
+}
+testPlotPoly <- function (coast, bbox, fname) {
     ## trouble doing this check properly on Travis
-    if (nrow(coast$osm_lines) > 0) {
-      coastp <- osm_line2poly(coast$osm_lines, bbox=bbox)
-      map <- osm_basemap(bbox=bbox)
-      map <- add_osm_objects(map, coastp$sea, col='cadetblue2')
-      map <- add_osm_objects(map, coastp$land, col='sienna2')
-      print_osm_map(map,filename = fname, width = 200,
-                    units = 'px', dpi = map_dpi)
+    if (nrow (coast$osm_lines) > 0) {
+        coastp <- osm_line2poly (coast$osm_lines, bbox = bbox)
+        map <- osm_basemap (bbox = bbox)
+        map <- add_osm_objects (map, coastp$sea, col = "cadetblue2")
+        map <- add_osm_objects (map, coastp$land, col = "sienna2")
+        print_osm_map (map,
+            filename = fname, width = 200,
+            units = "px", dpi = map_dpi
+        )
     } else {
-      warning("osm query probably failed - not plotting")
-      invisible(NULL)
+        warning ("osm query probably failed - not plotting")
+        invisible (NULL)
     }
-    
-  }
-  
+
+}
 ```
 ```{r, eval = fetch_osm}
-test_plot <- function (bbox)
-{
+test_plot <- function (bbox) {
     dat <- opq (bbox) %>%
         add_osm_feature (key = "natural", value = "coastline") %>%
         osmdata_sf (quiet = FALSE)
     coast <- osm_line2poly (dat$osm_lines, bbox)
     osm_basemap (bbox = bbox) %>%
-        add_osm_objects(coast$sea, col = 'cadetblue2') %>%
-        add_osm_objects(coast$land, col = 'sienna2')
+        add_osm_objects (coast$sea, col = "cadetblue2") %>%
+        add_osm_objects (coast$land, col = "sienna2")
 }
 ```
 ```{r, eval = fetch_osm, echo = FALSE}
-test_plot <- function (bbox, filename, map_dpi)
-{
+test_plot <- function (bbox, filename, map_dpi) {
     dat <- opq (bbox) %>%
         add_osm_feature (key = "natural", value = "coastline") %>%
         osmdata_sf (quiet = FALSE)
     coast <- osm_line2poly (dat$osm_lines, bbox)
     osm_basemap (bbox = bbox) %>%
-        add_osm_objects(coast$sea, col = 'cadetblue2') %>%
-        add_osm_objects(coast$land, col = 'sienna2') %>%
-        print_osm_map (file = filename, width = 200,
-                       units = "px", dpi = map_dpi)
+        add_osm_objects (coast$sea, col = "cadetblue2") %>%
+        add_osm_objects (coast$land, col = "sienna2") %>%
+        print_osm_map (
+            file = filename, width = 200,
+            units = "px", dpi = map_dpi
+        )
 }
 ```
 Fetch the test data. A variable name with `WE` indicates that the coast enters the bounding box
 on the western side and exits on the east. The land is on the left when following that path.
 ```{r, eval = fetch_osm}
-    bbWE <- get_bbox (c(142.116906, -38.352713, 142.205162, -38.409661))
-    coastWE <- getCoast(bbWE)
+bbWE <- get_bbox (c (142.116906, -38.352713, 142.205162, -38.409661))
+coastWE <- getCoast (bbWE)
 
-    bbEW <- get_bbox(c(144.603127, -38.104003, 144.685557, -38.135596))
-    coastEW <- getCoast(bbEW)
+bbEW <- get_bbox (c (144.603127, -38.104003, 144.685557, -38.135596))
+coastEW <- getCoast (bbEW)
 
-    bbNS <- get_bbox(c(143.807998, -39.770986, 143.906494, -39.918643))
-    coastNS <- getCoast(bbNS)
+bbNS <- get_bbox (c (143.807998, -39.770986, 143.906494, -39.918643))
+coastNS <- getCoast (bbNS)
 
-    bbSN <- get_bbox(c(144.073544, -39.854586, 144.149318, -39.960047))
-    coastSN <- getCoast(bbSN)
+bbSN <- get_bbox (c (144.073544, -39.854586, 144.149318, -39.960047))
+coastSN <- getCoast (bbSN)
 
-    bbWW <- get_bbox(c(144.904865, -37.858295, 144.923679, -37.874367))
-    coastWW <- getCoast(bbWW)
+bbWW <- get_bbox (c (144.904865, -37.858295, 144.923679, -37.874367))
+coastWW <- getCoast (bbWW)
 
-    bbEE <- get_bbox(c(144.643383, -38.294671, 144.692197, -38.336022))
-    coastEE <- getCoast(bbEE)
+bbEE <- get_bbox (c (144.643383, -38.294671, 144.692197, -38.336022))
+coastEE <- getCoast (bbEE)
 
-    bbNN <- get_bbox(c(145.856321, -38.831642, 146.050920, -38.914031))
-    coastNN <- getCoast(bbNN)
+bbNN <- get_bbox (c (145.856321, -38.831642, 146.050920, -38.914031))
+coastNN <- getCoast (bbNN)
 
-    bbSS <- get_bbox(c(146.363768, -38.770345, 146.486389, -38.837287))
-    coastSS <- getCoast(bbSS)
+bbSS <- get_bbox (c (146.363768, -38.770345, 146.486389, -38.837287))
+coastSS <- getCoast (bbSS)
 
-    bbEN <- get_bbox(c(144.738212, -38.337690, 144.758053, -38.346966))
-    coastEN <- getCoast(bbEN)
+bbEN <- get_bbox (c (144.738212, -38.337690, 144.758053, -38.346966))
+coastEN <- getCoast (bbEN)
 
-    bbEWWS <- get_bbox(c(144.693077, -38.307526, 144.729113, -38.343997 ))
-    coastEWWS <- getCoast(bbEWWS)
+bbEWWS <- get_bbox (c (144.693077, -38.307526, 144.729113, -38.343997))
+coastEWWS <- getCoast (bbEWWS)
 
-    bbWS <- get_bbox(c(143.164906 ,-38.704885, 143.2075563, -38.7462058 ))
-    coastWS <- getCoast(bbWS)
-
+bbWS <- get_bbox (c (143.164906, -38.704885, 143.2075563, -38.7462058))
+coastWS <- getCoast (bbWS)
 ```
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastWE, bbWE, "testWE.png")
+testPlotPoly (coastWE, bbWE, "testWE.png")
 ```
 ![](testWE.png)
 ```{r, eval = fetch_osm}
-testPlotPoly(coastEW, bbEW, "testEW.png")
+testPlotPoly (coastEW, bbEW, "testEW.png")
 ```
 ![](testEW.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastNS, bbNS, "testNS.png")
+testPlotPoly (coastNS, bbNS, "testNS.png")
 ```
 ![](testNS.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastSN, bbSN, "testSN.png")
+testPlotPoly (coastSN, bbSN, "testSN.png")
 ```
 ![](testSN.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastWW, bbWW, "testWW.png")
+testPlotPoly (coastWW, bbWW, "testWW.png")
 ```
 ![](testWW.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastEE, bbEE, "testEE.png")
+testPlotPoly (coastEE, bbEE, "testEE.png")
 ```
 ![](testEE.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastNN, bbNN, "testNN.png")
+testPlotPoly (coastNN, bbNN, "testNN.png")
 ```
 ![](testNN.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastSS, bbSS, "testSS.png")
+testPlotPoly (coastSS, bbSS, "testSS.png")
 ```
 ![](testSS.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastEN, bbEN, "testEN.png")
+testPlotPoly (coastEN, bbEN, "testEN.png")
 ```
 ![](testEN.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastEWWS, bbEWWS, "testEWWS.png")
+testPlotPoly (coastEWWS, bbEWWS, "testEWWS.png")
 ```
 ![](testEWWS.png)
 
 ```{r, eval = fetch_osm}
-testPlotPoly(coastWS, bbWS, "testWS.png")
+testPlotPoly (coastWS, bbWS, "testWS.png")
 ```
 ![](testWS.png)

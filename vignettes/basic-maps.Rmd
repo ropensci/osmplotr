@@ -61,8 +61,10 @@ map <- add_osm_objects (map, dat_B, col = "gray40")
 print_osm_map (map)
 ```
 ```{r map1-print, echo = FALSE}
-print_osm_map (map, filename = "map_a1.png", width = 600,
-               units = "px", dpi = map_dpi)
+print_osm_map (map,
+    filename = "map_a1.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a1.png)
 
@@ -86,14 +88,16 @@ used directly.
 Data of a particular type can be extracted by specifying the appropriate OSM
 `key`, as in the above example:
 ```{r buildings-highways, eval = FALSE}
-bbox <- get_bbox (c(-0.13, 51.51, -0.11, 51.52))
+bbox <- get_bbox (c (-0.13, 51.51, -0.11, 51.52))
 dat_B <- extract_osm_objects (key = "building", bbox = bbox)
 dat_H <- extract_osm_objects (key = "highway", bbox = bbox)
 ```
 These objects are of appropriate `Spatial` classes:
 ```{r}
-class (dat_B); class (dat_H)
-class (dat_B$geometry); class (dat_H$geometry)
+class (dat_B)
+class (dat_H)
+class (dat_B$geometry)
+class (dat_H$geometry)
 ```
 `Spatial` ([`sp`](https://cran.r-project.org/package=sf)) objects may be
 returned with,
@@ -104,7 +108,8 @@ otherwise `sf` is used as the default format.  The Simple Features (`sf`)
 objects with polygons of London buildings and linestrings of highways
 respectively contain 
 ```{r}
-nrow (dat_B); nrow (dat_H)
+nrow (dat_B)
+nrow (dat_H)
 ```
 ... 1,759 building polygons and 1,133 highway lines.  `extract_osm_objects` also
 accepts `key-value` pairs which are passed to the
@@ -114,7 +119,8 @@ dat_T <- extract_osm_objects (key = "natural", value = "tree", bbox = bbox)
 ```
 Trees are located by single coordinates and are thus point objects:
 ```{r}
-class (dat_T$geometry); nrow (dat_T)
+class (dat_T$geometry)
+nrow (dat_T)
 ```
 
 
@@ -138,8 +144,10 @@ These differences are illustrated in the following code which generates
 identical results in both cases (with namespaces explicitly given to aid
 clarity),
 ```{r, eval = FALSE}
-dat1 <- osmplotr::extract_osm_objects (key = "highway", value = "!primary",
-                                       bbox = bbox)
+dat1 <- osmplotr::extract_osm_objects (
+    key = "highway", value = "!primary",
+    bbox = bbox
+)
 dat2 <- osmdata::opq (bbox = bbox) %>%
     add_feature (key = "highway") %>%
     add_feature (key = "highway", value = "!primary") %>%
@@ -172,8 +180,10 @@ tree could be for any kind of spatial object. `osmplotr` makes several educated
 guesses in the absence of specified return types, but these can always be forced
 with the `return_type` parameter:
 ```{r not tree points, eval = FALSE}
-pts_NT <- extract_osm_objects (bbox = bbox, key = "natural", value = "!tree",
-                               return_type = "points")
+pts_NT <- extract_osm_objects (
+    bbox = bbox, key = "natural", value = "!tree",
+    return_type = "points"
+)
 ```
 
 `london$dat_H` contains all non-primary highways, and was extracted with the
@@ -187,19 +197,25 @@ be forced through specifying `return_type`).
 Any number of `key-value` pairs may be passed to `extract_osm_objects`. For
 example, a named building can be extracted with
 ```{r royal festival hall, eval = FALSE}
-bbox <- get_bbox (c(-0.13, 51.50, -0.11, 51.52))
+bbox <- get_bbox (c (-0.13, 51.50, -0.11, 51.52))
 extra_pairs <- c ("name", "Royal.Festival.Hall")
-dat <- extract_osm_objects (key = "building", extra_pairs = extra_pairs,
-                                       bbox = bbox)
+dat <- extract_osm_objects (
+    key = "building", extra_pairs = extra_pairs,
+    bbox = bbox
+)
 ```
 These data are stored in `london$dat_RFH`. Note that periods or dots are used for
 white space, and in fact symbolise (in `grep` terms) any character whatsoever.
 The polygon of a building at a particular street address can be extracted with
 ```{r stamford st 150, eval = FALSE}
-extra_pairs <- list (c ("addr:street", "Stamford.St"),
-                     c ("addr:housenumber", "150"))
-dat <- extract_osm_objects (key = "building", extra_pairs = extra_pairs,
-                                      bbox = bbox)
+extra_pairs <- list (
+    c ("addr:street", "Stamford.St"),
+    c ("addr:housenumber", "150")
+)
+dat <- extract_osm_objects (
+    key = "building", extra_pairs = extra_pairs,
+    bbox = bbox
+)
 ```
 These data are stored as `london$dat_ST`.  Note that addresses generally require
 combining both `addr:street` with `addr:housenumber`.
@@ -221,7 +237,7 @@ osm_structures ()
 Many structures are identified by keys only, in which cases the values are empty
 strings.
 ```{r}
-osm_structures()$value [1:4]
+osm_structures ()$value [1:4]
 ```
 The last row of `osm_structures` exists only to define the background colour of
 the map, as explained below 
@@ -243,18 +259,22 @@ The data specified in `osm_structures` can then be downloaded simply by calling:
 dat <- make_osm_map (structures = osm_structures (), bbox = bbox)
 ```
 ```{r, echo = FALSE}
-dat1 <- list (dat_BU = NULL, dat_A = NULL, dat_W = NULL, dat_G = NULL,
-              dat_N = NULL, dat_P = NULL, dat_H = NULL, dat_BO = NULL,
-              dat_T = NULL)
+dat1 <- list (
+    dat_BU = NULL, dat_A = NULL, dat_W = NULL, dat_G = NULL,
+    dat_N = NULL, dat_P = NULL, dat_H = NULL, dat_BO = NULL,
+    dat_T = NULL
+)
 dat <- list (osm_data = dat1, map = ggplot2::ggplot ())
 ```
 ```{r}
-names (dat); sapply (dat, class); names (dat$osm_data)
+names (dat)
+sapply (dat, class)
+names (dat$osm_data)
 ```
 The requested data are contained in `dat$osm_data`.  A list of desired structures
 can also be passed to this function, for example,
 ```{r}
-osm_structures (structures = c("building", "highway"))
+osm_structures (structures = c ("building", "highway"))
 ```
 Passing this to `make_osm_map` will download only these two structures.
 Finally, note that the example of,
@@ -270,8 +290,10 @@ To illustrate the use of `osm_structures` to download data, this section
 reproduces the code that was used to generate the `london` data object which
 forms part of the `osmplotr` package.
 ```{r}
-structures <- c ("highway", "highway", "building", "building", "building",
-                 "amenity", "park", "natural", "tree")
+structures <- c (
+    "highway", "highway", "building", "building", "building",
+    "amenity", "park", "natural", "tree"
+)
 structs <- osm_structures (structures = structures, col_scheme = "dark")
 structs$value [1] <- "!primary"
 structs$value [2] <- "primary"
@@ -311,8 +333,10 @@ highways2 <- hwys [[2]]
 highways3 <- hwys [[3]]
 ```
 ```{r, eval = FALSE}
-highways <- c ("Monmouth.St", "Short.?s.Gardens", "Endell.St", "Long.Acre",
-               "Upper.Saint.Martin")
+highways <- c (
+    "Monmouth.St", "Short.?s.Gardens", "Endell.St", "Long.Acre",
+    "Upper.Saint.Martin"
+)
 highways1 <- connect_highways (highways = highways, bbox = bbox)
 ```
 Note the use of the [regex](https://en.wikipedia.org/wiki/Regular_expression)
@@ -320,7 +344,9 @@ character `?` which declares that the previous character is optional. This
 matches both "Shorts Gardens" and "Short's Gardens", both of which appear in OSM
 data.
 ```{r}
-class (highways1); length (highways1); highways1 [[1]] [[1]]
+class (highways1)
+length (highways1)
+highways1 [[1]] [[1]]
 ```
 
 The extraction of bounding polygons from named highways is not fail-safe, and may
@@ -349,11 +375,15 @@ unpredictable nature of OpenStreetMap, as well as to the unknown relationships
 between named highways. To enable problematic cases to be examined and hopefully
 resolved, `connect_highways` has a `plot` option:
 ```{r connect_highways, fig.width = 4, message = FALSE, eval = FALSE}
-bbox_big <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
-highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
-               "Fleet.St", "Aldwych")
-highway_list <- connect_highways (highways = highways, bbox = bbox_big,
-                                  plot = TRUE)
+bbox_big <- get_bbox (c (-0.15, 51.5, -0.10, 51.52))
+highways <- c (
+    "Kingsway", "Holborn", "Farringdon.St", "Strand",
+    "Fleet.St", "Aldwych"
+)
+highway_list <- connect_highways (
+    highways = highways, bbox = bbox_big,
+    plot = TRUE
+)
 ```
 ```{r connect-highways-manual-plot, fig.width = 4, echo = FALSE}
 load (system.file ("extdata", "hwys.rda", package = "osmplotr"))
@@ -397,7 +427,7 @@ As illustrated above, plotting maps requires first making a basemap with a
 specified background colour. Portions of maps can also be plotted by creating a
 `basemap` with a smaller bounding box.
 ```{r map2}
-bbox_small <- get_bbox (c(-0.13, 51.51, -0.11, 51.52))
+bbox_small <- get_bbox (c (-0.13, 51.51, -0.11, 51.52))
 map <- osm_basemap (bbox = bbox_small, bg = "gray20")
 map <- add_osm_objects (map, dat_H, col = "gray70")
 map <- add_osm_objects (map, dat_B, col = "gray40")
@@ -408,8 +438,10 @@ map <- add_osm_objects (map, dat_B, col = "gray40")
 print_osm_map (map)
 ```
 ```{r map2-print, echo = FALSE}
-print_osm_map (map, filename = "map_a2.png", width = 600,
-               units = "px", dpi = map_dpi)
+print_osm_map (map,
+    filename = "map_a2.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a2.png)
 
@@ -418,16 +450,22 @@ Other graphical parameters can also be passed to `add_osm_objects`, such as
 border colours or line widths and types. For example,
 ```{r map3, eval = FALSE}
 map <- osm_basemap (bbox = bbox_small, bg = "gray20")
-map <- add_osm_objects (map, dat_B, col = "gray40", border = "orange",
-                        size = 0.2)
+map <- add_osm_objects (map, dat_B,
+    col = "gray40", border = "orange",
+    size = 0.2
+)
 print_osm_map (map)
 ```
 ```{r map3-print, echo = FALSE}
 map <- osm_basemap (bbox = bbox_small, bg = "gray20")
-map <- add_osm_objects (map, dat_B, col = "gray40", border = "orange",
-                        size = 0.2)
-print_osm_map (map, filename = "map_a3.png", width = 600,
-               units = "px", dpi = map_dpi)
+map <- add_osm_objects (map, dat_B,
+    col = "gray40", border = "orange",
+    size = 0.2
+)
+print_osm_map (map,
+    filename = "map_a3.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a3.png)
 
@@ -444,8 +482,10 @@ print_osm_map (map)
 ```{r map4-print, echo = FALSE}
 map <- add_osm_objects (map, dat_H, col = "gray70", size = 0.7)
 map <- add_osm_objects (map, dat_T, col = "green", size = 2, shape = 1)
-print_osm_map (map, filename = "map_a4.png", width = 600,
-               units = "px", dpi = map_dpi)
+print_osm_map (map,
+    filename = "map_a4.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a4.png)
 
@@ -470,10 +510,14 @@ print_osm_map (map)
 ```
 while examples of writing higher resolution versions to files include:
 ```{r, eval = FALSE}
-print_osm_map (map, filename = "map.png", width = 10,
-               units = "in", dpi = map_dpi)
-print_osm_map (map, filename = "map.eps", width = 1000,
-               units = "px", dpi = map_dpi)
+print_osm_map (map,
+    filename = "map.png", width = 10,
+    units = "in", dpi = map_dpi
+)
+print_osm_map (map,
+    filename = "map.eps", width = 1000,
+    units = "px", dpi = map_dpi
+)
 print_osm_map (map, filename = "map", device = "jpeg", width = 10, units = "cm")
 ```
 
@@ -501,8 +545,10 @@ print_osm_map (map)
 map <- osm_basemap (bbox = bbox_small, bg = "gray20")
 map <- add_osm_objects (map, dat_H, col = "gray50")
 map <- add_osm_objects (map, dat_HP, col = "gray80", size = 2)
-print_osm_map (map, filename = "map_a5.png", width = 600,
-               units = "px", dpi = map_dpi)
+print_osm_map (map,
+    filename = "map_a5.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a5.png)
 
@@ -530,8 +576,10 @@ map <- add_osm_objects (map, dat_H, col = "gray80")
 map <- add_osm_objects (map, dat_HP, col = "gray60", size = 2)
 map <- add_osm_objects (map, dat_RFH, col = "orange", border = "red", size = 2)
 map <- add_osm_objects (map, dat_ST, col = "skyblue", border = "blue", size = 2)
-print_osm_map (map, filename = "map_a7.png", width = 600,
-               units = "px", dpi = map_dpi)
+print_osm_map (map,
+    filename = "map_a7.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a7.png)
 
@@ -548,12 +596,14 @@ the bounding box of a named region, and the `magrittr` pipe operator.
 ```{r, eval = FALSE}
 library (osmdata)
 bb <- osmdata::getbb ("melbourne, australia")
-coast <- extract_osm_objects (bbox = bb, key = "natural", value = "coastline",
-                              return_type = "line")
+coast <- extract_osm_objects (
+    bbox = bb, key = "natural", value = "coastline",
+    return_type = "line"
+)
 coast <- osm_line2poly (coast, bbox = bb)
 map <- osm_basemap (bbox = bb) %>%
-        add_osm_objects (coast [[1]], col = "lightsteelblue") %>%
-        print_osm_map ()
+    add_osm_objects (coast [[1]], col = "lightsteelblue") %>%
+    print_osm_map ()
 ```
 The `osm_line2poly()` function returns a list of two `sf` polygons. For
 coastline, one of these will correspond to water, one to land. In the preceding
@@ -581,13 +631,19 @@ print_osm_map (dat$map)
 ```{r, echo = FALSE}
 structs <- c ("highway", "building", "park", "tree")
 structures <- osm_structures (structures = structs, col_scheme = "light")
-osm_dat <- list (dat_B = dat_B, dat_H = dat_H, dat_P = london$dat_P,
-                 dat_A = london$dat_A, dat_P = london$dat_P,
-                 dat_T = london$dat_T)
-dat <- make_osm_map (structures = structures, osm_data = osm_dat,
-                     bbox = bbox)
-print_osm_map (dat$map, filename = "map_a8.png", width = 600,
-               units = "px", dpi = map_dpi)
+osm_dat <- list (
+    dat_B = dat_B, dat_H = dat_H, dat_P = london$dat_P,
+    dat_A = london$dat_A, dat_P = london$dat_P,
+    dat_T = london$dat_T
+)
+dat <- make_osm_map (
+    structures = structures, osm_data = osm_dat,
+    bbox = bbox
+)
+print_osm_map (dat$map,
+    filename = "map_a8.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a8.png)
 
@@ -595,19 +651,24 @@ Calling `make_osm_map()` downloads the requested structures within the given
 `bbox` and returns a list of two components, the first of which contains the
 downloaded data:
 ```{r}
-names (dat); names (dat$osm_data)
+names (dat)
+names (dat$osm_data)
 ```
 
 Pre-downloaded data may also be passed to `make_osm_map()`
 ```{r map9, eval = FALSE}
-dat <- make_osm_map (structures = structures, osm_data = dat$osm_data,
-                     bbox = bbox)
+dat <- make_osm_map (
+    structures = structures, osm_data = dat$osm_data,
+    bbox = bbox
+)
 print_osm_map (dat$map)
 ```
 ```{r map9-print, echo = FALSE}
 dat <- make_osm_map (structures = structures, osm_data = osm_dat, bbox = bbox)
-print_osm_map (dat$map, filename = "map_a9.png", width = 600,
-               units = "px", dpi = map_dpi)
+print_osm_map (dat$map,
+    filename = "map_a9.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a9.png)
 
@@ -638,8 +699,10 @@ axes allows them to be overlaid on top of all previous layers.
 Axes added to a dark version of the previous map look like this:
 ```{r map10}
 structures <- osm_structures (structures = structs, col_scheme = "dark")
-dat <- make_osm_map (structures = structures, osm_data = dat$osm_dat,
-                     bbox = bbox_small)
+dat <- make_osm_map (
+    structures = structures, osm_data = dat$osm_dat,
+    bbox = bbox_small
+)
 map <- add_axes (dat$map, colour = "black")
 ```
 Note that, as described above, `make_osm_map` returns a list of two items: (i)
@@ -650,8 +713,10 @@ single value of the modified map object.
 print_osm_map (map)
 ```
 ```{r map10-print, echo = FALSE}
-print_osm_map (map, filename = "map_a10.png", width = 600,
-               units = "px", dpi = map_dpi)
+print_osm_map (map,
+    filename = "map_a10.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a10.png)
 
@@ -662,15 +727,21 @@ adjusted with the `pos` parameter which specifies the positions of axes and
 labels relative to entire plot device
 
 ```{r map11, eval = FALSE}
-map <- add_axes (map, colour = "blue", pos = c(0.1, 0.2),
-                      fontsize = 5, fontface = 3, fontfamily = "Times")
+map <- add_axes (map,
+    colour = "blue", pos = c (0.1, 0.2),
+    fontsize = 5, fontface = 3, fontfamily = "Times"
+)
 print_osm_map (map)
 ```
 ```{r map11-print, echo = FALSE}
-map <- add_axes (map, colour = "blue", pos = c(0.1, 0.2),
-                      fontsize = 5, fontface = 3, fontfamily = "Times")
-print_osm_map (map, filename = "map_a11.png", width = 600,
-               units = "px", dpi = map_dpi)
+map <- add_axes (map,
+    colour = "blue", pos = c (0.1, 0.2),
+    fontsize = 5, fontface = 3, fontfamily = "Times"
+)
+print_osm_map (map,
+    filename = "map_a11.png", width = 600,
+    units = "px", dpi = map_dpi
+)
 ```
 ![](map_a11.png)
 
