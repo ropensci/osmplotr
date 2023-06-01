@@ -41,46 +41,9 @@
 colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE) {
 
     # ---------------  sanity checks and warnings  ---------------
-    # ---------- cols
-    if (missing (cols)) stop ("cols must be provided")
-    if (is.null (cols)) return (NULL)
-    else if (length (cols) < 4) stop ("cols must have length >= 4")
-    if (any (is.na (cols))) stop ("One or more cols is NA")
-    if (!methods::is (cols, "matrix")) {
-
-        cols <- sapply (cols, function (i) {
-                        tryCatch (
-                              col2rgb (i),
-                              error = function (e) {
-
-                                  e$message <-  paste0 ("Invalid colours: ", i)
-                             })
-                    })
-    } else if (rownames (cols) != c ("red", "green", "blue"))
-        stop ("Colour matrix has unknown format")
-    if (any (grep ("Invalid colours", cols)))
-        stop (cols [grep ("Invalid colours", cols) [1]])
-
-    indx <- floor (1:4 * ncol (cols) / 4)
-    indx [1] <- 1
-    cols <- cols [, indx]
-    # ---------- n
-    if (length (n) == 1)
-        n <- rep (n, 2)
-    if (!all (is.numeric (n))) stop ("n must be numeric")
-    if (any (is.na (n))) stop ("n can not be NA")
-    if (any (n < 2)) stop ("n must be > 1")
-    # ---------- rotate
-    if (!missing (rotate)) {
-
-        if (length (rotate) > 1) {
-
-            warning ("rotate has length > 1; using only first element")
-            rotate <- rotate [1]
-        }
-        if (!is.numeric (rotate)) stop ("rotate must be numeric")
-        if (is.na (rotate)) stop ("rotate can not be NA")
-    }
+    cols <- colourmat_input_cols (cols)
+    n <- colourmat_input_n (n)
+    rotate <- colourmat_input_rotate (rotate)
     # ---------------  end sanity checks and warnings  ---------------
 
     if (!missing (rotate))
@@ -103,9 +66,11 @@ colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE) {
     }
     # Then fill intervening rows
     indx <- (seq (n [1]) - 1) / (n [1] - 1)
-    for (i in seq (3))
-        col_arrs [[i]] <- apply (col_arrs [[i]], 2, function (x)
-                             (1 - indx) * x [1] + indx * tail (x, 1))
+    for (i in seq (3)) {
+        col_arrs [[i]] <- apply (col_arrs [[i]], 2, function (x) {
+            (1 - indx) * x [1] + indx * tail (x, 1)
+        })
+    }
     # Then fill the actual colourmat with RGB colours composed of the 3 indices:
     carr <- array (rgb (col_arrs [[1]], col_arrs [[2]], col_arrs [[3]],
                         maxColorValue = 255), dim = n)
@@ -115,6 +80,64 @@ colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE) {
 
     return (carr)
 } # end function colour.mat
+
+colourmat_input_cols <- function (cols) {
+
+    if (missing (cols)) stop ("cols must be provided")
+    if (is.null (cols)) return (NULL)
+    else if (length (cols) < 4) stop ("cols must have length >= 4")
+    if (any (is.na (cols))) stop ("One or more cols is NA")
+    if (!methods::is (cols, "matrix")) {
+
+        cols <- sapply (cols, function (i) {
+                        tryCatch (
+                              col2rgb (i),
+                              error = function (e) {
+
+                                  e$message <-  paste0 ("Invalid colours: ", i)
+                             })
+                    })
+    } else if (rownames (cols) != c ("red", "green", "blue")) {
+        stop ("Colour matrix has unknown format")
+    }
+    if (any (grep ("Invalid colours", cols))) {
+        stop (cols [grep ("Invalid colours", cols) [1]])
+    }
+
+    indx <- floor (1:4 * ncol (cols) / 4)
+    indx [1] <- 1
+    cols <- cols [, indx]
+
+    return (cols)
+}
+
+colourmat_input_n <- function (n) {
+
+    if (length (n) == 1) {
+        n <- rep (n, 2)
+    }
+    if (!all (is.numeric (n))) stop ("n must be numeric")
+    if (any (is.na (n))) stop ("n can not be NA")
+    if (any (n < 2)) stop ("n must be > 1")
+
+    return (n)
+}
+
+colourmat_input_rotate <- function (rotate) {
+
+    if (!missing (rotate)) {
+
+        if (length (rotate) > 1) {
+
+            warning ("rotate has length > 1; using only first element")
+            rotate <- rotate [1]
+        }
+        if (!is.numeric (rotate)) stop ("rotate must be numeric")
+        if (is.na (rotate)) stop ("rotate can not be NA")
+    }
+
+    return (rotate)
+}
 
 rotate_colourmat <- function (cols, rotate) {
 
