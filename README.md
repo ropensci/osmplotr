@@ -10,7 +10,7 @@ Active](http://www.repostatus.org/badges/latest/active.svg)](https://www.reposta
 
 [![CRAN
 Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr/)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr/)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr/)
 [![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/software-review/issues/27)
 
 R package to produce visually impressive customisable images of
@@ -45,7 +45,7 @@ But first the easy steps to map making:
 1.  Specify the bounding box for the desired region
 
     ``` r
-    bbox <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
+    bbox <- get_bbox (c (-0.15, 51.5, -0.10, 51.52))
     ```
 
 2.  Download the desired data—in this case, all building perimeters.
@@ -131,8 +131,10 @@ particularly through enabling selected regions to be highlighted.
 Regions can be defined according to simple point boundaries:
 
 ``` r
-pts <- sp::SpatialPoints (cbind (c (-0.115, -0.13, -0.13, -0.115),
-                             c (51.505, 51.505, 51.515, 51.515)))
+pts <- sp::SpatialPoints (cbind (
+    c (-0.115, -0.13, -0.13, -0.115),
+    c (51.505, 51.505, 51.515, 51.515)
+))
 ```
 
 OSM objects within the defined regions can then be highlighted with
@@ -144,8 +146,14 @@ background area.
 map <- osm_basemap (bbox = bbox, bg = "gray20")
 map <- add_osm_groups (map, dat_B, groups = pts, cols = "orange", bg = "gray40")
 map <- add_osm_objects (map, london$dat_P, col = "darkseagreen1")
-map <- add_osm_groups (map, london$dat_P, groups = pts, cols = "darkseagreen1",
-                   bg = "darkseagreen", boundary = 0)
+map <- add_osm_groups (
+    map,
+    london$dat_P,
+    groups = pts,
+    cols = "darkseagreen1",
+    bg = "darkseagreen",
+    boundary = 0
+)
 print_osm_map (map)
 ```
 
@@ -186,8 +194,9 @@ ngroups <- 12
 x <- bbox [1, 1] + runif (ngroups) * diff (bbox [1, ])
 y <- bbox [2, 1] + runif (ngroups) * diff (bbox [2, ])
 groups <- cbind (x, y)
-groups <- apply (groups, 1, function (i)
-              sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
+groups <- apply (groups, 1, function (i) {
+    sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2))
+})
 ```
 
 Calling `add_osm_groups` with no `bg` argument forces all points lying
@@ -196,8 +205,13 @@ thus produces an inclusive grouping extending across an entire region.
 
 ``` r
 map <- osm_basemap (bbox = bbox, bg = "gray20")
-map <- add_osm_groups (map, dat_B, groups = groups,
-                       cols = rainbow (length (groups)), border_width = 2)
+map <- add_osm_groups (
+    map,
+    dat_B,
+    groups = groups,
+    cols = rainbow (length (groups)),
+    border_width = 2
+)
 print_osm_map (map)
 ```
 
@@ -216,21 +230,29 @@ highways encircling desired regions.
 
 ``` r
 # These highways extend beyond the previous, smaller bbox
-bbox_big <- get_bbox (c(-0.15, 51.5, -0.10, 51.52))
-highways <- c ("Davies.St", "Berkeley.Sq", "Berkeley.St", "Piccadilly",
-               "Regent.St", "Oxford.St")
+bbox_big <- get_bbox (c (-0.15, 51.5, -0.10, 51.52))
+highways <- c (
+    "Davies.St", "Berkeley.Sq", "Berkeley.St", "Piccadilly",
+    "Regent.St", "Oxford.St"
+)
 highways1 <- connect_highways (highways = highways, bbox = bbox_big)
 highways <- c ("Regent.St", "Oxford.St", "Shaftesbury")
 highways2 <- connect_highways (highways = highways, bbox = bbox_big)
-highways <- c ("Piccadilly", "Shaftesbury.Ave", "Charing.Cross.R",
-               "Saint.Martin", "Trafalgar.Sq", "Cockspur.St",
-               "Pall.Mall", "St.James")
+highways <- c (
+    "Piccadilly", "Shaftesbury.Ave", "Charing.Cross.R",
+    "Saint.Martin", "Trafalgar.Sq", "Cockspur.St",
+    "Pall.Mall", "St.James"
+)
 highways3 <- connect_highways (highways = highways, bbox = bbox_big)
-highways <- c ("Charing.Cross", "Duncannon.St", "Strand", "Aldwych",
-               "Kingsway", "High.Holborn", "Shaftesbury.Ave")
+highways <- c (
+    "Charing.Cross", "Duncannon.St", "Strand", "Aldwych",
+    "Kingsway", "High.Holborn", "Shaftesbury.Ave"
+)
 highways4 <- connect_highways (highways = highways, bbox = bbox_big)
-highways <- c ("Kingsway", "Holborn", "Farringdon.St", "Strand",
-               "Fleet.St", "Aldwych")
+highways <- c (
+    "Kingsway", "Holborn", "Farringdon.St", "Strand",
+    "Fleet.St", "Aldwych"
+)
 highways5 <- connect_highways (highways = highways, bbox = bbox_big)
 groups <- list (highways1, highways2, highways3, highways4, highways5)
 ```
@@ -242,10 +264,24 @@ And then passing these lists of groups returned by `connect_highways` to
 map <- osm_basemap (bbox = bbox, bg = "gray20")
 library (wesanderson)
 cols <- wes_palette ("Darjeeling", 5)
-map <- add_osm_groups (map, dat_B, groups = groups, boundary = 1,
-                       cols = cols, bg = "gray40", colmat = FALSE)
-map <- add_osm_groups (map, dat_H, groups = groups, boundary = 0,
-                       cols = cols, bg = "gray70", colmat = FALSE)
+map <- add_osm_groups (
+    map,
+    dat_B,
+    groups = groups,
+    boundary = 1,
+    cols = cols,
+    bg = "gray40",
+    colmat = FALSE
+)
+map <- add_osm_groups (
+    map,
+    dat_H,
+    groups = groups,
+    boundary = 0,
+    cols = cols,
+    bg = "gray70",
+    colmat = FALSE
+)
 print_osm_map (map)
 ```
 
@@ -265,8 +301,8 @@ according to a specified colour gradient. This is illustrated here with
 the `volcano` data projected onto the `bbox`.
 
 ``` r
-x <- seq (bbox [1, 1], bbox [1, 2], length.out = dim (volcano)[1])
-y <- seq (bbox [2, 1], bbox [2, 2], length.out = dim (volcano)[2])
+x <- seq (bbox [1, 1], bbox [1, 2], length.out = dim (volcano) [1])
+y <- seq (bbox [2, 1], bbox [2, 2], length.out = dim (volcano) [2])
 xy <- cbind (rep (x, dim (volcano) [2]), rep (y, each = dim (volcano) [1]))
 z <- as.numeric (volcano)
 dat <- data.frame (x = xy [, 1], y = xy [, 2], z = z)
@@ -277,8 +313,12 @@ map <- osm_basemap (bbox = bbox, bg = "gray20")
 cols <- gray (0:50 / 50)
 map <- add_osm_surface (map, dat_B, dat = dat, cols = cols)
 # Darken cols by ~20%
-map <- add_osm_surface (map, dat_H, dat = dat,
-                        cols = adjust_colours (cols, -0.2))
+map <- add_osm_surface (
+    map,
+    dat_H,
+    dat = dat,
+    cols = adjust_colours (cols, -0.2)
+)
 map <- add_colourbar (map, cols = cols, zlims = range (volcano))
 map <- add_axes (map)
 print_osm_map (map)
@@ -316,4 +356,4 @@ to abide by its terms.
 
 ------------------------------------------------------------------------
 
-[![ropensci\_footer](https://ropensci.org//public_images/github_footer.png)](https://ropensci.org/)
+[![ropensci_footer](https://ropensci.org//public_images/github_footer.png)](https://ropensci.org/)
