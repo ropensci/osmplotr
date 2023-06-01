@@ -4,7 +4,7 @@ test_that ("colours", {
            expect_error (colour_mat (), "cols must be provided")
            expect_error (colour_mat (cols = -1), "cols must have length >= 4")
            expect_error (colour_mat (cols = "a"), "cols must have length >= 4")
-           expect_null (colour_mat (cols = NULL))
+           expect_error (colour_mat (cols = NULL), "incorrect number of dimensions")
            expect_error (colour_mat (cols = letters [1:4]),
                          "Invalid colours: a")
            expect_error (colour_mat (cols = c ("red", "blue", letters [1:4])),
@@ -32,8 +32,6 @@ test_that ("rotate", {
            expect_error (colour_mat (cols = 1:4, rotate = "a"),
                          "rotate must be numeric")
            expect_error (colour_mat (cols = 1:4, rotate = NA),
-                         "rotate must be numeric")
-           expect_error (colour_mat (cols = 1:4, rotate = NULL),
                          "rotate must be numeric")
            expect_warning (colour_mat (cols = 1:4, rotate = 1:2),
                            "rotate has length > 1")

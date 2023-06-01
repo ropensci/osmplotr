@@ -38,7 +38,7 @@
 #' @family colours
 #' @export
 
-colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE) {
+colour_mat <- function (cols, n = c(10, 10), rotate = NULL, plot = FALSE) {
 
     # ---------------  sanity checks and warnings  ---------------
     cols <- colourmat_input_cols (cols)
@@ -46,7 +46,7 @@ colour_mat <- function (cols, n = c(10, 10), rotate, plot = FALSE) {
     rotate <- colourmat_input_rotate (rotate)
     # ---------------  end sanity checks and warnings  ---------------
 
-    if (!missing (rotate))
+    if (!is.null (rotate))
         cols <- rotate_colourmat (cols, rotate)
 
     tl <- cols [, 1] # top left
@@ -123,9 +123,9 @@ colourmat_input_n <- function (n) {
     return (n)
 }
 
-colourmat_input_rotate <- function (rotate) {
+colourmat_input_rotate <- function (rotate = NULL) {
 
-    if (!missing (rotate)) {
+    if (!is.null (rotate)) {
 
         if (length (rotate) > 1) {
 
