@@ -163,7 +163,7 @@ add_tick_rectangles_h <- function (map, xp, xaxs_pos, yaxs_pos,
         "lon" = x, "lat" = y
     ))
 
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, size = 0)
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, linewidth = 0)
 
     map + ggplot2::geom_polygon (
         data = rdat, mapping = aes,
@@ -186,7 +186,7 @@ add_tick_rectangles_v <- function (map, yp, xaxs_pos, yaxs_pos,
         "id" = rep (seq (yp), each = 5),
         "lon" = x, "lat" = y
     ))
-    aes <- ggplot2::aes (x = lon, y = lat, group = id, size = 0)
+    aes <- ggplot2::aes (x = lon, y = lat, group = id, linewidth = 0)
     map <- map + ggplot2::geom_polygon (
         data = rdat, mapping = aes,
         inherit.aes = FALSE,
