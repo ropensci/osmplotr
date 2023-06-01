@@ -1,6 +1,18 @@
 makefile
 london2.rda
-
+.Rproj.user
+.Rhistory
+.RData
+inst/doc
+inst/WORDLIST
+# History files
+.Rhistory
+.Rapp.history
+# Session Data files
+.RData
+# Output files from R CMD build
+/*.tar.gz
 # vim files
 .*.un~
 .*.swp
+src/*.o
