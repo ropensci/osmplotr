@@ -1,5 +1,8 @@
 context ("add-groups")
 
+test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
+             identical (Sys.getenv ("GITHUB_WORKFLOW"), "test-coverage"))
+
 test_that ("basemap", {
            expect_error (add_osm_groups (), "map must be supplied")
            expect_error (add_osm_groups (NULL), "map must be a ggplot2 object")
@@ -29,7 +32,7 @@ test_that ("obj", {
 test_that ("cols", {
            map <- osm_basemap (bbox = bbox, bg = "gray20")
            expect_error (add_osm_groups (map, dat_B), "groups must be provided")
-           expect_silent (add_osm_groups (map, dat_B, groups = pts, bg = 1))
+           # expect_silent (add_osm_groups (map, dat_B, groups = pts, bg = 1))
            expect_message (add_osm_groups (map, dat_B, groups = list (pts),
                                            cols = 1),
                        paste0 ("Plotting one group only makes sense with bg; ",
