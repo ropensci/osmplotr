@@ -27,20 +27,23 @@
 #' @family construction
 #' @export
 print_osm_map <- function (map, width, height, filename, device,
-                           units = c("in", "cm", "mm", "px"),
+                           units = c ("in", "cm", "mm", "px"),
                            dpi = 300) {
 
-    if (missing (map))
+    if (missing (map)) {
         stop ("map must be supplied")
-    if (missing (width) && missing (height))
+    }
+    if (missing (width) && missing (height)) {
         width <- 7
+    }
 
     xlims <- map$coordinates$limits$x
     ylims <- map$coordinates$limits$y
-    if (!missing (width))
+    if (!missing (width)) {
         height <- width * diff (ylims) / diff (xlims)
-    else
+    } else {
         width <- height * diff (xlims) / diff (ylims)
+    }
 
     units <- match.arg (units)
     if (missing (device) && missing (filename)) {
@@ -52,8 +55,10 @@ print_osm_map <- function (map, width, height, filename, device,
         dev <- get_graphics_device (device, filename, units, dpi = dpi)
         dev (file = filename, width = width, height = height)
         print (map)
-        on.exit (utils::capture.output (grDevices::dev.off (which =
-                                                            dev.cur ())))
+        on.exit (utils::capture.output (grDevices::dev.off (
+            which =
+                dev.cur ()
+        )))
     }
     invisible (map)
 }
@@ -62,43 +67,51 @@ print_osm_map <- function (map, width, height, filename, device,
 get_graphics_device <- function (device, filename, units, dpi = 300) {
 
     devices <- list (
-                     eps =  function (...) {
-                         grDevices::postscript (..., onefile = FALSE,
-                                                horizontal = FALSE,
-                                                paper = "special")
-                     },
-                     ps =  function (...) {
-                         grDevices::postscript (..., onefile = FALSE,
-                                                horizontal = FALSE,
-                                                paper = "special")
-                    },
-                     tex =  function (...) grDevices::pictex (...),
-                     pdf =  function (..., version = "1.4") {
-                         grDevices::pdf (..., version = version)
-                     },
-                     svg =  function (...) grDevices::svg (...),
-                     png =  function (...) {
-                         grDevices::png (..., res = dpi, units = units)
-                     },
-                     jpg =  function (...) {
-                         grDevices::jpeg (..., res = dpi, units = units)
-                     },
-                     jpeg = function (...) {
-                         grDevices::jpeg (..., res = dpi, units = units)
-                     },
-                     bmp =  function (...) {
-                         grDevices::bmp (..., res = dpi, units = units)
-                     },
-                     tiff = function (...) {
-                         grDevices::tiff (..., res = dpi, units = units)
-                     })
-    if (missing (device))
+        eps = function (...) {
+            grDevices::postscript (...,
+                onefile = FALSE,
+                horizontal = FALSE,
+                paper = "special"
+            )
+        },
+        ps = function (...) {
+            grDevices::postscript (...,
+                onefile = FALSE,
+                horizontal = FALSE,
+                paper = "special"
+            )
+        },
+        tex = function (...) grDevices::pictex (...),
+        pdf = function (..., version = "1.4") {
+            grDevices::pdf (..., version = version)
+        },
+        svg = function (...) grDevices::svg (...),
+        png = function (...) {
+            grDevices::png (..., res = dpi, units = units)
+        },
+        jpg = function (...) {
+            grDevices::jpeg (..., res = dpi, units = units)
+        },
+        jpeg = function (...) {
+            grDevices::jpeg (..., res = dpi, units = units)
+        },
+        bmp = function (...) {
+            grDevices::bmp (..., res = dpi, units = units)
+        },
+        tiff = function (...) {
+            grDevices::tiff (..., res = dpi, units = units)
+        }
+    )
+    if (missing (device)) {
         device <- tolower (tools::file_ext (filename))
-    if (!is.character(device) || length(device) != 1)
-        stop("`device` must be NULL, a string or a function.", call. = FALSE)
+    }
+    if (!is.character (device) || length (device) != 1) {
+        stop ("`device` must be NULL, a string or a function.", call. = FALSE)
+    }
 
     dev <- devices [[device]]
-    if (is.null(dev))
-        stop("Unknown graphics device '", device, "'", call. = FALSE)
+    if (is.null (dev)) {
+        stop ("Unknown graphics device '", device, "'", call. = FALSE)
+    }
     return (dev)
 }

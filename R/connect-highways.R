@@ -32,8 +32,10 @@
 #' @examples
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 #' \dontrun{
-#' highways <- c ("Monmouth.St", "Short.?s.Gardens", "Endell.St", "Long.Acre",
-#'                "Upper.Saint.Martin")
+#' highways <- c (
+#'     "Monmouth.St", "Short.?s.Gardens", "Endell.St", "Long.Acre",
+#'     "Upper.Saint.Martin"
+#' )
 #' # Note that dots signify "anything", including whitespace and apostrophes,
 #' # and that '?' denotes optional previous character and so here matches
 #' # both "Shorts Gardens" and "Short's Gardens"
@@ -49,18 +51,22 @@
 #' # Those data are part of 'osmplotr':
 #' dat_BNR <- london$dat_BNR # Non-residential buildings
 #' groups <- list (highways1, highways2)
-#' map <- add_osm_groups (map, obj = dat_BNR, groups = groups,
-#'                        cols = c("red", "blue"), bg = "gray40")
+#' map <- add_osm_groups (map,
+#'     obj = dat_BNR, groups = groups,
+#'     cols = c ("red", "blue"), bg = "gray40"
+#' )
 #' print_osm_map (map)
 #' }
 #' @family data-extraction
 #' @export
 connect_highways <- function (highways, bbox, plot = FALSE) {
 
-    if (missing (highways))
+    if (missing (highways)) {
         stop ("A vector of highway names must be given")
-    if (missing (bbox))
+    }
+    if (missing (bbox)) {
         stop ("A bounding box must be given")
+    }
 
     # Uses extract_highways to generate a list of highways, each component of
     # which is a spatially ordered list of distinct segments. Then uses
@@ -76,17 +82,20 @@ connect_highways <- function (highways, bbox, plot = FALSE) {
     # sequentially joined and ordered into a minimal set
     ways <- extract_highways (highway_names = highways, bbox = bbox)
     i0 <- which (sapply (ways, length) == 0)
-    if (any (i0))
-        for (i in i0)
+    if (any (i0)) {
+        for (i in i0) {
             warning (highways [i], " contains no data")
+        }
+    }
     while (any (sapply (ways, length) == 0)) {
 
         i0 <- which (sapply (ways, length) == 0)
-        ways [[i0 [1] ]] <- NULL # nolint
+        ways [[i0 [1]]] <- NULL # nolint
     }
 
-    if (plot)
+    if (plot) {
         plot_highways (ways)
+    }
 
     # connect individual componenets of each way:
     ways <- connect_single_ways (ways)
@@ -99,19 +108,22 @@ connect_highways <- function (highways, bbox, plot = FALSE) {
     cycles <- try (ggm::fundCycles (conmat), TRUE)
 
     path <- NULL
-    if (is.null (cycles) | is (attr (cycles, "condition"), "simpleError"))
+    if (is.null (cycles) | is (attr (cycles, "condition"), "simpleError")) {
         warning ("There are no cycles in the listed highways")
-    else {
+    } else {
 
         cyc <- cycles [[which.max (sapply (cycles, nrow))]]
-        if (nrow (cyc) < length (ways))
+        if (nrow (cyc) < length (ways)) {
             warning ("Cycle unable to be extended through all ways",
-                     call. = FALSE)
+                call. = FALSE
+            )
+        }
 
         # shortest path through the entire cycle:
         path <- sps_through_cycle (ways, cyc)
-        if (plot)
+        if (plot) {
             lines (path [, 1], path [, 2], lwd = 2, lty = 2)
+        }
     }
 
     return (path)
@@ -130,7 +142,7 @@ insert_intersections <- function (ways) {
     nw <- length (ways)
     ilist <- jlist <- NULL
     rownum <- 0
-    for (i in seq (nw - 1))
+    for (i in seq (nw - 1)) {
         for (j in (i + 1):nw) {
 
             wi <- do.call (rbind, ways [[i]])
@@ -145,33 +157,39 @@ insert_intersections <- function (ways) {
                 jlist <- c (jlist, j)
             }
         }
+    }
 
     # then insert any nodes where needed
     for (i in seq (ilist)) {
 
         # first find which components might cross
         plist <- qlist <- NULL
-        for (p in seq (ways [[ilist [i] ]])) # nolint
-            for (q in seq (ways [[jlist [i] ]])) { # nolint
+        for (p in seq (ways [[ilist [i]]])) { # nolint
+            for (q in seq (ways [[jlist [i]]])) { # nolint
 
-                d <- haversine (ways [[ilist [i] ]] [[p]],      # nolint
-                                ways [[jlist [i] ]] [[q]]) [3]  # nolint
+                d <- haversine (
+                    ways [[ilist [i]]] [[p]], # nolint
+                    ways [[jlist [i]]] [[q]]
+                ) [3] # nolint
                 if (d < dmin) {
 
                     plist <- c (plist, p)
                     qlist <- c (qlist, q)
                 }
             }
+        }
 
         # then insert intersections
         for (j in seq (plist)) {
 
-            wp <- ways [[ilist [i] ]] [[plist [j] ]]    # nolint
-            wq <- ways [[jlist [i] ]] [[qlist [j] ]]    # nolint
-            newint <- insert_one_intersection (wp, wq, prefix = "a",
-                                               num = rownum)
-            ways [[ilist [i] ]] [[plist [j] ]] <- newint$way1   # nolint
-            ways [[jlist [i] ]] [[qlist [j] ]] <- newint$way2   # nolint
+            wp <- ways [[ilist [i]]] [[plist [j]]] # nolint
+            wq <- ways [[jlist [i]]] [[qlist [j]]] # nolint
+            newint <- insert_one_intersection (wp, wq,
+                prefix = "a",
+                num = rownum
+            )
+            ways [[ilist [i]]] [[plist [j]]] <- newint$way1 # nolint
+            ways [[jlist [i]]] [[qlist [j]]] <- newint$way2 # nolint
             rownum <- rownum + 1
         } # end for j
     } # end for i
@@ -192,24 +210,32 @@ insert_one_intersection <- function (way1, way2, prefix = "a", num = 0) {
     if (!is.null (int)) {
 
         int <- sp::coordinates (int)
-        i <- which.min ((int [1, 1] - way1 [, 1]) ^ 2 +
-                        (int [1, 2] - way1 [, 2]) ^ 2)
+        i <- which.min ((int [1, 1] - way1 [, 1])^2 +
+            (int [1, 2] - way1 [, 2])^2)
         rnames <- rownames (way1)
-        rnames <- c (rnames [1:(i - 1)],
-                     paste0 (prefix, num),
-                     rnames [i:length (rnames)])
-        way1 <- rbind (way1 [1:(i - 1), ], int [1, ],
-                       way1 [i:nrow (way1), ])
+        rnames <- c (
+            rnames [1:(i - 1)],
+            paste0 (prefix, num),
+            rnames [i:length (rnames)]
+        )
+        way1 <- rbind (
+            way1 [1:(i - 1), ], int [1, ],
+            way1 [i:nrow (way1), ]
+        )
         rownames (way1) <- rnames
 
-        j <- which.min ((int [1, 1] - way2 [, 1]) ^ 2 +
-                        (int [1, 2] - way2 [, 2]) ^ 2)
+        j <- which.min ((int [1, 1] - way2 [, 1])^2 +
+            (int [1, 2] - way2 [, 2])^2)
         rnames <- rownames (way2)
-        rnames <- c (rnames [1:(j - 1)],
-                     paste0 (prefix, num),
-                     rnames [j:length (rnames)])
-        way2 <- rbind (way2 [1:(j - 1), ], int [1, ],
-                       way2 [j:nrow (way2), ])
+        rnames <- c (
+            rnames [1:(j - 1)],
+            paste0 (prefix, num),
+            rnames [j:length (rnames)]
+        )
+        way2 <- rbind (
+            way2 [1:(j - 1), ], int [1, ],
+            way2 [j:nrow (way2), ]
+        )
         rownames (way2) <- rnames
     }
 
@@ -237,8 +263,9 @@ connect_single_ways <- function (ways) {
                 wij <- wi [[j]]
                 wj <- wi
                 wj [[j]] <- NULL
-                con <- which.min (unlist (lapply (wj, function (k)
-                                                  haversine (wij, k) [3])))
+                con <- which.min (unlist (lapply (wj, function (k) {
+                    haversine (wij, k) [3]
+                })))
                 ways [[i]] [[j]] <- connect_at_closest (wij, wj [[con]])
             }
         }
@@ -254,9 +281,11 @@ connect_at_closest <- function (way1, way2) {
 
         h <- haversine (way1, way2)
 
-        way1 <- rbind (way1 [1:(h [1] - 1), , drop = FALSE], #nolint
-                       way2 [h [2], , drop = FALSE], #nolint
-                       way1 [h [1]:nrow (way1), , drop = FALSE]) #nolint
+        way1 <- rbind (
+            way1 [1:(h [1] - 1), , drop = FALSE], # nolint
+            way2 [h [2], , drop = FALSE], # nolint
+            way1 [h [1]:nrow (way1), , drop = FALSE]
+        ) # nolint
     }
 }
 
@@ -275,10 +304,10 @@ connect_at_closest <- function (way1, way2) {
 #' @noRd
 haversine <- function (way1, way2) {
 
-    x1 <- array (way1 [, 1], dim = c(nrow (way1), nrow (way2)))
-    y1 <- array (way1 [, 2], dim = c(nrow (way1), nrow (way2)))
-    x2 <- t (array (way2 [, 1], dim = c(nrow (way2), nrow (way1))))
-    y2 <- t (array (way2 [, 2], dim = c(nrow (way2), nrow (way1))))
+    x1 <- array (way1 [, 1], dim = c (nrow (way1), nrow (way2)))
+    y1 <- array (way1 [, 2], dim = c (nrow (way1), nrow (way2)))
+    x2 <- t (array (way2 [, 1], dim = c (nrow (way2), nrow (way1))))
+    y2 <- t (array (way2 [, 2], dim = c (nrow (way2), nrow (way1))))
     # haversine distances:
     xd <- (x2 - x1) * pi / 180
     yd <- (y2 - y1) * pi / 180
@@ -299,23 +328,27 @@ plot_highways <- function (ways) {
     xy <- do.call (rbind, do.call (c, ways))
 
     par (mar = rep (0, 4))
-    plot (NULL, NULL, xlim = range (xy [, 1]), ylim = range (xy [, 2]),
-          xaxt = "n", yaxt = "n", xlab = "", ylab = "", frame = FALSE)
+    plot (NULL, NULL,
+        xlim = range (xy [, 1]), ylim = range (xy [, 2]),
+        xaxt = "n", yaxt = "n", xlab = "", ylab = "", frame = FALSE
+    )
 
     cols <- rainbow (length (ways))
 
-    for (i in seq (ways))
+    for (i in seq (ways)) {
         for (j in seq (ways [[i]])) {
 
             x <- ways [[i]] [[j]] [, 1]
             y <- ways [[i]] [[j]] [, 2]
             lines (x, y, col = cols [i])
-            if (length (ways [[i]]) == 1)
+            if (length (ways [[i]]) == 1) {
                 lab <- paste0 (i)
-            else
+            } else {
                 lab <- paste0 (i, ".", j)
+            }
             text (mean (x), mean (y), col = cols [i], labels = lab)
         }
+    }
 }
 
 #' get_conmat
@@ -344,12 +377,16 @@ get_conmat <- function (ways) {
             ref <- ways
         }
         ref [[i]] <- NULL
-        if (is.list (ref [[1]]))
+        if (is.list (ref [[1]])) {
             ref <- lapply (ref, function (i) do.call (rbind, i))
+        }
 
-        convec <- vapply (ref, function (i)
-                          any (rownames (i) %in% rownames (wi)),
-                          logical (1))
+        convec <- vapply (
+            ref, function (i) {
+                any (rownames (i) %in% rownames (wi))
+            },
+            logical (1)
+        )
 
         indx <- seq (ways) [!(seq (ways)) %in% i]
         conmat [i, indx] <- conmat [indx, i] <- convec
@@ -409,13 +446,15 @@ sps_through_cycle <- function (ways, cyc) {
         ito <- which (nms %in% nend)
 
         pathi <- rep (NA, 1e6) # arbitrarily longer than any likely path
-        for (j in ifr)
+        for (j in ifr) {
             for (k in ito) {
 
                 pathj <- e1071::extractPath (asp, j, k)
-                if (length (pathj) < length (pathi))
+                if (length (pathj) < length (pathi)) {
                     pathi <- pathj
+                }
             }
+        }
         pathi <- nms [pathi]
         pathi <- w0f [match (pathi, nms), ]
         thepath <- rbind (thepath, pathi)

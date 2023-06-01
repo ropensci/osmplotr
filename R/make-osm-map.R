@@ -41,7 +41,7 @@
 #' # 'london' data for highways and parks.
 #' dat <- make_osm_map (osm_data = london, structures = structs)
 #' # or download data automatically using a defined bounding boox
-#' bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+#' bbox <- get_bbox (c (-0.15, 51.5, -0.10, 51.52))
 #' \dontrun{
 #' dat <- make_osm_map (bbox = bbox, structures = structs)
 #' print_osm_map (dat$map)
@@ -51,8 +51,9 @@
 make_osm_map <- function (bbox, osm_data,
                           structures = osm_structures (), dat_prefix = "dat_") {
 
-    if (missing (bbox))
+    if (missing (bbox)) {
         bbox <- get_bbox_from_data (osm_data)
+    }
 
     sfx <- structures$suffix [1:(nrow (structures) - 1)]
     if (missing (osm_data)) {
@@ -67,16 +68,19 @@ make_osm_map <- function (bbox, osm_data,
 
     if (length (structs_new) > 0) {
 
-        md <- get_missing_osm_data (osm_data, structures [structs_new, ],
-                                    bbox, dat_prefix)
+        md <- get_missing_osm_data (
+            osm_data, structures [structs_new, ],
+            bbox, dat_prefix
+        )
 
         indx <- c (md$indx, nrow (structures))
         structures <- structures [indx, ]
         osm_data <- c (osm_data, md$osm_data)
     }
     ns <- nrow (structures) - 1 # last row is background
-    if (ns == 0)
+    if (ns == 0) {
         stop ("Downloads contain no data")
+    }
 
     bg <- structures$col [structures$structure == "background"]
     map <- osm_basemap (bbox = bbox, bg = bg)
@@ -84,7 +88,8 @@ make_osm_map <- function (bbox, osm_data,
 
         obji <- paste0 ("dat_", structures$suffix [i])
         map <- add_osm_objects (map, osm_data [[obji]],
-                                col = structures$cols [i])
+            col = structures$cols [i]
+        )
     }
 
     list (osm_data = osm_data, map = map)
@@ -92,13 +97,16 @@ make_osm_map <- function (bbox, osm_data,
 
 get_bbox_from_data <- function (osm_data) {
 
-    if (missing (osm_data))
+    if (missing (osm_data)) {
         stop ("Either bounding box or osm_data must be given")
+    }
     bbox <- matrix (c (Inf, Inf, -Inf, -Inf), nrow = 2, ncol = 2)
     rownames (bbox) <- c ("x", "y")
-    sp_classes <- c ("SpatialLinesDataFrame",
-                     "SpatialPolygonsDataFrame",
-                     "SpatialPointsDataFrame")
+    sp_classes <- c (
+        "SpatialLinesDataFrame",
+        "SpatialPolygonsDataFrame",
+        "SpatialPointsDataFrame"
+    )
     for (i in osm_data) {
 
         if (is (i, "sf")) {
@@ -123,20 +131,27 @@ get_bbox_from_data <- function (osm_data) {
 
 get_missing_osm_data <- function (osm_data, structures, bbox, dat_prefix) {
 
-    cat ("Downloading and extracting OSM data for",
-         nrow (structures), "structures ...\n")
+    cat (
+        "Downloading and extracting OSM data for",
+        nrow (structures), "structures ...\n"
+    )
     pb <- txtProgressBar (max = 1, style = 3)
     t0 <- proc.time ()
     indx <- NULL
     for (i in seq_len (nrow (structures))) {
 
-        if (structures$value [i] == "")
-            dat <- extract_osm_objects (key = structures$key [i],
-                                        bbox = bbox)
-        else
-            dat <- extract_osm_objects (key = structures$key [i],
-                                        value = structures$value [i],
-                                        bbox = bbox)
+        if (structures$value [i] == "") {
+            dat <- extract_osm_objects (
+                key = structures$key [i],
+                bbox = bbox
+            )
+        } else {
+            dat <- extract_osm_objects (
+                key = structures$key [i],
+                value = structures$value [i],
+                bbox = bbox
+            )
+        }
 
         if (nrow (dat) > 0) {
 
@@ -145,10 +160,10 @@ get_missing_osm_data <- function (osm_data, structures, bbox, dat_prefix) {
             osm_data [[fname]] <- get (fname)
             indx <- c (indx, i)
         }
-        setTxtProgressBar(pb, i / nrow (structures))
+        setTxtProgressBar (pb, i / nrow (structures))
     }
     close (pb)
-    cat ("That took ", (proc.time () - t0)[3], "s\n", sep = "")
+    cat ("That took ", (proc.time () - t0) [3], "s\n", sep = "")
 
     list ("indx" = indx, "osm_data" = osm_data)
 }

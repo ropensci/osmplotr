@@ -24,15 +24,17 @@ get_highway_cycle <- function (ways) {
 
     conmat <- get_conmat (ways)
     cycles <- try (ggm::fundCycles (conmat), TRUE)
-    if (is (attr (cycles, "condition"), "simpleError"))
+    if (is (attr (cycles, "condition"), "simpleError")) {
         cycles <- NULL
+    }
 
     cyc_len <- 0
-    if (!is.null (cycles))
+    if (!is.null (cycles)) {
         cyc_len <- max (sapply (cycles, nrow))
+    }
     n <- length (ways)
     # i1_ref and i2_ref are index matricex of [from, to]
-    i1_ref <- array (1:n, dim = c(n, n))
+    i1_ref <- array (1:n, dim = c (n, n))
     i2_ref <- t (i1_ref)
     i1_ref <- i1_ref [upper.tri (i1_ref)]
     i2_ref <- i2_ref [upper.tri (i2_ref)]
@@ -47,20 +49,23 @@ get_highway_cycle <- function (ways) {
         } else if (max (es$cyc_len, na.rm = TRUE) <= cyc_len) {
 
             warning ("Cycle unable to be extended through all ways",
-                     call. = FALSE)
+                call. = FALSE
+            )
             break
         } else {
 
-            if (length (es$i1) > 1)
+            if (length (es$i1) > 1) {
                 es <- closest_cycle_connection (ways, es)
+            }
             cyc_len <- es$cyc_len
         }
 
         ways <- connect_two_ways (ways, es)
         conmat <- get_conmat (ways)
         cycles <- try (ggm::fundCycles (conmat), TRUE)
-        if (!is.null (cycles))
+        if (!is.null (cycles)) {
             cyc_len <- max (sapply (cycles, nrow))
+        }
     } # end while cyc_len < length (ways)
 
     return (ways)
@@ -93,16 +98,20 @@ extend_cycles <- function (conmat, i1, i2) {
         conmat [i1 [i], i2 [i]] <- TRUE
         conmat [i2 [i], i1 [i]] <- TRUE
         cycles <- try (ggm::fundCycles (conmat), TRUE)
-        if (is (attr (cycles, "condition"), "simpleError"))
+        if (is (attr (cycles, "condition"), "simpleError")) {
             cycles <- NULL
-        if (!is.null (cycles))
+        }
+        if (!is.null (cycles)) {
             cyc_len [i] <- max (sapply (cycles, nrow))
+        }
     }
 
     indx <- which (cyc_len == max (cyc_len))
 
-    return (list ("cyc_len" = max (cyc_len), "i1" = i1 [indx],
-                  "i2" = i2 [indx]))
+    return (list (
+        "cyc_len" = max (cyc_len), "i1" = i1 [indx],
+        "i2" = i2 [indx]
+    ))
 }
 
 # when extend_cycle returns multiple options, this returns the single option
@@ -112,8 +121,8 @@ closest_cycle_connection <- function (ways, es) {
     d <- rep (NA, length (es$i1))
     for (i in seq (es$i1)) {
 
-        way1 <- do.call (rbind, ways [[es$i1 [i] ]])    # nolint
-        way2 <- do.call (rbind, ways [[es$i2 [i] ]])    # nolint
+        way1 <- do.call (rbind, ways [[es$i1 [i]]]) # nolint
+        way2 <- do.call (rbind, ways [[es$i2 [i]]]) # nolint
         d [i] <- haversine (way1, way2) [3]
     }
     es$i1 <- es$i1 [which.min (d)]
@@ -137,21 +146,25 @@ connect_two_ways <- function (ways, es) {
     wi1 <- ways [[es$i1]]
     wi2 <- ways [[es$i2]]
     dmat <- array (NA, dim = c (length (wi1), length (wi2)))
-    for (i in seq_along (wi1))
-        for (j in seq_along (wi2))
+    for (i in seq_along (wi1)) {
+        for (j in seq_along (wi2)) {
             dmat [i, j] <- haversine (wi1 [[i]], wi2 [[j]]) [3]
+        }
+    }
     indx <- which (dmat == min (dmat), arr.ind = TRUE) [1, ] # there may be > 1
 
-    hs <- haversine (wi1 [[indx [1] ]], wi2 [[indx [2] ]])  # nolint
+    hs <- haversine (wi1 [[indx [1]]], wi2 [[indx [2]]]) # nolint
 
     # Then insert one node in ways [[i1]]
-    new_node <- wi2 [[indx [2] ]] [hs [2], , drop = FALSE]  # nolint
-    wi11 <- wi1 [[indx [1] ]]                               # nolint
-    wi11 <- rbind (wi11 [1:(hs [1] - 1), , drop = FALSE],   # nolint
-                   new_node,
-                   wi11 [hs [1]:nrow (wi11), , drop = FALSE]) #nolint
+    new_node <- wi2 [[indx [2]]] [hs [2], , drop = FALSE] # nolint
+    wi11 <- wi1 [[indx [1]]] # nolint
+    wi11 <- rbind (
+        wi11 [1:(hs [1] - 1), , drop = FALSE], # nolint
+        new_node,
+        wi11 [hs [1]:nrow (wi11), , drop = FALSE]
+    ) # nolint
 
-    ways [[es$i1]] [[indx [1] ]] <- wi11                    # nolint
+    ways [[es$i1]] [[indx [1]]] <- wi11 # nolint
 
     return (ways)
 }

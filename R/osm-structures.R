@@ -31,9 +31,11 @@
 #' }
 #' @family construction
 #' @export
-osm_structures <- function (structures = c ("building", "amenity", "waterway",
-                                            "grass", "natural", "park",
-                                            "highway", "boundary", "tree"),
+osm_structures <- function (structures = c (
+                                "building", "amenity", "waterway",
+                                "grass", "natural", "park",
+                                "highway", "boundary", "tree"
+                            ),
                             col_scheme = "dark") {
 
     kv <- get_key_vals (structures) # key-val pairs
@@ -48,13 +50,15 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     suffixes <- extend_suffixes (lettrs, structures, indx_in, indx_out)
 
     scheme_cols <- NULL
-    if (col_scheme == "dark")
+    if (col_scheme == "dark") {
         scheme_cols <- get_dark_cols ()
-    else if (col_scheme == "light")
+    } else if (col_scheme == "light") {
         scheme_cols <- get_light_cols ()
+    }
 
-    if (!is.null (scheme_cols))
+    if (!is.null (scheme_cols)) {
         cols <- set_cols (scheme_cols, structures)
+    }
 
     # Then add row to designate background colour (this has to be done prior to
     # data.frame construction, because cols are converted there to factors):
@@ -65,8 +69,9 @@ osm_structures <- function (structures = c ("building", "amenity", "waterway",
     cols <- c (cols, scheme_cols$col_bg)
 
     dat <- data.frame (cbind (structures, kv$keys, kv$values, suffixes, cols),
-                       stringsAsFactors = FALSE,
-                       row.names = seq_along (kv$keys))
+        stringsAsFactors = FALSE,
+        row.names = seq_along (kv$keys)
+    )
     names (dat) <- c ("structure", "key", "value", "suffix", "cols")
     return (dat)
 }
@@ -78,12 +83,13 @@ get_key_vals <- function (structures) {
     val_list <- c ("grass", "park", "tree", "water")
     key_list <- c ("landuse", "leisure", "natural", "natural")
 
-    for (i in seq (val_list))
+    for (i in seq (val_list)) {
         if (any (structures == val_list [i])) {
 
             keys [structures == val_list [i]] <- key_list [i]
             values [structures == val_list [i]] <- val_list [i]
         }
+    }
 
     return (list ("keys" = keys, "values" = values))
 }
@@ -91,29 +97,29 @@ get_key_vals <- function (structures) {
 get_dark_cols <- function () {
 
     list (
-          col_bg = "gray20",
-          col_green = rgb (100, 120, 100, 255, maxColorValue = 255),
-          col_green_bright = rgb (100, 160, 100, 255, maxColorValue = 255),
-          col_blue = rgb (100, 100, 120, 255, maxColorValue = 255),
-          col_gray1 = rgb (100, 100, 100, 255, maxColorValue = 255),
-          col_gray2 = rgb (120, 120, 120, 255, maxColorValue = 255),
-          col_white = rgb (200, 200, 200, 255, maxColorValue = 255),
-          col_black = rgb (0, 0, 0, 255, maxColorValue = 255)
-          )
+        col_bg = "gray20",
+        col_green = rgb (100, 120, 100, 255, maxColorValue = 255),
+        col_green_bright = rgb (100, 160, 100, 255, maxColorValue = 255),
+        col_blue = rgb (100, 100, 120, 255, maxColorValue = 255),
+        col_gray1 = rgb (100, 100, 100, 255, maxColorValue = 255),
+        col_gray2 = rgb (120, 120, 120, 255, maxColorValue = 255),
+        col_white = rgb (200, 200, 200, 255, maxColorValue = 255),
+        col_black = rgb (0, 0, 0, 255, maxColorValue = 255)
+    )
 }
 
 get_light_cols <- function () {
 
     list (
-          col_bg = "gray95",
-          col_green = rgb (200, 220, 200, 255, maxColorValue = 255),
-          col_green_bright = rgb (200, 255, 200, 255, maxColorValue = 255),
-          col_blue = rgb (200, 200, 220, 255, maxColorValue = 255),
-          col_gray1 = rgb (200, 200, 200, 255, maxColorValue = 255),
-          col_gray2 = rgb (220, 220, 220, 255, maxColorValue = 255),
-          col_white = rgb (255, 255, 255, 255, maxColorValue = 255),
-          col_black = rgb (150, 150, 150, 255, maxColorValue = 255)
-          )
+        col_bg = "gray95",
+        col_green = rgb (200, 220, 200, 255, maxColorValue = 255),
+        col_green_bright = rgb (200, 255, 200, 255, maxColorValue = 255),
+        col_blue = rgb (200, 200, 220, 255, maxColorValue = 255),
+        col_gray1 = rgb (200, 200, 200, 255, maxColorValue = 255),
+        col_gray2 = rgb (220, 220, 220, 255, maxColorValue = 255),
+        col_white = rgb (255, 255, 255, 255, maxColorValue = 255),
+        col_black = rgb (150, 150, 150, 255, maxColorValue = 255)
+    )
 }
 
 set_cols <- function (col_scheme, structures) {
@@ -143,16 +149,20 @@ unique_suffixes <- function (sfx, structures, indx_in) {
     while (max (sapply (matches, length)) > 1) {
 
         matches_red <- list ()
-        for (i in seq (matches))
+        for (i in seq (matches)) {
             if (length (matches [[i]]) > 1 &&
-                !all (matches [[i]] %in% unlist (matches_red)))
+                !all (matches [[i]] %in% unlist (matches_red))) {
                 matches_red [[length (matches_red) + 1]] <- matches [[i]]
+            }
+        }
         for (i in seq (matches_red)) {
 
-            repls <- structures [indx_in] [matches_red [[i]] ]                  # nolint
-            sfx [matches_red [[i]] ] <- toupper (substr (repls, 1,              # nolint
-                                                nletts [matches_red [[i]] ]))   # nolint
-            nletts [matches_red [[i]] ] <- nletts [matches_red [[i]] ] + 1      # nolint
+            repls <- structures [indx_in] [matches_red [[i]]] # nolint
+            sfx [matches_red [[i]]] <- toupper (substr (
+                repls, 1, # nolint
+                nletts [matches_red [[i]]]
+            )) # nolint
+            nletts [matches_red [[i]]] <- nletts [matches_red [[i]]] + 1 # nolint
         }
         matches <- sapply (sfx, function (x) which (sfx %in% x))
     }
@@ -165,7 +175,7 @@ unique_suffixes <- function (sfx, structures, indx_in) {
 extend_suffixes <- function (sfx, structures, indx_in, indx_out) {
 
     indx <- which (duplicated (structures) |
-                   duplicated (structures, fromLast = TRUE))
+        duplicated (structures, fromLast = TRUE))
     # Then the values of that indx that are not in indx_out
     indx <- indx [!indx %in% indx_out]
     # And those two can be matched for the desired replacement

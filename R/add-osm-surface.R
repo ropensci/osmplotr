@@ -306,9 +306,10 @@ list2df_with_data <- function (map, obj, obj_type, xy_mn, dat, bg,
     # Include only those objects within the limits of the map
     indx_xy <- which (
         xy_mn [, 1] >= map$coordinates$limits$x [1] &
-        xy_mn [, 1] <= map$coordinates$limits$x [2] &
-        xy_mn [, 2] >= map$coordinates$limits$y [1] &
-        xy_mn [, 2] <= map$coordinates$limits$y [2])
+            xy_mn [, 1] <= map$coordinates$limits$x [2] &
+            xy_mn [, 2] >= map$coordinates$limits$y [1] &
+            xy_mn [, 2] <= map$coordinates$limits$y [2]
+    )
     xy_mn <- xy_mn [indx_xy, ]
     indx <- indx [indx_xy]
     # And reduce xy to that index

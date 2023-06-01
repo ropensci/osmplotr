@@ -17,7 +17,7 @@
 #' @seealso \code{\link{add_osm_groups}}.
 #'
 #' @examples
-#' cm <- colour_mat (n = 5, cols = rainbow(4), rotate = 90, plot = TRUE)
+#' cm <- colour_mat (n = 5, cols = rainbow (4), rotate = 90, plot = TRUE)
 #'
 #' # 'colour_mat' is intended primarily for use in colouring groups added with
 #' # 'add_osm_groups' using the 'colmat = TRUE' option:
@@ -25,20 +25,23 @@
 #' # Generate random points to serve as group centres
 #' set.seed (2)
 #' ngroups <- 6
-#' x <- bbox [1,1] + runif (ngroups) * diff (bbox [1,])
-#' y <- bbox [2,1] + runif (ngroups) * diff (bbox [2,])
+#' x <- bbox [1, 1] + runif (ngroups) * diff (bbox [1, ])
+#' y <- bbox [2, 1] + runif (ngroups) * diff (bbox [2, ])
 #' groups <- cbind (x, y)
-#' groups <- apply (groups, 1, function (i)
-#'                  sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2)))
+#' groups <- apply (groups, 1, function (i) {
+#'     sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2))
+#' })
 #' # plot a basemap and add groups
 #' map <- osm_basemap (bbox = bbox, bg = "gray20")
-#' map <- add_osm_groups (map, obj = london$dat_BNR, group = groups,
-#'                        cols = rainbow (4), colmat = TRUE, rotate = 90)
+#' map <- add_osm_groups (map,
+#'     obj = london$dat_BNR, group = groups,
+#'     cols = rainbow (4), colmat = TRUE, rotate = 90
+#' )
 #' print_osm_map (map)
 #' @family colours
 #' @export
 
-colour_mat <- function (cols, n = c(10, 10), rotate = NULL, plot = FALSE) {
+colour_mat <- function (cols, n = c (10, 10), rotate = NULL, plot = FALSE) {
 
     # ---------------  sanity checks and warnings  ---------------
     cols <- colourmat_input_cols (cols)
@@ -46,8 +49,9 @@ colour_mat <- function (cols, n = c(10, 10), rotate = NULL, plot = FALSE) {
     rotate <- colourmat_input_rotate (rotate)
     # ---------------  end sanity checks and warnings  ---------------
 
-    if (!is.null (rotate))
+    if (!is.null (rotate)) {
         cols <- rotate_colourmat (cols, rotate)
+    }
 
     tl <- cols [, 1] # top left
     tr <- cols [, 2] # top right
@@ -73,10 +77,12 @@ colour_mat <- function (cols, n = c(10, 10), rotate = NULL, plot = FALSE) {
     }
     # Then fill the actual colourmat with RGB colours composed of the 3 indices:
     carr <- array (rgb (col_arrs [[1]], col_arrs [[2]], col_arrs [[3]],
-                        maxColorValue = 255), dim = n)
+        maxColorValue = 255
+    ), dim = n)
 
-    if (plot)
+    if (plot) {
         plot_colourmat (carr)
+    }
 
     return (carr)
 } # end function colour.mat
@@ -84,19 +90,21 @@ colour_mat <- function (cols, n = c(10, 10), rotate = NULL, plot = FALSE) {
 colourmat_input_cols <- function (cols) {
 
     if (missing (cols)) stop ("cols must be provided")
-    if (is.null (cols)) return (NULL)
-    else if (length (cols) < 4) stop ("cols must have length >= 4")
+    if (is.null (cols)) {
+        return (NULL)
+    } else if (length (cols) < 4) stop ("cols must have length >= 4")
     if (any (is.na (cols))) stop ("One or more cols is NA")
     if (!methods::is (cols, "matrix")) {
 
         cols <- sapply (cols, function (i) {
-                        tryCatch (
-                              col2rgb (i),
-                              error = function (e) {
+            tryCatch (
+                col2rgb (i),
+                error = function (e) {
 
-                                  e$message <-  paste0 ("Invalid colours: ", i)
-                             })
-                    })
+                    e$message <- paste0 ("Invalid colours: ", i)
+                }
+            )
+        })
     } else if (rownames (cols) != c ("red", "green", "blue")) {
         stop ("Colour matrix has unknown format")
     }
@@ -145,10 +153,12 @@ rotate_colourmat <- function (cols, rotate) {
     # rotation according to the following value:
     max_int <- max (cols)
 
-    while (rotate < 0)
+    while (rotate < 0) {
         rotate <- rotate + 360
-    while (rotate > 360)
+    }
+    while (rotate > 360) {
         rotate <- rotate - 360
+    }
 
     cols <- cbind (cols, cols)
 
@@ -156,16 +166,20 @@ rotate_colourmat <- function (cols, rotate) {
     # index of four colours must move *down* or *to the left* of cols
     i <- floor (rotate / 90) # number of columns to move
     i1 <- 1:4 - i
-    if (min (i1) < 1)
+    if (min (i1) < 1) {
         i1 <- i1 + 4
+    }
     i2 <- i1 + 1
     x <- (rotate %% 90) / 360
     cols <- (1 - x) * cols [, i1] + x * cols [, i2]
     cols <- apply (cols, 2, function (x) {
 
-                       if (max (x) == 0) rep (0, 3)
-                       else x * max_int / max (x)
-                   })
+        if (max (x) == 0) {
+            rep (0, 3)
+        } else {
+            x * max_int / max (x)
+        }
+    })
 
     return (cols)
 }
@@ -174,8 +188,10 @@ plot_colourmat <- function (carr) {
 
     plot.new ()
     par (mar = rep (0, 4))
-    plot (NULL, NULL, xlim = c(0, dim (carr) [2]), ylim = c (0, dim (carr) [1]))
-    for (i in seq (dim (carr) [1]))
-        for (j in seq (dim (carr) [2]))
+    plot (NULL, NULL, xlim = c (0, dim (carr) [2]), ylim = c (0, dim (carr) [1]))
+    for (i in seq (dim (carr) [1])) {
+        for (j in seq (dim (carr) [2])) {
             rect (j - 1, i - 1, j, i, col = carr [i, j])
+        }
+    }
 }

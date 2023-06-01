@@ -18,10 +18,12 @@
 #' @noRd
 extract_highways <- function (highway_names, bbox) {
 
-    if (missing (highway_names))
+    if (missing (highway_names)) {
         stop ("A vector of highway names must be given")
-    if (missing (bbox))
+    }
+    if (missing (bbox)) {
         stop ("A bounding box must be given")
+    }
 
     #----------Download OSM data for highways
     hw_abbrvs <- abbreviate_hwy_names (highway_names)
@@ -38,8 +40,10 @@ extract_highways <- function (highway_names, bbox) {
     ways <- list ()
     for (i in seq (highway_names)) {
 
-        wi <- lapply (get (hw_abbrvs [i])$geometry,
-                      function (i) as.matrix (i))
+        wi <- lapply (
+            get (hw_abbrvs [i])$geometry,
+            function (i) as.matrix (i)
+        )
         ways [[i]] <- order_lines (wi)
     }
     names (ways) <- hw_abbrvs
@@ -81,34 +85,40 @@ dl_hw_data <- function (highway_names, hw_abbrvs, bbox) {
         for (i in seq (highway_names)) {
 
             dat <- extract_highway (name = highway_names [i], bbox = bbox)
-            if (!is.null (dat))
+            if (!is.null (dat)) {
                 if (nrow (dat) > 0) {
 
                     assign (hw_abbrvs [i], value = dat, envir = parent.frame ())
                     indx <- c (indx, i)
                 }
-            setTxtProgressBar(pb, i / length (highway_names))
+            }
+            setTxtProgressBar (pb, i / length (highway_names))
         }
         lens <- rep (0, length (indx))
-        for (i in seq (indx))
+        for (i in seq (indx)) {
             lens [i] <- nrow (get (hw_abbrvs [indx] [i],
-                                   envir = parent.frame ()))
+                envir = parent.frame ()
+            ))
+        }
 
         lens <- length (which (lens > 0)) # total number returning data
         if (lens > 0) {
 
             hw1 <- hw_abbrvs [indx] [which (lens > 0)] [1]
-            p4s <- attr (get (hw1, envir = parent.frame ())$geometry,
-                         "crs")$proj4string
+            p4s <- attr (
+                get (hw1, envir = parent.frame ())$geometry,
+                "crs"
+            )$proj4string
         }
         rm (dat)
         close (pb)
         lens_old <- lens
     }
-    if (lens == 0)
+    if (lens == 0) {
         stop ("No data able to be extracted")
-    else if (lens < length (highway_names))
+    } else if (lens < length (highway_names)) {
         message ("Unable to download all requested data.")
+    }
 
     list ("p4s" = p4s, "indx" = indx)
 }
@@ -133,9 +143,11 @@ extract_highway <- function (name = "", bbox) {
 
     qry <- osmdata::opq (bbox = bbox)
     qry <- osmdata::add_osm_feature (qry, key = "highway")
-    qry <- osmdata::add_osm_feature (qry, key = "name", value = name,
-                                 key_exact = FALSE, value_exact = FALSE,
-                                 match_case = FALSE)
+    qry <- osmdata::add_osm_feature (qry,
+        key = "name", value = name,
+        key_exact = FALSE, value_exact = FALSE,
+        match_case = FALSE
+    )
 
     osmdata::osmdata_sf (qry)$osm_lines
 }

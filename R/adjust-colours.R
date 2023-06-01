@@ -20,8 +20,10 @@
 #' # 'adjust_colours' also offers an easy way to adjust the default colour
 #' # schemes provided by 'osm_structures'. The following lines darken the
 #' # highway colour of the 'light' colour scheme by 20%
-#' structures <- osm_structures (structures = c("building", "highway", "park"),
-#'                               col_scheme = "light")
+#' structures <- osm_structures (
+#'     structures = c ("building", "highway", "park"),
+#'     col_scheme = "light"
+#' )
 #' structures$cols [2] <- adjust_colours (structures$cols [2], adj = -0.2)
 #' # Plot these structures:
 #' bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
@@ -31,12 +33,16 @@
 #' dat_P <- extract_osm_objects (key = "park", bbox = bbox)
 #' }
 #' # These data are also included in the 'london' data of 'osmplotr'
-#' osm_data <- list (dat_B = london$dat_BNR,
-#'                   dat_H = london$dat_HP,
-#'                   dat_P = london$dat_P)
-#' dat <- make_osm_map (structures = structures,
-#'                      osm_data = osm_data,
-#'                      bbox = bbox)
+#' osm_data <- list (
+#'     dat_B = london$dat_BNR,
+#'     dat_H = london$dat_HP,
+#'     dat_P = london$dat_P
+#' )
+#' dat <- make_osm_map (
+#'     structures = structures,
+#'     osm_data = osm_data,
+#'     bbox = bbox
+#' )
 #' print_osm_map (dat$map)
 #' @family colours
 #' @export
@@ -46,36 +52,42 @@ adjust_colours <- function (cols, adj = 0, plot = FALSE) {
 
     # ---------------  sanity checks and warnings  ---------------
     check_col_arg (cols)
-    if (length (cols) == 0)
+    if (length (cols) == 0) {
         stop ("cols must be non-null")
-    if (!methods::is (cols [1], "matrix"))
+    }
+    if (!methods::is (cols [1], "matrix")) {
         cols <- col2rgb (cols)
+    }
     # ---------- adj
     adj <- check_arg (adj, "adj", "numeric")
-    if (is.character (adj))
+    if (is.character (adj)) {
         stop (adj)
-    else if (adj < -1 || adj > 1)
+    } else if (adj < -1 || adj > 1) {
         stop ("adj must be between -1 and 1")
+    }
     # ---------- plot
     plot <- check_arg (plot, "plot", "logical")
-    if (is.na (plot))
+    if (is.na (plot)) {
         stop ("plot can not be coerced to logical")
+    }
     # ---------------  end sanity checks and warnings  ---------------
 
     cols_old <- apply (cols, 2, function (x) {
-        rgb (x[1], x[2], x[3], maxColorValue = 255)
+        rgb (x [1], x [2], x [3], maxColorValue = 255)
     })
 
-    if (adj > 0)
+    if (adj > 0) {
         cols <- cols + adj * (255 - cols)
-    else
+    } else {
         cols <- cols + adj * cols
+    }
     cols <- apply (cols, 2, function (x) {
-        rgb (x[1], x[2], x[3], maxColorValue = 255)
+        rgb (x [1], x [2], x [3], maxColorValue = 255)
     })
 
-    if (plot)
+    if (plot) {
         adj_colours_plot (cols, cols_old)
+    }
 
     return (cols)
 } # end function colour.mat
@@ -85,8 +97,10 @@ adj_colours_plot <- function (cols, cols_old) {
     n <- length (cols)
     plot.new ()
     par (mar = rep (0, 4))
-    graphics::plot (NULL, NULL, xlim = c(0, n), ylim = c (0, 2),
-                    xaxs = "i", yaxs = "i")
+    graphics::plot (NULL, NULL,
+        xlim = c (0, n), ylim = c (0, 2),
+        xaxs = "i", yaxs = "i"
+    )
     for (i in seq (n)) {
 
         rect (i - 1, 1, i, 2, col = cols_old [i], border = NA)

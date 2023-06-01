@@ -47,12 +47,15 @@ osm_basemap <- function (bbox, structures, bg = "gray20") {
     map_theme <- set_map_theme (bg = bg)
 
     lon <- lat <- NA
-    map <- ggplot2::ggplot () + map_theme +
-                ggplot2::coord_map (xlim = range (bbox[1, ]),
-                                    ylim = range (bbox[2, ])) +
-                ggplot2::aes (x = lon, y = lat) +
-                ggplot2::scale_x_continuous (expand = c(0, 0)) +
-                ggplot2::scale_y_continuous (expand = c(0, 0))
+    map <- ggplot2::ggplot () +
+        map_theme +
+        ggplot2::coord_map (
+            xlim = range (bbox [1, ]),
+            ylim = range (bbox [2, ])
+        ) +
+        ggplot2::aes (x = lon, y = lat) +
+        ggplot2::scale_x_continuous (expand = c (0, 0)) +
+        ggplot2::scale_y_continuous (expand = c (0, 0))
 
     return (map)
 }
@@ -60,14 +63,14 @@ osm_basemap <- function (bbox, structures, bg = "gray20") {
 set_map_theme <- function (bg) {
 
     theme <- ggplot2::theme_minimal ()
-    theme$panel.background <- ggplot2::element_rect (fill = bg, size = 0)   # nolint
+    theme$panel.background <- ggplot2::element_rect (fill = bg, size = 0) # nolint
     theme$line <- ggplot2::element_blank ()
-    theme$axis.text <- ggplot2::element_blank ()                            # nolint
-    theme$axis.title <- ggplot2::element_blank ()                           # nolint
+    theme$axis.text <- ggplot2::element_blank () # nolint
+    theme$axis.title <- ggplot2::element_blank () # nolint
     theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, "null"), 4))
     theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, "line"), 4))
-    theme$legend.position <- "none"                                         # nolint
-    theme$axis.ticks.length <- ggplot2::unit (0, "null")                    # nolint
+    theme$legend.position <- "none" # nolint
+    theme$axis.ticks.length <- ggplot2::unit (0, "null") # nolint
 
     return (theme)
 }

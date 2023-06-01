@@ -34,7 +34,7 @@
 #' @family map-extra
 #' @export
 
-add_axes <- function (map, colour = "black", pos = c(0.02, 0.03),
+add_axes <- function (map, colour = "black", pos = c (0.02, 0.03),
                       alpha = 0.4, fontsize = 3, fontface, fontfamily, ...) {
 
     args <- list (...)
@@ -46,17 +46,19 @@ add_axes <- function (map, colour = "black", pos = c(0.02, 0.03),
 
     # ---------------  sanity checks and warnings  ---------------
     # ---------- map
-    if (missing (map))
+    if (missing (map)) {
         stop ("map must be supplied to add_axes")
+    }
     check_map_arg (map)
     # ---------- colour
     tryCatch (
-              col2rgb (colour),
-              error = function (e) {
+        col2rgb (colour),
+        error = function (e) {
 
-                  e$message <-  paste0 ("Invalid colour: ", colour)
-                  stop (e)
-              })
+            e$message <- paste0 ("Invalid colour: ", colour)
+            stop (e)
+        }
+    )
     # ---------- pos
     pos <- test_len2 (pos, "pos")
     pos <- test_numeric (pos, "pos", c (0.02, 0.03))
@@ -88,16 +90,23 @@ add_axes <- function (map, colour = "black", pos = c(0.02, 0.03),
     expand <- 1.0 # expansion for semi-transparent rectangles
 
     map <- add_axis_rectangle (map, xaxs_pos, yaxs_pos, xrange, yrange,
-                               alpha = alpha, expand = expand)
+        alpha = alpha, expand = expand
+    )
     map <- add_tick_rectangles_h (map, xp, xaxs_pos, yaxs_pos,
-                               alpha = alpha, expand = expand)
+        alpha = alpha, expand = expand
+    )
     map <- add_tick_rectangles_v (map, yp, xaxs_pos, yaxs_pos,
-                               alpha = alpha, expand = expand)
+        alpha = alpha, expand = expand
+    )
 
-    map <- add_horizontal_axis (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
-                                alpha, fontsize, fontface, fontfamily)
-    map <- add_vertical_axis (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
-                              alpha, fontsize, fontface, fontfamily)
+    map <- add_horizontal_axis (
+        map, xaxs_pos, yaxs_pos, xrange, xp, colour,
+        alpha, fontsize, fontface, fontfamily
+    )
+    map <- add_vertical_axis (
+        map, xaxs_pos, yaxs_pos, yrange, yp, colour,
+        alpha, fontsize, fontface, fontfamily
+    )
 
     return (map)
 }
@@ -116,20 +125,28 @@ add_axis_rectangle <- function (map, xaxs_pos, yaxs_pos, xrange, yrange,
                                 alpha = 0.4, expand = 1.0) {
 
     expand <- 1.0
-    xr <- c (yaxs_pos [1] + c(-1, 1) * expand * diff (yaxs_pos), xrange [2])
-    yr <- c (xaxs_pos [1] + c(-1, 1) * expand * diff (xaxs_pos), yrange [2])
-    rdat <- data.frame (cbind ("lon" = c(xr[1], xr[1], xr[3], xr[3],
-                                         xr[2], xr[2], xr[1]),
-                               "lat" = c(yr[3], yr[1], yr[1], yr[2],
-                                         yr[2], yr[3], yr[3])))
+    xr <- c (yaxs_pos [1] + c (-1, 1) * expand * diff (yaxs_pos), xrange [2])
+    yr <- c (xaxs_pos [1] + c (-1, 1) * expand * diff (xaxs_pos), yrange [2])
+    rdat <- data.frame (cbind (
+        "lon" = c (
+            xr [1], xr [1], xr [3], xr [3],
+            xr [2], xr [2], xr [1]
+        ),
+        "lat" = c (
+            yr [3], yr [1], yr [1], yr [2],
+            yr [2], yr [3], yr [3]
+        )
+    ))
 
     lon <- lat <- NULL # suppress 'no visible binding' error
     aes <- ggplot2::aes (x = lon, y = lat, linewidth = 0)
 
-    map + ggplot2::geom_polygon (data = rdat, mapping = aes,
-                                 inherit.aes = FALSE,
-                                 fill = rgb (1, 1, 1, alpha),
-                                 colour = "transparent")
+    map + ggplot2::geom_polygon (
+        data = rdat, mapping = aes,
+        inherit.aes = FALSE,
+        fill = rgb (1, 1, 1, alpha),
+        colour = "transparent"
+    )
 }
 
 # add rectangles around horizontal ticks
@@ -141,15 +158,19 @@ add_tick_rectangles_h <- function (map, xp, xaxs_pos, yaxs_pos,
     x1 <- xp + expand * diff (yaxs_pos)
     y <- rep (xaxs_pos [c (1, 2, 2, 1, 1)], length (xp))
     x <- as.numeric (rbind (x0, x0, x1, x1, x0))
-    rdat <- data.frame (cbind ("id" = rep (seq (xp), each = 5),
-                               "lon" = x, "lat" = y))
+    rdat <- data.frame (cbind (
+        "id" = rep (seq (xp), each = 5),
+        "lon" = x, "lat" = y
+    ))
 
     aes <- ggplot2::aes (x = lon, y = lat, group = id, size = 0)
 
-    map + ggplot2::geom_polygon (data = rdat, mapping = aes,
-                                 inherit.aes = FALSE,
-                                 fill = rgb (1, 1, 1, alpha),
-                                 colour = "transparent")
+    map + ggplot2::geom_polygon (
+        data = rdat, mapping = aes,
+        inherit.aes = FALSE,
+        fill = rgb (1, 1, 1, alpha),
+        colour = "transparent"
+    )
 }
 
 # add rectangles around vertical ticks
@@ -161,74 +182,106 @@ add_tick_rectangles_v <- function (map, yp, xaxs_pos, yaxs_pos,
     y1 <- yp + expand * diff (xaxs_pos)
     x <- rep (yaxs_pos [c (1, 2, 2, 1, 1)], length (yp))
     y <- as.numeric (rbind (y0, y0, y1, y1, y0))
-    rdat <- data.frame (cbind ("id" = rep (seq (yp), each = 5),
-                               "lon" = x, "lat" = y))
+    rdat <- data.frame (cbind (
+        "id" = rep (seq (yp), each = 5),
+        "lon" = x, "lat" = y
+    ))
     aes <- ggplot2::aes (x = lon, y = lat, group = id, size = 0)
-    map <- map + ggplot2::geom_polygon (data = rdat, mapping = aes,
-                                        inherit.aes = FALSE,
-                                        fill = rgb (1, 1, 1, alpha),
-                                        colour = "transparent")
+    map <- map + ggplot2::geom_polygon (
+        data = rdat, mapping = aes,
+        inherit.aes = FALSE,
+        fill = rgb (1, 1, 1, alpha),
+        colour = "transparent"
+    )
 }
 
 add_horizontal_axis <- function (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
                                  alpha, fontsize, fontface, fontfamily) {
 
-    segdat <- data.frame (x1 = yaxs_pos [1], x2 = max (xrange),
-                          y1 = xaxs_pos [1], y2 = xaxs_pos [1])
+    segdat <- data.frame (
+        x1 = yaxs_pos [1], x2 = max (xrange),
+        y1 = xaxs_pos [1], y2 = xaxs_pos [1]
+    )
     x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
     aes <- ggplot2::aes (x = x1, y = y1, xend = x2, yend = y2)
-    map <- map + ggplot2::geom_segment (data = segdat, colour = colour,
-                                        mapping = aes)
+    map <- map + ggplot2::geom_segment (
+        data = segdat, colour = colour,
+        mapping = aes
+    )
 
     # ticks and labels
-    segdat <- data.frame (x1 = xp, x2 = xp,
-                          y1 = xaxs_pos [1], y2 = xaxs_pos [2])
+    segdat <- data.frame (
+        x1 = xp, x2 = xp,
+        y1 = xaxs_pos [1], y2 = xaxs_pos [2]
+    )
     labdat <- data.frame (x = xp, y = xaxs_pos [2])
 
-    map + ggplot2::geom_segment (data = segdat, colour = colour,
-                                 mapping = ggplot2::aes (x = x1, y = y1,
-                                                         xend = x2,
-                                                         yend = y2)) +
-            ggplot2::geom_label (data = labdat,
-                                 mapping = ggplot2::aes (x = x, y = y,
-                                                         label = x),
-                                 alpha = alpha,
-                                 size = fontsize,
-                                 colour = colour,
-                                 inherit.aes = FALSE,
-                                 label.size = 0,
-                                 vjust = "inward",
-                                 fontface = fontface, family = fontfamily)
+    map + ggplot2::geom_segment (
+        data = segdat, colour = colour,
+        mapping = ggplot2::aes (
+            x = x1, y = y1,
+            xend = x2,
+            yend = y2
+        )
+    ) +
+        ggplot2::geom_label (
+            data = labdat,
+            mapping = ggplot2::aes (
+                x = x, y = y,
+                label = x
+            ),
+            alpha = alpha,
+            size = fontsize,
+            colour = colour,
+            inherit.aes = FALSE,
+            label.size = 0,
+            vjust = "inward",
+            fontface = fontface, family = fontfamily
+        )
 }
 
 add_vertical_axis <- function (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
                                alpha, fontsize, fontface, fontfamily) {
 
-    segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [1],
-                          y1 = xaxs_pos [1], y2 = max (yrange))
+    segdat <- data.frame (
+        x1 = yaxs_pos [1], x2 = yaxs_pos [1],
+        y1 = xaxs_pos [1], y2 = max (yrange)
+    )
     x <- y <- x1 <- y1 <- x2 <- y2 <- NULL
     aes <- ggplot2::aes (x = x1, y = y1, xend = x2, yend = y2)
-    map <- map + ggplot2::geom_segment (data = segdat, colour = colour,
-                                        mapping = aes)
+    map <- map + ggplot2::geom_segment (
+        data = segdat, colour = colour,
+        mapping = aes
+    )
 
     # ticks and labels
-    segdat <- data.frame (x1 = yaxs_pos [1], x2 = yaxs_pos [2],
-                          y1 = yp, y2 = yp)
+    segdat <- data.frame (
+        x1 = yaxs_pos [1], x2 = yaxs_pos [2],
+        y1 = yp, y2 = yp
+    )
     labdat <- data.frame (x = yaxs_pos [2], y = yp)
 
-    map + ggplot2::geom_segment (data = segdat, colour = colour,
-                                 mapping = ggplot2::aes (x = x1, y = y1,
-                                                xend = x2,
-                                                yend = y2)) +
-            ggplot2::geom_label (data = labdat,
-                                 mapping = ggplot2::aes (x = x, y = y,
-                                                         label = y),
-                                 alpha = alpha,
-                                 size = fontsize,
-                                 colour = colour,
-                                 inherit.aes = FALSE,
-                                 label.size = 0,
-                                 hjust = "inward",
-                                 fontface = fontface,
-                                 family = fontfamily)
+    map + ggplot2::geom_segment (
+        data = segdat, colour = colour,
+        mapping = ggplot2::aes (
+            x = x1, y = y1,
+            xend = x2,
+            yend = y2
+        )
+    ) +
+        ggplot2::geom_label (
+            data = labdat,
+            mapping = ggplot2::aes (
+                x = x, y = y,
+                label = y
+            ),
+            alpha = alpha,
+            size = fontsize,
+            colour = colour,
+            inherit.aes = FALSE,
+            label.size = 0,
+            hjust = "inward",
+            fontface = fontface,
+            family = fontfamily
+        )
 }

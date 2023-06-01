@@ -24,12 +24,13 @@ test_numeric <- function (a, txt, value) {
 
     if (!is.numeric (a)) {
 
-        if (length (value) == 1)
+        if (length (value) == 1) {
             vstr <- "value"
-        else
+        } else {
             vstr <- "values"
+        }
         w <- simpleWarning (paste (txt, "must be numeric; using default", vstr))
-        a <- tryCatch(as.numeric (a), warning = function(c) w)
+        a <- tryCatch (as.numeric (a), warning = function (c) w)
         if (is (a, "warning")) {
 
             warning (a)
@@ -68,12 +69,15 @@ test_range <- function (a, txt, rng, value) {
 
     if (any (a < rng [1]) || any (a > rng [2])) {
 
-        if (length (value) == 1)
+        if (length (value) == 1) {
             vstr <- "value"
-        else
+        } else {
             vstr <- "values"
-        warning (paste0 (txt, " not in [", rng [1], ",", rng [2],
-                         "]; using default ", vstr))
+        }
+        warning (paste0 (
+            txt, " not in [", rng [1], ",", rng [2],
+            "]; using default ", vstr
+        ))
         a <- value
     }
     return (a)

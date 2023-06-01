@@ -34,21 +34,29 @@
 #'
 #' @examples
 #' \dontrun{
-#' bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
-#' dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
-#' dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
-#' dat_BR <- extract_osm_objects (key = 'building',
-#'                                value = 'residential',
-#'                                bbox = bbox)
-#' dat_HP <- extract_osm_objects (key = 'highway',
-#'                                value = 'primary',
-#'                                bbox = bbox)
-#' dat_HNP <- extract_osm_objects (key = 'highway',
-#'                                 value = '!primary',
-#'                                 bbox = bbox)
-#' extra_pairs <- c ('name', 'Royal.Festival.Hall')
-#' dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
-#'                             bbox = bbox)
+#' bbox <- get_bbox (c (-0.13, 51.50, -0.11, 51.52))
+#' dat_B <- extract_osm_objects (key = "building", bbox = bbox)
+#' dat_H <- extract_osm_objects (key = "highway", bbox = bbox)
+#' dat_BR <- extract_osm_objects (
+#'     key = "building",
+#'     value = "residential",
+#'     bbox = bbox
+#' )
+#' dat_HP <- extract_osm_objects (
+#'     key = "highway",
+#'     value = "primary",
+#'     bbox = bbox
+#' )
+#' dat_HNP <- extract_osm_objects (
+#'     key = "highway",
+#'     value = "!primary",
+#'     bbox = bbox
+#' )
+#' extra_pairs <- c ("name", "Royal.Festival.Hall")
+#' dat <- extract_osm_objects (
+#'     key = "building", extra_pairs = extra_pairs,
+#'     bbox = bbox
+#' )
 #' }
 #' @family data-extraction
 #' @export
@@ -59,8 +67,9 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
     check_arg (key, "key", "character")
 
     bbox <- check_bbox_arg (bbox)
-    if (!missing (value) && missing (key))
+    if (!missing (value) && missing (key)) {
         stop ("key must be provided for value")
+    }
 
     qkv <- get_q_key_vals (key, value, extra_pairs)
     q_keys <- qkv$key
@@ -71,37 +80,47 @@ extract_osm_objects <- function (bbox, key, value, extra_pairs,
     for (i in seq (q_keys)) {
 
         key_exact <- FALSE
-        if (!is.na (q_vals [i]) && substring (q_vals [i], 1, 1) == "!")
+        if (!is.na (q_vals [i]) && substring (q_vals [i], 1, 1) == "!") {
             key_exact <- TRUE
-        if (is.na (q_vals [i]))
-            qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
-                                         key_exact = key_exact,
-                                         value_exact = FALSE,
-                                         match_case = FALSE)
-        else
-            qry <- osmdata::add_osm_feature (qry, key = q_keys [i],
-                                         value = q_vals [i],
-                                         key_exact = key_exact,
-                                         value_exact = FALSE,
-                                         match_case = FALSE)
+        }
+        if (is.na (q_vals [i])) {
+            qry <- osmdata::add_osm_feature (qry,
+                key = q_keys [i],
+                key_exact = key_exact,
+                value_exact = FALSE,
+                match_case = FALSE
+            )
+        } else {
+            qry <- osmdata::add_osm_feature (qry,
+                key = q_keys [i],
+                value = q_vals [i],
+                key_exact = key_exact,
+                value_exact = FALSE,
+                match_case = FALSE
+            )
+        }
     }
 
-    if (sf)
+    if (sf) {
         obj <- osmdata::osmdata_sf (qry, quiet = quiet)
-    else
+    } else {
         obj <- osmdata::osmdata_sp (qry, quiet = quiet)
+    }
 
     obj <- get_obj_from_return_type (obj, return_type, q_keys, q_vals)
 
-    if (NROW (obj) == 0)
-        warning ("No valid data returned. ",
-                 "(Maybe try a different 'return_type')")
+    if (NROW (obj) == 0) {
+        warning (
+            "No valid data returned. ",
+            "(Maybe try a different 'return_type')"
+        )
+    }
 
     if (geom_only) {
 
         if (sf) {
 
-            indx <- match (c ("osm_id", "geometry"), names(obj))
+            indx <- match (c ("osm_id", "geometry"), names (obj))
             obj <- obj [, indx]
         } else {
 
@@ -130,16 +149,22 @@ get_q_key_vals <- function (key, value, extra_pairs) {
 
     if (!missing (extra_pairs)) {
 
-        if (!is.list (extra_pairs))
+        if (!is.list (extra_pairs)) {
             extra_pairs <- list (extra_pairs)
+        }
         nprs <- vapply (extra_pairs, length, 1L)
-        if (!all (nprs %in% 1:2))
+        if (!all (nprs %in% 1:2)) {
             stop ("Extra pairs must be just keys or key-val pairs")
+        }
 
-        q_keys <- c (q_keys,
-                     vapply (extra_pairs, function (x) x [1], character (1)))
-        q_vals <- c (q_vals,
-                     vapply (extra_pairs, function (x) x [2], character (1)))
+        q_keys <- c (
+            q_keys,
+            vapply (extra_pairs, function (x) x [1], character (1))
+        )
+        q_vals <- c (
+            q_vals,
+            vapply (extra_pairs, function (x) x [2], character (1))
+        )
     }
 
     val_list <- c ("grass", "park", "tree", "water")
@@ -176,8 +201,8 @@ get_obj_from_return_type <- function (obj, return_type, q_keys, q_vals) {
         if ("highway" %in% q_keys) {
             obj <- obj$osm_lines
         } else if ("building" %in% q_keys || "landuse" %in% q_keys ||
-                 "leisure" %in% q_keys ||
-                 ("natural" %in% q_keys && "water" %in% q_vals)) {
+            "leisure" %in% q_keys ||
+            ("natural" %in% q_keys && "water" %in% q_vals)) {
             obj <- obj$osm_polygons
         } else if ("route" %in% q_keys) {
             obj <- obj$osm_multilines
@@ -187,8 +212,10 @@ get_obj_from_return_type <- function (obj, return_type, q_keys, q_vals) {
             obj <- obj$osm_points
         } else {
 
-            message (paste0 ("Cannot determine return_type;",
-                             " maybe specify explicitly?"))
+            message (paste0 (
+                "Cannot determine return_type;",
+                " maybe specify explicitly?"
+            ))
             obj <- obj$osm_lines
         }
     }

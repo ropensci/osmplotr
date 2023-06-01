@@ -169,7 +169,7 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
                 col = col,
                 size = size,
                 shape = shape
-        )
+            )
     } else {
         stop ("obj is not a spatial class")
     }

@@ -14,12 +14,15 @@
 #' @export
 get_bbox <- function (latlon) {
 
-    if (missing (latlon))
+    if (missing (latlon)) {
         stop ("latlon must be supplied")
-    if (!is.numeric (latlon))
+    }
+    if (!is.numeric (latlon)) {
         stop ("latlon is not numeric")
-    if (length (latlon) < 4)
+    }
+    if (length (latlon) < 4) {
         stop ("latlon must have length = 4")
+    }
     if (length (latlon) > 4) {
 
         warning ("latlon has length > 4; only first 4 elements will be used")

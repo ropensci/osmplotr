@@ -69,7 +69,7 @@ which_ord <- function (xy_ord, xy, fn = "head") {
 
     max (0, which (vapply (xy_ord, function (i) {
         max (0, which_xy (i, xy = xy, fn = fn))
-        },  numeric (1)) > 0))
+    }, numeric (1)) > 0))
 }
 
 # which element of xy has head or tail of xy_ord [[i]]
@@ -89,10 +89,12 @@ which_xy <- function (xy, xy_ordi, fn = "head") {
 #' @noRd
 rbind_xy <- function (xy, xy_ord) {
 
-    if (head (rownames (xy_ord), 1) %in% rownames (xy))
-        xy_ord <- apply (xy_ord, 2, rev) # flip to rbind at bottom
-    if (tail (rownames (xy), 1) %in% rownames (xy_ord))
-        xy <- apply (xy, 2, rev) # flip to rbind at top
+    if (head (rownames (xy_ord), 1) %in% rownames (xy)) {
+        xy_ord <- apply (xy_ord, 2, rev)
+    } # flip to rbind at bottom
+    if (tail (rownames (xy), 1) %in% rownames (xy_ord)) {
+        xy <- apply (xy, 2, rev)
+    } # flip to rbind at top
 
     # rownames don't carry if xy only has 2 rows - tibble it?
     xynm <- rownames (xy) [2:nrow (xy)]

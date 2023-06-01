@@ -39,10 +39,12 @@
 #' library (magrittr)
 #' library (osmdata)
 #' bb <- osmdata::getbb ("melbourne, australia")
-#' coast <- extract_osm_objects (bbox = bb,
-#'                               key = "natural",
-#'                               value = "coastline",
-#'                               return_type = "line")
+#' coast <- extract_osm_objects (
+#'     bbox = bb,
+#'     key = "natural",
+#'     value = "coastline",
+#'     return_type = "line"
+#' )
 #' coast <- osm_line2poly (coast, bbox = bb)
 #' # The following map then colours in just the ocean:
 #' map <- osm_basemap (bbox = bb) %>%
@@ -53,15 +55,18 @@
 #' @export
 osm_line2poly <- function (obj, bbox) {
 
-    if (!is (obj$geometry, "sfc_LINESTRING"))
+    if (!is (obj$geometry, "sfc_LINESTRING")) {
         stop ("obj must be class 'sf' with fields of class 'sfc_LINESTRING'")
+    }
 
-    if (nrow(obj) == 0)
-        stop("obj is empty - check osm query results")
+    if (nrow (obj) == 0) {
+        stop ("obj is empty - check osm query results")
+    }
     g <- obj$geom
 
-    if (is.vector (bbox))
+    if (is.vector (bbox)) {
         bbox <- matrix (bbox, nrow = 2)
+    }
     # These geometries can contain several coastline "ways" that need to be
     # linked together. There may be multiple sets of these (think) peninsulas
     # being crossed by bounding box.  There can also be ways that link to form
@@ -88,19 +93,19 @@ osm_line2poly <- function (obj, bbox) {
         # Need to test this with disconnected bits
         linkorders <- lapply (startidx, function (x) unroll (x), V = m2)
         linkorders <- lapply (linkorders, function (x) x [!is.na (x)])
-        links <- lapply (linkorders, function (x) head_tail [x, , drop = FALSE]) #nolint
-        head_tail <- head_tail [-unlist (linkorders), , drop = FALSE] #nolint
+        links <- lapply (linkorders, function (x) head_tail [x, , drop = FALSE]) # nolint
+        head_tail <- head_tail [-unlist (linkorders), , drop = FALSE] # nolint
         links <- lapply (links, function (x) lookup_ways (x), g = g)
     } else {
         links <- list ()
     }
 
     # Now we deal with loops.  Keep extracting loops until nothing left
-    to_become_polygons <- list()
+    to_become_polygons <- list ()
     lidx <- 1
     while (nrow (head_tail) > 0) {
 
-        m2 <- match(head_tail [, 2], head_tail [, 1])
+        m2 <- match (head_tail [, 2], head_tail [, 1])
         if (any (!is.na (m2))) {
 
             l1 <- unroll_loop (1, m2)
@@ -112,9 +117,13 @@ osm_line2poly <- function (obj, bbox) {
         }
     }
     to_become_polygons <- lapply (to_become_polygons,
-                                  lookup_ways, g = g)
+        lookup_ways,
+        g = g
+    )
     to_become_polygons <- lapply (to_become_polygons,
-                                  make_sf, g = g)
+        make_sf,
+        g = g
+    )
     to_become_polygons <- do.call (rbind, to_become_polygons)
     # Don't need to clip the polygons against the bounding box - they'll already
     # be inside, otherwise they wouldn't have been registered as polygons.  Even
@@ -171,34 +180,36 @@ osm_line2poly <- function (obj, bbox) {
     # ... explicit cases for each of the other 3 starting points (+lon, +/- lat)
     # then follow by extension.
 
-    bbxcorners_rh <- c("NE", "SE", "SW", "NW")
-    bbxcoords <- rbind(c(bbox[1, 2], bbox[2, 2]),
-                       c(bbox[1, 2], bbox[2, 1]),
-                       c(bbox[1, 1], bbox[2, 1]),
-                       c(bbox[1, 1], bbox[2, 2])
-                       )
-    rownames(bbxcoords) <- bbxcorners_rh
+    bbxcorners_rh <- c ("NE", "SE", "SW", "NW")
+    bbxcoords <- rbind (
+        c (bbox [1, 2], bbox [2, 2]),
+        c (bbox [1, 2], bbox [2, 1]),
+        c (bbox [1, 1], bbox [2, 1]),
+        c (bbox [1, 1], bbox [2, 2])
+    )
+    rownames (bbxcoords) <- bbxcorners_rh
 
     p1 <- p2 <- NULL
-    if (length(links) >= 1) {
+    if (length (links) >= 1) {
 
         links <- lapply (links, function (x) clip_one (x), bbox = bbox)
         linkpoly <- lapply (links, make_poly,
-                            bbox = bbox, g = g)
+            bbox = bbox, g = g
+        )
         p1 <- lapply (linkpoly, "[[", "p1")
         p2 <- lapply (linkpoly, "[[", "p2")
 
     } else {
 
-        warning("No open curves found - check for polygons")
+        warning ("No open curves found - check for polygons")
     }
 
     res <- NULL
     if (!is.null (p1) && !is.null (p2)) {
 
-        res <- list (sea = do.call(rbind, p1), land = do.call(rbind, p2))
+        res <- list (sea = do.call (rbind, p1), land = do.call (rbind, p2))
     }
-    if (length(to_become_polygons) >= 1) {
+    if (length (to_become_polygons) >= 1) {
 
         res$islands <- to_become_polygons
     }
@@ -209,12 +220,14 @@ osm_line2poly <- function (obj, bbox) {
 # point either side
 clip_one <- function (out, bbox) {
 
-    indx <-  (out [, 1] >= bbox [1, 1] & out [, 1] <= bbox [1, 2] &
-              out [, 2] >= bbox [2, 1] & out [, 2] <= bbox [2, 2])
+    indx <- (out [, 1] >= bbox [1, 1] & out [, 1] <= bbox [1, 2] &
+        out [, 2] >= bbox [2, 1] & out [, 2] <= bbox [2, 2])
     # Need to deal with curves that join outside the bbox.  Need to dilate the
     # indx vector by 1 (max with left and right shifted versions of itself)
-    indx <- as.logical (pmax (indx, c(indx [-1], FALSE),
-                              c (FALSE, indx [-length (indx)])))
+    indx <- as.logical (pmax (
+        indx, c (indx [-1], FALSE),
+        c (FALSE, indx [-length (indx)])
+    ))
     out [indx, ]
 }
 
@@ -229,43 +242,43 @@ lookup_ways <- function (ll, g) {
 }
 
 # For reordering the ways
-unroll <- function(firstpos, v) {
+unroll <- function (firstpos, v) {
 
-  res <- firstpos
-  a <- v [firstpos]
-  while (!is.na (a)) {
+    res <- firstpos
+    a <- v [firstpos]
+    while (!is.na (a)) {
 
-    res <- c(res, a)
-    a <- v [a]
-  }
-  return(res)
+        res <- c (res, a)
+        a <- v [a]
+    }
+    return (res)
 }
 
-unroll_loop <- function(firstpos, v) {
+unroll_loop <- function (firstpos, v) {
 
-  ## iterative index following, for loops
-  res <- firstpos
-  a <- v [firstpos]
-  visted <- rep (FALSE, length (v))
-  visted [firstpos] <- TRUE
-  while (!visted [a]) {
+    ## iterative index following, for loops
+    res <- firstpos
+    a <- v [firstpos]
+    visted <- rep (FALSE, length (v))
+    visted [firstpos] <- TRUE
+    while (!visted [a]) {
 
-    res <- c(res, a)
-    visted [a] <- TRUE
-    a <- v [a]
-  }
-  return(res)
+        res <- c (res, a)
+        visted [a] <- TRUE
+        a <- v [a]
+    }
+    return (res)
 }
 
 
 # return whether a point is N,S,E,W of bounding box - i.e. which edge Could be a
 # pathological corner case, which we'll ignore for now.
-classify_pt_dir <- function(pt, bbox) {
+classify_pt_dir <- function (pt, bbox) {
 
     directions <- 1:4
-    names(directions) <- c("N", "E", "S", "W")
-    compass <- c("W", "S", "E", "N")
-    dim(compass) <- c(2, 2)
+    names (directions) <- c ("N", "E", "S", "W")
+    compass <- c ("W", "S", "E", "N")
+    dim (compass) <- c (2, 2)
 
     lt <- pt < bbox [, "min"]
     gt <- pt > bbox [, "max"]
@@ -274,7 +287,7 @@ classify_pt_dir <- function(pt, bbox) {
     return (directions [compass [td]])
 }
 
-wrp <- function(idxs) {
+wrp <- function (idxs) {
 
     (idxs - 1) %% 4 + 1
 }
@@ -308,8 +321,10 @@ make_poly <- function (out, bbox, g) {
     bb22 <- bb [2, 2]
     bb11 <- bb [1, 1]
 
-    ext_corners <- rbind (c (bb12, bb22), c (bb12, bb21),
-                          c (bb11, bb21), c (bb11, bb22))
+    ext_corners <- rbind (
+        c (bb12, bb22), c (bb12, bb21),
+        c (bb11, bb21), c (bb11, bb22)
+    )
 
     # create lists of corners in each direction
     if (last_pt_dir == first_pt_dir) {
@@ -369,10 +384,11 @@ make_sf <- function (x, g) {
     df <- data.frame (row.names = "1")
     df [["geometry"]] <- x
     attr (df, "sf_column") <- "geometry"
-    f <- factor(rep(NA_character_, length.out = ncol(df) - 1),
-                levels = c ("constant", "aggregate", "identity"))
-    names(f) <- names(df)[-ncol (df)]
-    attr(df, "agr") <- f
-    class(df) <- c("sf", class(df))
+    f <- factor (rep (NA_character_, length.out = ncol (df) - 1),
+        levels = c ("constant", "aggregate", "identity")
+    )
+    names (f) <- names (df) [-ncol (df)]
+    attr (df, "agr") <- f
+    class (df) <- c ("sf", class (df))
     return (df)
 }
