@@ -1,28 +1,20 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "http://schema.org"
-  ],
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "osmplotr",
-  "description": "Bespoke images of 'OpenStreetMap' ('OSM') data and data\n    visualisation using 'OSM' objects.",
+  "description": "Bespoke images of 'OpenStreetMap' ('OSM') data and data visualisation using 'OSM' objects.",
   "name": "osmplotr: Bespoke Images of 'OpenStreetMap' Data",
+  "relatedLink": "https://docs.ropensci.org/osmplotr/",
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.3.037",
+  "version": "0.3.4.001",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.0.5 (2021-03-31)",
-  "provider": {
-    "@id": "https://cran.r-project.org",
-    "@type": "Organization",
-    "name": "Comprehensive R Archive Network (CRAN)",
-    "url": "https://cran.r-project.org"
-  },
+  "runtimePlatform": "R version 4.3.2 (2023-10-31)",
   "author": [
     {
       "@type": "Person",
@@ -60,7 +52,6 @@
       "familyName": "Lukasz"
     }
   ],
-  "funder": {},
   "maintainer": [
     {
       "@type": "Person",
@@ -143,14 +134,14 @@
       "sameAs": "https://CRAN.R-project.org/package=testthat"
     }
   ],
-  "softwareRequirements": [
-    {
+  "softwareRequirements": {
+    "1": {
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
       "version": ">= 3.2.3"
     },
-    {
+    "2": {
       "@type": "SoftwareApplication",
       "identifier": "e1071",
       "name": "e1071",
@@ -162,7 +153,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=e1071"
     },
-    {
+    "3": {
       "@type": "SoftwareApplication",
       "identifier": "ggm",
       "name": "ggm",
@@ -174,7 +165,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=ggm"
     },
-    {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "ggplot2",
       "name": "ggplot2",
@@ -186,7 +177,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=ggplot2"
     },
-    {
+    "5": {
       "@type": "SoftwareApplication",
       "identifier": "mapproj",
       "name": "mapproj",
@@ -198,12 +189,12 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=mapproj"
     },
-    {
+    "6": {
       "@type": "SoftwareApplication",
       "identifier": "methods",
       "name": "methods"
     },
-    {
+    "7": {
       "@type": "SoftwareApplication",
       "identifier": "osmdata",
       "name": "osmdata",
@@ -215,19 +206,19 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=osmdata"
     },
-    {
+    "8": {
       "@type": "SoftwareApplication",
-      "identifier": "rgeos",
-      "name": "rgeos",
+      "identifier": "sf",
+      "name": "sf",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "sameAs": "https://CRAN.R-project.org/package=rgeos"
+      "sameAs": "https://CRAN.R-project.org/package=sf"
     },
-    {
+    "9": {
       "@type": "SoftwareApplication",
       "identifier": "sp",
       "name": "sp",
@@ -239,7 +230,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sp"
     },
-    {
+    "10": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat",
       "name": "spatstat",
@@ -252,7 +243,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat"
     },
-    {
+    "11": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat.explore",
       "name": "spatstat.explore",
@@ -264,7 +255,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat.explore"
     },
-    {
+    "12": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat.geom",
       "name": "spatstat.geom",
@@ -275,12 +266,17 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat.geom"
-    }
-  ],
+    },
+    "SystemRequirements": {}
+  },
+  "fileSize": "1515.895KB",
   "releaseNotes": "https://github.com/ropensci/osmplotr/blob/master/NEWS.md",
-  "readme": "https://github.com/ropensci/osmplotr/blob/master/README.md",
-  "fileSize": "5154.036KB",
-  "contIntegration": "https://codecov.io/gh/ropensci/osmplotr",
+  "readme": "https://github.com/ropensci/osmplotr/blob/main/README.md",
+  "contIntegration": [
+    "https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check",
+    "https://codecov.io/gh/ropensci/osmplotr"
+  ],
+  "developmentStatus": "https://www.repostatus.org/",
   "review": {
     "@type": "Review",
     "url": "https://github.com/ropensci/software-review/issues/27",
@@ -297,11 +293,5 @@
     "rstats",
     "r-package",
     "peer-reviewed"
-  ],
-  "relatedLink": [
-    "https://CRAN.R-project.org/package=osmplotr",
-    "https://docs.ropensci.org/osmplotr",
-    "https://docs.ropensci.org/osmplotr/"
-  ],
-  "developmentStatus": "https://www.repostatus.org/"
+  ]
 }
