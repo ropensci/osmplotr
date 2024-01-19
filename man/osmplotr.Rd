@@ -82,4 +82,28 @@ to user-provided data, whether categorical or continuous
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://docs.ropensci.org/osmplotr/}
+  \item \url{https://github.com/ropensci/osmplotr}
+  \item Report bugs at \url{https://github.com/ropensci/osmplotr/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Mark Padgham \email{mark.padgham@email.com}
+
+Authors:
+\itemize{
+  \item Richard Beare
+}
+
+Other contributors:
+\itemize{
+  \item Finkelstein Noam (Author of included stub.R code) [contributor, copyright holder]
+  \item Bartnik Lukasz (Author of included stub.R code) [contributor, copyright holder]
+}
+
+}
 \concept{package}

@@ -59,7 +59,7 @@ structs <- osm_structures (structures = structures, col_scheme = "light")
 # 'london' data for highways and parks.
 dat <- make_osm_map (osm_data = london, structures = structs)
 # or download data automatically using a defined bounding boox
-bbox <- get_bbox (c(-0.15,51.5,-0.10,51.52))
+bbox <- get_bbox (c (-0.15, 51.5, -0.10, 51.52))
 \dontrun{
 dat <- make_osm_map (bbox = bbox, structures = structs)
 print_osm_map (dat$map)

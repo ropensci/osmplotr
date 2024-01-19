@@ -43,8 +43,10 @@ problems!
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 \dontrun{
-highways <- c ("Monmouth.St", "Short.?s.Gardens", "Endell.St", "Long.Acre",
-               "Upper.Saint.Martin")
+highways <- c (
+    "Monmouth.St", "Short.?s.Gardens", "Endell.St", "Long.Acre",
+    "Upper.Saint.Martin"
+)
 # Note that dots signify "anything", including whitespace and apostrophes,
 # and that '?' denotes optional previous character and so here matches
 # both "Shorts Gardens" and "Short's Gardens"
@@ -60,8 +62,10 @@ map <- osm_basemap (bbox = bbox, bg = "gray20")
 # Those data are part of 'osmplotr':
 dat_BNR <- london$dat_BNR # Non-residential buildings
 groups <- list (highways1, highways2)
-map <- add_osm_groups (map, obj = dat_BNR, groups = groups,
-                       cols = c("red", "blue"), bg = "gray40")
+map <- add_osm_groups (map,
+    obj = dat_BNR, groups = groups,
+    cols = c ("red", "blue"), bg = "gray40"
+)
 print_osm_map (map)
 }
 }

@@ -6,7 +6,7 @@
 \usage{
 extract_osm_objects(
   bbox,
-  key,
+  key = NULL,
   value,
   extra_pairs,
   return_type,
@@ -57,21 +57,29 @@ Downloads OSM XML objects and converts to \code{sp} objects
 }
 \examples{
 \dontrun{
-bbox <- get_bbox (c(-0.13,51.50,-0.11,51.52))
-dat_B <- extract_osm_objects (key = 'building', bbox = bbox)
-dat_H <- extract_osm_objects (key = 'highway', bbox = bbox)
-dat_BR <- extract_osm_objects (key = 'building',
-                               value = 'residential',
-                               bbox = bbox)
-dat_HP <- extract_osm_objects (key = 'highway',
-                               value = 'primary',
-                               bbox = bbox)
-dat_HNP <- extract_osm_objects (key = 'highway',
-                                value = '!primary',
-                                bbox = bbox)
-extra_pairs <- c ('name', 'Royal.Festival.Hall')
-dat <- extract_osm_objects (key = 'building', extra_pairs = extra_pairs,
-                            bbox = bbox)
+bbox <- get_bbox (c (-0.13, 51.50, -0.11, 51.52))
+dat_B <- extract_osm_objects (key = "building", bbox = bbox)
+dat_H <- extract_osm_objects (key = "highway", bbox = bbox)
+dat_BR <- extract_osm_objects (
+    key = "building",
+    value = "residential",
+    bbox = bbox
+)
+dat_HP <- extract_osm_objects (
+    key = "highway",
+    value = "primary",
+    bbox = bbox
+)
+dat_HNP <- extract_osm_objects (
+    key = "highway",
+    value = "!primary",
+    bbox = bbox
+)
+extra_pairs <- c ("name", "Royal.Festival.Hall")
+dat <- extract_osm_objects (
+    key = "building", extra_pairs = extra_pairs,
+    bbox = bbox
+)
 }
 }
 \seealso{
