@@ -107,11 +107,11 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
 
             map <- map +
                 ggplot2::geom_polygon (
-                                       ggplot2::aes (group = id),
-                                       data = xy1,
-                                       linewidth = size,
-                                       fill = col,
-                                       colour = border
+                    ggplot2::aes (group = id),
+                    data = xy1,
+                    linewidth = size,
+                    fill = col,
+                    colour = border
                 )
 
             if (nrow (xy_not1) > 0) {
@@ -129,9 +129,9 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
                 }
                 map <- map +
                     ggplot2::geom_polygon (
-                                           ggplot2::aes (group = id),
-                                           data = xy_not1,
-                                           fill = hcols
+                        ggplot2::aes (group = id),
+                        data = xy_not1,
+                        fill = hcols
                     )
             }
         }
@@ -141,11 +141,11 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
         xy <- list2df (xy)
         map <- map +
             ggplot2::geom_polygon (
-                                   ggplot2::aes (group = id),
-                                   data = xy,
-                                   linewidth = size,
-                                   fill = col,
-                                   colour = border
+                ggplot2::aes (group = id),
+                data = xy,
+                linewidth = size,
+                fill = col,
+                colour = border
             )
     } else if (grepl ("line", obj_type)) {
 
@@ -153,22 +153,22 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
         xy <- list2df (xy, islines = TRUE)
         map <- map +
             ggplot2::geom_path (
-                                data = xy,
-                                ggplot2::aes (x = lon, y = lat),
-                                colour = col,
-                                linewidth = size,
-                                linetype = shape
+                data = xy,
+                ggplot2::aes (x = lon, y = lat),
+                colour = col,
+                linewidth = size,
+                linetype = shape
             )
     } else if (grepl ("point", obj_type)) {
 
         xy <- geom_to_xy (obj, obj_type)
         map <- map +
             ggplot2::geom_point (
-                                 data = xy,
-                                 ggplot2::aes (x = lon, y = lat),
-                                 col = col,
-                                 size = size,
-                                 shape = shape
+                data = xy,
+                ggplot2::aes (x = lon, y = lat),
+                col = col,
+                size = size,
+                shape = shape
             )
     } else {
         stop ("obj is not a spatial class")
@@ -230,13 +230,13 @@ default_shape <- function (obj_type, shape) {
 
             if (!is.numeric (shape)) {
                 warning (
-                         "shape should be numeric; defaulting to ",
-                         shape_default
+                    "shape should be numeric; defaulting to ",
+                    shape_default
                 )
             } else if (shape < 0) {
                 warning (
-                         "shape should be positive; defaulting to ",
-                         shape_default
+                    "shape should be positive; defaulting to ",
+                    shape_default
                 )
             }
         }
@@ -286,8 +286,8 @@ geom_to_xy <- function (obj, obj_type) {
         names (xy) <- c ("lon", "lat")
     } else if (obj_type %in% c ("polygons", "lines")) { # sp
         xy <- lapply (slot (obj, obj_type), function (x) {
-                          slot (slot (x, cap_first (obj_type)) [[1]], "coords")
-                })
+            slot (slot (x, cap_first (obj_type)) [[1]], "coords")
+        })
     } else if (obj_type == "points") { # sp
         xy <- data.frame (slot (obj, "coords"))
     }

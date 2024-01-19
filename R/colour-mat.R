@@ -192,7 +192,8 @@ plot_colourmat <- function (carr) {
     par (mar = rep (0, 4))
     plot (NULL, NULL,
         xlim = c (0, dim (carr) [2]),
-        ylim = c (0, dim (carr) [1]))
+        ylim = c (0, dim (carr) [1])
+    )
     for (i in seq (dim (carr) [1])) {
         for (j in seq (dim (carr) [2])) {
             rect (j - 1, i - 1, j, i, col = carr [i, j])
