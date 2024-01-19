@@ -63,7 +63,7 @@ osm_basemap <- function (bbox, structures, bg = "gray20") {
 set_map_theme <- function (bg) {
 
     theme <- ggplot2::theme_minimal ()
-    theme$panel.background <- ggplot2::element_rect (fill = bg, size = 0) # nolint
+    theme$panel.background <- ggplot2::element_rect (fill = bg, linewidth = 0) # nolint
     theme$line <- ggplot2::element_blank ()
     theme$axis.text <- ggplot2::element_blank () # nolint
     theme$axis.title <- ggplot2::element_blank () # nolint

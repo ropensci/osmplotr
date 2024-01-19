@@ -23,8 +23,8 @@
 #' @param boundary (negative, 0, positive) values define whether the boundary of
 #' groups should (exclude, bisect, include) objects which straddle the precise
 #' boundary. (Has no effect if \code{bg} is given).
-#' @param size Size argument passed to \code{ggplot2} (polygon, path, point)
-#' functions: determines width of lines for (polygon, line), and sizes of
+#' @param size Linewidth argument passed to \code{ggplot2} (polygon, path,
+#' point) functions: determines width of lines for (polygon, line), and sizes of
 #' points.  Respective defaults are (0, 0.5, 0.5).
 #' @param shape Shape of points or lines (the latter passed as \code{linetype});
 #' see \code{\link[ggplot2]{shape}}.
@@ -820,7 +820,7 @@ map_plus_spPolydf_grps <- function (map, xy, aes, cols, size) { # nolint
         data = xy,
         mapping = aes,
         fill = cols [xy$col],
-        size = size
+        linewidth = size
     )
 }
 
@@ -845,7 +845,7 @@ map_plus_spLinedf_grps <- function (map, xyflat, aes, cols, size, shape) { # nol
         data = xyflat,
         mapping = aes,
         colour = cols [xyflat$col],
-        size = size,
+        linewidth = size,
         linetype = shape
     )
 }
@@ -891,7 +891,7 @@ map_plus_hulls <- function (map, border_width = 1, groups, xyflat, cols) {
         mapping = aes,
         colour = cols [bdry$id],
         fill = "transparent",
-        size = border_width
+        linewidth = border_width
     )
 
     return (map)

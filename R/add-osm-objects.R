@@ -10,8 +10,8 @@
 #' @param col Colour of lines or points; fill colour of polygons.
 #' @param border Border colour of polygons.
 #' @param hcol (Multipolygons only) Vector of fill colours for holes
-#' @param size Size argument passed to \code{ggplot2} (polygon, path, point)
-#' functions: determines width of lines for (polygon, line), and sizes of
+#' @param size Linewidth argument passed to \code{ggplot2} (polygon, path,
+#' point) functions: determines width of lines for (polygon, line), and sizes of
 #' points.  Respective defaults are (0, 0.5, 0.5).
 #' @param shape Shape of points or lines (the latter passed as \code{linetype});
 #' see \code{\link[ggplot2]{shape}}.
@@ -109,7 +109,7 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
                 ggplot2::geom_polygon (
                     ggplot2::aes (group = id),
                     data = xy1,
-                    size = size,
+                    linewidth = size,
                     fill = col,
                     colour = border
                 )
@@ -143,7 +143,7 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
             ggplot2::geom_polygon (
                 ggplot2::aes (group = id),
                 data = xy,
-                size = size,
+                linewidth = size,
                 fill = col,
                 colour = border
             )
@@ -156,7 +156,7 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
                 data = xy,
                 ggplot2::aes (x = lon, y = lat),
                 colour = col,
-                size = size,
+                linewidth = size,
                 linetype = shape
             )
     } else if (grepl ("point", obj_type)) {

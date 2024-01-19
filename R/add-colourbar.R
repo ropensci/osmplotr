@@ -115,14 +115,14 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
 
     # ---------- LAYER#1: semi-transparent underlay
     cbu <- colourbar_underlay (cbxy, vertical, expand)
-    aes <- ggplot2::aes (x = x, y = y, size = 0)
+    aes <- ggplot2::aes (x = x, y = y, linewidth = 0)
     pcol <- rgb (1, 1, 1, alpha)
-    # geom_path has rounded corners, geom_poly does not, and size = 5 *should*
-    # ensure it covers the inside of most bars
+    # geom_path has rounded corners, geom_poly does not, and linewidth = 5
+    # *should* ensure it covers the inside of most bars
     map <- map + ggplot2::geom_path (
         data = cbu$rdat, mapping = aes,
         inherit.aes = FALSE,
-        colour = pcol, size = 5
+        colour = pcol, linewidth = 5
     )
 
     # ---------- LAYER#2: colourbar
