@@ -92,7 +92,9 @@ colourmat_input_cols <- function (cols) {
     if (missing (cols)) stop ("cols must be provided")
     if (is.null (cols)) {
         return (NULL)
-    } else if (length (cols) < 4) stop ("cols must have length >= 4")
+    } else if (length (cols) < 4) {
+        stop ("cols must have length >= 4")
+    }
     if (any (is.na (cols))) stop ("One or more cols is NA")
     if (!methods::is (cols, "matrix")) {
 
@@ -188,7 +190,9 @@ plot_colourmat <- function (carr) {
 
     plot.new ()
     par (mar = rep (0, 4))
-    plot (NULL, NULL, xlim = c (0, dim (carr) [2]), ylim = c (0, dim (carr) [1]))
+    plot (NULL, NULL,
+        xlim = c (0, dim (carr) [2]),
+        ylim = c (0, dim (carr) [1]))
     for (i in seq (dim (carr) [1])) {
         for (j in seq (dim (carr) [2])) {
             rect (j - 1, i - 1, j, i, col = carr [i, j])

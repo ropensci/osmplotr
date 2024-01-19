@@ -108,7 +108,7 @@ connect_highways <- function (highways, bbox, plot = FALSE) {
     cycles <- try (ggm::fundCycles (conmat), TRUE)
 
     path <- NULL
-    if (is.null (cycles) | is (attr (cycles, "condition"), "simpleError")) {
+    if (is.null (cycles) || is (attr (cycles, "condition"), "simpleError")) {
         warning ("There are no cycles in the listed highways")
     } else {
 
@@ -151,7 +151,7 @@ insert_intersections <- function (ways) {
             # are close enough (< 50m)
             d <- haversine (wi, wj) [3] # in km
             common_node <- any (rownames (wi) %in% rownames (wj))
-            if (!common_node & d < dmin) {
+            if (!common_node && d < dmin) {
 
                 ilist <- c (ilist, i)
                 jlist <- c (jlist, j)
@@ -406,7 +406,7 @@ sps_through_cycle <- function (ways, cyc) {
     cyc <- rbind (cyc, cyc [1, ])
     thepath <- NULL
 
-    for (i in seq (nrow (cyc)) [-1]) {
+    for (i in seq_len (nrow (cyc)) [-1]) {
 
         w0 <- cyc [i - 1, 2] # the current way
         wf <- cyc [i - 1, 1] # the 'from' way
