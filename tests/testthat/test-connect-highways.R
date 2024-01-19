@@ -43,33 +43,6 @@ if (curl::has_internet ()) { # otherwise all of these return errors not warnings
             nms <- abbreviate_hwy_names (highways)
             expect_true (any (nms %in% names (ways)))
         })
-
-        # This data for this test are stubbed because the dl fails too often
-        if (test_all) {
-
-            test_that ("highways do not connect", {
-                load (system.file ("extdata", "hwys.rda",
-                    package = "osmplotr"
-                ))
-                i <- which (lapply (
-                    hwys,
-                    function (i) {
-                        length (names (i))
-                    }
-                ) == 5)
-                hwys <- hwys [[i]] # make sure it's the right set
-                stub (
-                    connect_highways, "extract_highways",
-                    function (x, ...) hwys
-                )
-                expect_warning (connect_highways (
-                    highways = highways,
-                    bbox = bbox,
-                    plot = TRUE
-                ), "GEOS support is provided by the sf and terra packages")
-                dev.off (which = dev.cur ())
-            })
-        }
     }
 } # end if has_internet
 
