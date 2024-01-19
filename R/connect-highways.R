@@ -202,14 +202,11 @@ insert_one_intersection <- function (way1, way2, prefix = "a", num = 0) {
 
     class (way1) <- "matrix"
     class (way2) <- "matrix"
-    lp <- list (sp::Line (way1))
-    lp <- sp::SpatialLines (list (sp::Lines (lp, ID = "a")))
-    lq <- list (sp::Line (way2))
-    lq <- sp::SpatialLines (list (sp::Lines (lq, ID = "a")))
-    int <- rgeos::gIntersection (lp, lq)
-    if (!is.null (int)) {
+    lp <- sf::st_sfc (sf::st_linestring (way1), crs = 4326)
+    lq <- sf::st_sfc (sf::st_linestring (way2), crs = 4326)
+    int <- sf::st_coordinates (sf::st_intersection (lp, lq))
+    if (length (int) > 0) {
 
-        int <- sp::coordinates (int)
         i <- which.min ((int [1, 1] - way1 [, 1])^2 +
             (int [1, 2] - way1 [, 2])^2)
         rnames <- rownames (way1)
