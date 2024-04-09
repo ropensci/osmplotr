@@ -63,7 +63,7 @@
 #' }
 #'
 #' @name osmplotr
-#' @docType _PACKAGE
+#' @docType package
 #' @aliases osmplotr-package
 #' @family package
 #' @importFrom grDevices col2rgb dev.cur dev.new heat.colors rgb rainbow
@@ -72,7 +72,7 @@
 #' @importFrom stats runif
 #' @importFrom utils combn head setTxtProgressBar tail txtProgressBar
 #' @import spatstat
-NULL
+"_PACKAGE"
 
 #' london
 #'
