@@ -18,8 +18,8 @@ typically as returned by \code{\link{extract_osm_objects}}.}
 
 \item{hcol}{(Multipolygons only) Vector of fill colours for holes}
 
-\item{size}{Size argument passed to \code{ggplot2} (polygon, path, point)
-functions: determines width of lines for (polygon, line), and sizes of
+\item{size}{Linewidth argument passed to \code{ggplot2} (polygon, path,
+point) functions: determines width of lines for (polygon, line), and sizes of
 points.  Respective defaults are (0, 0.5, 0.5).}
 
 \item{shape}{Shape of points or lines (the latter passed as \code{linetype});

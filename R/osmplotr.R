@@ -63,7 +63,7 @@
 #' }
 #'
 #' @name osmplotr
-#' @docType package
+#' @docType _PACKAGE
 #' @aliases osmplotr-package
 #' @family package
 #' @importFrom grDevices col2rgb dev.cur dev.new heat.colors rgb rainbow
