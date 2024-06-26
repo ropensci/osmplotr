@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.5.002",
+  "version": "0.3.5.3",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.3.3 (2024-02-29)",
+  "runtimePlatform": "R version 4.4.1 (2024-06-14)",
   "author": [
     {
       "@type": "Person",
@@ -220,6 +220,18 @@
     },
     "9": {
       "@type": "SoftwareApplication",
+      "identifier": "sfheaders",
+      "name": "sfheaders",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=sfheaders"
+    },
+    "10": {
+      "@type": "SoftwareApplication",
       "identifier": "sp",
       "name": "sp",
       "provider": {
@@ -230,7 +242,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sp"
     },
-    "10": {
+    "11": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat",
       "name": "spatstat",
@@ -243,7 +255,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat"
     },
-    "11": {
+    "12": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat.explore",
       "name": "spatstat.explore",
@@ -255,7 +267,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat.explore"
     },
-    "12": {
+    "13": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat.geom",
       "name": "spatstat.geom",
@@ -267,31 +279,17 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat.geom"
     },
-    "SystemRequirements": {}
+    "SystemRequirements": null
   },
-  "fileSize": "12101.377KB",
+  "fileSize": "1515.651KB",
   "releaseNotes": "https://github.com/ropensci/osmplotr/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/osmplotr/blob/main/README.md",
-  "contIntegration": [
-    "https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check",
-    "https://codecov.io/gh/ropensci/osmplotr"
-  ],
+  "contIntegration": ["https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check", "https://codecov.io/gh/ropensci/osmplotr"],
   "developmentStatus": "https://www.repostatus.org/",
   "review": {
     "@type": "Review",
     "url": "https://github.com/ropensci/software-review/issues/27",
     "provider": "https://ropensci.org"
   },
-  "keywords": [
-    "osm",
-    "openstreetmap",
-    "overpass-api",
-    "overpass",
-    "data-visualisation",
-    "highlighting-clusters",
-    "r",
-    "rstats",
-    "r-package",
-    "peer-reviewed"
-  ]
+  "keywords": ["osm", "openstreetmap", "overpass-api", "overpass", "data-visualisation", "highlighting-clusters", "r", "rstats", "r-package", "peer-reviewed"]
 }
