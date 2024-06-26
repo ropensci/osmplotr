@@ -290,16 +290,17 @@ list2df_with_data <- function (map, obj, obj_type, xy_mn, dat, bg,
     }
     if (!missing (bg)) {
 
-        xyh <- spatstat.geom::ppp (xyz$x, xyz$y,
-            xrange = range (xyz$x),
-            yrange = range (xyz$y)
+        xy <- cbind (as.numeric (xyz$x), as.numeric (xyz$y)) |>
+            sfheaders::sf_point () |>
+            sf::st_sf (crs = 4326) |>
+            reproj_equal_area ()
+        bdry <- sf::st_convex_hull (sf::st_combine (xy))
+        indx <- vapply (
+            sf::st_within (xy, bdry), function (i) {
+                ifelse (length (i) == 0, 0L, i [1])
+            },
+            integer (1L)
         )
-        ch <- spatstat.geom::convexhull (xyh)
-        bdry <- cbind (ch$bdry [[1]]$x, ch$bdry [[1]]$y)
-
-        indx <- apply (xy_mn, 1, function (x) {
-            sp::point.in.polygon (x [1], x [2], bdry [, 1], bdry [, 2])
-        })
         # indx = 0 for outside polygon
     }
 
