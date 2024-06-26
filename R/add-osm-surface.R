@@ -290,7 +290,8 @@ list2df_with_data <- function (map, obj, obj_type, xy_mn, dat, bg,
     }
     if (!missing (bg)) {
 
-        xy <- sfheaders::sf_point (cbind (xyz$x, xyz$y)) |>
+        xy <- cbind (as.numeric (xyz$x), as.numeric (xyz$y)) |>
+            sfheaders::sf_point () |>
             sf::st_sf (crs = 4326) |>
             reproj_equal_area ()
         bdry <- sf::st_convex_hull (sf::st_combine (xy))
