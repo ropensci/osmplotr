@@ -2,13 +2,13 @@
 # R specific hooks: https://github.com/lorenzwalthert/precommit
 repos:
 -   repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.4.1
+    rev: v0.4.2
     hooks:
     -   id: style-files
         args: [--style_pkg=spaceout, --style_fun=spaceout_style]    
         additional_dependencies:
         - ropensci-review-tools/spaceout
-        # -   id: roxygenize
+      # -   id: roxygenize
     # codemeta must be above use-tidy-description when both are used
     # -   id: codemeta-description-updated
     -   id: use-tidy-description
@@ -42,14 +42,14 @@ repos:
           \.github/workflows/.*|
           data/.*|
           )$
-          # -   id: lintr
+      # -   id: lintr
     -   id: readme-rmd-rendered
     -   id: parsable-R
     -   id: no-browser-statement
     -   id: no-print-statement
     -   id: no-debug-statement
     -   id: deps-in-desc
-    # -   id: pkgdown
+      # -   id: pkgdown
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks: 
@@ -73,10 +73,10 @@ repos:
         files: '\.(Rhistory|RData|Rds|rds)$'
         # `exclude: <regex>` to allow committing specific files
     -   id: description version
-        name: Version has been incremented in DESCRIPTION
+        name: Version has been incremeneted in DESCRIPTION
         entry: .hooks/description
         language: script
 
 ci:
     autoupdate_schedule: monthly
-    # skip: [pkgdown]
+  # skip: [pkgdown]
