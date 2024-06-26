@@ -54,8 +54,8 @@ osm_basemap <- function (bbox, structures, bg = "gray20") {
             ylim = range (bbox [2, ])
         ) +
         ggplot2::aes (x = lon, y = lat) +
-        ggplot2::scale_x_continuous (expand = c (0, 0)) +
-        ggplot2::scale_y_continuous (expand = c (0, 0))
+        ggplot2::scale_x_discrete (expand = c (0, 0)) +
+        ggplot2::scale_y_discrete (expand = c (0, 0))
 
     return (map)
 }
