@@ -147,15 +147,18 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     check_obj_arg (obj)
     groups <- check_groups_arg (groups)
     if (length (groups) == 1) {
+        if (inherits (groups, "sf")) {
+            groups <- groups$geometry
+        } else {
+            colmat <- FALSE
+            if (missing (bg)) {
 
-        colmat <- FALSE
-        if (missing (bg)) {
-
-            message (paste0 (
-                "Plotting one group only makes sense with bg;",
-                " defaulting to gray40"
-            ))
-            bg <- "gray40"
+                message (paste0 (
+                    "Plotting one group only makes sense with bg;",
+                    " defaulting to gray40"
+                ))
+                bg <- "gray40"
+            }
         }
     }
     # ---------- colmat
@@ -240,7 +243,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
 
     xyflat <- cbind_membs_xy (membs, xy)
 
-    if (!missing (bg)) {
+    if (!is.null (bg)) {
         cols <- c (cols, bg)
     }
     lon <- lat <- id <- NULL # suppress "no visible binding" error
@@ -286,8 +289,9 @@ check_groups_arg <- function (groups) {
 
         if (is (groups, "Spatial")) {
             groups <- de_spatial_points (groups)
+        } else if (!inherits (groups, "sf")) {
+            groups <- list (groups)
         }
-        groups <- list (groups)
     }
 
     return (groups)
