@@ -392,67 +392,6 @@ group_colours_colourmat <- function (cols, groups, rotate) {
     return (list ("cols" = cols, "cmat" = cmat))
 }
 
-#' identify groups which are holes in other groups
-#'
-#' @note This is not currently used, but the code is ready to implement in this
-#' form.
-#'
-#' @noRd
-groups_are_holes <- function (groups) {
-
-    holes <- rep (FALSE, length (groups))
-    group_pairs <- combn (length (groups), 2)
-    for (i in seq_len (ncol (group_pairs))) {
-
-        n1 <- length (groups [[group_pairs [1, i]]]) # nolint
-        n2 <- length (groups [[group_pairs [2, i]]]) # nolint
-        if (n1 > 2 && n2 > 2) { # otherwise can't be a hole
-
-            x1 <- sp::coordinates (groups [[group_pairs [1, i]]]) [, 1] # nolint
-            y1 <- sp::coordinates (groups [[group_pairs [1, i]]]) [, 2] # nolint
-            indx <- which (!duplicated (cbind (x1, y1)))
-            x1 <- x1 [indx]
-            y1 <- y1 [indx]
-            xy1 <- spatstat.geom::ppp (x1, y1,
-                xrange = range (x1), yrange = range (y1)
-            )
-            ch1 <- spatstat.geom::convexhull (xy1)
-            bdry1 <- cbind (ch1$bdry [[1]]$x, ch1$bdry [[1]]$y)
-            x2 <- sp::coordinates (groups [[group_pairs [2, i]]]) [, 1] # nolint
-            y2 <- sp::coordinates (groups [[group_pairs [2, i]]]) [, 2] # nolint
-            indx <- which (!duplicated (cbind (x2, y2)))
-            x2 <- x2 [indx]
-            y2 <- y2 [indx]
-            xy2 <- spatstat.geom::ppp (x2, y2,
-                xrange = range (x2), yrange = range (y2)
-            )
-            ch2 <- spatstat.geom::convexhull (xy2)
-            bdry2 <- cbind (ch2$bdry [[1]]$x, ch2$bdry [[1]]$y)
-
-            indx <- sapply (bdry1, function (x) {
-                sp::point.in.polygon (
-                    bdry2 [, 1], bdry2 [, 2],
-                    bdry1 [, 1], bdry1 [, 2]
-                )
-            })
-            if (all (indx == 1)) {
-                holes [group_pairs [1, i]] <- TRUE
-            }
-            indx <- sapply (bdry2, function (x) {
-                sp::point.in.polygon (
-                    bdry1 [, 1], bdry1 [, 2],
-                    bdry2 [, 1], bdry2 [, 2]
-                )
-            })
-            if (all (indx == 1)) {
-                holes [group_pairs [2, i]] <- TRUE
-            }
-        }
-    }
-
-    return (holes)
-}
-
 #' Trim coordinates of obj to be plotted down to coordinates of map
 #'
 #' @note This has to be modified for points!
