@@ -500,15 +500,14 @@ group_centroids_bdrys <- function (groups, make_hull, cols,
                 bdry [, 1], bdry [, 2]
             )
             indx <- which (indx > 0) # see below for point.in.polygon values
-            grp_centroids [[i]] <- obj_trim$xy_mn [indx, ]
         } else {
 
-            grp_centroids [[i]] <- bdry
             # indx closest point to bdry
-            d <- sqrt ((obj_trim$xmn - bdry [1])^2 +
-                (obj_trim$ymn - bdry [2])^2)
-            indx <- which.min (d)
+            d <- sqrt ((obj_trim$xy_mn [, 1] - bdry [1])^2 +
+                (obj_trim$xy_mn [, 2] - bdry [2])^2)
+            indx <- unname (which.min (d))
         }
+        grp_centroids [[i]] <- obj_trim$xy_mn [indx, ]
 
         boundaries [[i]] <- bdry
 
@@ -826,6 +825,10 @@ map_plus_hulls <- function (map, border_width = 1, groups, xyflat, cols) {
         }
     }
     bdry <- data.frame (do.call (rbind, bdry))
+    if (nrow (bdry) == 0) {
+        return (map)
+    }
+
     names (bdry) <- c ("id", "x", "y")
 
     aes <- ggplot2::aes (x = x, y = y, group = id)
