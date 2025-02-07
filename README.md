@@ -2,15 +2,15 @@
 
 [![R build
 status](https://github.com/ropensci/osmplotr/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check)
-[![codecov](https://codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/osmplotr)
+[![codecov](https://app.codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ropensci/osmplotr)
 [![Project Status:
-Active](http://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/)
+Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/)
 
 ![](man/figures/map1.png)
 
 [![CRAN
-Downloads](http://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](http://cran.r-project.org/package=osmplotr/)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/osmplotr)](http://cran.r-project.org/package=osmplotr/)
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/osmplotr?color=orange)](https://cran.r-project.org/package=osmplotr/)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/osmplotr)](https://cran.r-project.org/package=osmplotr/)
 [![](https://badges.ropensci.org/27_status.svg)](https://github.com/ropensci/software-review/issues/27)
 
 R package to produce visually impressive customisable images of
