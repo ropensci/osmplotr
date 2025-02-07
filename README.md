@@ -351,8 +351,8 @@ maps](https://docs.ropensci.org/osmplotr/articles/basic-maps.html) and
 [data maps](https://docs.ropensci.org/osmplotr/articles/data-maps.html))
 for a lot more detail and further capabilities of `osmplotr`. Please
 note that this project is released with a [Contributor Code of
-Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
-to abide by its terms.
+Conduct](https://ropensci.org/code-of-conduct/). By participating in
+this project you agree to abide by its terms.
 
 ------------------------------------------------------------------------
 
