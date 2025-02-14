@@ -42,8 +42,8 @@
 #' dat <- make_osm_map (osm_data = london, structures = structs)
 #' # or download data automatically using a defined bounding boox
 #' bbox <- get_bbox (c (-0.15, 51.5, -0.10, 51.52))
-#' \dontrun{
 #' dat <- make_osm_map (bbox = bbox, structures = structs)
+#' \donttest{
 #' print_osm_map (dat$map)
 #' }
 #' @family construction

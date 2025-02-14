@@ -22,8 +22,9 @@
 #' map <- osm_basemap (bbox = bbox, bg = "gray20")
 #' map <- add_osm_objects (map, london$dat_BNR, col = "gray40")
 #' print_osm_map (map, width = 7) # prints to screen device
-#' \dontrun{
+#' \donttest{
 #' print_osm_map (map, file = "map.png", width = 500, units = "px")
+#' file.remove ("map.png")
 #' }
 #' @family construction
 #' @export
