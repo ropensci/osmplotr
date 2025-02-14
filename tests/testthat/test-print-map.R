@@ -21,13 +21,13 @@ test_that ("print_osm_map", {
 
         fname <- paste0 ("map.", e)
         # expect_silent (
-            print_osm_map (
-                map,
-                width = 5,
-                height = 4,
-                filename = fname,
-                units = "in"
-            )
+        print_osm_map (
+            map,
+            width = 5,
+            height = 4,
+            filename = fname,
+            units = "in"
+        )
         # )
         expect_true (fname %in% list.files ())
     }
