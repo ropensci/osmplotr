@@ -89,9 +89,9 @@ dat <- data.frame (
     y = as.vector (t (array (y, dim = c (n, n)))),
     z = x * y
 )
-\dontrun{
 map <- osm_basemap (bbox = bbox, bg = "gray20")
 map <- add_osm_surface (map, dat_B, dat = dat, cols = heat.colors (30))
+\donttest{
 print_osm_map (map)
 }
 
@@ -100,7 +100,6 @@ print_osm_map (map)
 # 'dat':
 d <- sqrt ((dat$x - mean (dat$x))^2 + (dat$y - mean (dat$y))^2)
 dat <- dat [which (d < 0.01), ]
-\dontrun{
 map <- osm_basemap (bbox = bbox, bg = "gray20")
 map <- add_osm_surface (
     map,
@@ -109,6 +108,7 @@ map <- add_osm_surface (
     cols = heat.colors (30),
     bg = "gray40"
 )
+\donttest{
 print_osm_map (map)
 }
 
@@ -120,7 +120,6 @@ print_osm_map (map)
 # These data are also provided in
 dat_HP <- london$dat_HP
 cols <- adjust_colours (heat.colors (30), adj = -0.2) # darken by 20\%
-\dontrun{
 map <- add_osm_surface (
     map,
     dat_HP,
@@ -129,6 +128,7 @@ map <- add_osm_surface (
     bg = "gray60",
     size = c (1.5, 0.5)
 )
+\donttest{
 print_osm_map (map)
 }
 
@@ -136,7 +136,6 @@ print_osm_map (map)
 # 'ggplot2' warning, and forces the colour gradient to revert to the last
 # given value.
 dat_T <- london$dat_T # trees
-\dontrun{
 map <- osm_basemap (bbox = bbox, bg = "gray20")
 map <- add_osm_surface (
     map,
@@ -162,11 +161,11 @@ map <- add_osm_surface (
     size = c (5, 2),
     shape = c (8, 1)
 )
+\donttest{
 print_osm_map (map) # 'dat_HP' is in 'topo.colors' not 'heat.colors'
 }
 
 # Add axes and colourbar
-\dontrun{
 map <- add_axes (map)
 map <- add_colourbar (
     map,
@@ -176,6 +175,7 @@ map <- add_colourbar (
     barlength = c (0.6, 0.99),
     vertical = TRUE
 )
+\donttest{
 print_osm_map (map)
 }
 }

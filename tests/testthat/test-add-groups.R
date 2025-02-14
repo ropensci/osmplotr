@@ -1,8 +1,3 @@
-context ("add-groups")
-
-test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
-    identical (Sys.getenv ("GITHUB_WORKFLOW"), "test-coverage"))
-
 test_that ("basemap", {
     expect_error (add_osm_groups (), "map must be supplied")
     expect_error (add_osm_groups (NULL), "map must be a ggplot2 object")

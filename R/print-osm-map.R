@@ -3,7 +3,7 @@
 #' Prints an OSM map produced with \code{osmplotr} to a specified graphics
 #' device.
 #'
-#' @param map The map to be printed; a \code{ggplot2} object produced by
+#' @param map The map to be printed; a \pkg{ggplot2} object produced by
 #' \code{osmplotr}.
 #' @param width Desired width of graphics device.
 #' @param height Desired height of graphics device. Ignored if width specified.
@@ -12,6 +12,7 @@
 #' not explicitly provided).
 #' @param units Units for height and width of graphics device.
 #' @param dpi Resolution of graphics device (dots-per-inch).
+#' @return (Invisibly) the \pkg{ggplot2} map object.
 #'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_osm_objects}},
 #' \code{\link{make_osm_map}}.
@@ -21,8 +22,9 @@
 #' map <- osm_basemap (bbox = bbox, bg = "gray20")
 #' map <- add_osm_objects (map, london$dat_BNR, col = "gray40")
 #' print_osm_map (map, width = 7) # prints to screen device
-#' \dontrun{
+#' \donttest{
 #' print_osm_map (map, file = "map.png", width = 500, units = "px")
+#' file.remove ("map.png")
 #' }
 #' @family construction
 #' @export
