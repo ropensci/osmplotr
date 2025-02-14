@@ -15,7 +15,7 @@ print_osm_map(
 )
 }
 \arguments{
-\item{map}{The map to be printed; a \code{ggplot2} object produced by
+\item{map}{The map to be printed; a \pkg{ggplot2} object produced by
 \code{osmplotr}.}
 
 \item{width}{Desired width of graphics device.}
@@ -30,6 +30,9 @@ not explicitly provided).}
 \item{units}{Units for height and width of graphics device.}
 
 \item{dpi}{Resolution of graphics device (dots-per-inch).}
+}
+\value{
+(Invisibly) the \pkg{ggplot2} map object.
 }
 \description{
 Prints an OSM map produced with \code{osmplotr} to a specified graphics
