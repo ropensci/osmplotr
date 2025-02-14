@@ -1,4 +1,4 @@
-# CRAN notes for osmplotr_v0.3.4 re-submission
+# CRAN notes for osmplotr_v0.3.6 re-submission
 
 This is a re-submission of a previously archived package. The submission may
 generate one single note regarding installed size of ~6MB, which is due to the
