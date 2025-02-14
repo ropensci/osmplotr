@@ -131,9 +131,9 @@ get_bbox_from_data <- function (osm_data) {
 
 get_missing_osm_data <- function (osm_data, structures, bbox, dat_prefix) {
 
-    cat (
-        "Downloading and extracting OSM data for",
-        nrow (structures), "structures ...\n"
+    message (
+        "Downloading and extracting OSM data for ",
+        nrow (structures), " structures ..."
     )
     pb <- txtProgressBar (max = 1, style = 3)
     t0 <- proc.time ()
@@ -163,7 +163,7 @@ get_missing_osm_data <- function (osm_data, structures, bbox, dat_prefix) {
         setTxtProgressBar (pb, i / nrow (structures))
     }
     close (pb)
-    cat ("That took ", (proc.time () - t0) [3], "s\n", sep = "")
+    message ("That took ", (proc.time () - t0) [3], "s\n", sep = "")
 
     list ("indx" = indx, "osm_data" = osm_data)
 }
