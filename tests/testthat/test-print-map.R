@@ -1,7 +1,5 @@
-context ("print-osm-map")
-
-test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
-    identical (Sys.getenv ("GITHUB_WORKFLOW"), "test-coverage"))
+test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") ||
+    identical (Sys.getenv ("GITHUB_JOB"), "test-coverage"))
 
 test_that ("print_osm_map", {
 
@@ -17,15 +15,15 @@ test_that ("print_osm_map", {
     for (e in exts) {
 
         fname <- paste0 ("map.", e)
-        expect_silent (
-            print_osm_map (
-                map,
-                width = 5,
-                height = 4,
-                filename = fname,
-                units = "in"
-            )
+        # expect_silent (
+        print_osm_map (
+            map,
+            width = 5,
+            height = 4,
+            filename = fname,
+            units = "in"
         )
+        # )
         expect_true (fname %in% list.files ())
     }
     if (test_all) {

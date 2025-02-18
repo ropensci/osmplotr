@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.5.009",
+  "version": "0.3.5.021",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.4.1 (2024-06-14)",
+  "runtimePlatform": "R version 4.4.2 (2024-10-31)",
   "author": [
     {
       "@type": "Person",
@@ -281,12 +281,12 @@
     },
     "SystemRequirements": {}
   },
-  "fileSize": "1515.651KB",
+  "fileSize": "1371.45KB",
   "releaseNotes": "https://github.com/ropensci/osmplotr/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/osmplotr/blob/main/README.md",
   "contIntegration": [
     "https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check",
-    "https://codecov.io/gh/ropensci/osmplotr"
+    "https://app.codecov.io/gh/ropensci/osmplotr"
   ],
   "developmentStatus": "https://www.repostatus.org/",
   "review": {

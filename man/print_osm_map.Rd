@@ -15,7 +15,7 @@ print_osm_map(
 )
 }
 \arguments{
-\item{map}{The map to be printed; a \code{ggplot2} object produced by
+\item{map}{The map to be printed; a \pkg{ggplot2} object produced by
 \code{osmplotr}.}
 
 \item{width}{Desired width of graphics device.}
@@ -31,6 +31,9 @@ not explicitly provided).}
 
 \item{dpi}{Resolution of graphics device (dots-per-inch).}
 }
+\value{
+(Invisibly) the \pkg{ggplot2} map object.
+}
 \description{
 Prints an OSM map produced with \code{osmplotr} to a specified graphics
 device.
@@ -40,8 +43,9 @@ bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
 map <- osm_basemap (bbox = bbox, bg = "gray20")
 map <- add_osm_objects (map, london$dat_BNR, col = "gray40")
 print_osm_map (map, width = 7) # prints to screen device
-\dontrun{
+\donttest{
 print_osm_map (map, file = "map.png", width = 500, units = "px")
+file.remove ("map.png")
 }
 }
 \seealso{

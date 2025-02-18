@@ -42,7 +42,6 @@ problems!
 }
 \examples{
 bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-\dontrun{
 highways <- c (
     "Monmouth.St", "Short.?s.Gardens", "Endell.St", "Long.Acre",
     "Upper.Saint.Martin"
@@ -50,9 +49,11 @@ highways <- c (
 # Note that dots signify "anything", including whitespace and apostrophes,
 # and that '?' denotes optional previous character and so here matches
 # both "Shorts Gardens" and "Short's Gardens"
+\dontrun{
 highways1 <- connect_highways (highways = highways, bbox = bbox, plot = TRUE)
 highways <- c ("Endell.St", "High.Holborn", "Drury.Lane", "Long.Acre")
 highways2 <- connect_highways (highways = highways, bbox = bbox, plot = TRUE)
+}
 
 # Use of 'connect_highways' to highlight a region on a map
 map <- osm_basemap (bbox = bbox, bg = "gray20")
@@ -61,6 +62,7 @@ map <- osm_basemap (bbox = bbox, bg = "gray20")
 #                            bbox = bbox)
 # Those data are part of 'osmplotr':
 dat_BNR <- london$dat_BNR # Non-residential buildings
+\dontrun{
 groups <- list (highways1, highways2)
 map <- add_osm_groups (map,
     obj = dat_BNR, groups = groups,

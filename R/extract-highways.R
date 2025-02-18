@@ -71,7 +71,7 @@ abbreviate_hwy_names <- function (highway_names, nletters = 2) {
 
 dl_hw_data <- function (highway_names, hw_abbrvs, bbox) {
 
-    cat ("Downloading OSM data ...\n")
+    message ("Downloading OSM data ...")
     p4s <- NULL
     lens_old <- length (highway_names)
     lens <- 0
