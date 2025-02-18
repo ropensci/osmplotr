@@ -147,15 +147,18 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
     check_obj_arg (obj)
     groups <- check_groups_arg (groups)
     if (length (groups) == 1) {
+        if (inherits (groups, "sf")) {
+            groups <- groups$geometry
+        } else {
+            colmat <- FALSE
+            if (missing (bg)) {
 
-        colmat <- FALSE
-        if (missing (bg)) {
-
-            message (paste0 (
-                "Plotting one group only makes sense with bg;",
-                " defaulting to gray40"
-            ))
-            bg <- "gray40"
+                message (paste0 (
+                    "Plotting one group only makes sense with bg;",
+                    " defaulting to gray40"
+                ))
+                bg <- "gray40"
+            }
         }
     }
     # ---------- colmat
@@ -240,7 +243,7 @@ add_osm_groups <- function (map, obj, groups, cols, bg, make_hull = FALSE,
 
     xyflat <- cbind_membs_xy (membs, xy)
 
-    if (!missing (bg)) {
+    if (!is.null (bg)) {
         cols <- c (cols, bg)
     }
     lon <- lat <- id <- NULL # suppress "no visible binding" error
@@ -286,8 +289,9 @@ check_groups_arg <- function (groups) {
 
         if (is (groups, "Spatial")) {
             groups <- de_spatial_points (groups)
+        } else if (!inherits (groups, "sf")) {
+            groups <- list (groups)
         }
-        groups <- list (groups)
     }
 
     return (groups)
@@ -388,67 +392,6 @@ group_colours_colourmat <- function (cols, groups, rotate) {
     return (list ("cols" = cols, "cmat" = cmat))
 }
 
-#' identify groups which are holes in other groups
-#'
-#' @note This is not currently used, but the code is ready to implement in this
-#' form.
-#'
-#' @noRd
-groups_are_holes <- function (groups) {
-
-    holes <- rep (FALSE, length (groups))
-    group_pairs <- combn (length (groups), 2)
-    for (i in seq_len (ncol (group_pairs))) {
-
-        n1 <- length (groups [[group_pairs [1, i]]]) # nolint
-        n2 <- length (groups [[group_pairs [2, i]]]) # nolint
-        if (n1 > 2 && n2 > 2) { # otherwise can't be a hole
-
-            x1 <- sp::coordinates (groups [[group_pairs [1, i]]]) [, 1] # nolint
-            y1 <- sp::coordinates (groups [[group_pairs [1, i]]]) [, 2] # nolint
-            indx <- which (!duplicated (cbind (x1, y1)))
-            x1 <- x1 [indx]
-            y1 <- y1 [indx]
-            xy1 <- spatstat.geom::ppp (x1, y1,
-                xrange = range (x1), yrange = range (y1)
-            )
-            ch1 <- spatstat.geom::convexhull (xy1)
-            bdry1 <- cbind (ch1$bdry [[1]]$x, ch1$bdry [[1]]$y)
-            x2 <- sp::coordinates (groups [[group_pairs [2, i]]]) [, 1] # nolint
-            y2 <- sp::coordinates (groups [[group_pairs [2, i]]]) [, 2] # nolint
-            indx <- which (!duplicated (cbind (x2, y2)))
-            x2 <- x2 [indx]
-            y2 <- y2 [indx]
-            xy2 <- spatstat.geom::ppp (x2, y2,
-                xrange = range (x2), yrange = range (y2)
-            )
-            ch2 <- spatstat.geom::convexhull (xy2)
-            bdry2 <- cbind (ch2$bdry [[1]]$x, ch2$bdry [[1]]$y)
-
-            indx <- sapply (bdry1, function (x) {
-                sp::point.in.polygon (
-                    bdry2 [, 1], bdry2 [, 2],
-                    bdry1 [, 1], bdry1 [, 2]
-                )
-            })
-            if (all (indx == 1)) {
-                holes [group_pairs [1, i]] <- TRUE
-            }
-            indx <- sapply (bdry2, function (x) {
-                sp::point.in.polygon (
-                    bdry1 [, 1], bdry1 [, 2],
-                    bdry2 [, 1], bdry2 [, 2]
-                )
-            })
-            if (all (indx == 1)) {
-                holes [group_pairs [2, i]] <- TRUE
-            }
-        }
-    }
-
-    return (holes)
-}
-
 #' Trim coordinates of obj to be plotted down to coordinates of map
 #'
 #' @note This has to be modified for points!
@@ -520,7 +463,7 @@ group_centroids_bdrys <- function (groups, make_hull, cols,
     boundaries <- list ()
     grp_centroids <- list ()
 
-    for (i in seq (groups)) {
+    for (i in seq_along (groups)) {
 
         if ((length (make_hull) == 1 && make_hull) ||
             (length (make_hull) > 1 && make_hull [i])) {
@@ -557,15 +500,14 @@ group_centroids_bdrys <- function (groups, make_hull, cols,
                 bdry [, 1], bdry [, 2]
             )
             indx <- which (indx > 0) # see below for point.in.polygon values
-            grp_centroids [[i]] <- obj_trim$xy_mn [indx, ]
         } else {
 
-            grp_centroids [[i]] <- bdry
             # indx closest point to bdry
-            d <- sqrt ((obj_trim$xmn - bdry [1])^2 +
-                (obj_trim$ymn - bdry [2])^2)
-            indx <- which.min (d)
+            d <- sqrt ((obj_trim$xy_mn [, 1] - bdry [1])^2 +
+                (obj_trim$xy_mn [, 2] - bdry [2])^2)
+            indx <- unname (which.min (d))
         }
+        grp_centroids [[i]] <- obj_trim$xy_mn [indx, , drop = FALSE]
 
         boundaries [[i]] <- bdry
 
@@ -645,7 +587,7 @@ membs_single_group <- function (groups, coords, obj_trim, cent_bdry) {
     x0 <- obj_trim$xy_mn [indx, 1]
     y0 <- obj_trim$xy_mn [indx, 2]
     dists <- array (NA, dim = c (length (indx), length (groups)))
-    for (i in seq (groups)) {
+    for (i in seq_along (groups)) {
 
         ng <- dim (cent_bdry$grp_centroids [[i]]) [1]
         if (ng > 0) {
@@ -883,6 +825,10 @@ map_plus_hulls <- function (map, border_width = 1, groups, xyflat, cols) {
         }
     }
     bdry <- data.frame (do.call (rbind, bdry))
+    if (nrow (bdry) == 0) {
+        return (map)
+    }
+
     names (bdry) <- c ("id", "x", "y")
 
     aes <- ggplot2::aes (x = x, y = y, group = id)

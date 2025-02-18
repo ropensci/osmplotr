@@ -8,7 +8,7 @@
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.5.021",
+  "version": "0.3.5.022",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -220,6 +220,18 @@
     },
     "9": {
       "@type": "SoftwareApplication",
+      "identifier": "sfheaders",
+      "name": "sfheaders",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=sfheaders"
+    },
+    "10": {
+      "@type": "SoftwareApplication",
       "identifier": "sp",
       "name": "sp",
       "provider": {
@@ -230,7 +242,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sp"
     },
-    "10": {
+    "11": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat",
       "name": "spatstat",
@@ -243,7 +255,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat"
     },
-    "11": {
+    "12": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat.explore",
       "name": "spatstat.explore",
@@ -255,7 +267,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat.explore"
     },
-    "12": {
+    "13": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat.geom",
       "name": "spatstat.geom",

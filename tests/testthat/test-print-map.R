@@ -8,13 +8,10 @@ test_that ("print_osm_map", {
     map <- osm_basemap (bbox = bbox, bg = "gray20")
     map <- add_osm_objects (map, dat_B)
 
-    # exts <- c ("eps", "ps", "tex", "pdf", "svg", "png",
-    #           "jpg", "jpeg", "bmp", "tiff")
-    # svg fails on travis osx with r: release
     exts <- c (
-        "eps", "ps", "tex", "pdf", "png",
+        "eps", "ps", "tex", "pdf", "svg", "png",
         "jpg", "jpeg", "bmp", "tiff"
-    )
+    ) [-3] # text generates a warning from grDevices::pictex
     for (e in exts) {
 
         fname <- paste0 ("map.", e)
