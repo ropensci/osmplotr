@@ -463,7 +463,7 @@ group_centroids_bdrys <- function (groups, make_hull, cols,
     boundaries <- list ()
     grp_centroids <- list ()
 
-    for (i in seq (groups)) {
+    for (i in seq_along (groups)) {
 
         if ((length (make_hull) == 1 && make_hull) ||
             (length (make_hull) > 1 && make_hull [i])) {
@@ -507,7 +507,7 @@ group_centroids_bdrys <- function (groups, make_hull, cols,
                 (obj_trim$xy_mn [, 2] - bdry [2])^2)
             indx <- unname (which.min (d))
         }
-        grp_centroids [[i]] <- obj_trim$xy_mn [indx, ]
+        grp_centroids [[i]] <- obj_trim$xy_mn [indx, , drop = FALSE]
 
         boundaries [[i]] <- bdry
 
@@ -587,7 +587,7 @@ membs_single_group <- function (groups, coords, obj_trim, cent_bdry) {
     x0 <- obj_trim$xy_mn [indx, 1]
     y0 <- obj_trim$xy_mn [indx, 2]
     dists <- array (NA, dim = c (length (indx), length (groups)))
-    for (i in seq (groups)) {
+    for (i in seq_along (groups)) {
 
         ng <- dim (cent_bdry$grp_centroids [[i]]) [1]
         if (ng > 0) {
