@@ -492,7 +492,7 @@ sps_through_cycle <- function (ways, cyc) {
         }, simplify = FALSE)
         path_lens <- vapply (paths, length, integer (1L))
         this_path <- paths [[which.min (path_lens)]]
-        this_way <- w0f [this_path, ]
+        this_way <- w0f [this_path, , drop = FALSE]
 
         ways [[c0]] <- list (this_way)
         thepath <- rbind (thepath, this_way)
