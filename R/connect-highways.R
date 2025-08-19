@@ -406,22 +406,64 @@ get_conmat <- function (ways) {
 sps_through_cycle <- function (ways, cyc) {
 
     cyc <- rbind (cyc, cyc [1, ])
-    thepath <- NULL
+    xy0 <- apply (do.call (rbind, do.call (c, ways)), 2, mean)
 
+    # First reduce lists of ways doen to only those which connect with ways in
+    # other groups:
     for (i in seq_len (nrow (cyc)) [-1]) {
 
-        w0 <- cyc [i - 1, 2] # the current way
-        wf <- cyc [i - 1, 1] # the 'from' way
-        wt <- cyc [i, 2] # the 'to' way
-        w0f <- do.call (rbind, ways [[w0]])
+        c0 <- cyc [i - 1, 2] # the current way
+        cf <- cyc [i - 1, 1] # the 'from' way
+        ct <- cyc [i, 2] # the 'to' way
+
+        nf <- rownames (do.call (rbind, ways [[cf]]))
+        nt <- rownames (do.call (rbind, ways [[ct]]))
+        w0 <- ways [[c0]]
+        index_f <- which (vapply (
+            w0,
+            function (i) any (rownames (i) %in% nf),
+            logical (1L)
+        ))
+        index_t <- which (vapply (
+            w0,
+            function (i) any (rownames (i) %in% nt),
+            logical (1L)
+        ))
+        combs <- expand.grid (index_f, index_t)
+        cm <- osmplotr:::get_conmat (ways [[c0]])
+        asp <- e1071::allShortestPaths (cm)
+        paths <- apply (combs, 1, function (i) {
+            unique (e1071::extractPath (asp, i [1], i [2]))
+        }, simplify = FALSE)
+        path_lens <- vapply (paths, length, integer (1L))
+        paths <- paths [which (path_lens == min (path_lens))]
+        if (length (paths) > 1L) {
+            # Choose paths with outermost elements:
+            dmax <- vapply (paths, function (p) {
+                these_ways <- do.call (rbind, w0 [p])
+                max (geodist::geodist (xy0, these_ways))
+            }, numeric (1L))
+            paths <- paths [[which.max (dmax)]]
+        }
+        ways [[c0]] <- ways [[c0]] [unlist (paths)]
+    }
+
+    thepath <- NULL
+    for (i in seq_len (nrow (cyc)) [-1]) {
+
+        c0 <- cyc [i - 1, 2] # the current way
+        cf <- cyc [i - 1, 1] # the 'from' way
+        ct <- cyc [i, 2] # the 'to' way
+
+        w0f <- do.call (rbind, ways [[c0]])
         if (is.null (thepath)) {
 
-            wff <- do.call (rbind, ways [[wf]])
+            wff <- do.call (rbind, ways [[cf]])
         } else {
 
             wff <- thepath
         }
-        wtf <- do.call (rbind, ways [[wt]])
+        wtf <- do.call (rbind, ways [[ct]])
         # start and end nodes that join to wf and wt:
         nst <- rownames (wff) [which (rownames (wff) %in% rownames (w0f))]
         nend <- rownames (wtf) [which (rownames (wtf) %in% rownames (w0f))]
@@ -429,9 +471,9 @@ sps_through_cycle <- function (ways, cyc) {
         w0f <- w0f [!duplicated (w0f), ]
         adjmat <- array (NA, dim = rep (nrow (w0f), 2))
         nms <- rownames (w0f)
-        for (j in seq (ways [[w0]])) {
+        for (j in seq (ways [[c0]])) {
 
-            wj <- ways [[w0]] [[j]]
+            wj <- ways [[c0]] [[j]]
             indx <- match (rownames (wj), nms)
             ifr <- indx [1:(length (indx) - 1)]
             ito <- indx [-1]
@@ -449,7 +491,10 @@ sps_through_cycle <- function (ways, cyc) {
             for (k in ito) {
 
                 pathj <- e1071::extractPath (asp, j, k)
-                if (length (pathj) < length (pathi)) {
+                this_path <- (length (pathj) < length (pathi) && length (pathj) > 2L) ||
+                    (k == ito [length (ito)] && length (pathi) == 1e6)
+                # if (length (pathj) < length (pathi)) {
+                if (this_path) {
                     pathi <- pathj
                 }
             }
