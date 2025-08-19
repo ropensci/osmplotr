@@ -448,6 +448,22 @@ sps_through_cycle <- function (ways, cyc) {
         ways [[c0]] <- ways [[c0]] [unlist (paths)]
     }
 
+    way_lens <- vapply (ways, length, integer (1L))
+    while (any (way_lens) > 1L) {
+        i <- match (which (way_lens > 1L) [1], cyc [, 1])
+        c0 <- cyc [i - 1, 2]
+        cf <- cyc [i - 1, 1]
+        ct <- cyc [i, 2]
+        nf <- rownames (do.call (rbind, ways [[cf]]))
+        nt <- rownames (do.call (rbind, ways [[ct]]))
+        path_lens <- lapply (ways [[i]], function (w) {
+            index <- match (c (nf, nt), rownames (w))
+            index <- seq (min (index, na.rm = TRUE), max (index, na.rm = TRUE))
+            path_i <- w [index, ]
+            sum (geodist::geodist (path_i, sequential = TRUE))
+        })
+    }
+
     thepath <- NULL
     for (i in seq_len (nrow (cyc)) [-1]) {
 
@@ -471,7 +487,7 @@ sps_through_cycle <- function (ways, cyc) {
         w0f <- w0f [!duplicated (w0f), ]
         adjmat <- array (NA, dim = rep (nrow (w0f), 2))
         nms <- rownames (w0f)
-        for (j in seq (ways [[c0]])) {
+        for (j in seq_along (ways [[c0]])) {
 
             wj <- ways [[c0]] [[j]]
             indx <- match (rownames (wj), nms)
@@ -486,22 +502,16 @@ sps_through_cycle <- function (ways, cyc) {
         ifr <- which (nms %in% nst)
         ito <- which (nms %in% nend)
 
-        pathi <- rep (NA, 1e6) # arbitrarily longer than any likely path
-        for (j in ifr) {
-            for (k in ito) {
+        combs <- expand.grid (ifr, ito)
+        paths <- apply (combs, 1, function (i) {
+            unique (e1071::extractPath (asp, i [1], i [2]))
+        }, simplify = FALSE)
+        path_lens <- vapply (paths, length, integer (1L))
+        this_path <- paths [[which.min (path_lens)]]
+        this_way <- w0f [this_path, ]
 
-                pathj <- e1071::extractPath (asp, j, k)
-                this_path <- (length (pathj) < length (pathi) && length (pathj) > 2L) ||
-                    (k == ito [length (ito)] && length (pathi) == 1e6)
-                # if (length (pathj) < length (pathi)) {
-                if (this_path) {
-                    pathi <- pathj
-                }
-            }
-        }
-        pathi <- nms [pathi]
-        pathi <- w0f [match (pathi, nms), ]
-        thepath <- rbind (thepath, pathi)
+        ways [[c0]] <- list (this_way)
+        thepath <- rbind (thepath, this_way)
     }
 
     return (thepath)
