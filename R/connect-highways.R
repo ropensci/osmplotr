@@ -448,22 +448,6 @@ sps_through_cycle <- function (ways, cyc) {
         ways [[c0]] <- ways [[c0]] [unlist (paths)]
     }
 
-    way_lens <- vapply (ways, length, integer (1L))
-    while (any (way_lens) > 1L) {
-        i <- match (which (way_lens > 1L) [1], cyc [, 1])
-        c0 <- cyc [i - 1, 2]
-        cf <- cyc [i - 1, 1]
-        ct <- cyc [i, 2]
-        nf <- rownames (do.call (rbind, ways [[cf]]))
-        nt <- rownames (do.call (rbind, ways [[ct]]))
-        path_lens <- lapply (ways [[i]], function (w) {
-            index <- match (c (nf, nt), rownames (w))
-            index <- seq (min (index, na.rm = TRUE), max (index, na.rm = TRUE))
-            path_i <- w [index, ]
-            sum (geodist::geodist (path_i, sequential = TRUE))
-        })
-    }
-
     thepath <- NULL
     for (i in seq_len (nrow (cyc)) [-1]) {
 
