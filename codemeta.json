@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.5.027",
+  "version": "0.3.5.28",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.4.2 (2024-10-31)",
+  "runtimePlatform": "R version 4.5.1 (2025-06-13)",
   "author": [
     {
       "@type": "Person",
@@ -72,6 +72,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=curl"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "geodist",
+      "name": "geodist",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=geodist"
     },
     {
       "@type": "SoftwareApplication",
@@ -279,31 +291,17 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat.geom"
     },
-    "SystemRequirements": {}
+    "SystemRequirements": null
   },
-  "fileSize": "1371.45KB",
-  "releaseNotes": "https://github.com/ropensci/osmplotr/blob/master/NEWS.md",
+  "fileSize": "3214.001KB",
+  "releaseNotes": "https://github.com/ropensci/osmplotr/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/osmplotr/blob/main/README.md",
-  "contIntegration": [
-    "https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check",
-    "https://app.codecov.io/gh/ropensci/osmplotr"
-  ],
+  "contIntegration": ["https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check", "https://app.codecov.io/gh/ropensci/osmplotr"],
   "developmentStatus": "https://www.repostatus.org/",
   "review": {
     "@type": "Review",
     "url": "https://github.com/ropensci/software-review/issues/27",
     "provider": "https://ropensci.org"
   },
-  "keywords": [
-    "osm",
-    "openstreetmap",
-    "overpass-api",
-    "overpass",
-    "data-visualisation",
-    "highlighting-clusters",
-    "r",
-    "rstats",
-    "r-package",
-    "peer-reviewed"
-  ]
+  "keywords": ["osm", "openstreetmap", "overpass-api", "overpass", "data-visualisation", "highlighting-clusters", "r", "rstats", "r-package", "peer-reviewed"]
 }

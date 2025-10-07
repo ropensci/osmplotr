@@ -1,6 +1,6 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.5.027
+Version: 0.3.5.028
 Authors@R: 
     c(person(given = "Mark",
              family = "Padgham",
@@ -40,6 +40,7 @@ Imports:
     spatstat.geom
 Suggests:
     curl,
+    geodist,
     knitr,
     magrittr,
     markdown,

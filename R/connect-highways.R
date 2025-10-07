@@ -63,6 +63,8 @@
 #' @export
 connect_highways <- function (highways, bbox, plot = FALSE) {
 
+    requireNamespace ("geodist", quietly = TRUE)
+
     if (missing (highways)) {
         stop ("A vector of highway names must be given")
     }
@@ -430,19 +432,23 @@ sps_through_cycle <- function (ways, cyc) {
             logical (1L)
         ))
         combs <- expand.grid (index_f, index_t)
-        cm <- osmplotr:::get_conmat (ways [[c0]])
-        asp <- e1071::allShortestPaths (cm)
-        paths <- apply (combs, 1, function (i) {
-            unique (e1071::extractPath (asp, i [1], i [2]))
-        }, simplify = FALSE)
-        path_lens <- vapply (paths, length, integer (1L))
-        paths <- paths [which (path_lens == min (path_lens))]
+        if (length (w0) > 1L) {
+            cm <- get_conmat (w0)
+            asp <- e1071::allShortestPaths (cm)
+            paths <- apply (combs, 1, function (i) {
+                unique (e1071::extractPath (asp, i [1], i [2]))
+            }, simplify = FALSE)
+            path_lens <- vapply (paths, length, integer (1L))
+            paths <- paths [which (path_lens == min (path_lens))]
+        } else {
+            paths <- list (1L)
+        }
         if (length (paths) > 1L) {
             # Choose paths with outermost elements:
-            dmax <- vapply (paths, function (p) {
+            dmax <- lapply (paths, function (p) {
                 these_ways <- do.call (rbind, w0 [p])
                 max (geodist::geodist (xy0, these_ways))
-            }, numeric (1L))
+            })
             paths <- paths [[which.max (dmax)]]
         }
         ways [[c0]] <- ways [[c0]] [unlist (paths)]
