@@ -1,46 +1,44 @@
 test_all <- identical (Sys.getenv ("MPADGE_LOCAL"), "true")
 
-source ("../stub.R")
+test_that ("missing objects", {
+    expect_error (
+        connect_highways (),
+        "A vector of highway names must be given"
+    )
+    expect_error (
+        connect_highways ("aaa"),
+        "A bounding box must be given"
+    )
+})
 
-if (curl::has_internet ()) { # otherwise all of these return errors not warnings
+if (test_all) {
 
-    test_that ("missing objects", {
+    test_that ("unrecognised highways", {
+        bbox <- get_bbox (c (-0.121, 51.51, -0.120, 51.52))
         expect_error (
-            connect_highways (),
-            "A vector of highway names must be given"
-        )
-        expect_error (
-            connect_highways ("aaa"),
-            "A bounding box must be given"
+            httptest2::with_mock_dir ("connect-hw", {
+                connect_highways ("aaa", bbox)
+            }),
+            "No data able to be extracted"
         )
     })
 
-    if (test_all) {
+    bbox <- get_bbox (c (-0.127, 51.514, -0.125, 51.515))
+    highways <- c ("Monmouth.St", "Short.?s.Gardens")
 
-        test_that ("unrecognised highways", {
-            bbox <- get_bbox (c (-0.13, 51.5, -0.11, 51.52))
-            # No error specified because different HTML errors may
-            # also be generated
-            expect_error (connect_highways ("aaa", bbox))
-            # expect_error (connect_highways ("aaa", bbox),
-            #              "No data able to be extracted")
-        })
-
-        bbox <- get_bbox (c (-0.15, 51.5, -0.10, 51.52))
-        highways <- c ("Monmouth.St", "Short.?s.Gardens")
-
-        test_that ("extract_highways", {
-            ways <- extract_highways (
+    test_that ("extract_highways", {
+        ways <- httptest2::with_mock_dir ("extract-hws", {
+            extract_highways (
                 highway_names = highways,
                 bbox = bbox
             )
-            expect_is (ways, "list")
-            expect_true (length (ways) > 1) # some might fail
-            nms <- abbreviate_hwy_names (highways)
-            expect_true (any (nms %in% names (ways)))
         })
-    }
-} # end if has_internet
+        expect_is (ways, "list")
+        expect_true (length (ways) > 1) # some might fail
+        nms <- abbreviate_hwy_names (highways)
+        expect_true (any (nms %in% names (ways)))
+    })
+}
 
 # highway tests using internal data
 load (system.file ("extdata", "hwys.rda", package = "osmplotr"))

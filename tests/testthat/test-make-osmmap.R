@@ -1,7 +1,5 @@
 context ("make-osm-map")
 
-source ("../stub.R")
-
 test_that ("make_osm_map", {
 
     dat <- list (
@@ -30,17 +28,16 @@ test_that ("get_missing_osm_data", {
 
     structs <- osm_structures ()
     indx <- which (structs$structure == "building")
+    structs$value [indx] <- "yes"
     structs <- structs [indx, ]
-    bbox <- get_bbox (c (-0.15, 51.5, -0.10, 51.52))
-    stub (
-        get_missing_osm_data, "extract_osm_objects",
-        function (x, ...) london$dat_BNR
-    )
-    dat <- get_missing_osm_data (
-        osm_data = list (),
-        structures = structs, bbox = bbox,
-        dat_prefix = "dat_"
-    )
+    bbox <- get_bbox (c (-0.1265, 51.5145, -0.1263, 51.5147))
+    dat <- httptest2::with_mock_dir ("missing-data", {
+        get_missing_osm_data (
+            osm_data = list (),
+            structures = structs, bbox = bbox,
+            dat_prefix = "dat_"
+        )
+    })
     expect_is (dat, "list")
     expect_identical (names (dat), c ("indx", "osm_data"))
     expect_is (dat$indx, "integer")
