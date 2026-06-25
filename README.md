@@ -1,8 +1,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![R build
-status](https://github.com/ropensci/osmplotr/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check)
-[![codecov](https://app.codecov.io/gh/ropensci/osmplotr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ropensci/osmplotr)
+[![R-CMD-check](https://github.com/ropensci/osmplotr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ropensci/osmplotr/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/ropensci/osmplotr/graph/badge.svg)](https://app.codecov.io/gh/ropensci/osmplotr)
 [![Project Status:
 Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/)
 

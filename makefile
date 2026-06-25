@@ -19,7 +19,7 @@ knith: $(RFILE).Rmd ## Render README as HTML
 	echo "rmarkdown::render('$(RFILE).Rmd',output_file='$(RFILE).html')" | R --no-save -q
 
 knitr: $(RFILE).Rmd ## Render README as markdown
-	echo "rmarkdown::render('$(RFILE).Rmd',output_file='$(RFILE).md')" | R --no-save -q
+	echo "rmarkdown::render('$(RFILE).Rmd',output_format=rmarkdown::md_document(variant='gfm'))" | R --no-save -q
 
 open: ## Open main HTML vignette in browser
 	xdg-open docs/articles/$(VIGNETTE).html &
