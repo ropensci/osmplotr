@@ -46,9 +46,6 @@
 #' allows the limits of \code{dat} to be used precisely when adding colourbars
 #' with \code{\link{add_colourbar}}.
 #'
-#' @importFrom ggplot2 aes geom_polygon scale_fill_gradientn
-#' scale_colour_gradientn geom_point geom_path
-#'
 #' @seealso \code{\link{osm_basemap}}, \code{\link{add_colourbar}}.
 #'
 #' @examples
