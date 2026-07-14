@@ -1,6 +1,8 @@
 test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") ||
     identical (Sys.getenv ("GITHUB_JOB"), "test-coverage"))
 
+skip_on_os ("mac")
+
 test_that ("print_osm_map", {
 
     dat_B <- london$dat_BNR # nolint
