@@ -85,8 +85,8 @@ dat <- extract_osm_objects (
 \seealso{
 \code{\link{add_osm_objects}}.
 
-Other data-extraction: 
-\code{\link{connect_highways}()},
-\code{\link{get_bbox}()}
+Other data-extraction:
+\code{\link[=connect_highways]{connect_highways()}},
+\code{\link[=get_bbox]{get_bbox()}}
 }
 \concept{data-extraction}

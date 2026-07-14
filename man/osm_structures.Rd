@@ -45,10 +45,10 @@ print_osm_map (dat$map)
 \seealso{
 \code{\link{make_osm_map}}.
 
-Other construction: 
-\code{\link{add_osm_objects}()},
-\code{\link{make_osm_map}()},
-\code{\link{osm_basemap}()},
-\code{\link{print_osm_map}()}
+Other construction:
+\code{\link[=add_osm_objects]{add_osm_objects()}},
+\code{\link[=make_osm_map]{make_osm_map()}},
+\code{\link[=osm_basemap]{osm_basemap()}},
+\code{\link[=print_osm_map]{print_osm_map()}}
 }
 \concept{construction}

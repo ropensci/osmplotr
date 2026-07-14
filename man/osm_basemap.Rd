@@ -36,10 +36,10 @@ print_osm_map (map)
 \seealso{
 \code{\link{add_osm_objects}}, \code{\link{make_osm_map}}.
 
-Other construction: 
-\code{\link{add_osm_objects}()},
-\code{\link{make_osm_map}()},
-\code{\link{osm_structures}()},
-\code{\link{print_osm_map}()}
+Other construction:
+\code{\link[=add_osm_objects]{add_osm_objects()}},
+\code{\link[=make_osm_map]{make_osm_map()}},
+\code{\link[=osm_structures]{osm_structures()}},
+\code{\link[=print_osm_map]{print_osm_map()}}
 }
 \concept{construction}

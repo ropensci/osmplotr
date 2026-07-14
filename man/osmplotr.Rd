@@ -96,6 +96,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Mark Padgham \email{mark.padgham@email.com}
   \item Richard Beare
 }
 

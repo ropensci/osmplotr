@@ -84,10 +84,10 @@ print_osm_map (map)
 \seealso{
 \code{\link{osm_basemap}}, \code{\link{extract_osm_objects}}.
 
-Other construction: 
-\code{\link{make_osm_map}()},
-\code{\link{osm_basemap}()},
-\code{\link{osm_structures}()},
-\code{\link{print_osm_map}()}
+Other construction:
+\code{\link[=make_osm_map]{make_osm_map()}},
+\code{\link[=osm_basemap]{osm_basemap()}},
+\code{\link[=osm_structures]{osm_structures()}},
+\code{\link[=print_osm_map]{print_osm_map()}}
 }
 \concept{construction}

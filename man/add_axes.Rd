@@ -58,8 +58,8 @@ print_osm_map (map)
 \seealso{
 \code{\link{osm_basemap}}.
 
-Other map-extra: 
-\code{\link{add_colourbar}()},
-\code{\link{osm_line2poly}()}
+Other map-extra:
+\code{\link[=add_colourbar]{add_colourbar()}},
+\code{\link[=osm_line2poly]{osm_line2poly()}}
 }
 \concept{map-extra}

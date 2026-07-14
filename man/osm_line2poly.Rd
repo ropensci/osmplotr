@@ -65,8 +65,8 @@ map <- osm_basemap (bbox = bb) \%>\%
 }
 }
 \seealso{
-Other map-extra: 
-\code{\link{add_axes}()},
-\code{\link{add_colourbar}()}
+Other map-extra:
+\code{\link[=add_axes]{add_axes()}},
+\code{\link[=add_colourbar]{add_colourbar()}}
 }
 \concept{map-extra}

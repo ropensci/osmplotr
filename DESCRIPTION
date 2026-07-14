@@ -1,6 +1,6 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.5.036
+Version: 0.3.5.037
 Authors@R: 
     c(person(given = "Mark",
              family = "Padgham",
@@ -51,4 +51,4 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+Config/roxygen2/version: 8.0.0

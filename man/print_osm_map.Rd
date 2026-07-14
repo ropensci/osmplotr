@@ -52,10 +52,10 @@ file.remove ("map.png")
 \code{\link{osm_basemap}}, \code{\link{add_osm_objects}},
 \code{\link{make_osm_map}}.
 
-Other construction: 
-\code{\link{add_osm_objects}()},
-\code{\link{make_osm_map}()},
-\code{\link{osm_basemap}()},
-\code{\link{osm_structures}()}
+Other construction:
+\code{\link[=add_osm_objects]{add_osm_objects()}},
+\code{\link[=make_osm_map]{make_osm_map()}},
+\code{\link[=osm_basemap]{osm_basemap()}},
+\code{\link[=osm_structures]{osm_structures()}}
 }
 \concept{construction}

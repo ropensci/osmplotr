@@ -51,7 +51,7 @@ print_osm_map (map)
 \seealso{
 \code{\link{add_osm_groups}}.
 
-Other colours: 
-\code{\link{adjust_colours}()}
+Other colours:
+\code{\link[=adjust_colours]{adjust_colours()}}
 }
 \concept{colours}
