@@ -12,6 +12,7 @@ This re-submission also rectifies several issues pointed out in an email from 7t
   - `extract_osm_objects()`
   - `osm_line2poly()`
   - `connect_highways()`.
+  - `make_osm_map()`
 - All previous uses of `cat()` have been removed, and replaced with `message()`.
 
 

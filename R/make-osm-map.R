@@ -42,7 +42,8 @@
 #' dat <- make_osm_map (osm_data = london, structures = structs)
 #' # or download data automatically using a defined bounding boox
 #' bbox <- get_bbox (c (-0.14, 51.51, -0.12, 51.52))
-#' \donttest{
+#' \dontrun{
+#' # This calls the overpass API server to extract data:
 #' dat <- make_osm_map (bbox = bbox, structures = structs)
 #' print_osm_map (dat$map)
 #' }
