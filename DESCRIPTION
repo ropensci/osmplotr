@@ -1,6 +1,6 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.5.040
+Version: 0.3.5.041
 Authors@R: 
     c(person(given = "Mark",
              family = "Padgham",
@@ -42,6 +42,7 @@ Suggests:
     httptest2,
     knitr,
     magrittr,
+    mapproj,
     markdown,
     rmarkdown,
     testthat

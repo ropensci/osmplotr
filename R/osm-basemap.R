@@ -26,6 +26,9 @@
 #' @export
 osm_basemap <- function (bbox, structures, bg = "gray20") {
 
+    # 'mapproj' is needed for 'ggplot2::coord_map()'
+    requireNamspapce ("mapproj", quietly = TRUE)
+
     # ---------------  sanity checks and warnings  ---------------
     bbox <- check_bbox_arg (bbox)
     if (!missing (structures)) {
