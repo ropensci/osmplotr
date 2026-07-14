@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/ropensci/osmplotr",
   "issueTracker": "https://github.com/ropensci/osmplotr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.5.038",
+  "version": "0.3.5.039",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.5.1 (2025-06-13)",
+  "runtimePlatform": "R version 4.6.1 (2026-06-24)",
   "author": [
     {
       "@type": "Person",
@@ -84,6 +84,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=geodist"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "httptest2",
+      "name": "httptest2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=httptest2"
     },
     {
       "@type": "SoftwareApplication",
@@ -191,22 +203,10 @@
     },
     "5": {
       "@type": "SoftwareApplication",
-      "identifier": "mapproj",
-      "name": "mapproj",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=mapproj"
-    },
-    "6": {
-      "@type": "SoftwareApplication",
       "identifier": "methods",
       "name": "methods"
     },
-    "7": {
+    "6": {
       "@type": "SoftwareApplication",
       "identifier": "osmdata",
       "name": "osmdata",
@@ -218,7 +218,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=osmdata"
     },
-    "8": {
+    "7": {
       "@type": "SoftwareApplication",
       "identifier": "sf",
       "name": "sf",
@@ -230,7 +230,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sf"
     },
-    "9": {
+    "8": {
       "@type": "SoftwareApplication",
       "identifier": "sfheaders",
       "name": "sfheaders",
@@ -242,7 +242,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sfheaders"
     },
-    "10": {
+    "9": {
       "@type": "SoftwareApplication",
       "identifier": "sp",
       "name": "sp",
@@ -254,7 +254,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sp"
     },
-    "11": {
+    "10": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat",
       "name": "spatstat",
@@ -267,7 +267,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat"
     },
-    "12": {
+    "11": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat.explore",
       "name": "spatstat.explore",
@@ -279,7 +279,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spatstat.explore"
     },
-    "13": {
+    "12": {
       "@type": "SoftwareApplication",
       "identifier": "spatstat.geom",
       "name": "spatstat.geom",
@@ -293,11 +293,11 @@
     },
     "SystemRequirements": {}
   },
-  "fileSize": "3214.001KB",
+  "fileSize": "3479.022KB",
   "releaseNotes": "https://github.com/ropensci/osmplotr/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/osmplotr/blob/main/README.md",
   "contIntegration": [
-    "https://github.com/ropensci/osmplotr/actions?query=workflow%3AR-CMD-check",
+    "https://github.com/ropensci/osmplotr/actions/workflows/R-CMD-check.yaml",
     "https://app.codecov.io/gh/ropensci/osmplotr"
   ],
   "developmentStatus": "https://www.repostatus.org/",
