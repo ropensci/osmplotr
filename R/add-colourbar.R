@@ -159,11 +159,10 @@ add_colourbar <- function (map, barwidth = 0.02, barlength = 0.7, zlims, cols,
             ),
             alpha = alpha, size = fontsize, colour = text_col,
             fontface = fontface, family = fontfamily, inherit.aes = FALSE,
-            label.size = 0, nudge_x = tl$nudge_x, nudge_y = tl$nudge_y,
+            linewidth = 0, nudge_x = tl$nudge_x, nudge_y = tl$nudge_y,
             vjust = tl$vjust, hjust = tl$hjust
         )
 }
-
 
 
 #' initial coordinates for colourbar

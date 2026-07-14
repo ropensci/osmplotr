@@ -67,8 +67,9 @@ set_map_theme <- function (bg) {
     theme$line <- ggplot2::element_blank ()
     theme$axis.text <- ggplot2::element_blank () # nolint
     theme$axis.title <- ggplot2::element_blank () # nolint
-    theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (0, "null"), 4))
-    theme$plot.margin <- ggplot2::margin (rep (ggplot2::unit (-0.5, "line"), 4))
+    theme$plot.margin <- ggplot2::margin (
+        t = -0.5, r = -0.5, b = -0.5, l = -0.5, unit = "line"
+    )
     theme$legend.position <- "none" # nolint
     theme$axis.ticks.length <- ggplot2::unit (0, "null") # nolint
 

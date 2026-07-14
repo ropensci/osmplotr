@@ -234,7 +234,7 @@ add_horizontal_axis <- function (map, xaxs_pos, yaxs_pos, xrange, xp, colour,
             size = fontsize,
             colour = colour,
             inherit.aes = FALSE,
-            label.size = 0,
+            linewidth = 0,
             vjust = "inward",
             fontface = fontface, family = fontfamily
         )
@@ -279,7 +279,7 @@ add_vertical_axis <- function (map, xaxs_pos, yaxs_pos, yrange, yp, colour,
             size = fontsize,
             colour = colour,
             inherit.aes = FALSE,
-            label.size = 0,
+            linewidth = 0,
             hjust = "inward",
             fontface = fontface,
             family = fontfamily
