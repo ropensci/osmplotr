@@ -1,6 +1,6 @@
 Package: osmplotr
 Title: Bespoke Images of 'OpenStreetMap' Data
-Version: 0.3.5.039
+Version: 0.3.5.040
 Authors@R: 
     c(person(given = "Mark",
              family = "Padgham",
@@ -33,7 +33,6 @@ Imports:
     osmdata,
     sf,
     sfheaders,
-    sp,
     spatstat (>= 2.0-0),
     spatstat.explore,
     spatstat.geom

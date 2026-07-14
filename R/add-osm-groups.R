@@ -75,10 +75,10 @@
 #'
 #' # Highlight a single region using all objects lying partially inside the
 #' # boundary (via the boundary = 1 argument)
-#' pts <- sp::SpatialPoints (cbind (
+#' pts <- cbind (
 #'     c (-0.115, -0.125, -0.125, -0.115),
 #'     c (51.505, 51.505, 51.515, 51.515)
-#' ))
+#' )
 #' \dontrun{
 #' dat_H <- extract_osm_objects (key = "highway", bbox = bbox) # all highways
 #' map <- bmap ()
@@ -100,9 +100,7 @@
 #' y <- bbox [2, 1] + runif (ngroups) * diff (bbox [2, ])
 #' groups <- cbind (x, y)
 #' groups <- apply (groups, 1, function (i) {
-#'     sp::SpatialPoints (
-#'         matrix (i, nrow = 1, ncol = 2)
-#'     )
+#'     matrix (i, nrow = 1, ncol = 2)
 #' })
 #' # plot a basemap and add groups
 #' map <- bmap ()
@@ -494,12 +492,12 @@ group_centroids_bdrys <- function (groups, make_hull, cols,
 
             bdry <- rbind (bdry, bdry [1, ]) # enclose bdry back to 1st point
             # The next 4 lines are only used if is.null (bg)
-            indx <- sp::point.in.polygon (
+            indx <- pts_in_bdry (
                 obj_trim$xy_mn [, 1],
                 obj_trim$xy_mn [, 2],
                 bdry [, 1], bdry [, 2]
             )
-            indx <- which (indx > 0) # see below for point.in.polygon values
+            indx <- which (indx > 0) # points inside or on boundary
         } else {
 
             # indx closest point to bdry
@@ -537,9 +535,9 @@ group_centroids_bdrys <- function (groups, make_hull, cols,
 
 #' get coordinates of each obj to be plotted
 #'
-#' @note pinpooly returns (0,1,2) for (not, on, in) boundary. Also note that the
-#' nrow > 2 clause ensures poin.in.polygon is only applied to groups of
-#' sufficient size
+#' @note pts_in_bdry returns 1 for points inside or on the boundary, and 0
+#' otherwise. Also note that the nrow > 2 clause ensures pts_in_bdry is only
+#' applied to groups of sufficient size
 #'
 #' @noRd
 get_obj_coords <- function (obj, cent_bdry) {
@@ -549,7 +547,7 @@ get_obj_coords <- function (obj, cent_bdry) {
         pins <- lapply (cent_bdry$bdry, function (j) {
 
             if (nrow (j) > 2) {
-                sp::point.in.polygon (
+                pts_in_bdry (
                     i [, 1], i [, 2],
                     j [, 1], j [, 2]
                 )
@@ -562,6 +560,25 @@ get_obj_coords <- function (obj, cent_bdry) {
     })
 
     return (coords)
+}
+
+#' Determine which points lie inside or on a polygon boundary
+#'
+#' Replacement for 'sp::point.in.polygon'. Downstream code only ever
+#' distinguishes zero from non-zero, so the finer (on-boundary vs vertex)
+#' distinctions made by 'sp::point.in.polygon' are not needed here.
+#'
+#' @param x,y Coordinates of points to test.
+#' @param bx,by Coordinates of the (closed) polygon boundary.
+#' @return 1 for points inside or on boundary; 0 for points outside.
+#'
+#' @noRd
+pts_in_bdry <- function (x, y, bx, by) {
+
+    poly <- sf::st_sfc (sf::st_polygon (list (cbind (bx, by))))
+    pts <- sf::st_cast (sf::st_sfc (sf::st_multipoint (cbind (x, y))), "POINT")
+
+    as.integer (sf::st_intersects (pts, poly, sparse = FALSE) [, 1])
 }
 
 #' get members of single group

@@ -108,10 +108,10 @@ bmap <- function () {
 
 # Highlight a single region using all objects lying partially inside the
 # boundary (via the boundary = 1 argument)
-pts <- sp::SpatialPoints (cbind (
+pts <- cbind (
     c (-0.115, -0.125, -0.125, -0.115),
     c (51.505, 51.505, 51.515, 51.515)
-))
+)
 \dontrun{
 dat_H <- extract_osm_objects (key = "highway", bbox = bbox) # all highways
 map <- bmap ()
@@ -133,9 +133,7 @@ x <- bbox [1, 1] + runif (ngroups) * diff (bbox [1, ])
 y <- bbox [2, 1] + runif (ngroups) * diff (bbox [2, ])
 groups <- cbind (x, y)
 groups <- apply (groups, 1, function (i) {
-    sp::SpatialPoints (
-        matrix (i, nrow = 1, ncol = 2)
-    )
+    matrix (i, nrow = 1, ncol = 2)
 })
 # plot a basemap and add groups
 map <- bmap ()
