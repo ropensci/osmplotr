@@ -131,10 +131,10 @@ particularly through enabling selected regions to be highlighted.
 Regions can be defined according to simple point boundaries:
 
 ``` r
-pts <- sp::SpatialPoints (cbind (
+pts <- cbind (
     c (-0.115, -0.13, -0.13, -0.115),
     c (51.505, 51.505, 51.515, 51.515)
-))
+)
 ```
 
 OSM objects within the defined regions can then be highlighted with
@@ -193,10 +193,7 @@ set.seed (2)
 ngroups <- 12
 x <- bbox [1, 1] + runif (ngroups) * diff (bbox [1, ])
 y <- bbox [2, 1] + runif (ngroups) * diff (bbox [2, ])
-groups <- cbind (x, y)
-groups <- apply (groups, 1, function (i) {
-    sp::SpatialPoints (matrix (i, nrow = 1, ncol = 2))
-})
+groups <- as.list (data.frame (t (cbind (x, y))))
 ```
 
 Calling `add_osm_groups` with no `bg` argument forces all points lying
