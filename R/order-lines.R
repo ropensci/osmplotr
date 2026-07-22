@@ -7,7 +7,7 @@
 #' the line. This list itself may contain several components where individual
 #' highway components either branch or are discrete.
 #'
-#' @param sp_lines A \code{SpatialLinesDataFrame} returned from
+#' @param xy An \code{sf} data frame of lines returned from
 #' \code{extract_osm_objects}.
 #' @return A list of ordered line segments.
 #'

@@ -22,9 +22,9 @@
 #' \code{\link{osm_structures}}.
 #' @return List of two components:
 #' \enumerate{
-#'   \item List of OSM structures each as
-#'      \code{Spatial(Points/Lines/Polygons)DataFrame} and appended to
-#'      \code{osm_data} (which is \code{NULL} by default), and
+#'   \item List of OSM structures each as an \code{sf} data frame of points,
+#'      lines, or polygons, and appended to \code{osm_data} (which is
+#'      \code{NULL} by default), and
 #'   \item The \code{map} as a \code{ggplot2} object
 #' }
 #'
@@ -103,11 +103,6 @@ get_bbox_from_data <- function (osm_data) {
     }
     bbox <- matrix (c (Inf, Inf, -Inf, -Inf), nrow = 2, ncol = 2)
     rownames (bbox) <- c ("x", "y")
-    sp_classes <- c (
-        "SpatialLinesDataFrame",
-        "SpatialPolygonsDataFrame",
-        "SpatialPointsDataFrame"
-    )
     for (i in osm_data) {
 
         if (is (i, "sf")) {
@@ -117,13 +112,6 @@ get_bbox_from_data <- function (osm_data) {
             if (bbi [2] < bbox [2, 1]) bbox [2, 1] <- bbi [2]
             if (bbi [1] > bbox [1, 2]) bbox [1, 2] <- bbi [1]
             if (bbi [2] > bbox [2, 2]) bbox [2, 2] <- bbi [2]
-        } else if (any (class (i) %in% sp_classes)) {
-
-            bbi <- slot (i, "bbox")
-            if (bbi [1, 1] < bbox [1, 1]) bbox [1, 1] <- bbi [1, 1]
-            if (bbi [2, 1] < bbox [2, 1]) bbox [2, 1] <- bbi [2, 1]
-            if (bbi [1, 2] > bbox [1, 2]) bbox [1, 2] <- bbi [1, 2]
-            if (bbi [2, 2] > bbox [2, 2]) bbox [2, 2] <- bbi [2, 2]
         }
     }
 

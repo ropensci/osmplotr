@@ -13,7 +13,6 @@
 #' columns of min and max values, and rows of x and y values.
 #' @return A list of highways matching \code{highway_names} each element of
 #' which is a list of distinct components for the given highway.
-#' @return A \code{data.frame} of \code{sp} objects
 #'
 #' @noRd
 extract_highways <- function (highway_names, bbox) {
@@ -133,7 +132,7 @@ dl_hw_data <- function (highway_names, hw_abbrvs, bbox) {
 #' by `.'.
 #' @param bbox the bounding box for the map.  A 2-by-2 matrix of 4 elements with
 #' columns of min and max values, and rows of x and y values.
-#' @return A \code{SpatialLinesDataFrame} containing the highway.
+#' @return An \code{sf} data frame of lines containing the highway.
 #'
 #' @noRd
 extract_highway <- function (name = "", bbox) {

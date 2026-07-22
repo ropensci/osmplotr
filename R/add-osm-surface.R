@@ -10,9 +10,8 @@
 #' optimised to the given data, and is effectively non-parametric.
 #'
 #' @param map A \code{ggplot2} object to which the surface are to be added
-#' @param obj An \code{sp} \code{SpatialPolygonsDataFrame} or
-#' \code{SpatialLinesDataFrame} (list of polygons or lines) returned by
-#' \code{\link{extract_osm_objects}}
+#' @param obj An \code{sf} data frame of polygons or lines (list of polygons
+#' or lines) returned by \code{\link{extract_osm_objects}}
 #' @param dat A matrix or data frame of 3 columns (x, y, z), where (x, y) are
 #' (longitude, latitude), and z are the values to be interpolated
 #' @param method Either \code{idw} (Inverse Distance Weighting as
@@ -448,7 +447,7 @@ set_extreme_vals <- function (xy, bg, nx, ny) {
     return (xy)
 }
 
-#' add SpatialPolygonsDataFrame to map
+#' add polygon surface to map
 #'
 #' @note The following 3 functions could be re-written more efficiently using a
 #' generic functional, but this would severely obsucate what's actually done
@@ -497,7 +496,7 @@ map_plus_spPolydf_srfc <- function (map, xy, xy0, cols, bg, size) { # nolint
     return (map)
 }
 
-#' add SpatialLinesDataFrame to map
+#' add line surface to map
 #'
 #' @noRd
 map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) { # nolint
@@ -548,7 +547,7 @@ map_plus_spLinesdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) { # no
     return (map)
 }
 
-#' add SpatialPointsDataFrame to map
+#' add point surface to map
 #'
 #' @noRd
 map_plus_spPointsdf_srfc <- function (map, xy, xy0, cols, bg, size, shape) { # nolint

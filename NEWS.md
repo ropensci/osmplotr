@@ -2,6 +2,11 @@
 osmplotr v0.3.3.X (dev)
 ===============
 
+Major changes
+-------
+
+- Remove all remaining support for the obsolete 'sp' package; 'extract_osm_objects' no longer has an 'sf' parameter and always returns 'sf' objects.
+
 Minor changes
 -------
 

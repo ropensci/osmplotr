@@ -46,17 +46,6 @@ test_that ("valid key", {
         extract_osm_objects (bbox = bbox, key = "building")
     })
     expect_is (dat, "sf")
-
-    expect_warning (
-        dat <- httptest2::with_mock_dir ("extract-buildings-sp", {
-            extract_osm_objects (
-                bbox = bbox, key = "building",
-                sf = FALSE
-            )
-        }),
-        "\\'osmdata\\_sp \\(\\)\\' is deprecated"
-    )
-    expect_is (dat, "SpatialPolygonsDataFrame")
 })
 
 test_that ("extra_pairs", {
@@ -73,24 +62,4 @@ test_that ("extra_pairs", {
     })
     expect_true (nrow (dat) > 0)
     expect_is (dat, "sf")
-})
-
-test_that ("sp objects", {
-    key <- "building"
-    value <- "yes"
-    extra_pairs <- c ("amenity", "place_of_worship")
-    bbox <- get_bbox (c (-0.1274, 51.5140, -0.1270, 51.5144))
-    expect_warning (
-        dat <- httptest2::with_mock_dir ("extract-bldg-extra-pair-sp", {
-            extract_osm_objects (
-                bbox = bbox, key = key,
-                value = value,
-                extra_pairs = extra_pairs,
-                sf = FALSE
-            )
-        }),
-        "\\'osmdata\\_sp \\(\\)\\' is deprecated"
-    )
-    expect_true (nrow (dat) > 0)
-    expect_is (dat, "Spatial")
 })

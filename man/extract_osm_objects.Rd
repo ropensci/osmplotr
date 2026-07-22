@@ -10,7 +10,6 @@ extract_osm_objects(
   value,
   extra_pairs,
   return_type,
-  sf = TRUE,
   geom_only = FALSE,
   quiet = FALSE
 )
@@ -33,13 +32,10 @@ to the overpass API.}
 
 \item{return_type}{If specified, force return of spatial (\code{point},
 \code{line}, \code{polygon}, \code{multiline}, \code{multipolygon}) objects.
-\code{return_type = 'line'} will, for example, always return a
-SpatialLinesDataFrame. If not specified, defaults to 'sensible' values (for
+\code{return_type = 'line'} will, for example, always return an \code{sf}
+data frame of lines. If not specified, defaults to 'sensible' values (for
 example, \code{lines} for highways, \code{points} for trees, \code{polygons}
 for buildings).}
-
-\item{sf}{If \code{TRUE}, return Simple Features (\code{sf}) objects;
-otherwise Spatial (\code{sp}) objects.}
 
 \item{geom_only}{If \code{TRUE}, return only those OSM data describing the
 geometric object; otherwise return all data describing each object.}
@@ -47,13 +43,12 @@ geometric object; otherwise return all data describing each object.}
 \item{quiet}{If \code{FALSE}, provides notification of progress.}
 }
 \value{
-Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
-or \code{SpatialPolygonsDataFrame}.
+A Simple Features (\code{sf}) data frame of points, lines, or
+polygons.
 }
 \description{
-Downloads OSM XML objects and converts to \code{sp} objects
-(\code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame}, or
-\code{SpatialPolygonsDataFrame}).
+Downloads OSM XML objects and converts to Simple Features (\code{sf})
+objects (\code{sf} data frames of points, lines, or polygons).
 }
 \examples{
 \dontrun{

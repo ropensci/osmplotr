@@ -871,7 +871,7 @@ nrow (highways1)
 nrow (highways2)
 nrow (highways3)
 ```
-`connect_highways` returns a list of `SpatialPoints` representing the shortest
+`connect_highways` returns a matrix of coordinates representing the shortest
 path that sequentially connects all of the listed highways. (Connecting all
 listed highways may not necessarily be possible, in which case warnings will be
 issued. As described in the first vignette, 
@@ -1003,9 +1003,9 @@ osm_basemap (
 ![](map_b16.png)
 
 At present, `add_osm_surface` generates an warning if it is applied more than
-once to any one kind of `Spatial` object (polygons or lines), as illustrated in
-the following code (in which both `dat_H` and `dat_HP` are of class
-`SpatialLinesDataFrame`:
+once to any one kind of spatial object (polygons or lines), as illustrated in
+the following code (in which both `dat_H` and `dat_HP` are `sf` data frames of
+class `sfc_LINESTRING`:
 ```{r, eval = TRUE}
 osm_basemap (bbox = bbox, bg = "gray20") %>%
     add_osm_surface (dat_HP,
@@ -1022,8 +1022,8 @@ each kind of object, and these schemes are not intended to be modified or
 replaced within a single plot. The above map may still be printed, but the
 warning means that the last provided colour scheme will be applied to all
 objects of that class. This means that `osmplotr` can only overlay two distinct
-colour schemes: one for all objects of class `SpatialLines`, and a potentially
-different one for all objects of class `SpatialPolygons`.
+colour schemes: one for all line objects, and a potentially different one for
+all polygon objects.
 
 Of course, any number of additional objects may be overlaid with
 `add_osm_objects`, for example,
@@ -1294,7 +1294,7 @@ In this case, the two `size` parameters control the size of the lines within the
 data surface and beyond its perimeter. Single values may also be passed, in
 which case they determine the width of lines in both cases. One or two `shape`
 parameters may also be passed, with these also determining the shapes of
-`SpatialPoints`, as illustrated in the next example, which overlays trees on the
+points, as illustrated in the next example, which overlays trees on the
 map.
 
 Both lines and points use the same `ggplot2` colour gradient, and so adding the

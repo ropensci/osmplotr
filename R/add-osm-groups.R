@@ -4,8 +4,7 @@
 #'
 #' @param map A \code{ggplot2} object to which the grouped objects are to be
 #' added.
-#' @param obj An \code{sp} \code{SpatialPointsDataFrame},
-#' \code{SpatialPolygonsDataFrame}, or \code{SpatialLinesDataFrame} (list of
+#' @param obj An \code{sf} data frame of points, polygons, or lines (list of
 #' polygons or lines) returned by \code{\link{extract_osm_objects}}.
 #' @param groups A list of spatial points objects, each of which contains the
 #' coordinates of points defining one group.
@@ -277,32 +276,15 @@ check_groups_arg <- function (groups) {
 
         for (i in seq (groups)) {
 
-            if (is (groups [[i]], "Spatial")) {
-                groups [[i]] <- de_spatial_points (groups [[i]])
-            } else if (!is.numeric (groups [[i]])) {
+            if (!is.numeric (groups [[i]])) {
                 stop ("All groups must be numeric")
             }
         }
-    } else {
-
-        if (is (groups, "Spatial")) {
-            groups <- de_spatial_points (groups)
-        } else if (!inherits (groups, "sf")) {
-            groups <- list (groups)
-        }
+    } else if (!inherits (groups, "sf")) {
+        groups <- list (groups)
     }
 
     return (groups)
-}
-
-#' get raw coordinates from spatialpoints object
-#' @noRd
-de_spatial_points <- function (x) {
-
-    if (!is (x, "SpatialPoints")) {
-        stop ("All groups must be SpatialPoints objects")
-    }
-    slot (x, "coords")
 }
 
 #' check structure of 'make_hull' arg
@@ -764,7 +746,7 @@ cbind_membs_xy <- function (membs, xy) {
     do.call (rbind, xym)
 }
 
-#' add SpatialPolygonsDataFrame to map
+#' add polygon groups to map
 #'
 #' @noRd
 map_plus_spPolydf_grps <- function (map, xy, aes, cols, size) { # nolint
@@ -783,7 +765,7 @@ map_plus_spPolydf_grps <- function (map, xy, aes, cols, size) { # nolint
     )
 }
 
-#' add SpatialLinesDataFrame to map
+#' add line groups to map
 #'
 #' @noRd
 map_plus_spLinedf_grps <- function (map, xyflat, aes, cols, size, shape) { # nolint

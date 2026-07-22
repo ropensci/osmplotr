@@ -9,8 +9,8 @@ add_osm_objects(map, obj, col = "gray40", border = NA, hcol, size, shape)
 \arguments{
 \item{map}{A \code{ggplot2} object to which the objects are to be added.}
 
-\item{obj}{A spatial (\code{sp}) data frame of polygons, lines, or points,
-typically as returned by \code{\link{extract_osm_objects}}.}
+\item{obj}{An \code{sf} data frame of polygons, lines, or points, typically
+as returned by \code{\link{extract_osm_objects}}.}
 
 \item{col}{Colour of lines or points; fill colour of polygons.}
 

@@ -34,9 +34,9 @@ data structures are created by appending the suffixes from
 \value{
 List of two components:
 \enumerate{
-  \item List of OSM structures each as
-     \code{Spatial(Points/Lines/Polygons)DataFrame} and appended to
-     \code{osm_data} (which is \code{NULL} by default), and
+  \item List of OSM structures each as an \code{sf} data frame of points,
+     lines, or polygons, and appended to \code{osm_data} (which is
+     \code{NULL} by default), and
   \item The \code{map} as a \code{ggplot2} object
 }
 }

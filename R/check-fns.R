@@ -8,61 +8,38 @@ check_map_arg <- function (map) {
     }
 }
 
-#' get type of geometry object from either sf or sp objects
+#' get type of geometry object from an sf object
 #'
-#' @note \code{sf} objects return singular nouns ('polygon', 'point'), while
-#' \code{sp} return plurals ('polygons', 'points')
+#' @note \code{sf} objects return singular nouns ('polygon', 'point').
 #'
 #' @noRd
 get_obj_type <- function (obj) {
 
-    if (is (obj, "sf")) {
-
-        if (!inherits (obj$geometry, "sfc")) {
-            warning (
-                "object class is sf, but the geometry column class is '",
-                toString (class (obj$geometry)),
-                "' instead of 'sfc'.\n",
-                "This can occur e.g. after subsetting sf objects ",
-                "without the sf package loaded."
-            )
-        }
-        i <- which (grepl ("sfc_", class (obj$geometry)))
-        obj_type <- tolower (strsplit (
-            class (obj$geometry) [i],
-            "sfc_"
-        ) [[1]] [2])
-    } else {
-
-        obj_type <- tolower (strsplit (
-            strsplit (
-                class (obj),
-                "Spatial"
-            ) [[1]] [2],
-            "DataFrame"
-        ) [[1]] [1])
+    if (!inherits (obj$geometry, "sfc")) {
+        warning (
+            "object class is sf, but the geometry column class is '",
+            toString (class (obj$geometry)),
+            "' instead of 'sfc'.\n",
+            "This can occur e.g. after subsetting sf objects ",
+            "without the sf package loaded."
+        )
     }
+    i <- which (grepl ("sfc_", class (obj$geometry)))
+    obj_type <- tolower (strsplit (
+        class (obj$geometry) [i],
+        "sfc_"
+    ) [[1]] [2])
 
     return (obj_type)
 }
 
-
-#' capitalise first letter of word
-#'
-#' @note does same as stringi::stri_trans_totitle
-#'
-#' @noRd
-cap_first <- function (x) {
-
-    paste0 (toupper (substring (x, 1, 1)), substring (x, 2, nchar (x)))
-}
 
 check_obj_arg <- function (obj) {
 
     if (missing (obj)) {
         stop ("obj must be provided", call. = FALSE)
     }
-    if (!(is (obj, "Spatial") || is (obj, "sf"))) {
+    if (!is (obj, "sf")) {
         stop ("obj must be a spatial object", call. = FALSE)
     }
 }

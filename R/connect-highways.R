@@ -1,7 +1,7 @@
 #' connect_highways
 #'
 #' Takes a list of highways names which must enclose an internal area, and
-#' returns a \code{SpatialLines} object containing a sequence of OSM nodes which
+#' returns a matrix of coordinates containing a sequence of OSM nodes which
 #' cyclically connect all highways. Will fail if the streets do not form a
 #' cycle.
 #'
@@ -12,8 +12,8 @@
 #' columns of min and max values, and rows of x and y values.
 #' @param plot If \code{TRUE}, then all OSM data for each highway is plotted and
 #' the final cycle overlaid.
-#' @return A single set of \code{SpatialPoints} containing the lat-lon
-#' coordinates of the cyclic line connecting all given streets.
+#' @return A single matrix containing the lat-lon coordinates of the cyclic
+#' line connecting all given streets.
 #'
 #' @note \enumerate{
 #' \item \code{connect_highways} is primarily intended to provide a means to

@@ -5,8 +5,8 @@
 #' \code{\link{osm_basemap}}.
 #'
 #' @param map A \code{ggplot2} object to which the objects are to be added.
-#' @param obj A spatial (\code{sp}) data frame of polygons, lines, or points,
-#' typically as returned by \code{\link{extract_osm_objects}}.
+#' @param obj An \code{sf} data frame of polygons, lines, or points, typically
+#' as returned by \code{\link{extract_osm_objects}}.
 #' @param col Colour of lines or points; fill colour of polygons.
 #' @param border Border colour of polygons.
 #' @param hcol (Multipolygons only) Vector of fill colours for holes
@@ -181,7 +181,7 @@ add_osm_objects <- function (map, obj, col = "gray40", border = NA, hcol,
 #'
 #' Converts lists of coordinates to single data frames
 #'
-#' @param xy A list of coordinates extracted from an sp object
+#' @param xy A list of coordinates extracted from an sf object
 #' @param islines Set to TRUE for spatial lines, otherwise FALSE
 #' @return data frame
 #'
@@ -271,25 +271,19 @@ default_size <- function (obj, size) {
     return (size)
 }
 
-#' return geometries of sf/sp objects as lists of matrices
+#' return geometries of sf objects as lists of matrices
 #'
 #' @noRd
 geom_to_xy <- function (obj, obj_type) {
 
-    if (obj_type == "polygon") { # sf
+    if (obj_type == "polygon") {
         xy <- lapply (obj$geometry, function (i) i [[1]])
-    } else if (obj_type == "linestring") { # sf
+    } else if (obj_type == "linestring") {
         xy <- lapply (obj$geometry, function (i) as.matrix (i))
-    } else if (obj_type == "point") { # sf
+    } else if (obj_type == "point") {
 
         xy <- data.frame (do.call (rbind, lapply (obj$geometry, as.numeric)))
         names (xy) <- c ("lon", "lat")
-    } else if (obj_type %in% c ("polygons", "lines")) { # sp
-        xy <- lapply (slot (obj, obj_type), function (x) {
-            slot (slot (x, cap_first (obj_type)) [[1]], "coords")
-        })
-    } else if (obj_type == "points") { # sp
-        xy <- data.frame (slot (obj, "coords"))
     }
 
     return (xy)

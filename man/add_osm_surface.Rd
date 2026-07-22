@@ -19,9 +19,8 @@ add_osm_surface(
 \arguments{
 \item{map}{A \code{ggplot2} object to which the surface are to be added}
 
-\item{obj}{An \code{sp} \code{SpatialPolygonsDataFrame} or
-\code{SpatialLinesDataFrame} (list of polygons or lines) returned by
-\code{\link{extract_osm_objects}}}
+\item{obj}{An \code{sf} data frame of polygons or lines (list of polygons
+or lines) returned by \code{\link{extract_osm_objects}}}
 
 \item{dat}{A matrix or data frame of 3 columns (x, y, z), where (x, y) are
 (longitude, latitude), and z are the values to be interpolated}

@@ -1,8 +1,7 @@
 #' extract_osm_objects
 #'
-#' Downloads OSM XML objects and converts to \code{sp} objects
-#' (\code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame}, or
-#' \code{SpatialPolygonsDataFrame}).
+#' Downloads OSM XML objects and converts to Simple Features (\code{sf})
+#' objects (\code{sf} data frames of points, lines, or polygons).
 #'
 #' @param bbox the bounding box within which all key-value objects should be
 #' downloaded.  A 2-by-2 matrix of 4 elements with columns of min and
@@ -17,18 +16,16 @@
 #' to the overpass API.
 #' @param return_type If specified, force return of spatial (\code{point},
 #' \code{line}, \code{polygon}, \code{multiline}, \code{multipolygon}) objects.
-#' \code{return_type = 'line'} will, for example, always return a
-#' SpatialLinesDataFrame. If not specified, defaults to 'sensible' values (for
+#' \code{return_type = 'line'} will, for example, always return an \code{sf}
+#' data frame of lines. If not specified, defaults to 'sensible' values (for
 #' example, \code{lines} for highways, \code{points} for trees, \code{polygons}
 #' for buildings).
-#' @param sf If \code{TRUE}, return Simple Features (\code{sf}) objects;
-#' otherwise Spatial (\code{sp}) objects.
 #' @param geom_only If \code{TRUE}, return only those OSM data describing the
 #' geometric object; otherwise return all data describing each object.
 #' @param quiet If \code{FALSE}, provides notification of progress.
 #'
-#' @return Either a \code{SpatialPointsDataFrame}, \code{SpatialLinesDataFrame},
-#' or \code{SpatialPolygonsDataFrame}.
+#' @return A Simple Features (\code{sf}) data frame of points, lines, or
+#' polygons.
 #'
 #' @seealso \code{\link{add_osm_objects}}.
 #'
@@ -61,7 +58,7 @@
 #' @family data-extraction
 #' @export
 extract_osm_objects <- function (bbox, key = NULL, value, extra_pairs,
-                                 return_type, sf = TRUE,
+                                 return_type,
                                  geom_only = FALSE, quiet = FALSE) {
 
     check_arg (key, "key", "character")
@@ -101,11 +98,7 @@ extract_osm_objects <- function (bbox, key = NULL, value, extra_pairs,
         }
     }
 
-    if (sf) {
-        obj <- osmdata::osmdata_sf (qry, quiet = quiet)
-    } else {
-        obj <- osmdata::osmdata_sp (qry, quiet = quiet)
-    }
+    obj <- osmdata::osmdata_sf (qry, quiet = quiet)
 
     obj <- get_obj_from_return_type (obj, return_type, q_keys, q_vals)
 
@@ -117,15 +110,8 @@ extract_osm_objects <- function (bbox, key = NULL, value, extra_pairs,
     }
 
     if (geom_only) {
-
-        if (sf) {
-
-            indx <- match (c ("osm_id", "geometry"), names (obj))
-            obj <- obj [, indx]
-        } else {
-
-            attr (obj, "data") <- NULL
-        }
+        indx <- match (c ("osm_id", "geometry"), names (obj))
+        obj <- obj [, indx]
     }
 
     return (obj)

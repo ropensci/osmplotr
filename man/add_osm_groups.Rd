@@ -23,8 +23,7 @@ add_osm_groups(
 \item{map}{A \code{ggplot2} object to which the grouped objects are to be
 added.}
 
-\item{obj}{An \code{sp} \code{SpatialPointsDataFrame},
-\code{SpatialPolygonsDataFrame}, or \code{SpatialLinesDataFrame} (list of
+\item{obj}{An \code{sf} data frame of points, polygons, or lines (list of
 polygons or lines) returned by \code{\link{extract_osm_objects}}.}
 
 \item{groups}{A list of spatial points objects, each of which contains the
