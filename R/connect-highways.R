@@ -291,7 +291,6 @@ connect_at_closest <- function (way1, way2) {
 }
 
 
-
 #' haversine
 #'
 #' Returns the minimal haversine distance between 2 ways, along with the
@@ -322,13 +321,14 @@ haversine <- function (way1, way2) {
 }
 
 
-
-
 plot_highways <- function (ways) {
 
     xy <- do.call (rbind, do.call (c, ways))
 
+    oldpar <- par (no.readonly = TRUE)
+    on.exit (par (oldpar))
     par (mar = rep (0, 4))
+
     plot (NULL, NULL,
         xlim = range (xy [, 1]), ylim = range (xy [, 2]),
         xaxt = "n", yaxt = "n", xlab = "", ylab = "", frame = FALSE

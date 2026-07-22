@@ -187,7 +187,11 @@ rotate_colourmat <- function (cols, rotate) {
 plot_colourmat <- function (carr) {
 
     plot.new ()
+
+    oldpar <- par (no.readonly = TRUE)
+    on.exit (par (oldpar))
     par (mar = rep (0, 4))
+
     plot (NULL, NULL,
         xlim = c (0, dim (carr) [2]),
         ylim = c (0, dim (carr) [1])

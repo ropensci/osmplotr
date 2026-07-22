@@ -2,8 +2,9 @@
 
 This is a re-submission of a previously archived package. The submission may generate one single note regarding installed size of ~6MB, which is due to the vignettes. These produce many graphical files illustrating the package's functionality. Every effort has been made to reduce this as much as possible, including reducing the resolution of these images to the coarsest practicable scale. Halving the resolution again (from current 72 to 36 dpi) only decreases the final package size by around 200 kB.
 
-This re-submission also rectifies several issues pointed out in an email from 7th Feb 2025:
+This re-submission also rectifies several issues pointed out in emails from 7th Feb 2025, and 22 July 2926
 
+- All calls to `par()` now restore previous values with `on.exit()` calls.
 - Return values have been documented in all functions
 - Most `\dontrun` statements have been reduced, and converted to `donttest`. A few nevertheless remain, as the example code makes external API calls to download data. The following functions retain `dontrun` statements only around code which makes external API calls:
   - `add_osm_groups()`

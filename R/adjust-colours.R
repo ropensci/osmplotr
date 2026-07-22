@@ -96,7 +96,11 @@ adj_colours_plot <- function (cols, cols_old) {
 
     n <- length (cols)
     plot.new ()
+
+    oldpar <- par (no.readonly = TRUE)
+    on.exit (par (oldpar))
     par (mar = rep (0, 4))
+
     graphics::plot (NULL, NULL,
         xlim = c (0, n), ylim = c (0, 2),
         xaxs = "i", yaxs = "i"
