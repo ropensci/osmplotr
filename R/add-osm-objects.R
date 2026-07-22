@@ -249,10 +249,10 @@ default_shape <- function (obj_type, shape) {
 #' convert size to default values dependent on class of obj
 #'
 #' @noRd
-default_size <- function (obj, size) {
+default_size <- function (obj_type, size) {
 
     size_default <- 0
-    if (!grepl ("polygon", get_obj_type (obj))) {
+    if (!grepl ("polygon", obj_type)) {
         size_default <- 0.5
     }
 
