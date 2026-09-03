@@ -26,6 +26,8 @@ test_that ("make_osm_map", {
 
 test_that ("get_missing_osm_data", {
 
+    skip_on_cran ()
+
     structs <- osm_structures ()
     indx <- which (structs$structure == "building")
     structs$value [indx] <- "yes"
