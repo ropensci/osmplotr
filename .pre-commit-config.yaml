@@ -2,12 +2,12 @@
 # R specific hooks: https://github.com/lorenzwalthert/precommit
 repos:
 -   repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.4.3.9026
+    rev: v0.4.3.9034
     hooks:
     -   id: style-files
         args: [--style_pkg=spaceout, --style_fun=spaceout_style]    
         additional_dependencies:
-        - ropensci-review-tools/spaceout
+        - mpadge/spaceout
     # -   id: roxygenize
     # codemeta must be above use-tidy-description when both are used
     # -   id: codemeta-description-updated
